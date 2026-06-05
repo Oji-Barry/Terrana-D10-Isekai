@@ -7,155 +7,10 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Cinzel:wght@400;600;700&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
 
   <style>
-    /* ─── DESIGN TOKENS ─── */
-    :root[data-theme="night"] {
-      --bg:          #0e0c09;
-      --bg-surface:  #16130e;
-      --bg-card:     #1e1a13;
-      --border:      #3a3020;
-      --border-glow: #7a6030;
-      --text:        #e8dfc8;
-      --text-muted:  #9a8f78;
-      --text-faint:  #5a5244;
-      --accent:      #c8992a;
-      --accent-dim:  #8a6a1a;
-      --accent-glow: rgba(200, 153, 42, 0.18);
-      --red:         #c04030;
-      --green:       #4a7a50;
-      --ink:         #0e0c09;
-      --nav-h:       64px;
-      --grain: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
-    }
-    :root[data-theme="day"] {
-      --bg:          #f5f0e6;
-      --bg-surface:  #ede6d6;
-      --bg-card:     #e6ddc8;
-      --border:      #c8b890;
-      --border-glow: #a08840;
-      --text:        #2a2218;
-      --text-muted:  #6a5a40;
-      --text-faint:  #b0a080;
-      --accent:      #9a6e10;
-      --accent-dim:  #c89830;
-      --accent-glow: rgba(154, 110, 16, 0.14);
-      --red:         #a03020;
-      --green:       #3a6040;
-      --ink:         #f5f0e6;
-      --nav-h:       64px;
-      --grain: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
-    }
-
-    /* ─── RESET & BASE ─── */
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; }
-    body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: 'Lora', Georgia, serif;
-      line-height: 1.7;
-      min-height: 100vh;
-      transition: background 0.4s, color 0.4s;
-      overflow-x: hidden;
-    }
-    body::before {
-      content: '';
-      position: fixed;
-      inset: 0;
-      background-image: var(--grain);
-      pointer-events: none;
-      z-index: 0;
-    }
-    a { color: inherit; text-decoration: none; }
-
-    /* ─── UTILITY ─── */
-    .cinzel { font-family: 'Cinzel', serif; }
-    .cinzel-deco { font-family: 'Cinzel Decorative', serif; }
-    .accent { color: var(--accent); }
-    .muted { color: var(--text-muted); }
-    .faint { color: var(--text-faint); }
-
-    /* ─── NAV ─── */
-    nav {
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      height: var(--nav-h);
-      background: var(--bg-surface);
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 2.5rem;
-      backdrop-filter: blur(10px);
-      transition: background 0.4s, border-color 0.4s;
-    }
-    .nav-logo {
-      font-family: 'Cinzel Decorative', serif;
-      font-size: 1.1rem;
-      letter-spacing: 0.04em;
-      color: var(--accent);
-      line-height: 1.2;
-    }
-    .nav-logo span {
-      display: block;
-      font-family: 'Cinzel', serif;
-      font-size: 0.6rem;
-      letter-spacing: 0.2em;
-      color: var(--text-muted);
-      text-transform: uppercase;
-    }
-    .nav-links {
-      display: flex;
-      align-items: center;
-      gap: 2rem;
-      list-style: none;
-    }
-    .nav-links a {
-      font-family: 'Cinzel', serif;
-      font-size: 0.72rem;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--text-muted);
-      transition: color 0.2s;
-      position: relative;
-    }
-    .nav-links a::after {
-      content: '';
-      position: absolute;
-      bottom: -3px;
-      left: 0; right: 0;
-      height: 1px;
-      background: var(--accent);
-      transform: scaleX(0);
-      transition: transform 0.2s;
-    }
-    .nav-links a:hover { color: var(--accent); }
-    .nav-links a:hover::after { transform: scaleX(1); }
-
-    /* Theme toggle */
-    #theme-btn {
-      background: none;
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      padding: 0.3rem 0.8rem;
-      cursor: pointer;
-      font-size: 0.85rem;
-      color: var(--text-muted);
-      transition: border-color 0.2s, color 0.2s, background 0.2s;
-      display: flex;
-      align-items: center;
-      gap: 0.4rem;
-    }
-    #theme-btn:hover {
-      border-color: var(--accent);
-      color: var(--accent);
-      background: var(--accent-glow);
-    }
-    .theme-icon { font-size: 1rem; }
-
-    /* ─── HERO ─── */
+    /* ── Homepage-only styles ── */
     .hero {
       position: relative;
       min-height: 92vh;
@@ -166,16 +21,14 @@
       text-align: center;
       padding: 5rem 2rem 6rem;
       overflow: hidden;
+      z-index: 1;
     }
-    /* Radial atmosphere */
     .hero::after {
       content: '';
-      position: absolute;
-      inset: 0;
+      position: absolute; inset: 0;
       background: radial-gradient(ellipse 70% 55% at 50% 40%, var(--accent-glow) 0%, transparent 70%);
       pointer-events: none;
     }
-    /* Decorative geometry */
     .hero-ring {
       position: absolute;
       border-radius: 50%;
@@ -188,346 +41,84 @@
     .hero-ring:nth-child(2) { width: 750px; height: 750px; top: 50%; left: 50%; transform: translate(-50%,-50%); animation: ring-spin 60s linear infinite; }
     .hero-ring:nth-child(3) { width: 1050px; height: 1050px; top: 50%; left: 50%; transform: translate(-50%,-50%); animation: ring-spin 90s linear infinite reverse; }
 
-    @keyframes ring-spin {
-      from { transform: translate(-50%,-50%) rotate(0deg); }
-      to   { transform: translate(-50%,-50%) rotate(360deg); }
-    }
-
     .hero-eyebrow {
       font-family: 'Cinzel', serif;
-      font-size: 0.65rem;
-      letter-spacing: 0.35em;
-      text-transform: uppercase;
-      color: var(--accent);
-      margin-bottom: 1.4rem;
-      position: relative;
-      z-index: 1;
+      font-size: 0.65rem; letter-spacing: 0.35em; text-transform: uppercase;
+      color: var(--accent); margin-bottom: 1.4rem;
+      position: relative; z-index: 1;
       animation: fadeUp 0.8s both;
     }
     .hero-title {
       font-family: 'Cinzel Decorative', serif;
       font-size: clamp(2.2rem, 6vw, 5rem);
-      line-height: 1.15;
-      color: var(--text);
-      position: relative;
-      z-index: 1;
+      line-height: 1.15; color: var(--text);
+      position: relative; z-index: 1;
       animation: fadeUp 0.8s 0.15s both;
     }
-    .hero-title em {
-      font-style: normal;
-      color: var(--accent);
-    }
+    .hero-title em { font-style: normal; color: var(--accent); }
     .hero-sub {
       font-family: 'Cinzel', serif;
       font-size: clamp(0.75rem, 1.5vw, 1rem);
-      letter-spacing: 0.25em;
-      text-transform: uppercase;
-      color: var(--text-muted);
-      margin-top: 1rem;
-      position: relative;
-      z-index: 1;
+      letter-spacing: 0.25em; text-transform: uppercase;
+      color: var(--text-muted); margin-top: 1rem;
+      position: relative; z-index: 1;
       animation: fadeUp 0.8s 0.3s both;
     }
     .hero-desc {
-      max-width: 560px;
-      margin: 2rem auto 0;
-      color: var(--text-muted);
-      font-size: 1.05rem;
-      line-height: 1.8;
-      position: relative;
-      z-index: 1;
+      max-width: 560px; margin: 2rem auto 0;
+      color: var(--text-muted); font-size: 1.05rem; line-height: 1.8;
+      position: relative; z-index: 1;
       animation: fadeUp 0.8s 0.45s both;
     }
     .hero-cta {
-      display: flex;
-      gap: 1rem;
-      justify-content: center;
-      flex-wrap: wrap;
+      display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;
       margin-top: 2.8rem;
-      position: relative;
-      z-index: 1;
+      position: relative; z-index: 1;
       animation: fadeUp 0.8s 0.6s both;
     }
-    .btn {
-      font-family: 'Cinzel', serif;
-      font-size: 0.72rem;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      padding: 0.85rem 2rem;
-      border-radius: 2px;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-    .btn-primary {
-      background: var(--accent);
-      color: var(--ink);
-      border: 1px solid var(--accent);
-    }
-    .btn-primary:hover {
-      background: transparent;
-      color: var(--accent);
-      box-shadow: 0 0 18px var(--accent-glow);
-    }
-    .btn-ghost {
-      background: transparent;
-      color: var(--text-muted);
-      border: 1px solid var(--border);
-    }
-    .btn-ghost:hover {
-      border-color: var(--accent);
-      color: var(--accent);
-      background: var(--accent-glow);
-    }
 
-    /* ─── DIVIDER ─── */
-    .rune-divider {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      width: 100%;
-      max-width: 900px;
-      margin: 0 auto;
-      padding: 0 2rem;
-    }
-    .rune-divider::before,
-    .rune-divider::after {
-      content: '';
-      flex: 1;
-      height: 1px;
-      background: linear-gradient(to right, transparent, var(--border));
-    }
-    .rune-divider::after {
-      background: linear-gradient(to left, transparent, var(--border));
-    }
-    .rune-glyph {
-      font-family: 'Cinzel Decorative', serif;
-      color: var(--accent-dim);
-      font-size: 1.2rem;
-      line-height: 1;
-    }
-
-    /* ─── SECTION ─── */
-    section { position: relative; z-index: 1; }
-    .section-inner {
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 5rem 2rem;
-    }
-    .section-label {
-      font-family: 'Cinzel', serif;
-      font-size: 0.62rem;
-      letter-spacing: 0.3em;
-      text-transform: uppercase;
-      color: var(--accent);
-      margin-bottom: 0.8rem;
-    }
-    .section-title {
-      font-family: 'Cinzel Decorative', serif;
-      font-size: clamp(1.4rem, 3vw, 2.2rem);
-      color: var(--text);
-      line-height: 1.3;
-      margin-bottom: 1.5rem;
-    }
-    .section-body {
-      color: var(--text-muted);
-      font-size: 1rem;
-      line-height: 1.85;
-      max-width: 660px;
-    }
-
-    /* ─── QUICK CARDS ─── */
-    .cards-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 1.5px;
-      margin-top: 3.5rem;
-      border: 1.5px solid var(--border);
-    }
-    .card {
-      background: var(--bg-card);
-      padding: 2rem 1.8rem;
-      border: 1.5px solid var(--border);
-      transition: background 0.2s, border-color 0.2s;
-      cursor: pointer;
-      position: relative;
-      overflow: hidden;
-    }
-    .card::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: var(--accent-glow);
-      opacity: 0;
-      transition: opacity 0.2s;
-    }
-    .card:hover { border-color: var(--border-glow); }
-    .card:hover::before { opacity: 1; }
-    .card-icon {
-      font-size: 1.6rem;
-      margin-bottom: 1rem;
-      position: relative;
-      z-index: 1;
-    }
-    .card-title {
-      font-family: 'Cinzel', serif;
-      font-size: 0.85rem;
-      letter-spacing: 0.08em;
-      color: var(--text);
-      margin-bottom: 0.6rem;
-      position: relative;
-      z-index: 1;
-    }
-    .card-desc {
-      font-size: 0.88rem;
-      color: var(--text-muted);
-      line-height: 1.65;
-      position: relative;
-      z-index: 1;
-    }
-    .card-arrow {
-      font-family: 'Cinzel', serif;
-      font-size: 0.7rem;
-      color: var(--accent-dim);
-      margin-top: 1.2rem;
-      display: block;
-      letter-spacing: 0.1em;
-      transition: color 0.2s;
-      position: relative;
-      z-index: 1;
-    }
-    .card:hover .card-arrow { color: var(--accent); }
-
-    /* ─── LORE STRIP ─── */
     .lore-strip {
       background: var(--bg-surface);
       border-top: 1px solid var(--border);
       border-bottom: 1px solid var(--border);
+      position: relative; z-index: 1;
     }
     .lore-inner {
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 5rem 2rem;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 5rem;
-      align-items: center;
-    }
-    @media (max-width: 720px) {
-      .lore-inner { grid-template-columns: 1fr; gap: 3rem; }
-      .nav-links { display: none; }
-      .hero-title { font-size: 2rem; }
+      max-width: 1100px; margin: 0 auto; padding: 5rem 2rem;
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 5rem; align-items: center;
     }
     .lore-quote {
-      font-size: 1.25rem;
-      font-style: italic;
-      color: var(--text);
-      line-height: 1.75;
-      position: relative;
-      padding-left: 1.5rem;
+      font-size: 1.25rem; font-style: italic;
+      color: var(--text); line-height: 1.75;
+      position: relative; padding-left: 1.5rem;
     }
     .lore-quote::before {
-      content: '';
-      position: absolute;
-      left: 0;
-      top: 0.2em;
-      bottom: 0.2em;
-      width: 2px;
-      background: var(--accent);
+      content: ''; position: absolute; left: 0; top: 0.2em; bottom: 0.2em;
+      width: 2px; background: var(--accent);
     }
     .lore-source {
-      font-family: 'Cinzel', serif;
-      font-size: 0.65rem;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--text-faint);
-      margin-top: 1rem;
+      font-family: 'Cinzel', serif; font-size: 0.65rem;
+      letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--text-faint); margin-top: 1rem;
     }
+    .section-inner {
+      max-width: 1100px; margin: 0 auto; padding: 5rem 2rem;
+      position: relative; z-index: 1;
+    }
+    .section-inner .section-body { color: var(--text-muted); font-size: 1rem; line-height: 1.85; max-width: 660px; }
 
-    /* ─── RANKS BAR ─── */
-    .ranks-section { overflow: hidden; }
-    .ranks-scroll {
-      display: flex;
-      gap: 0;
-      margin-top: 3rem;
-    }
-    .rank-cell {
-      flex: 1;
-      min-width: 80px;
-      padding: 1.5rem 1rem;
-      text-align: center;
-      border: 1px solid var(--border);
-      border-left: none;
-      transition: background 0.2s;
-    }
-    .rank-cell:first-child { border-left: 1px solid var(--border); }
-    .rank-cell:hover { background: var(--bg-card); }
-    .rank-letter {
-      font-family: 'Cinzel Decorative', serif;
-      font-size: 1.6rem;
-      display: block;
-      margin-bottom: 0.4rem;
-    }
-    .rank-label {
-      font-family: 'Cinzel', serif;
-      font-size: 0.58rem;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: var(--text-faint);
-    }
-    .rank-f .rank-letter { color: var(--text-faint); }
-    .rank-e .rank-letter { color: #7a6050; }
-    .rank-d .rank-letter { color: #8a7040; }
-    .rank-c .rank-letter { color: #9a8030; }
-    .rank-b .rank-letter { color: #4a7a50; }
-    .rank-a .rank-letter { color: #4070a0; }
-    .rank-s .rank-letter { color: var(--accent); text-shadow: 0 0 20px var(--accent-glow); }
-
-    /* ─── FOOTER ─── */
-    footer {
-      border-top: 1px solid var(--border);
-      padding: 3rem 2rem;
-      text-align: center;
-    }
-    .footer-logo {
-      font-family: 'Cinzel Decorative', serif;
-      font-size: 1rem;
-      color: var(--accent-dim);
-      margin-bottom: 0.8rem;
-    }
-    .footer-note {
-      font-size: 0.8rem;
-      color: var(--text-faint);
-      font-family: 'Cinzel', serif;
-      letter-spacing: 0.12em;
-    }
-
-    /* ─── ANIMATIONS ─── */
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(22px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-
-    /* ─── COMING SOON BADGE ─── */
-    .badge {
-      display: inline-block;
-      font-family: 'Cinzel', serif;
-      font-size: 0.55rem;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      padding: 0.2rem 0.6rem;
-      border: 1px solid var(--border);
-      color: var(--text-faint);
-      vertical-align: middle;
-      margin-left: 0.5rem;
-      border-radius: 2px;
+    @media (max-width: 720px) {
+      .lore-inner { grid-template-columns: 1fr; gap: 3rem; }
+      .hero-ring:nth-child(2),
+      .hero-ring:nth-child(3) { display: none; }
     }
   </style>
 </head>
 <body>
 
-  <!-- ─── NAV ─── -->
   <nav>
-    <a href="#" class="nav-logo">
+    <a href="index.html" class="nav-logo">
       Terrana
       <span>D10 Isekai &middot; Core Rulebook</span>
     </a>
@@ -538,223 +129,129 @@
       <li><a href="#">Combat</a></li>
       <li><a href="#">Characters</a></li>
     </ul>
-    <button id="theme-btn" aria-label="Toggle day/night mode">
-      <span class="theme-icon">🌙</span>
-      <span class="theme-label">Night</span>
-    </button>
+    <div class="nav-right">
+      <button id="theme-btn" aria-label="Toggle day/night mode">
+        <span class="theme-icon">🌙</span>
+        <span class="theme-label">Night</span>
+      </button>
+      <button id="hamburger" aria-label="Open menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
   </nav>
 
-  <!-- ─── HERO ─── -->
-  <header class="hero">
-    <!-- Decorative rings -->
-    <div class="hero-ring"></div>
-    <div class="hero-ring"></div>
-    <div class="hero-ring"></div>
+  <div class="mobile-menu" id="mobile-menu">
+    <ul>
+      <li><a href="world.html">World</a></li>
+      <li><a href="lore.html">Lore</a></li>
+      <li><a href="#">Rules</a></li>
+      <li><a href="#">Combat</a></li>
+      <li><a href="#">Characters</a></li>
+    </ul>
+  </div>
 
+  <header class="hero">
+    <div class="hero-ring"></div>
+    <div class="hero-ring"></div>
+    <div class="hero-ring"></div>
     <p class="hero-eyebrow">The World of Terrana</p>
-    <h1 class="hero-title">
-      Jimothy's<br>
-      <em>D10 Isekai</em>
-    </h1>
+    <h1 class="hero-title">Jimothy's<br><em>D10 Isekai</em></h1>
     <p class="hero-sub">Core Rulebook &middot; Tabletop Roleplaying Game</p>
-    <p class="hero-desc">
-      A world built on the ruins of five others. A trademarked dungeon. Immortal demon kings,
-      mana-powered smartphones, and the occasional Kaiju. Welcome to Terrana.
-    </p>
+    <p class="hero-desc">A world built on the ruins of five others. A trademarked dungeon. Immortal demon kings, mana-powered smartphones, and the occasional Kaiju. Welcome to Terrana.</p>
     <div class="hero-cta">
-      <a href="#world" class="btn btn-primary">Explore the World</a>
-      <a href="#rules" class="btn btn-ghost">Read the Rules</a>
+      <a href="world.html" class="btn btn-primary">Explore the World</a>
+      <a href="lore.html" class="btn btn-ghost">Read the Lore</a>
     </div>
   </header>
 
-  <!-- ─── DIVIDER ─── -->
-  <div class="rune-divider"><span class="rune-glyph">&#10022;</span></div>
+  <div class="rune-divider" style="padding:0 2rem; max-width:900px; margin:0 auto;"><span class="rune-glyph">&#10022;</span></div>
 
-  <!-- ─── QUICK ACCESS CARDS ─── -->
-  <section id="world">
+  <section>
     <div class="section-inner">
       <p class="section-label">Navigate</p>
       <h2 class="section-title">Where do you want to go?</h2>
-      <p class="section-body">
-        Terrana is vast. Start with the world, learn the rules, or dive straight
-        into building your character.
-      </p>
+      <p class="section-body">Terrana is vast. Start with the world, learn the rules, or dive straight into building your character.</p>
 
       <div class="cards-grid">
-
         <div class="card">
           <div class="card-icon">🌍</div>
           <h3 class="card-title">The World</h3>
-          <p class="card-desc">
-            Six-faced history, five absorbed worlds, the Ringus Sea, Monsera,
-            the Dungeon&#8482;, and the continents between.
-          </p>
-          <span class="card-arrow">Browse Lore &rarr;</span>
+          <p class="card-desc">Six-faced history, five absorbed worlds, the Ringus Sea, Monsera, the Dungeon&#8482;, and the continents between.</p>
+          <a href="world.html" class="card-arrow">Browse World &rarr;</a>
         </div>
-
+        <div class="card">
+          <div class="card-icon">📖</div>
+          <h3 class="card-title">Lore</h3>
+          <p class="card-desc">Institutions, key figures, the CCN, Void Openings, the Hero Rangers Corps, and the world's power structure.</p>
+          <a href="lore.html" class="card-arrow">Read Lore &rarr;</a>
+        </div>
         <div class="card">
           <div class="card-icon">📜</div>
-          <h3 class="card-title">The Rules</h3>
-          <p class="card-desc">
-            D10 dice pools, the core mechanic, combat, magic ranks from
-            Elementary to God, and social confrontations.
-          </p>
-          <span class="card-arrow">Read Rules &rarr;</span>
+          <h3 class="card-title">Rules</h3>
+          <p class="card-desc">D10 dice pools, the core mechanic, the SumMon system, equipment, and the loot system.</p>
+          <span class="card-arrow">Coming Soon</span>
         </div>
-
         <div class="card">
           <div class="card-icon">⚔️</div>
-          <h3 class="card-title">Character Creation</h3>
-          <p class="card-desc">
-            Heritages, Tropes, Driving Factors, Attributes, Abilities,
-            Mana, Combat Styles, and more.
-          </p>
-          <span class="card-arrow">Build a Character &rarr;</span>
+          <h3 class="card-title">Combat</h3>
+          <p class="card-desc">Martial, Magic, and Social combat. Fast lookup for players mid-session.</p>
+          <span class="card-arrow">Coming Soon</span>
         </div>
-
         <div class="card">
-          <div class="card-icon">🏛️</div>
-          <h3 class="card-title">Institutions</h3>
-          <p class="card-desc">
-            The Adventurers Guild, the Hero Rangers Corps, the United Domains
-            of Terrana, the CCN network.
-          </p>
-          <span class="card-arrow">Explore Factions &rarr;</span>
+          <div class="card-icon">🧬</div>
+          <h3 class="card-title">Characters</h3>
+          <p class="card-desc">Heritages, Tropes, Driving Factors, Attributes, Abilities, Mana, Combat Styles, and more.</p>
+          <span class="card-arrow">Coming Soon</span>
         </div>
-
-        <div class="card">
-          <div class="card-icon">🐲</div>
-          <h3 class="card-title">The SumMon System</h3>
-          <p class="card-desc">
-            Bind creatures, channel their power, build your roster.
-            The SumMon rules and registered entity list.
-          </p>
-          <span class="card-arrow">View SumMons &rarr;</span>
-        </div>
-
         <div class="card">
           <div class="card-icon">🎲</div>
           <h3 class="card-title">Quick Reference <span class="badge">Tables</span></h3>
-          <p class="card-desc">
-            Rank scale, magic tiers, currency conversions, and all the
-            appendix tables in one place.
-          </p>
-          <span class="card-arrow">Open Tables &rarr;</span>
+          <p class="card-desc">Rank scale, magic tiers, currency conversions, and all appendix tables in one place.</p>
+          <span class="card-arrow">Coming Soon</span>
         </div>
-
       </div>
     </div>
   </section>
 
-  <!-- ─── LORE STRIP ─── -->
-  <section class="lore-strip" id="lore">
+  <section class="lore-strip">
     <div class="lore-inner">
       <div>
         <p class="section-label">A Note on the World</p>
         <h2 class="section-title">Terrana Is Old</h2>
-        <p class="section-body">
-          It is older than its current name, older than any of its kingdoms, older
-          than the gods who shaped it and the war that nearly unmade it. What stands
-          today was built by survivors: people who came from worlds that no longer exist
-          and decided, collectively and not always politely, to make something that would last.
-        </p>
-        <p class="section-body" style="margin-top:1rem;">
-          It is a world of dungeons and dragons, of pop stars and politicians, of ancient
-          immortal demon kings and university students who are perpetually almost late to class.
-        </p>
+        <p class="section-body">It is older than its current name, older than any of its kingdoms, older than the gods who shaped it and the war that nearly unmade it. What stands today was built by survivors: people who came from worlds that no longer exist and decided, collectively and not always politely, to make something that would last.</p>
+        <p class="section-body" style="margin-top:1rem;">It is a world of dungeons and dragons, of pop stars and politicians, of ancient immortal demon kings and university students who are perpetually almost late to class.</p>
       </div>
       <div>
-        <blockquote class="lore-quote">
-          "The Slime King understood from the beginning that Monsera's value would come from
-          being accessible to everyone and beholden to no one."
-        </blockquote>
+        <blockquote class="lore-quote">"The Slime King understood from the beginning that Monsera's value would come from being accessible to everyone and beholden to no one."</blockquote>
         <p class="lore-source">Jimothy's D10 Isekai &middot; Chapter 3</p>
       </div>
     </div>
   </section>
 
-  <!-- ─── RANK SCALE ─── -->
-  <section id="rules">
+  <section>
     <div class="section-inner">
       <p class="section-label">The Rank Scale</p>
       <h2 class="section-title">Power Has a Ladder</h2>
-      <p class="section-body">
-        Every adventurer, ranger, and creature in Terrana is measured on the same unified
-        rank scale, from F-rank beginners to the rare and terrifying S-rank. The Adventurers Guild,
-        the Hero Rangers Corps, and most major institutions share this language.
-      </p>
-
+      <p class="section-body">Every adventurer, ranger, and creature in Terrana is measured on the same unified rank scale. The Adventurers Guild, the Hero Rangers Corps, and most major institutions share this language.</p>
       <div class="ranks-scroll">
-        <div class="rank-cell rank-f">
-          <span class="rank-letter">F</span>
-          <span class="rank-label">Novice</span>
-        </div>
-        <div class="rank-cell rank-e">
-          <span class="rank-letter">E</span>
-          <span class="rank-label">Apprentice</span>
-        </div>
-        <div class="rank-cell rank-d">
-          <span class="rank-letter">D</span>
-          <span class="rank-label">Journeyman</span>
-        </div>
-        <div class="rank-cell rank-c">
-          <span class="rank-letter">C</span>
-          <span class="rank-label">Adept</span>
-        </div>
-        <div class="rank-cell rank-b">
-          <span class="rank-letter">B</span>
-          <span class="rank-label">Expert</span>
-        </div>
-        <div class="rank-cell rank-a">
-          <span class="rank-letter">A</span>
-          <span class="rank-label">Elite</span>
-        </div>
-        <div class="rank-cell rank-s">
-          <span class="rank-letter">S</span>
-          <span class="rank-label">Legend</span>
-        </div>
+        <div class="rank-cell rank-f"><span class="rank-letter">F</span><span class="rank-label">Novice</span></div>
+        <div class="rank-cell rank-e"><span class="rank-letter">E</span><span class="rank-label">Apprentice</span></div>
+        <div class="rank-cell rank-d"><span class="rank-letter">D</span><span class="rank-label">Journeyman</span></div>
+        <div class="rank-cell rank-c"><span class="rank-letter">C</span><span class="rank-label">Adept</span></div>
+        <div class="rank-cell rank-b"><span class="rank-letter">B</span><span class="rank-label">Expert</span></div>
+        <div class="rank-cell rank-a"><span class="rank-letter">A</span><span class="rank-label">Elite</span></div>
+        <div class="rank-cell rank-s"><span class="rank-letter">S</span><span class="rank-label">Legend</span></div>
       </div>
     </div>
   </section>
 
-  <!-- ─── DIVIDER ─── -->
-  <div class="rune-divider" style="padding:0 2rem; margin: 0 auto;"><span class="rune-glyph">&#10022;</span></div>
+  <div class="rune-divider" style="padding:0 2rem; max-width:900px; margin:0 auto;"><span class="rune-glyph">&#10022;</span></div>
 
-  <!-- ─── FOOTER ─── -->
   <footer>
     <p class="footer-logo">Terrana</p>
     <p class="footer-note">Jimothy's D10 Isekai: JRPG &middot; Work In Progress &middot; &copy; Oji-Barry</p>
   </footer>
 
-  <!-- ─── THEME SCRIPT ─── -->
-  <script>
-    const root  = document.documentElement;
-    const btn   = document.getElementById('theme-btn');
-    const icon  = btn.querySelector('.theme-icon');
-    const label = btn.querySelector('.theme-label');
-
-    // Persist preference
-    const saved = localStorage.getItem('td10-theme') || 'night';
-    root.setAttribute('data-theme', saved);
-    updateBtn(saved);
-
-    btn.addEventListener('click', () => {
-      const next = root.getAttribute('data-theme') === 'night' ? 'day' : 'night';
-      root.setAttribute('data-theme', next);
-      localStorage.setItem('td10-theme', next);
-      updateBtn(next);
-    });
-
-    function updateBtn(theme) {
-      if (theme === 'night') {
-        icon.textContent  = '🌙';
-        label.textContent = 'Night';
-      } else {
-        icon.textContent  = '☀️';
-        label.textContent = 'Day';
-      }
-    }
-  </script>
-
+  <script src="nav.js"></script>
 </body>
 </html>
