@@ -90,6 +90,9 @@ nav {
   color: var(--accent);
   line-height: 1.2;
   flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
 }
 .nav-logo span {
   display: block;
@@ -320,6 +323,11 @@ nav {
 .sidebar-nav .sub.active {
   color: var(--text-muted);
   border-left-color: var(--border-glow);
+}
+
+/* ─── SCROLL OFFSET (accounts for sticky nav height) ─── */
+section[id] {
+  scroll-margin-top: calc(var(--nav-h) + 1.5rem);
 }
 
 /* ─── CONTENT SECTIONS ─── */
@@ -676,6 +684,98 @@ footer {
   to   { transform: translate(-50%, -50%) rotate(360deg); }
 }
 
+/* ─── MOBILE SIDEBAR DRAWER ─── */
+
+/* Overlay behind the drawer */
+.drawer-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  z-index: 300;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.drawer-overlay.open {
+  opacity: 1;
+}
+
+/* The drawer panel itself */
+.drawer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: min(280px, 80vw);
+  background: var(--bg-surface);
+  border-right: 1px solid var(--border);
+  z-index: 301;
+  transform: translateX(-100%);
+  transition: transform 0.3s ease;
+  overflow-y: auto;
+  padding: 2rem 0 3rem;
+}
+.drawer.open {
+  transform: translateX(0);
+}
+.drawer-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1.2rem 1.2rem;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 1rem;
+}
+.drawer-title {
+  font-family: 'Cinzel', serif;
+  font-size: 0.62rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+.drawer-close {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-faint);
+  font-size: 1.1rem;
+  line-height: 1;
+  padding: 0.2rem;
+  transition: color 0.2s;
+}
+.drawer-close:hover { color: var(--accent); }
+
+/* Drawer nav links — reuse sidebar-nav styles */
+.drawer .sidebar-nav {
+  padding: 0 0.4rem;
+}
+
+/* Compass button — sits below the logo text, only visible on mobile/tablet
+   when the page has a sidebar */
+#drawer-fab {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  margin-top: 0.15rem;
+  line-height: 1;
+  font-size: 0.75rem;
+  font-family: 'Cinzel', serif;
+  letter-spacing: 0.12em;
+  color: var(--text-faint);
+  text-transform: uppercase;
+  align-items: center;
+  gap: 0.3rem;
+  transition: color 0.2s;
+}
+#drawer-fab:hover { color: var(--accent); }
+#drawer-fab .compass-icon { font-size: 0.9rem; }
+
+body.has-sidebar #drawer-fab {
+  display: flex;
+}
+
 /* ============================================================
    RESPONSIVE BREAKPOINTS
    ============================================================ */
@@ -689,6 +789,8 @@ footer {
   #hamburger { display: flex; }
 
   .mobile-menu { display: block; }
+
+  .drawer-overlay { display: block; }
 
   .layout {
     grid-template-columns: 1fr;
