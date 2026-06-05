@@ -1,7 +1,5 @@
 /* ============================================================
    TERRANA D10 ISEKAI — nav.js
-   Shared nav logic: theme toggle, hamburger menu,
-   mobile sidebar drawer, sidebar scroll-spy.
    ============================================================ */
 
 (function () {
@@ -66,26 +64,28 @@
     });
   }
 
-  /* ── Mobile sidebar drawer ── */
-  const sidebar  = document.querySelector('.sidebar');
-  const fab      = document.getElementById('drawer-fab');
+  /* ── Compass drawer ── */
+  const fab = document.getElementById('drawer-fab');
 
-  if (sidebar && fab) {
-    // Mark body so CSS shows the compass button
+  // Read the sidebar nav HTML directly from the DOM before any display:none
+  // can affect a clone. We grab the sidebar-nav ul specifically so we always
+  // get the full list regardless of viewport size.
+  const sidebarNav = document.querySelector('.sidebar-nav');
+
+  if (fab && sidebarNav) {
     document.body.classList.add('has-sidebar');
 
-    // Build drawer from sidebar content
-    const sidebarClone = sidebar.cloneNode(true);
-
+    // Build overlay — always in DOM, pointer-events controlled by .open class
     const overlay = document.createElement('div');
     overlay.className = 'drawer-overlay';
     overlay.id = 'drawer-overlay';
 
+    // Build drawer panel
     const drawer = document.createElement('div');
     drawer.className = 'drawer';
     drawer.id = 'drawer';
-    drawer.setAttribute('aria-label', 'On this page');
 
+    // Header with title and X close button
     const drawerHeader = document.createElement('div');
     drawerHeader.className = 'drawer-header';
 
@@ -100,8 +100,14 @@
 
     drawerHeader.appendChild(drawerTitle);
     drawerHeader.appendChild(closeBtn);
+
+    // Clone the nav list HTML as a string and inject fresh so there are
+    // no display:none inheritance issues from the hidden sidebar
+    const navClone = document.createElement('div');
+    navClone.innerHTML = '<ul class="sidebar-nav">' + sidebarNav.innerHTML + '</ul>';
+
     drawer.appendChild(drawerHeader);
-    drawer.appendChild(sidebarClone);
+    drawer.appendChild(navClone);
 
     document.body.appendChild(overlay);
     document.body.appendChild(drawer);
@@ -120,15 +126,28 @@
 
     fab.addEventListener('click', openDrawer);
     closeBtn.addEventListener('click', closeDrawer);
+
+    // Overlay click always closes — works at any screen size
     overlay.addEventListener('click', closeDrawer);
 
-    // Close drawer and navigate when a link is tapped
+    // Also close on click outside the drawer at any screen size
+    document.addEventListener('click', (e) => {
+      if (
+        drawer.classList.contains('open') &&
+        !drawer.contains(e.target) &&
+        !fab.contains(e.target)
+      ) {
+        closeDrawer();
+      }
+    });
+
+    // Close and navigate when a link is tapped
     drawer.querySelectorAll('a').forEach(link => {
       link.addEventListener('click', () => closeDrawer());
     });
   }
 
-  /* ── Sidebar scroll-spy (updates desktop sidebar and drawer clone) ── */
+  /* ── Sidebar scroll-spy ── */
   const sections = document.querySelectorAll('section[id]');
 
   if (sections.length) {
