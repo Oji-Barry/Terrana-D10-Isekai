@@ -1,7 +1,7 @@
 /* ============================================================
    TERRANA D10 ISEKAI — nav.js
    Shared nav logic: theme toggle, hamburger menu,
-   sidebar scroll-spy. Included on every page.
+   mobile sidebar drawer, sidebar scroll-spy.
    ============================================================ */
 
 (function () {
@@ -31,7 +31,7 @@
     label.textContent = t === 'night' ? 'Night' : 'Day';
   }
 
-  /* ── Hamburger menu ── */
+  /* ── Hamburger (top nav mobile menu) ── */
   const hamburger  = document.getElementById('hamburger');
   const mobileMenu = document.getElementById('mobile-menu');
 
@@ -40,11 +40,9 @@
       const isOpen = mobileMenu.classList.toggle('open');
       hamburger.classList.toggle('open', isOpen);
       hamburger.setAttribute('aria-expanded', isOpen);
-      // Prevent body scroll when menu is open
       document.body.style.overflow = isOpen ? 'hidden' : '';
     });
 
-    // Close menu when a link is tapped
     mobileMenu.querySelectorAll('a').forEach(link => {
       link.addEventListener('click', () => {
         mobileMenu.classList.remove('open');
@@ -54,7 +52,6 @@
       });
     });
 
-    // Close menu on outside tap
     document.addEventListener('click', (e) => {
       if (
         mobileMenu.classList.contains('open') &&
@@ -69,20 +66,80 @@
     });
   }
 
-  /* ── Sidebar scroll-spy ── */
-  const sections  = document.querySelectorAll('section[id]');
-  const sideLinks = document.querySelectorAll('.sidebar-nav a');
+  /* ── Mobile sidebar drawer ── */
+  const sidebar  = document.querySelector('.sidebar');
+  const fab      = document.getElementById('drawer-fab');
 
-  if (sections.length && sideLinks.length) {
+  if (sidebar && fab) {
+    // Mark body so CSS shows the compass button
+    document.body.classList.add('has-sidebar');
+
+    // Build drawer from sidebar content
+    const sidebarClone = sidebar.cloneNode(true);
+
+    const overlay = document.createElement('div');
+    overlay.className = 'drawer-overlay';
+    overlay.id = 'drawer-overlay';
+
+    const drawer = document.createElement('div');
+    drawer.className = 'drawer';
+    drawer.id = 'drawer';
+    drawer.setAttribute('aria-label', 'On this page');
+
+    const drawerHeader = document.createElement('div');
+    drawerHeader.className = 'drawer-header';
+
+    const drawerTitle = document.createElement('span');
+    drawerTitle.className = 'drawer-title';
+    drawerTitle.textContent = 'On This Page';
+
+    const closeBtn = document.createElement('button');
+    closeBtn.className = 'drawer-close';
+    closeBtn.setAttribute('aria-label', 'Close');
+    closeBtn.innerHTML = '&#10005;';
+
+    drawerHeader.appendChild(drawerTitle);
+    drawerHeader.appendChild(closeBtn);
+    drawer.appendChild(drawerHeader);
+    drawer.appendChild(sidebarClone);
+
+    document.body.appendChild(overlay);
+    document.body.appendChild(drawer);
+
+    function openDrawer() {
+      drawer.classList.add('open');
+      overlay.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeDrawer() {
+      drawer.classList.remove('open');
+      overlay.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    fab.addEventListener('click', openDrawer);
+    closeBtn.addEventListener('click', closeDrawer);
+    overlay.addEventListener('click', closeDrawer);
+
+    // Close drawer and navigate when a link is tapped
+    drawer.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => closeDrawer());
+    });
+  }
+
+  /* ── Sidebar scroll-spy (updates desktop sidebar and drawer clone) ── */
+  const sections = document.querySelectorAll('section[id]');
+
+  if (sections.length) {
     const observer = new IntersectionObserver(entries => {
       entries.forEach(e => {
         if (e.isIntersecting) {
-          sideLinks.forEach(l => l.classList.remove('active'));
-          const active = document.querySelector(`.sidebar-nav a[href="#${e.target.id}"]`);
-          if (active) active.classList.add('active');
+          document.querySelectorAll('.sidebar-nav a').forEach(l => l.classList.remove('active'));
+          document.querySelectorAll(`.sidebar-nav a[href="#${e.target.id}"]`).forEach(l => l.classList.add('active'));
         }
       });
-    }, { rootMargin: '-30% 0px -60% 0px' });
+    }, { rootMargin: '-20% 0px -70% 0px' });
 
     sections.forEach(s => observer.observe(s));
   }
