@@ -192,7 +192,6 @@ nav {
 
 /* Mobile drawer */
 .mobile-menu {
-  display: none;
   position: fixed;
   top: var(--nav-h);
   left: 0; right: 0;
@@ -202,6 +201,8 @@ nav {
   padding: 1.5rem 2rem 2rem;
   transform: translateY(-110%);
   transition: transform 0.3s ease;
+  /* Always in DOM, hidden via transform. display toggled by breakpoint. */
+  display: none;
 }
 .mobile-menu.open {
   transform: translateY(0);
@@ -750,30 +751,27 @@ footer {
   padding: 0 0.4rem;
 }
 
-/* Compass button — sits below the logo text, only visible on mobile/tablet
-   when the page has a sidebar */
+/* Compass button — sits below the logo, visible on all sidebar pages */
 #drawer-fab {
   display: none;
   background: none;
-  border: none;
+  border: 1px solid var(--border);
+  border-radius: 4px;
   cursor: pointer;
-  padding: 0;
-  margin-top: 0.15rem;
+  padding: 4px 5px;
+  margin-top: 0.3rem;
   line-height: 1;
-  font-size: 0.75rem;
-  font-family: 'Cinzel', serif;
-  letter-spacing: 0.12em;
   color: var(--text-faint);
-  text-transform: uppercase;
-  align-items: center;
-  gap: 0.3rem;
-  transition: color 0.2s;
+  transition: border-color 0.2s, color 0.2s;
 }
-#drawer-fab:hover { color: var(--accent); }
-#drawer-fab .compass-icon { font-size: 0.9rem; }
+#drawer-fab:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+#drawer-fab svg { display: block; }
 
 body.has-sidebar #drawer-fab {
-  display: flex;
+  display: block;
 }
 
 /* ============================================================
@@ -788,6 +786,7 @@ body.has-sidebar #drawer-fab {
 
   #hamburger { display: flex; }
 
+  /* Switch mobile-menu from display:none to display:block so transform works */
   .mobile-menu { display: block; }
 
   .drawer-overlay { display: block; }
