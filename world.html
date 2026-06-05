@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="night">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The World of Terrana &middot; D10 Isekai</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Cinzel:wght@400;600;700&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ─── TOKENS ─── */
+    :root[data-theme="night"] {
+      --bg:          #0e0c09;
+      --bg-surface:  #16130e;
+      --bg-card:     #1e1a13;
+      --border:      #3a3020;
+      --border-glow: #7a6030;
+      --text:        #e8dfc8;
+      --text-muted:  #9a8f78;
+      --text-faint:  #5a5244;
+      --accent:      #c8992a;
+      --accent-dim:  #8a6a1a;
+      --accent-glow: rgba(200,153,42,0.15);
+      --ink:         #0e0c09;
+      --nav-h:       64px;
+    }
+    :root[data-theme="day"] {
+      --bg:          #f5f0e6;
+      --bg-surface:  #ede6d6;
+      --bg-card:     #e6ddc8;
+      --border:      #c8b890;
+      --border-glow: #a08840;
+      --text:        #2a2218;
+      --text-muted:  #6a5a40;
+      --text-faint:  #b0a080;
+      --accent:      #9a6e10;
+      --accent-dim:  #c89830;
+      --accent-glow: rgba(154,110,16,0.12);
+      --ink:         #f5f0e6;
+      --nav-h:       64px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Lora', Georgia, serif;
+      line-height: 1.75;
+      min-height: 100vh;
+      transition: background 0.4s, color 0.4s;
+    }
+    a { color: inherit; text-decoration: none; }
+
+    /* ─── NAV ─── */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      height: var(--nav-h);
+      background: var(--bg-surface);
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 2.5rem;
+      transition: background 0.4s, border-color 0.4s;
+    }
+    .nav-logo {
+      font-family: 'Cinzel Decorative', serif;
+      font-size: 1.1rem;
+      color: var(--accent);
+      line-height: 1.2;
+    }
+    .nav-logo span {
+      display: block;
+      font-family: 'Cinzel', serif;
+      font-size: 0.6rem;
+      letter-spacing: 0.2em;
+      color: var(--text-muted);
+      text-transform: uppercase;
+    }
+    .nav-links { display: flex; align-items: center; gap: 2rem; list-style: none; }
+    .nav-links a {
+      font-family: 'Cinzel', serif;
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      transition: color 0.2s;
+      position: relative;
+    }
+    .nav-links a.active { color: var(--accent); }
+    .nav-links a::after {
+      content: ''; position: absolute; bottom: -3px; left: 0; right: 0;
+      height: 1px; background: var(--accent);
+      transform: scaleX(0); transition: transform 0.2s;
+    }
+    .nav-links a:hover { color: var(--accent); }
+    .nav-links a:hover::after, .nav-links a.active::after { transform: scaleX(1); }
+    #theme-btn {
+      background: none; border: 1px solid var(--border); border-radius: 20px;
+      padding: 0.3rem 0.8rem; cursor: pointer; font-size: 0.85rem;
+      color: var(--text-muted); transition: border-color 0.2s, color 0.2s, background 0.2s;
+      display: flex; align-items: center; gap: 0.4rem;
+    }
+    #theme-btn:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-glow); }
+
+    /* ─── PAGE HEADER ─── */
+    .page-header {
+      background: var(--bg-surface);
+      border-bottom: 1px solid var(--border);
+      padding: 4rem 2rem 3rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .page-header::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 60% 80% at 50% 100%, var(--accent-glow), transparent 70%);
+      pointer-events: none;
+    }
+    .page-eyebrow {
+      font-family: 'Cinzel', serif;
+      font-size: 0.62rem; letter-spacing: 0.3em; text-transform: uppercase;
+      color: var(--accent); margin-bottom: 1rem;
+    }
+    .page-title {
+      font-family: 'Cinzel Decorative', serif;
+      font-size: clamp(1.8rem, 4vw, 3rem);
+      color: var(--text); line-height: 1.2;
+      position: relative;
+    }
+    .page-subtitle {
+      font-family: 'Cinzel', serif;
+      font-size: 0.8rem; letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--text-muted); margin-top: 0.8rem;
+    }
+
+    /* ─── LAYOUT ─── */
+    .layout {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 4rem 2rem;
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      gap: 4rem;
+      align-items: start;
+    }
+    @media (max-width: 800px) {
+      .layout { grid-template-columns: 1fr; gap: 2rem; }
+      .sidebar { display: none; }
+      .nav-links { display: none; }
+    }
+
+    /* ─── SIDEBAR ─── */
+    .sidebar {
+      position: sticky;
+      top: calc(var(--nav-h) + 2rem);
+    }
+    .sidebar-label {
+      font-family: 'Cinzel', serif;
+      font-size: 0.58rem; letter-spacing: 0.25em; text-transform: uppercase;
+      color: var(--text-faint); margin-bottom: 1rem;
+    }
+    .sidebar-nav { list-style: none; }
+    .sidebar-nav li { margin-bottom: 0.1rem; }
+    .sidebar-nav a {
+      display: block;
+      font-family: 'Cinzel', serif;
+      font-size: 0.72rem; letter-spacing: 0.06em;
+      color: var(--text-muted); padding: 0.45rem 0.8rem;
+      border-left: 2px solid transparent;
+      transition: color 0.2s, border-color 0.2s, background 0.2s;
+      border-radius: 0 2px 2px 0;
+    }
+    .sidebar-nav a:hover, .sidebar-nav a.active {
+      color: var(--accent);
+      border-left-color: var(--accent);
+      background: var(--accent-glow);
+    }
+    .sidebar-nav .sub {
+      font-size: 0.65rem;
+      padding-left: 1.6rem;
+      color: var(--text-faint);
+    }
+    .sidebar-nav .sub:hover, .sidebar-nav .sub.active {
+      color: var(--text-muted);
+      border-left-color: var(--border-glow);
+    }
+
+    /* ─── CONTENT ─── */
+    .content {}
+
+    /* Section blocks */
+    .world-section {
+      margin-bottom: 5rem;
+    }
+    .section-label {
+      font-family: 'Cinzel', serif;
+      font-size: 0.6rem; letter-spacing: 0.28em; text-transform: uppercase;
+      color: var(--accent); margin-bottom: 0.6rem;
+    }
+    .section-title {
+      font-family: 'Cinzel Decorative', serif;
+      font-size: clamp(1.3rem, 2.5vw, 1.9rem);
+      color: var(--text); line-height: 1.25;
+      margin-bottom: 1.5rem;
+    }
+    .section-body p {
+      color: var(--text-muted);
+      font-size: 1rem; line-height: 1.85;
+      margin-bottom: 1.1rem;
+      max-width: 680px;
+    }
+    .section-body p:last-child { margin-bottom: 0; }
+
+    /* Subsection */
+    .subsection {
+      margin-top: 2.5rem;
+      padding-left: 1.5rem;
+      border-left: 2px solid var(--border);
+    }
+    .subsection-title {
+      font-family: 'Cinzel', serif;
+      font-size: 0.92rem; letter-spacing: 0.06em;
+      color: var(--text); margin-bottom: 0.8rem;
+    }
+
+    /* Divider */
+    .rune-divider {
+      display: flex; align-items: center; gap: 1rem;
+      margin: 3.5rem 0;
+    }
+    .rune-divider::before, .rune-divider::after {
+      content: ''; flex: 1; height: 1px;
+    }
+    .rune-divider::before { background: linear-gradient(to right, transparent, var(--border)); }
+    .rune-divider::after  { background: linear-gradient(to left,  transparent, var(--border)); }
+    .rune-glyph { font-family: 'Cinzel Decorative', serif; color: var(--accent-dim); font-size: 1.1rem; }
+
+    /* Continent cards grid */
+    .continent-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1px;
+      border: 1px solid var(--border);
+      margin-top: 2.5rem;
+    }
+    .cont-card {
+      background: var(--bg-card);
+      padding: 1.8rem;
+      border: 1px solid var(--border);
+      transition: border-color 0.2s, background 0.2s;
+      cursor: pointer;
+      position: relative;
+    }
+    .cont-card::before {
+      content: ''; position: absolute; inset: 0;
+      background: var(--accent-glow); opacity: 0; transition: opacity 0.2s;
+    }
+    .cont-card:hover { border-color: var(--border-glow); }
+    .cont-card:hover::before { opacity: 1; }
+    .cont-tag {
+      font-family: 'Cinzel', serif;
+      font-size: 0.55rem; letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--accent-dim); margin-bottom: 0.5rem;
+      position: relative; z-index: 1;
+    }
+    .cont-name {
+      font-family: 'Cinzel', serif;
+      font-size: 0.95rem; color: var(--text);
+      margin-bottom: 0.7rem;
+      position: relative; z-index: 1;
+    }
+    .cont-desc {
+      font-size: 0.85rem; color: var(--text-muted); line-height: 1.65;
+      position: relative; z-index: 1;
+    }
+    .cont-detail {
+      font-family: 'Cinzel', serif;
+      font-size: 0.62rem; letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--text-faint); margin-top: 1rem;
+      position: relative; z-index: 1;
+    }
+
+    /* Callout box */
+    .callout {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--accent);
+      padding: 1.5rem 1.8rem;
+      margin: 2rem 0;
+      max-width: 680px;
+    }
+    .callout-label {
+      font-family: 'Cinzel', serif;
+      font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--accent); margin-bottom: 0.6rem;
+    }
+    .callout p {
+      font-size: 0.92rem; color: var(--text-muted); line-height: 1.75;
+    }
+
+    /* Footer */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 3rem 2rem; text-align: center;
+    }
+    .footer-logo { font-family: 'Cinzel Decorative', serif; font-size: 1rem; color: var(--accent-dim); margin-bottom: 0.8rem; }
+    .footer-note { font-size: 0.8rem; color: var(--text-faint); font-family: 'Cinzel', serif; letter-spacing: 0.12em; }
+  </style>
+</head>
+<body>
+
+  <!-- ─── NAV ─── -->
+  <nav>
+    <a href="index.html" class="nav-logo">
+      Terrana
+      <span>D10 Isekai &middot; Core Rulebook</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="world.html" class="active">World</a></li>
+      <li><a href="#">Rules</a></li>
+      <li><a href="#">Characters</a></li>
+      <li><a href="#">Lore</a></li>
+    </ul>
+    <button id="theme-btn" aria-label="Toggle day/night mode">
+      <span class="theme-icon">🌙</span>
+      <span class="theme-label">Night</span>
+    </button>
+  </nav>
+
+  <!-- ─── PAGE HEADER ─── -->
+  <header class="page-header">
+    <p class="page-eyebrow">Part One</p>
+    <h1 class="page-title">The World of Terrana</h1>
+    <p class="page-subtitle">History &middot; Continents &middot; Institutions &middot; The Rift</p>
+  </header>
+
+  <!-- ─── MAIN LAYOUT ─── -->
+  <div class="layout">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <p class="sidebar-label">On This Page</p>
+      <ul class="sidebar-nav">
+        <li><a href="#history">The Six-Faced World</a></li>
+        <li><a href="#today">The Shape of the World</a></li>
+        <li><a href="#continents">The Continents</a></li>
+        <li><a href="#central" class="sub">Central Continent</a></li>
+        <li><a href="#demon" class="sub">Demon Continent</a></li>
+        <li><a href="#milis" class="sub">Milis Continent</a></li>
+        <li><a href="#begaritt" class="sub">Begaritt Continent</a></li>
+        <li><a href="#heaven" class="sub">Heaven Continent</a></li>
+        <li><a href="#ringus">The Ringus Sea</a></li>
+        <li><a href="#monsera">Monsera</a></li>
+      </ul>
+    </aside>
+
+    <!-- Content -->
+    <main class="content">
+
+      <!-- History -->
+      <section class="world-section" id="history">
+        <p class="section-label">Chapter 1</p>
+        <h2 class="section-title">The Six-Faced World and Its History</h2>
+        <div class="section-body">
+          <p>In the beginning, there were six worlds. Not six continents. Not six kingdoms. Six separate, complete worlds, each existing on one face of an impossibly large structure floating in the void between existence and nothing. A dying God of Creation, aware that his time was ending, built them one after another, each imperfect on its own, until he fused all six together into something stable.</p>
+
+          <p>Each world had its own people, its own magic, its own gods. They were neighbors who had never met, separated by the geometry of creation itself.</p>
+
+          <p>For a very long time, this arrangement worked. Then someone ruined it.</p>
+
+          <p>The details are disputed. What the historical record agrees on is this: an impostor infiltrated the highest levels of divine authority, murdered the Man God who had maintained the balance between the six faces, and killed the wife of the original Dragon God. The reasons behind these acts are lost to time, or buried so deep in the political memory of the immortals that no one who knows them is talking. What is not disputed is the result: war. Not the kind of war that humans fight, with armies and sieges and treaties. The kind of war that unmakes landscapes.</p>
+
+          <p>Five of the six worlds were destroyed in the conflict that followed. Their peoples, those who survived, fled to the only world left standing: the Human World. The world that would eventually be called Terrana.</p>
+
+          <p>Terrana was not built to hold this many people. It was not built to absorb this much displaced mana. But it did both. The residual mana of five destroyed worlds soaked into the soil, the water, and the air, making Terrana denser with magical energy than any single world had ever been before. What should have been a catastrophe became, over thousands of years, something else entirely.</p>
+
+          <div class="callout">
+            <p class="callout-label">The Dragon God Orsted</p>
+            <p>Orsted, son of the original Dragon God and the only survivor of the Dragon World's royal line, still walks Terrana. He is the most powerful individual in the world by most assessments and has been walking it long enough to remember when it was something different. He does not give interviews.</p>
+          </div>
+
+          <div class="subsection">
+            <h3 class="subsection-title">The Six Worlds</h3>
+            <p>Before the war, six distinct worlds existed. Each sent survivors to what became Terrana. Their heritages shape the races, magic traditions, and cultures of the world today.</p>
+          </div>
+
+          <div class="subsection">
+            <h3 class="subsection-title">The Human World</h3>
+            <p>The world that survived. Home to the human race and the foundation on which all others were built afterward. Its original name has largely been replaced by Terrana, the name given to the merged world it became.</p>
+          </div>
+
+          <div class="subsection">
+            <h3 class="subsection-title">The Demon World</h3>
+            <p>Home to the Demon races: the Ogre and Oni clans, the telepathic Migurd tribe, the Bestial demons, the Superd warriors, those of Immortal Demon King lineage, and the Mystic varieties. Their survivors settled primarily on the continent that bears their name.</p>
+          </div>
+
+          <div class="subsection">
+            <h3 class="subsection-title">The Beast World</h3>
+            <p>Home to the Beastfolk. Their descendants populate the Great Forest of the Milis Continent, the northern territories, and communities across Terrana. The Beast King rules from the Great Forest.</p>
+          </div>
+
+          <div class="subsection">
+            <h3 class="subsection-title">The Sea World</h3>
+            <p>Home to the Sea Folk. Knowledge of the Rift in the Ringus Sea was held by Sea Folk communities for generations before the land civilizations learned of it. Their relationship with land-dwellers has historically been complicated.</p>
+          </div>
+
+          <div class="subsection">
+            <h3 class="subsection-title">The Sky World</h3>
+            <p>Home to the Skyfolk, who retreated to the Heaven Continent three thousand meters above sea level and have maintained their isolation behind magical barriers ever since. They watch the rest of the world from a considerable altitude, both literal and figurative.</p>
+          </div>
+
+          <div class="subsection">
+            <h3 class="subsection-title">The Sixth World</h3>
+            <p>It has no name that anyone speaks aloud anymore. Scholars know it existed. What became of its people, if any survived, is not recorded.</p>
+          </div>
+        </div>
+      </section>
+
+      <div class="rune-divider"><span class="rune-glyph">&#10022;</span></div>
+
+      <!-- Shape of the World -->
+      <section class="world-section" id="today">
+        <p class="section-label">Chapter 1 cont.</p>
+        <h2 class="section-title">The Shape of the World Today</h2>
+        <div class="section-body">
+          <p>Terrana as it exists now is divided into six major landmasses, a reflection perhaps of the six worlds that preceded it, though scholars disagree on whether this is meaningful or merely poetic. At the center of everything lies the Ringus Sea, connecting and separating the continents in equal measure. It is the world's most important trade route and one of its most dangerous stretches of open water.</p>
+
+          <p>Magic is denser here than it was in any single world before the merger. That density produces extraordinary things: monsters of remarkable power, mana-born phenomena, and individuals capable of feats that would have been impossible in the worlds their ancestors came from. It also produces Void Openings, rifts in the fabric of the world where the accumulated pressure of all that merged mana finds a way to exhale.</p>
+        </div>
+      </section>
+
+      <div class="rune-divider"><span class="rune-glyph">&#10022;</span></div>
+
+      <!-- Continents overview -->
+      <section class="world-section" id="continents">
+        <p class="section-label">Chapter 2</p>
+        <h2 class="section-title">The Continents</h2>
+        <div class="section-body">
+          <p>Six major landmasses and a central sea. What follows is an overview of each.</p>
+        </div>
+
+        <div class="continent-grid">
+          <div class="cont-card">
+            <p class="cont-tag">Central</p>
+            <h3 class="cont-name">The Central Continent</h3>
+            <p class="cont-desc">The largest landmass in Terrana. Divided by the Red Dragon Mountain Range into the North, West, and South. Dominated by the Asura Kingdom.</p>
+            <p class="cont-detail">Majority human population</p>
+          </div>
+          <div class="cont-card">
+            <p class="cont-tag">Eastern</p>
+            <h3 class="cont-name">The Demon Continent</h3>
+            <p class="cont-desc">Vast, wild, and not interested in outside opinions. Ten jurisdictions governed by Immortal Demon Kings. No proper roads. D-rank monsters or above roam freely.</p>
+            <p class="cont-detail">Ten immortal jurisdictions</p>
+          </div>
+          <div class="cont-card">
+            <p class="cont-tag">Southeastern</p>
+            <h3 class="cont-name">The Milis Continent</h3>
+            <p class="cont-desc">Split by the Blue Dragon Mountain Range. The Great Forest to the north, the Holy Kingdom of Milishion to the south. Headquarters of the Church and the Adventurers Guild.</p>
+            <p class="cont-detail">Equal parts human &amp; beast race</p>
+          </div>
+          <div class="cont-card">
+            <p class="cont-tag">Southwestern</p>
+            <h3 class="cont-name">The Begaritt Continent</h3>
+            <p class="cont-desc">Harsh desert terrain, monster density rivaling the Demon Continent, and a population of adventurers who chose to stay. Origin of the Fighting God martial style.</p>
+            <p class="cont-detail">No unified nation</p>
+          </div>
+          <div class="cont-card">
+            <p class="cont-tag">Above the clouds</p>
+            <h3 class="cont-name">The Heaven Continent</h3>
+            <p class="cont-desc">Three thousand meters above sea level. Home to the Skyfolk behind magical barriers. Also contains the Hell Dungeon, seven levels each functioning as its own kingdom.</p>
+            <p class="cont-detail">Accessible by flight or teleportation only</p>
+          </div>
+          <div class="cont-card">
+            <p class="cont-tag">Island nation</p>
+            <h3 class="cont-name">Monsera</h3>
+            <p class="cont-desc">The closest thing Terrana has to a world capital. Home of the Slime King, the Hero Rangers Corps, Monsera University, and the CCN network that connects the world.</p>
+            <p class="cont-detail">Center of the Ringus Sea</p>
+          </div>
+        </div>
+      </section>
+
+      <div class="rune-divider"><span class="rune-glyph">&#10022;</span></div>
+
+      <!-- Central Continent -->
+      <section class="world-section" id="central">
+        <p class="section-label">Chapter 2 &middot; The Central Continent</p>
+        <h2 class="section-title">The Central Continent</h2>
+        <div class="section-body">
+          <p>The largest landmass in Terrana and historically its most politically complicated. Divided into three broad regions by the Red Dragon Mountain Range, which runs through the continent's heart and has shaped the course of its history more than any king or war.</p>
+
+          <div class="subsection">
+            <h3 class="subsection-title">The North</h3>
+            <p>Cold, harsh, and populated by people who have made a virtue of those conditions. Home to the Three Magic Kingdoms of Ranoa, Neris, and Basherant, the Kingdom of Biheiril, the Holy Land of Swords, and Ogre Island.</p>
+            <p>The Three Magic Kingdoms were once centers of magical learning in a difficult region. They remain that, but over the last century they have embraced infrastructure developments from Monsera with more enthusiasm than almost any other northern civilization. Entire districts have been rebuilt using mana-powered heating and environmental management.</p>
+            <p>The Holy Land of Swords sits in the northwest, covered in snow year-round, devoted entirely to the Sword God Style. It has not changed much in two hundred years, because people who have decided the most important thing in the world is how you hold a sword tend not to be easily redirected.</p>
+          </div>
+
+          <div class="subsection">
+            <h3 class="subsection-title">The West</h3>
+            <p>Fertile, prosperous, and dominated by the Asura Kingdom, the most powerful human nation in the world. Once an absolute monarchy, it is now a constitutional monarchy with a parliamentary system and a royal family that functions primarily as celebrities and ceremonial figureheads. Merit-based inheritance rules mean titles do not automatically pass to the eldest child. The capital city of Ars remains the largest city in the human-majority world.</p>
+          </div>
+
+          <div class="subsection">
+            <h3 class="subsection-title">The South</h3>
+            <p>Divided sharply between its northern and southern halves. The northern part of the south is the Strife Zone, a region of small kingdoms in constant low-level conflict, ungoverned at any macro level. Void Openings breach here more than anywhere else on the Central Continent.</p>
+            <p>The southern half is dominated by the three Corporate Kingdoms, large nation-states that operate with the structure and efficiency of corporations, for better and considerably worse. Several villages throughout the Strife Zone are populated primarily by escapees from them.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Demon Continent -->
+      <section class="world-section" id="demon">
+        <p class="section-label">Chapter 2 &middot; The Demon Continent</p>
+        <h2 class="section-title">The Demon Continent</h2>
+        <div class="section-body">
+          <p>East of the Ringus Sea, and it is not a place that apologizes for what it is.</p>
+          <p>There are no proper roads. D-rank monsters or above roam freely across the terrain, and the creatures of the interior make even those look manageable by comparison. The land is unforgiving: harsh climate, scarce resources, dense with magical energy in ways that produce extraordinary flora and equally extraordinary danger. What the continent produces instead of crops is warriors, and it produces them in quantity.</p>
+          <p>The continent is divided into ten jurisdictions, each presided over by an Immortal Demon King who has held that territory long enough that the land itself has shaped around their presence. These are not administrative positions handed down by a central authority. They are arrangements of power that have persisted because no one has successfully changed them.</p>
+          <p>The world has modernized considerably around them, and some of that modernization has filtered into the larger demon settlements, which now have access to CCN networks and some infrastructure from Monsera. But the character of the continent remains what it has always been: vast, wild, and not particularly interested in outside opinions about how it should be run.</p>
+
+          <div class="callout">
+            <p class="callout-label">The Demon Races</p>
+            <p>The Demon Continent is home to most of the Demon Race's peoples: the Ogre and Oni clans, the telepathic Migurd tribe, the Bestial demons, the feared Superd warriors, those of Immortal Demon King lineage, and the Mystic varieties whose abilities tend toward the esoteric.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Milis Continent -->
+      <section class="world-section" id="milis">
+        <p class="section-label">Chapter 2 &middot; The Milis Continent</p>
+        <h2 class="section-title">The Milis Continent</h2>
+        <div class="section-body">
+          <p>Southeast of the Central Continent, split down the middle by the Blue Dragon Mountain Range. The Holy Sword Highway runs straight through the mountains from north to south, a road with no monsters on it, which is either a miracle of divine protection or a very well-maintained patrol route depending on who you ask. The Church of Milis maintains it and is not especially interested in the debate.</p>
+
+          <div class="subsection">
+            <h3 class="subsection-title">The Great Forest</h3>
+            <p>North of the mountains. Home to the Beastfolk, Elves, Dwarves, and Halflings who have lived there since long before the continent had a name anyone else used. The Great Forest is not wilderness in the careless sense. It is dense, ancient, and inhabited by people who understand it completely and are not particularly interested in explaining it to visitors. The Beast King rules from here.</p>
+          </div>
+
+          <div class="subsection">
+            <h3 class="subsection-title">The Holy Kingdom of Milishion</h3>
+            <p>The second most powerful nation in the world and the seat of the Church of Milis. The capital city of Milishion serves as headquarters for both the Church and the Adventurers Guild, making it simultaneously the most spiritually significant and the most practically busy city on the continent. The population is roughly equal parts human and beast race, making it one of the more genuinely integrated regions of Terrana at street level.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Begaritt -->
+      <section class="world-section" id="begaritt">
+        <p class="section-label">Chapter 2 &middot; The Begaritt Continent</p>
+        <h2 class="section-title">The Begaritt Continent</h2>
+        <div class="section-body">
+          <p>Southwest of the Central Continent, operating on a principle of non-interference with the rest of the world. Large stretches of it resemble a desert, hot and dry and wide open. The monster density rivals that of the Demon Continent. The number of labyrinths and magical anomalies per square mile exceeds anywhere else in the world.</p>
+          <p>Most of the permanent population consists of adventurers or former adventurers, which tells you most of what you need to know about the kind of person who chooses to live there. The Fighting God style of martial arts originated here, developed by warriors who needed every edge they could find against creatures that outweighed them by several tons. Practitioners who learned it in Begaritt have a certain unspoken opinion about everyone else's version.</p>
+        </div>
+      </section>
+
+      <!-- Heaven Continent -->
+      <section class="world-section" id="heaven">
+        <p class="section-label">Chapter 2 &middot; The Heaven Continent</p>
+        <h2 class="section-title">The Heaven Continent</h2>
+        <div class="section-body">
+          <p>Three thousand meters above sea level, accessible only by flight or teleportation. The Skyfolk live here behind magical barriers that have kept the continent isolated for as long as anyone has records. They are not hostile by nature, but they are particular about their privacy and have the elevation to enforce it.</p>
+          <p>The Heaven Continent is also home to the Hell Dungeon: seven levels, each functioning as its own kingdom, governed by the Immortal Devils of the great devil families. The politics of the Hell Dungeon are intricate and contractually binding in ways that most people do not fully appreciate. It is not to be confused with The Dungeon&#8482; on Monsera, though the naming has caused confusion before.</p>
+        </div>
+      </section>
+
+      <div class="rune-divider"><span class="rune-glyph">&#10022;</span></div>
+
+      <!-- Ringus Sea -->
+      <section class="world-section" id="ringus">
+        <p class="section-label">Chapter 2 &middot; The Ringus Sea</p>
+        <h2 class="section-title">The Ringus Sea &amp; The Rift</h2>
+        <div class="section-body">
+          <p>The Ringus Sea sits at the center of Terrana's world map, connecting all the continents and separating them in equal measure. It is the busiest stretch of water in the world and one of the most dangerous. The sea itself was formed thousands of years ago during the final battle of the great war, carved out of what was once a continuous landmass by a strike of such force that it split a continent and left an ocean where there had been rock and soil. The scar at its center never fully healed.</p>
+          <p>That scar is called the Rift.</p>
+          <p>The Rift is an ancient Void Opening of enormous scale, far too large and too old to be closed by any method currently known. Roughly once a year, something enormous emerges from it. These are not the small Void creatures that adventurers encounter at localized openings throughout the world. They are Kaiju: creatures of immense size and destructive capacity that require a coordinated response at the highest level of power available. That response is the Hero Rangers Corps.</p>
+
+          <div class="callout">
+            <p class="callout-label">Void Openings</p>
+            <p>Void Openings occur throughout Terrana on an unpredictable but regular basis. When one appears, the local Adventurers Guild chapter broadcasts it on the CCN and opens the contract for registered parties to bid on and resolve. Most are closed before anything comes through. When a breach occurs and voidlings enter the world, the Hero Rangers Corps takes over regardless of scale.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Monsera -->
+      <section class="world-section" id="monsera">
+        <p class="section-label">Chapter 3</p>
+        <h2 class="section-title">Monsera</h2>
+        <div class="section-body">
+          <p>The closest thing Terrana has to a world capital, though no one is allowed to call it that officially and the Slime King finds the suggestion annoying. It is a city of towers and transit lines, of open markets and enclosed arcades, of street food that draws visitors from every continent and a university that pays its students to attend.</p>
+          <p>The island sits in the heart of the Ringus Sea, roughly equidistant from the Central Continent to the west and the Demon Continent to the east. This positioning was not accidental. The Slime King understood from the beginning that Monsera's value would come from being accessible to everyone and beholden to no one. It is not a colony of the Asura Kingdom. It is not a territory of any Immortal Demon King. It is its own thing, governed by its own rules, and it has been that way for approximately one hundred and fifty years.</p>
+          <p>It is also home to The Dungeon&#8482;, the Hero Rangers Corps Headquarters, and the origin point of the CCN network that connects the world. Its king is immortal, was once a computer science student from another world entirely, and is primarily motivated by a desire for someone to eventually finish making Final Fantasy VII so he can finally play it.</p>
+
+          <div class="callout">
+            <p class="callout-label">The United Domains of Terrana</p>
+            <p>A collective body of the world's nations that convenes once a year to address global issues. Sessions are held at the Hero Rangers Corps Headquarters on Monsera. It is the closest thing the world has to international law. Compliance is, as with most things in Terrana, a matter of power and persuasion.</p>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- ─── FOOTER ─── -->
+  <footer>
+    <p class="footer-logo">Terrana</p>
+    <p class="footer-note">Jimothy's D10 Isekai: JRPG &middot; Work In Progress &middot; &copy; Oji-Barry</p>
+  </footer>
+
+  <!-- ─── SCRIPTS ─── -->
+  <script>
+    // Theme toggle
+    const root  = document.documentElement;
+    const btn   = document.getElementById('theme-btn');
+    const icon  = btn.querySelector('.theme-icon');
+    const label = btn.querySelector('.theme-label');
+    const saved = localStorage.getItem('td10-theme') || 'night';
+    root.setAttribute('data-theme', saved);
+    updateBtn(saved);
+    btn.addEventListener('click', () => {
+      const next = root.getAttribute('data-theme') === 'night' ? 'day' : 'night';
+      root.setAttribute('data-theme', next);
+      localStorage.setItem('td10-theme', next);
+      updateBtn(next);
+    });
+    function updateBtn(t) {
+      icon.textContent  = t === 'night' ? '🌙' : '☀️';
+      label.textContent = t === 'night' ? 'Night' : 'Day';
+    }
+
+    // Active sidebar link on scroll
+    const sections = document.querySelectorAll('section[id]');
+    const sideLinks = document.querySelectorAll('.sidebar-nav a');
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          sideLinks.forEach(l => l.classList.remove('active'));
+          const active = document.querySelector(`.sidebar-nav a[href="#${e.target.id}"]`);
+          if (active) active.classList.add('active');
+        }
+      });
+    }, { rootMargin: '-30% 0px -60% 0px' });
+    sections.forEach(s => observer.observe(s));
+  </script>
+
+</body>
+</html>
