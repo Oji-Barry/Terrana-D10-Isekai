@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="night">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lore &middot; Terrana D10 Isekai</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Cinzel:wght@400;600;700&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet" />
+
+  <style>
+    :root[data-theme="night"] {
+      --bg: #0e0c09; --bg-surface: #16130e; --bg-card: #1e1a13;
+      --border: #3a3020; --border-glow: #7a6030;
+      --text: #e8dfc8; --text-muted: #9a8f78; --text-faint: #5a5244;
+      --accent: #c8992a; --accent-dim: #8a6a1a; --accent-glow: rgba(200,153,42,0.15);
+      --ink: #0e0c09; --nav-h: 64px;
+    }
+    :root[data-theme="day"] {
+      --bg: #f5f0e6; --bg-surface: #ede6d6; --bg-card: #e6ddc8;
+      --border: #c8b890; --border-glow: #a08840;
+      --text: #2a2218; --text-muted: #6a5a40; --text-faint: #b0a080;
+      --accent: #9a6e10; --accent-dim: #c89830; --accent-glow: rgba(154,110,16,0.12);
+      --ink: #f5f0e6; --nav-h: 64px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg); color: var(--text);
+      font-family: 'Lora', Georgia, serif;
+      line-height: 1.75; min-height: 100vh;
+      transition: background 0.4s, color 0.4s;
+    }
+    a { color: inherit; text-decoration: none; }
+
+    /* NAV */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      height: var(--nav-h); background: var(--bg-surface);
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 2.5rem; transition: background 0.4s, border-color 0.4s;
+    }
+    .nav-logo { font-family: 'Cinzel Decorative', serif; font-size: 1.1rem; color: var(--accent); line-height: 1.2; }
+    .nav-logo span { display: block; font-family: 'Cinzel', serif; font-size: 0.6rem; letter-spacing: 0.2em; color: var(--text-muted); text-transform: uppercase; }
+    .nav-links { display: flex; align-items: center; gap: 2rem; list-style: none; }
+    .nav-links a { font-family: 'Cinzel', serif; font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); transition: color 0.2s; position: relative; }
+    .nav-links a.active { color: var(--accent); }
+    .nav-links a::after { content: ''; position: absolute; bottom: -3px; left: 0; right: 0; height: 1px; background: var(--accent); transform: scaleX(0); transition: transform 0.2s; }
+    .nav-links a:hover { color: var(--accent); }
+    .nav-links a:hover::after, .nav-links a.active::after { transform: scaleX(1); }
+    #theme-btn { background: none; border: 1px solid var(--border); border-radius: 20px; padding: 0.3rem 0.8rem; cursor: pointer; font-size: 0.85rem; color: var(--text-muted); transition: border-color 0.2s, color 0.2s, background 0.2s; display: flex; align-items: center; gap: 0.4rem; }
+    #theme-btn:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-glow); }
+
+    /* PAGE HEADER */
+    .page-header {
+      background: var(--bg-surface); border-bottom: 1px solid var(--border);
+      padding: 4rem 2rem 3rem; text-align: center; position: relative; overflow: hidden;
+    }
+    .page-header::before {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(ellipse 60% 80% at 50% 100%, var(--accent-glow), transparent 70%);
+      pointer-events: none;
+    }
+    .page-eyebrow { font-family: 'Cinzel', serif; font-size: 0.62rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--accent); margin-bottom: 1rem; }
+    .page-title { font-family: 'Cinzel Decorative', serif; font-size: clamp(1.8rem, 4vw, 3rem); color: var(--text); line-height: 1.2; position: relative; }
+    .page-subtitle { font-family: 'Cinzel', serif; font-size: 0.8rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-muted); margin-top: 0.8rem; }
+
+    /* LAYOUT */
+    .layout { max-width: 1200px; margin: 0 auto; padding: 4rem 2rem; display: grid; grid-template-columns: 220px 1fr; gap: 4rem; align-items: start; }
+    @media (max-width: 800px) { .layout { grid-template-columns: 1fr; } .sidebar, .nav-links { display: none; } }
+
+    /* SIDEBAR */
+    .sidebar { position: sticky; top: calc(var(--nav-h) + 2rem); }
+    .sidebar-label { font-family: 'Cinzel', serif; font-size: 0.58rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--text-faint); margin-bottom: 1rem; }
+    .sidebar-nav { list-style: none; }
+    .sidebar-nav li { margin-bottom: 0.1rem; }
+    .sidebar-nav a { display: block; font-family: 'Cinzel', serif; font-size: 0.72rem; letter-spacing: 0.06em; color: var(--text-muted); padding: 0.45rem 0.8rem; border-left: 2px solid transparent; transition: color 0.2s, border-color 0.2s, background 0.2s; border-radius: 0 2px 2px 0; }
+    .sidebar-nav a:hover, .sidebar-nav a.active { color: var(--accent); border-left-color: var(--accent); background: var(--accent-glow); }
+    .sidebar-nav .sub { font-size: 0.65rem; padding-left: 1.6rem; color: var(--text-faint); }
+    .sidebar-nav .sub:hover, .sidebar-nav .sub.active { color: var(--text-muted); border-left-color: var(--border-glow); }
+
+    /* CONTENT */
+    .lore-section { margin-bottom: 5rem; }
+    .section-label { font-family: 'Cinzel', serif; font-size: 0.6rem; letter-spacing: 0.28em; text-transform: uppercase; color: var(--accent); margin-bottom: 0.6rem; }
+    .section-title { font-family: 'Cinzel Decorative', serif; font-size: clamp(1.3rem, 2.5vw, 1.9rem); color: var(--text); line-height: 1.25; margin-bottom: 1.5rem; }
+    .section-body p { color: var(--text-muted); font-size: 1rem; line-height: 1.85; margin-bottom: 1.1rem; max-width: 680px; }
+    .section-body p:last-child { margin-bottom: 0; }
+
+    .subsection { margin-top: 2.5rem; padding-left: 1.5rem; border-left: 2px solid var(--border); }
+    .subsection-title { font-family: 'Cinzel', serif; font-size: 0.92rem; letter-spacing: 0.06em; color: var(--text); margin-bottom: 0.8rem; }
+
+    /* CALLOUT */
+    .callout { background: var(--bg-card); border: 1px solid var(--border); border-left: 3px solid var(--accent); padding: 1.5rem 1.8rem; margin: 2rem 0; max-width: 680px; }
+    .callout-label { font-family: 'Cinzel', serif; font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); margin-bottom: 0.6rem; }
+    .callout p { font-size: 0.92rem; color: var(--text-muted); line-height: 1.75; }
+    .callout p + p { margin-top: 0.8rem; }
+
+    /* PERSON CARD */
+    .person-card { background: var(--bg-card); border: 1px solid var(--border); padding: 2rem; margin: 2rem 0; max-width: 680px; }
+    .person-name { font-family: 'Cinzel', serif; font-size: 1rem; color: var(--text); margin-bottom: 0.3rem; }
+    .person-title { font-family: 'Cinzel', serif; font-size: 0.65rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--accent-dim); margin-bottom: 1rem; }
+    .person-body { font-size: 0.92rem; color: var(--text-muted); line-height: 1.75; }
+    .person-body p + p { margin-top: 0.8rem; }
+    .person-stats { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 1.2rem; }
+    .stat-chip { font-family: 'Cinzel', serif; font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase; padding: 0.25rem 0.7rem; border: 1px solid var(--border); color: var(--text-faint); border-radius: 2px; }
+
+    /* DIVIDER */
+    .rune-divider { display: flex; align-items: center; gap: 1rem; margin: 3.5rem 0; }
+    .rune-divider::before { content: ''; flex: 1; height: 1px; background: linear-gradient(to right, transparent, var(--border)); }
+    .rune-divider::after  { content: ''; flex: 1; height: 1px; background: linear-gradient(to left,  transparent, var(--border)); }
+    .rune-glyph { font-family: 'Cinzel Decorative', serif; color: var(--accent-dim); font-size: 1.1rem; }
+
+    /* TERM DEFINITION */
+    .term-grid { display: grid; gap: 1px; border: 1px solid var(--border); margin-top: 2rem; }
+    .term-row { display: grid; grid-template-columns: 180px 1fr; background: var(--bg-card); border: 1px solid var(--border); }
+    .term-name { font-family: 'Cinzel', serif; font-size: 0.78rem; color: var(--accent); padding: 1rem 1.2rem; border-right: 1px solid var(--border); display: flex; align-items: flex-start; }
+    .term-def { font-size: 0.88rem; color: var(--text-muted); padding: 1rem 1.2rem; line-height: 1.65; }
+    @media (max-width: 600px) { .term-row { grid-template-columns: 1fr; } .term-name { border-right: none; border-bottom: 1px solid var(--border); } }
+
+    /* FOOTER */
+    footer { border-top: 1px solid var(--border); padding: 3rem 2rem; text-align: center; }
+    .footer-logo { font-family: 'Cinzel Decorative', serif; font-size: 1rem; color: var(--accent-dim); margin-bottom: 0.8rem; }
+    .footer-note { font-size: 0.8rem; color: var(--text-faint); font-family: 'Cinzel', serif; letter-spacing: 0.12em; }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="index.html" class="nav-logo">Terrana <span>D10 Isekai &middot; Core Rulebook</span></a>
+    <ul class="nav-links">
+      <li><a href="world.html">World</a></li>
+      <li><a href="lore.html" class="active">Lore</a></li>
+      <li><a href="#">Rules</a></li>
+      <li><a href="#">Combat</a></li>
+      <li><a href="#">Characters</a></li>
+    </ul>
+    <button id="theme-btn"><span class="theme-icon">🌙</span><span class="theme-label">Night</span></button>
+  </nav>
+
+  <header class="page-header">
+    <p class="page-eyebrow">The World in Detail</p>
+    <h1 class="page-title">Lore</h1>
+    <p class="page-subtitle">Institutions &middot; Key Figures &middot; Technology &middot; Terminology</p>
+  </header>
+
+  <div class="layout">
+
+    <aside class="sidebar">
+      <p class="sidebar-label">On This Page</p>
+      <ul class="sidebar-nav">
+        <li><a href="#ccn">The CCN</a></li>
+        <li><a href="#magic-tech">Magic &amp; Technology</a></li>
+        <li><a href="#adventurers-guild">Adventurers Guild</a></li>
+        <li><a href="#void-openings">Void Openings</a></li>
+        <li><a href="#hero-rangers">Hero Rangers Corps</a></li>
+        <li><a href="#zords" class="sub">Hero Team 6 &amp; Zords</a></li>
+        <li><a href="#united-domains">United Domains</a></li>
+        <li><a href="#slime-king">The Slime King</a></li>
+        <li><a href="#university">Monsera University</a></li>
+        <li><a href="#seven-strongest">The Seven Strongest</a></li>
+        <li><a href="#glossary">Glossary</a></li>
+      </ul>
+    </aside>
+
+    <main class="content">
+
+      <!-- CCN -->
+      <section class="lore-section" id="ccn">
+        <p class="section-label">Technology</p>
+        <h2 class="section-title">The CCN: Crystalz Communication Network</h2>
+        <div class="section-body">
+          <p>The Crystalz Communication Network is the Slime King's most practically significant contribution to daily life in Terrana, and the one he is most genuinely proud of, which he would deny if asked directly. It is the infrastructure that connects the world.</p>
+          <p>The network covers Monsera completely and extends via relay towers to most major population centers on every continent. Coverage in the interior of the Demon Continent and the more remote parts of Begaritt is inconsistent. The Skyfolk of the Heaven Continent negotiated their own arrangement separately.</p>
+          <p>CCN programming includes news, sports, entertainment, tournament broadcasts from the Great Colosseum, and content produced by Level 14 and Three Quarter Studios. Viewership for Elite Four ranking matches rivals anything else on the network.</p>
+        </div>
+
+        <div class="subsection">
+          <h3 class="subsection-title">Personal Crystalz</h3>
+          <div class="section-body">
+            <p>Handheld communication devices combining the utility of a telephone, a camera, a messaging service, and a personal entertainment terminal into a single mana-charged object. Think smartphones. Every resident of Monsera who wants one has one, and most want one.</p>
+          </div>
+        </div>
+
+        <div class="subsection">
+          <h3 class="subsection-title">Large Crystalz</h3>
+          <div class="section-body">
+            <p>Broadcast screens displaying CCN programming in public spaces, restaurants, homes, and anywhere else someone has thought to mount one. Think flatscreen televisions.</p>
+          </div>
+        </div>
+      </section>
+
+      <div class="rune-divider"><span class="rune-glyph">&#10022;</span></div>
+
+      <!-- Magic & Technology -->
+      <section class="lore-section" id="magic-tech">
+        <p class="section-label">Technology</p>
+        <h2 class="section-title">Magic &amp; Technology</h2>
+        <div class="section-body">
+          <p>Terrana draws a clear distinction between two categories of magical object. Understanding the difference matters for players building characters and Storytellers designing the world.</p>
+        </div>
+
+        <div class="term-grid">
+          <div class="term-row">
+            <span class="term-name">Magical Implement</span>
+            <span class="term-def">A man-made object enchanted to perform a repeatable function without requiring the user to have any magical ability. The CCN runs on these. Mana-powered fridges, vacuums, heating systems, and appliances all fall into this category. The function is built in. The user just operates it.</span>
+          </div>
+          <div class="term-row">
+            <span class="term-name">Magical Artifact</span>
+            <span class="term-def">A mundane item that has been infused with mana in a way that transforms it. A sword with fire mana that burns on contact. A shield imbued with ice that frosts incoming strikes. The item itself has changed. These can occur naturally or be created deliberately, and they self-recharge over time.</span>
+          </div>
+          <div class="term-row">
+            <span class="term-name">Mana Crystal</span>
+            <span class="term-def">Extraordinarily valuable crystallized mana found inside Void Openings. The primary reason Named Guilds compete for Void Opening contracts. Powers much of Monsera's infrastructure and fuels the CCN relay network.</span>
+          </div>
+        </div>
+      </section>
+
+      <div class="rune-divider"><span class="rune-glyph">&#10022;</span></div>
+
+      <!-- Adventurers Guild -->
+      <section class="lore-section" id="adventurers-guild">
+        <p class="section-label">Institution</p>
+        <h2 class="section-title">The Adventurers Guild</h2>
+        <div class="section-body">
+          <p>The Adventurers Guild is the world's primary institution for organizing, ranking, and deploying adventurers. It operates chapters in every major city across all continents, shares its ranking system with the Hero Rangers Corps, and serves as the primary broadcaster of Void Opening contracts across the CCN.</p>
+          <p>The Guild's headquarters is in the city of Milishion on the Milis Continent, co-located with the Church of Milis, which makes it simultaneously the most spiritually significant and the most practically busy address on that continent.</p>
+        </div>
+
+        <div class="subsection">
+          <h3 class="subsection-title">Named Guilds</h3>
+          <div class="section-body">
+            <p>The Adventurers Guild does not contract Void Openings to individual adventuring parties. Contracts go exclusively to Named Guilds: large organized bodies of adventurers operating under a single banner, with the infrastructure, manpower, and accountability to handle something that does not follow any rules a person could predict.</p>
+            <p>When a Named Guild accepts a contract, they send a scouting party first. The scouts assess the strength and stability of the opening, the number and type of voidlings present, and whether their guild has the resources to close it. If the guild determines the opening exceeds their capacity, they may sell or transfer the contract to another Named Guild, or surrender it back to the Adventurers Guild entirely. A surrendered contract goes immediately to the Hero Rangers Corps.</p>
+            <p>The mana crystals found inside Void Openings are extraordinarily valuable, which is the primary reason Named Guilds compete for contracts. The crystals are the incentive. The voidlings are the cost. Every Named Guild does the math differently.</p>
+          </div>
+        </div>
+
+        <div class="callout">
+          <p class="callout-label">The Rank Scale</p>
+          <p>Every adventurer in Terrana is ranked F through S using the same unified scale shared by the Adventurers Guild and the Hero Rangers Corps. F is a beginner. S is a legend. The rank determines what contracts a party or guild can take on and what resources the Guild will extend to them.</p>
+          <p>See the <a href="index.html#rules" style="color: var(--accent);">Rules section</a> for the full rank scale breakdown.</p>
+        </div>
+      </section>
+
+      <div class="rune-divider"><span class="rune-glyph">&#10022;</span></div>
+
+      <!-- Void Openings -->
+      <section class="lore-section" id="void-openings">
+        <p class="section-label">The World's Threat</p>
+        <h2 class="section-title">Void Openings</h2>
+        <div class="section-body">
+          <p>Void Openings are rifts in the fabric of the world where accumulated mana pressure finds a way to exhale. They occur throughout Terrana on an unpredictable but fairly regular basis. When one appears, the local Adventurers Guild chapter broadcasts it on the CCN and opens the contract for Named Guilds to bid on.</p>
+          <p>Most are closed before anything comes through. When a breach occurs and voidlings enter the world, the Hero Rangers Corps takes over regardless of scale.</p>
+        </div>
+
+        <div class="subsection">
+          <h3 class="subsection-title">Voidlings</h3>
+          <div class="section-body">
+            <p>The creatures that emerge from Void Openings. They cannot communicate. They do not negotiate. They simply attempt to kill and consume anything they can reach, using whatever appendages their particular variation happens to have. They are unpredictable in form and behavior, which is a large part of why individual adventuring parties are never contracted to handle them.</p>
+            <p>Left unchecked, a Void Opening grows. The longer it remains open the more voidlings escape, and the larger and more dangerous the creatures that eventually come through.</p>
+          </div>
+        </div>
+
+        <div class="subsection">
+          <h3 class="subsection-title">The Rift</h3>
+          <div class="section-body">
+            <p>An ancient Void Opening of enormous scale sitting at the heart of the Ringus Sea. Far too large and too old to be closed by any method currently known. The Sea Folk knew of it for generations before land civilizations did, but could never defeat it, and a historical rift between sea and land peoples kept the knowledge contained for a long time.</p>
+            <p>Today, a magical netting system co-developed by the Slime King and others contains most of what tries to escape. But roughly once a year, something enormous breaks through. These are Kaiju. When a Kaiju emerges, the Hero Rangers Corps responds.</p>
+          </div>
+        </div>
+      </section>
+
+      <div class="rune-divider"><span class="rune-glyph">&#10022;</span></div>
+
+      <!-- Hero Rangers -->
+      <section class="lore-section" id="hero-rangers">
+        <p class="section-label">Institution</p>
+        <h2 class="section-title">The Hero Rangers Corps</h2>
+        <div class="section-body">
+          <p>A multinational organization owned equally by the seven most powerful kingdoms of Terrana. It exists to handle what no individual nation, guild, or adventuring party can manage alone: Kaiju emergences from the Rift, and any Void Opening breach that has overwhelmed local resources.</p>
+          <p>The Corps is headquartered on Monsera due to its proximity to the Rift. It maintains regional outposts on every continent staffed by Rangers who handle monitoring, early warning, and coordination with local Adventurers Guild chapters.</p>
+          <p>Recruitment opens once a year across all member nations. New recruit classes are capped at twenty-five to thirty candidates by design. The Corps is as interested in engineers, scholars, tacticians, medics, and researchers as it is in fighters. The Zords exist because brilliant people who were not necessarily the strongest fighters in any room figured out how to build them.</p>
+          <p>The Corps operates on a military ranking system running F to S, shared with the Adventurers Guild. Only Rangers who have reached S-rank are eligible to apply for a Hero Team position.</p>
+        </div>
+
+        <div class="subsection" id="zords">
+          <h3 class="subsection-title">Hero Team 6 &amp; The Zords</h3>
+          <div class="section-body">
+            <p>The current active Hero Team stationed on Monsera operates under a five-color designation: Red, Yellow, Green, Blue, and Violet. Their Zords are enormous mana-powered combat constructs deployed against Kaiju-scale threats.</p>
+          </div>
+
+          <div class="term-grid" style="margin-top: 1.2rem;">
+            <div class="term-row">
+              <span class="term-name" style="color: #c04030;">Red</span>
+              <span class="term-def">The Crimson Dragon</span>
+            </div>
+            <div class="term-row">
+              <span class="term-name" style="color: #c8992a;">Yellow</span>
+              <span class="term-def">The Golden Chimera</span>
+            </div>
+            <div class="term-row">
+              <span class="term-name" style="color: #4a7a50;">Green</span>
+              <span class="term-def">The Emerald Treant-Beast</span>
+            </div>
+            <div class="term-row">
+              <span class="term-name" style="color: #4070a0;">Blue</span>
+              <span class="term-def">The Azure Leviathan</span>
+            </div>
+            <div class="term-row">
+              <span class="term-name" style="color: #7a50a0;">Violet</span>
+              <span class="term-def">The Amethyst Golem-Knight</span>
+            </div>
+          </div>
+
+          <div class="callout" style="margin-top: 1.5rem;">
+            <p class="callout-label">The RHC Titan &amp; The Edict of Balance</p>
+            <p>When the situation demands it, all five Zords combine into the RHC Titan. Its ultimate configuration is called the Edict of Balance. It has been deployed twice in the last century.</p>
+          </div>
+        </div>
+      </section>
+
+      <div class="rune-divider"><span class="rune-glyph">&#10022;</span></div>
+
+      <!-- United Domains -->
+      <section class="lore-section" id="united-domains">
+        <p class="section-label">Institution</p>
+        <h2 class="section-title">The United Domains of Terrana</h2>
+        <div class="section-body">
+          <p>A collective body of the world's nations that convenes once a year at the Hero Rangers Corps Headquarters on Monsera to address global issues. It is the closest thing Terrana has to international law. Compliance is, as with most things in Terrana, a matter of power and persuasion.</p>
+          <p>Sessions are formally mediated. Votes are taken on binding resolutions. The Slime King attends as host and as the representative of Monsera, and his presence has a clarifying effect on debates that have gone on too long.</p>
+          <p>Membership is open to any recognized sovereign nation. Recognition is itself a political process, which means the United Domains is also quietly one of the most consequential venues in the world for nations seeking legitimacy on the world stage.</p>
+        </div>
+
+        <div class="callout">
+          <p class="callout-label">Who Attends</p>
+          <p>The Church of Milis sends an observer but not a voting member. The Immortal Demon Kings of the Demon Continent participate inconsistently. The Skyfolk of the Heaven Continent occupy their standing seat about half the time. The Hell Dungeon sends no official delegation but is widely understood to have informal lines of communication with several member nations that everyone politely agrees not to discuss publicly.</p>
+        </div>
+      </section>
+
+      <div class="rune-divider"><span class="rune-glyph">&#10022;</span></div>
+
+      <!-- Slime King -->
+      <section class="lore-section" id="slime-king">
+        <p class="section-label">Key Figure</p>
+        <h2 class="section-title">The Slime King</h2>
+
+        <div class="person-card">
+          <h3 class="person-name">Julius Geoffrey Golbjorn</h3>
+          <p class="person-title">The Slime King &middot; Founder of Monsera &middot; Immortal Demon King (recognized)</p>
+          <div class="person-body">
+            <p>Geoffrey was a computer science student in Stockholm, Sweden, in the 1990s. He died on November 1st, 1997, the release date of Final Fantasy VII in Sweden. He was sixth in line at the store, the store held his copy for the next shipment, and he crossed the street on the way home with the game manual in his hands and was struck by a Japanese moving van. He had the game. He never got to play a single second of it.</p>
+            <p>He arrived in Terrana as a blind, senseless slime. The first decade was sensory deprivation at a level that would have destroyed most minds. He survived it through the Great Sage ability that came with his new form and through one singular focused desire: to play video games again. He has described this in subsequent interviews as the most important thing he has ever experienced, because it gave him something to work toward when there was nothing else.</p>
+            <p>What he built from that starting point is Monsera. He needed video games. To have video games he needed screens. To have screens he needed display technology. To have display technology he needed manufacturing. To have manufacturing he needed infrastructure. To have infrastructure he needed a civilization. The civilization is excellent. The video games exist. He sits on a bean bag chair in the royal suite of the Monsera palace playing them, genuinely happy, still slightly impatient about reconstructing Final Fantasy VII specifically, which remains an ongoing project through the Special Students program.</p>
+            <p>His recognition as an Immortal came through demonstrated power and the personal judgment of those who had seen enough of the world to know what they were looking at. Badigadi, the Immortal Demon King known as the Fighting God, was the first among the great powers to recognize him formally. His wife and sister followed.</p>
+          </div>
+          <div class="person-stats">
+            <span class="stat-chip">All Attributes: 10</span>
+            <span class="stat-chip">All Abilities</span>
+            <span class="stat-chip">Infinite Mana</span>
+            <span class="stat-chip">Concept: Singular Minded</span>
+            <span class="stat-chip">Motivation: Gaming</span>
+            <span class="stat-chip">World Rank: #2</span>
+          </div>
+        </div>
+      </section>
+
+      <div class="rune-divider"><span class="rune-glyph">&#10022;</span></div>
+
+      <!-- University -->
+      <section class="lore-section" id="university">
+        <p class="section-label">Institution</p>
+        <h2 class="section-title">Monsera University</h2>
+        <div class="section-body">
+          <p>Free education for all. Students receive a stipend for attending. The curriculum covers magical theory, combat training, mundane academics, and specialized fields including time manipulation research and dreamwalking. Open to students of all heritages from across Terrana.</p>
+        </div>
+
+        <div class="subsection">
+          <h3 class="subsection-title">The Special Students Program</h3>
+          <div class="section-body">
+            <p>Officially, the Special Students program provides exceptional students with personalized mentorship and access to resources the general student body does not receive. This is true. It is not the whole truth.</p>
+            <p>Geoffrey is looking for people like him: people who arrived in Terrana from another world, carrying memories of a place that no longer exists for them. He cannot find them by searching openly, so he built a school and watches the admissions list personally every year. Special Students share a homeroom, meet once a month with Professor Nocturne, and tend to find themselves involved in events that the rest of the student body only hears about afterward through the CCN campus feed.</p>
+            <p>Professor Nocturne has been given one additional instruction from the Slime King that he takes very seriously: if any Special Student has memories of a game called Final Fantasy VII, they are to share everything they remember in as much detail as they can, as often as they can, and Nocturne is to document all of it carefully and completely.</p>
+          </div>
+        </div>
+
+        <div class="subsection">
+          <h3 class="subsection-title">Notable Faculty</h3>
+          <div class="section-body">
+            <p>Professor Malakai Nocturne runs the Special Students homeroom. He is aware of the program's true purpose.</p>
+            <p>Professor Aldric Thorne teaches ethics and combat. He also holds the title of Water God.</p>
+          </div>
+        </div>
+      </section>
+
+      <div class="rune-divider"><span class="rune-glyph">&#10022;</span></div>
+
+      <!-- Seven Strongest -->
+      <section class="lore-section" id="seven-strongest">
+        <p class="section-label">Power Structure</p>
+        <h2 class="section-title">The Seven Strongest</h2>
+        <div class="section-body">
+          <p>Terrana has an unofficial but widely acknowledged ranking of its most powerful individuals. The exact list is a matter of debate among scholars and adventurers, but two positions are not disputed.</p>
+        </div>
+
+        <div class="term-grid">
+          <div class="term-row">
+            <span class="term-name">#1 &mdash; Orsted</span>
+            <span class="term-def">The Dragon God. Son of the original Dragon God whose death brought about the collapse of the Dragon World. The most powerful individual in Terrana by most assessments. Has been walking this world long enough to remember when it was something different. Does not give interviews.</span>
+          </div>
+          <div class="term-row">
+            <span class="term-name">#2 &mdash; The Slime King</span>
+            <span class="term-def">Julius Geoffrey Golbjorn. Founder of Monsera. Recognized Immortal. Does not particularly care about the ranking.</span>
+          </div>
+        </div>
+
+        <div class="callout" style="margin-top: 2rem;">
+          <p class="callout-label">Note</p>
+          <p>The remaining positions in the Seven Strongest are contested and shift over time as individuals grow in power or are defeated. The full list is covered in the Storyteller section of the rulebook.</p>
+        </div>
+      </section>
+
+      <div class="rune-divider"><span class="rune-glyph">&#10022;</span></div>
+
+      <!-- Glossary -->
+      <section class="lore-section" id="glossary">
+        <p class="section-label">Quick Reference</p>
+        <h2 class="section-title">Glossary</h2>
+        <div class="section-body">
+          <p>Key terms used throughout the site and the rulebook.</p>
+        </div>
+
+        <div class="term-grid" style="margin-top: 1.5rem;">
+          <div class="term-row"><span class="term-name">CCN</span><span class="term-def">Crystalz Communication Network. The mana-powered communications and broadcast network that connects Terrana. Personal Crystalz are its smartphones. Large Crystalz are its televisions.</span></div>
+          <div class="term-row"><span class="term-name">Kaiju</span><span class="term-def">Giant voidlings that emerge from the Rift roughly once a year. Require Hero Rangers Corps response. Cannot be handled by Named Guilds.</span></div>
+          <div class="term-row"><span class="term-name">Magical Artifact</span><span class="term-def">A mundane item transformed by mana infusion. Self-recharging. Examples: flaming sword, ice shield.</span></div>
+          <div class="term-row"><span class="term-name">Magical Implement</span><span class="term-def">A man-made object enchanted for a repeatable function. Does not require the user to have magic. Examples: Personal Crystalz, mana-powered appliances.</span></div>
+          <div class="term-row"><span class="term-name">Mana Crystal</span><span class="term-def">Crystallized mana found inside Void Openings. Extremely valuable. Primary incentive for Named Guild contracts.</span></div>
+          <div class="term-row"><span class="term-name">Named Guild</span><span class="term-def">A large organized body of adventurers under a single banner. The only entities the Adventurers Guild will contract for Void Opening clearance.</span></div>
+          <div class="term-row"><span class="term-name">The Rift</span><span class="term-def">The massive ancient Void Opening at the heart of the Ringus Sea. Cannot be closed. Contained by magical netting. Source of annual Kaiju emergences.</span></div>
+          <div class="term-row"><span class="term-name">Void Opening</span><span class="term-def">A rift in the world's fabric that produces voidlings. Occur worldwide unpredictably. Contracted to Named Guilds for clearance via the Adventurers Guild and the CCN.</span></div>
+          <div class="term-row"><span class="term-name">Voidling</span><span class="term-def">Creature that emerges from a Void Opening. Cannot communicate. Kills and consumes on instinct. Unpredictable in form. Grows more dangerous the longer an Opening remains unclosed.</span></div>
+          <div class="term-row"><span class="term-name">Zord</span><span class="term-def">Enormous mana-powered combat construct deployed by the Hero Rangers Corps against Kaiju-scale threats. Hero Team 6 operates five Zords that can combine into the RHC Titan.</span></div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <footer>
+    <p class="footer-logo">Terrana</p>
+    <p class="footer-note">Jimothy's D10 Isekai: JRPG &middot; Work In Progress &middot; &copy; Oji-Barry</p>
+  </footer>
+
+  <script>
+    const root = document.documentElement;
+    const btn = document.getElementById('theme-btn');
+    const icon = btn.querySelector('.theme-icon');
+    const label = btn.querySelector('.theme-label');
+    const saved = localStorage.getItem('td10-theme') || 'night';
+    root.setAttribute('data-theme', saved);
+    updateBtn(saved);
+    btn.addEventListener('click', () => {
+      const next = root.getAttribute('data-theme') === 'night' ? 'day' : 'night';
+      root.setAttribute('data-theme', next);
+      localStorage.setItem('td10-theme', next);
+      updateBtn(next);
+    });
+    function updateBtn(t) {
+      icon.textContent = t === 'night' ? '🌙' : '☀️';
+      label.textContent = t === 'night' ? 'Night' : 'Day';
+    }
+
+    const sections = document.querySelectorAll('section[id]');
+    const sideLinks = document.querySelectorAll('.sidebar-nav a');
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          sideLinks.forEach(l => l.classList.remove('active'));
+          const active = document.querySelector(`.sidebar-nav a[href="#${e.target.id}"]`);
+          if (active) active.classList.add('active');
+        }
+      });
+    }, { rootMargin: '-30% 0px -60% 0px' });
+    sections.forEach(s => observer.observe(s));
+  </script>
+
+</body>
+</html>
