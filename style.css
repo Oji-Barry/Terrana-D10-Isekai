@@ -71,7 +71,7 @@ img { max-width: 100%; display: block; }
 nav {
   position: sticky;
   top: 0;
-  z-index: 200;
+  z-index: 1000;
   height: var(--nav-h);
   background: var(--bg-surface);
   border-bottom: 1px solid var(--border);
@@ -197,15 +197,16 @@ nav {
   left: 0; right: 0;
   background: var(--bg-surface);
   border-bottom: 1px solid var(--border);
-  z-index: 199;
+  z-index: 999;
   padding: 1.5rem 2rem 2rem;
   transform: translateY(-110%);
   transition: transform 0.3s ease;
-  /* Always in DOM, hidden via transform. display toggled by breakpoint. */
   display: none;
+  pointer-events: none;
 }
 .mobile-menu.open {
   transform: translateY(0);
+  pointer-events: auto;
 }
 .mobile-menu ul {
   list-style: none;
@@ -281,12 +282,15 @@ nav {
   align-items: start;
   position: relative;
   z-index: 1;
+  isolation: isolate;
 }
 
 /* ─── SIDEBAR ─── */
 .sidebar {
   position: sticky;
   top: calc(var(--nav-h) + 2rem);
+  z-index: 1;
+  pointer-events: auto;
 }
 .sidebar-label {
   font-family: 'Cinzel', serif;
@@ -693,12 +697,14 @@ footer {
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0.55);
-  z-index: 300;
+  z-index: 998;
   opacity: 0;
   transition: opacity 0.3s;
+  pointer-events: none;
 }
 .drawer-overlay.open {
   opacity: 1;
+  pointer-events: auto;
 }
 
 /* The drawer panel itself */
@@ -710,14 +716,16 @@ footer {
   width: min(280px, 80vw);
   background: var(--bg-surface);
   border-right: 1px solid var(--border);
-  z-index: 301;
+  z-index: 999;
   transform: translateX(-100%);
   transition: transform 0.3s ease;
   overflow-y: auto;
   padding: 2rem 0 3rem;
+  pointer-events: none;
 }
 .drawer.open {
   transform: translateX(0);
+  pointer-events: auto;
 }
 .drawer-header {
   display: flex;
@@ -786,7 +794,6 @@ body.has-sidebar #drawer-fab {
 
   #hamburger { display: flex; }
 
-  /* Switch mobile-menu from display:none to display:block so transform works */
   .mobile-menu { display: block; }
 
   .drawer-overlay { display: block; }
@@ -797,7 +804,10 @@ body.has-sidebar #drawer-fab {
     padding: 2rem 1.5rem;
   }
 
-  .sidebar { display: none; }
+  .sidebar {
+    display: none;
+    pointer-events: none;
+  }
 
   .continent-grid,
   .cards-grid {
