@@ -90,9 +90,6 @@ nav {
   color: var(--accent);
   line-height: 1.2;
   flex-shrink: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
 }
 .nav-logo span {
   display: block;
@@ -165,7 +162,7 @@ nav {
 
 /* Hamburger button — hidden on desktop */
 #hamburger {
-  display: none;
+  display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
@@ -201,7 +198,7 @@ nav {
   padding: 1.5rem 2rem 2rem;
   transform: translateY(-110%);
   transition: transform 0.3s ease;
-  display: none;
+  display: block;
   pointer-events: none;
 }
 .mobile-menu.open {
@@ -693,7 +690,7 @@ footer {
 
 /* Overlay behind the drawer */
 .drawer-overlay {
-  display: none;
+  display: block;
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0.55);
@@ -759,7 +756,7 @@ footer {
   padding: 0 0.4rem;
 }
 
-/* Compass button — sits below the logo, visible on all sidebar pages */
+/* Compass button — sits in nav-right, visible on all sidebar pages */
 #drawer-fab {
   display: none;
   background: none;
@@ -767,7 +764,6 @@ footer {
   border-radius: 4px;
   cursor: pointer;
   padding: 4px 5px;
-  margin-top: 0.3rem;
   line-height: 1;
   color: var(--text-faint);
   transition: border-color 0.2s, color 0.2s;
@@ -786,17 +782,11 @@ body.has-sidebar #drawer-fab {
    RESPONSIVE BREAKPOINTS
    ============================================================ */
 
-/* ── Tablet: hide desktop nav, show hamburger ── */
+/* ── Tablet: collapse layout, hide desktop nav links ── */
 @media (max-width: 900px) {
   nav { padding: 0 1.5rem; }
 
   .nav-links { display: none; }
-
-  #hamburger { display: flex; }
-
-  .mobile-menu { display: block; }
-
-  .drawer-overlay { display: block; }
 
   .layout {
     grid-template-columns: 1fr;
