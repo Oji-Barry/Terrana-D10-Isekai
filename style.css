@@ -316,15 +316,78 @@ nav {
   border-left-color: var(--accent);
   background: var(--accent-glow);
 }
-.sidebar-nav .sub {
-  font-size: 0.65rem;
-  padding-left: 1.6rem;
-  color: var(--text-faint);
+/* ─── SIDEBAR NAV ACCORDION ─── */
+
+/* Row wrapping a parent link + its chevron */
+.nav-row {
+  display: flex;
+  align-items: center;
+  width: 100%;
 }
-.sidebar-nav .sub:hover,
-.sidebar-nav .sub.active {
-  color: var(--text-muted);
-  border-left-color: var(--border-glow);
+.nav-row a {
+  flex: 1;
+  /* inherits sidebar-nav a styles */
+}
+
+/* Chevron button — same shape/color as hamburger */
+.nav-chevron {
+  flex-shrink: 0;
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 4px 6px;
+  cursor: pointer;
+  color: var(--text-faint);
+  margin-right: 0.5rem;
+  transition: border-color 0.2s, color 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.nav-chevron:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.nav-chevron svg {
+  display: block;
+  transition: transform 0.25s ease;
+  /* Chevron polygon points right by default */
+}
+
+/* Rotate chevron to point down when open */
+.nav-parent.open .nav-chevron svg {
+  transform: rotate(90deg);
+}
+
+/* Children list — hidden by default, slides open */
+.nav-children {
+  list-style: none;
+  overflow: hidden;
+  max-height: 0;
+  transition: max-height 0.3s ease;
+  padding-left: 0;
+}
+.nav-parent.open .nav-children {
+  max-height: 600px; /* large enough for any list */
+}
+
+/* Child links — indented further right than parents */
+.nav-children li a {
+  display: block;
+  font-family: 'Cinzel', serif;
+  font-size: 0.65rem;
+  letter-spacing: 0.06em;
+  color: var(--text-faint);
+  padding: 0.4rem 0.8rem 0.4rem 1.8rem;
+  border-left: 2px solid transparent;
+  transition: color 0.2s, border-color 0.2s, background 0.2s;
+  border-radius: 0 2px 2px 0;
+}
+.nav-children li a:hover,
+.nav-children li a.active {
+  color: var(--accent);
+  border-left-color: var(--accent);
+  background: var(--accent-glow);
 }
 
 /* ─── SCROLL OFFSET (accounts for sticky nav height) ─── */
