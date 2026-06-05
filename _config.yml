@@ -1,0 +1,12 @@
+# _config.yml
+title: Terrana D10 Isekai Guide
+email: your-contact@example.com # <--- PLEASE CHANGE THIS TO YOUR EMAIL
+description: A comprehensive guide to the world, systems, and rules of Terrana D10!
+baseurl: "" # The root URL of the site
+url: "https://yourusername.github.io/Terrana-D10-Isekai" # <--- UPDATE THIS WITH YOUR ACTUAL SITE URL
+plugins:
+  - jekyll-feed
+  - jekyll-paginate
+
+# Build a clean list of front matter fields for future posts
+author: Oji Barry 
