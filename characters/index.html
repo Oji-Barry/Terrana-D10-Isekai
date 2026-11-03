@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="en" data-root="../">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>My Characters | Jimothy's D10 Isekai JRPG</title>
+<link rel="stylesheet" href="../assets/site.css">
+<link rel="icon" href="../assets/icons/d10.svg" type="image/svg+xml">
+</head>
+<body data-page="characters" data-address="www.terrana.ccn/characters/">
+<div class="page">
+  <div id="site-top"></div>
+
+  <main class="content narrow">
+    <div id="loading" class="panel win"><p class="center">Loading...</p></div>
+
+    <section id="need-login" class="panel win" hidden>
+      <h1>My Characters</h1>
+      <p class="center">Log in to see and save your characters.</p>
+      <div class="button-row center-row">
+        <a class="act primary" href="../account/index.html?next=characters/index.html">Log In</a>
+        <a class="act" href="../account/index.html?next=characters/index.html#signup">Sign Up</a>
+      </div>
+    </section>
+
+    <section id="roster" class="panel win" hidden>
+      <h1>My Characters</h1>
+      <p class="center count-line"><span id="count">0</span> of 12 character slots used</p>
+
+      <form id="form-new" class="new-char" novalidate>
+        <label for="new-name">New character's name</label>
+        <div class="inline-row">
+          <input id="new-name" maxlength="60" autocomplete="off" required>
+          <button class="act primary" type="submit">Make Character</button>
+        </div>
+        <p class="form-msg" id="new-msg" role="alert"></p>
+      </form>
+
+      <ul class="char-list" id="list"></ul>
+      <p class="hint center" id="empty" hidden>No characters yet. Name one above to get started.</p>
+    </section>
+
+    <section class="panel win" id="account-links" hidden>
+      <div class="button-row center-row">
+        <a class="act" href="../account/index.html">My Account</a>
+      </div>
+    </section>
+  </main>
+
+  <div id="site-bottom"></div>
+</div>
+
+<dialog id="dlg-rename" class="win dialog" aria-labelledby="rn-title">
+  <form method="dialog" id="form-rename" class="form" novalidate>
+    <h2 id="rn-title">Rename Character</h2>
+    <label for="rn-name">New name</label>
+    <input id="rn-name" maxlength="60" autocomplete="off" required>
+    <p class="form-msg" id="rn-msg" role="alert"></p>
+    <div class="button-row">
+      <button class="act" type="button" data-close>Cancel</button>
+      <button class="act primary" type="submit" value="save">Save Name</button>
+    </div>
+  </form>
+</dialog>
+
+<dialog id="dlg-delete" class="win dialog" aria-labelledby="dl-title">
+  <div class="form">
+    <h2 id="dl-title">Delete Character?</h2>
+    <p class="center">This deletes <strong id="dl-name"></strong> for good. It cannot be undone.</p>
+    <p class="center hint">Want to keep a copy? Download it first.</p>
+    <p class="form-msg" id="dl-msg" role="alert"></p>
+    <div class="button-row">
+      <button class="act" type="button" data-close>Cancel</button>
+      <button class="act" type="button" id="dl-download">Download First</button>
+      <button class="act danger" type="button" id="dl-confirm">Delete</button>
+    </div>
+  </div>
+</dialog>
+
+<script src="../vendor/supabase-2.118.0.js"></script>
+<script src="../assets/site.js"></script>
+<script src="../assets/auth.js"></script>
+<script>
+(function () {
+  var A = window.Terrana.auth;
+  var db = A.client;
+  var $ = function (id) { return document.getElementById(id); };
+  var chars = [];
+  var target = null;
+
+  function say(id, text) { $(id).textContent = text || ''; }
+
+  function when(iso) {
+    try {
+      return new Date(iso).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
+    } catch (e) { return ''; }
+  }
+
+  function render() {
+    var list = $('list');
+    list.textContent = '';
+    $('count').textContent = chars.length;
+    $('empty').hidden = chars.length > 0;
+    $('form-new').hidden = chars.length >= 12;
+    chars.forEach(function (c) {
+      var li = document.createElement('li');
+      li.className = 'char-card';
+
+      var info = document.createElement('div');
+      info.className = 'char-info';
+      var name = document.createElement('span');
+      name.className = 'char-name';
+      name.textContent = c.name;
+      var meta = document.createElement('span');
+      meta.className = 'char-meta';
+      meta.textContent = 'Last changed ' + when(c.updated_at);
+      info.appendChild(name);
+      info.appendChild(meta);
+
+      var btns = document.createElement('div');
+      btns.className = 'char-actions';
+      [['Rename', 'rename'], ['Download', 'download'], ['Delete', 'delete']].forEach(function (b) {
+        var btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'act small' + (b[1] === 'delete' ? ' danger' : '');
+        btn.textContent = b[0];
+        btn.setAttribute('aria-label', b[0] + ' ' + c.name);
+        btn.addEventListener('click', function () { action(b[1], c); });
+        btns.appendChild(btn);
+      });
+
+      li.appendChild(info);
+      li.appendChild(btns);
+      list.appendChild(li);
+    });
+  }
+
+  async function load() {
+    var res = await db.from('characters')
+      .select('id, name, sheet, sheet_visibility, created_at, updated_at')
+      .eq('owner', me.id)
+      .order('created_at', { ascending: true });
+    if (res.error) throw res.error;
+    chars = res.data || [];
+    render();
+  }
+
+  function download(c) {
+    var data = {
+      game: "Jimothy's D10 Isekai JRPG",
+      kind: 'character backup',
+      saved: new Date().toISOString(),
+      name: c.name,
+      sheet: c.sheet,
+      sheet_visibility: c.sheet_visibility
+    };
+    var blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = c.name.replace(/[^A-Za-z0-9 _-]+/g, '').trim().replace(/\s+/g, ' ') + ' - Terrana character.json';
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 1000);
+  }
+
+  function action(kind, c) {
+    target = c;
+    if (kind === 'download') return download(c);
+    if (kind === 'rename') {
+      $('rn-name').value = c.name;
+      say('rn-msg', '');
+      $('dlg-rename').showModal();
+      $('rn-name').select();
+    }
+    if (kind === 'delete') {
+      $('dl-name').textContent = c.name;
+      say('dl-msg', '');
+      $('dlg-delete').showModal();
+    }
+  }
+
+  document.querySelectorAll('dialog [data-close]').forEach(function (b) {
+    b.addEventListener('click', function () { b.closest('dialog').close(); });
+  });
+
+  $('form-new').addEventListener('submit', async function (e) {
+    e.preventDefault();
+    var name = $('new-name').value.trim();
+    say('new-msg', '');
+    if (!name) { say('new-msg', 'Give your character a name.'); return; }
+    var btn = e.target.querySelector('button');
+    btn.disabled = true;
+    var res = await db.from('characters').insert({ name: name }).select().single();
+    btn.disabled = false;
+    if (res.error) { say('new-msg', A.friendly(res.error)); return; }
+    $('new-name').value = '';
+    chars.push(res.data);
+    render();
+  });
+
+  $('form-rename').addEventListener('submit', async function (e) {
+    e.preventDefault();
+    var name = $('rn-name').value.trim();
+    if (!name) { say('rn-msg', 'The name cannot be blank.'); return; }
+    var res = await db.from('characters').update({ name: name }).eq('id', target.id).select().single();
+    if (res.error) { say('rn-msg', A.friendly(res.error)); return; }
+    target.name = res.data.name;
+    target.updated_at = res.data.updated_at;
+    $('dlg-rename').close();
+    render();
+  });
+
+  $('dl-download').addEventListener('click', function () { download(target); });
+
+  $('dl-confirm').addEventListener('click', async function () {
+    var res = await db.from('characters').delete().eq('id', target.id);
+    if (res.error) { say('dl-msg', A.friendly(res.error)); return; }
+    chars = chars.filter(function (c) { return c.id !== target.id; });
+    $('dlg-delete').close();
+    render();
+  });
+
+  var me = null;
+  A.currentPlayer().then(async function (p) {
+    me = p;
+    $('loading').hidden = true;
+    if (!p) { $('need-login').hidden = false; return; }
+    $('roster').hidden = false;
+    $('account-links').hidden = false;
+    try { await load(); }
+    catch (err) { say('new-msg', A.friendly(err)); }
+  }).catch(function () {
+    $('loading').innerHTML = '<p class="center">Could not reach the server. Try refreshing the page.</p>';
+  });
+})();
+</script>
+</body>
+</html>
