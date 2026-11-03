@@ -209,7 +209,8 @@ body.menu-hidden .rail { display: flex; }
 .content section[id] { scroll-margin-top: 16px; }
 .kicker { font-size: 14px; color: var(--text-muted); text-align: center; }
 .chapter-head h1 { margin-top: 4px; }
-.toc { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 4px 28px; }
+.toc { columns: 3 240px; column-gap: 28px; }
+.toc-group { break-inside: avoid; margin-bottom: 8px; }
 .toc-group h3 { margin: 6px 0 4px; font-size: 16px; text-align: left; letter-spacing: 1px; }
 .toc ul { list-style: none; margin: 0; padding: 0; }
 .toc li a { display: flex; align-items: center; min-height: 36px; padding: 0 8px; border-bottom: 1px solid rgba(233, 237, 248, 0.15); color: var(--text); text-decoration: none; font-weight: 700; font-size: 15px; }
@@ -241,6 +242,47 @@ body.menu-hidden .rail { display: flex; }
 .act:hover { background: rgba(255, 255, 255, 0.1); color: #fff; }
 .pager { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px; padding: 12px; }
 .pager .act:only-child { margin-left: auto; }
+
+.panel strong { color: var(--sky); }
+.panel .center { text-align: center; }
+.panel h4 { margin: 16px 0 6px; font-family: var(--pixel); font-weight: 400; font-size: 16px; color: var(--gold); text-align: center; letter-spacing: 1px; }
+.panel h4.minor { color: var(--text); font-family: var(--body); font-weight: 700; font-size: 15px; }
+.panel h5 { margin: 12px 0 4px; font-size: 15px; text-align: center; color: var(--text); }
+
+.panel.part { text-align: center; background: linear-gradient(180deg, #31207a 0%, #1a145e 60%, #0f0c45 100%); }
+.panel.part h2 { font-size: 26px; margin: 4px 0; }
+
+.entry { margin: 0 0 12px; padding: 12px 14px; background: rgba(0, 0, 0, 0.2); border: 1px solid rgba(233, 237, 248, 0.22); border-radius: 5px; }
+.entry-name { margin-bottom: 4px; font-weight: 700; font-size: 17px; color: var(--gold); }
+.entry p { margin: 0 0 6px; }
+.entry p:last-child { margin-bottom: 0; }
+.entry .tagline { text-align: left; }
+
+.stats { display: flex; flex-wrap: wrap; gap: 4px 6px; margin: 4px 0 6px; }
+.stats span { padding: 2px 8px; background: rgba(0, 0, 0, 0.25); border: 1px solid var(--line); border-radius: 3px; font-size: 14px; }
+.stats.tags span { font-style: italic; color: var(--text-soft); }
+
+.list { margin: 0 0 12px; padding-left: 22px; }
+.list li { margin-bottom: 6px; }
+
+.box { margin: 0 0 16px; padding: 16px 18px; border: 1px solid var(--line); border-radius: 6px; background: rgba(0, 0, 0, 0.2); text-align: center; font-size: 18px; }
+.box h3 { margin-top: 0; }
+
+.toc li span { display: flex; align-items: center; min-height: 32px; padding: 0 8px 0 20px; color: var(--text-soft); font-size: 14px; }
+.toc-group h3 a { color: var(--gold); text-decoration: none; }
+
+.chapter-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 2px 18px; }
+
+/* Search results in the side menu */
+.search-results { padding: 2px 0 6px; }
+.search-results .hint { padding: 6px 10px; font-size: 14px; color: var(--text-muted); }
+.search-results a { display: block; padding: 8px 10px; border-radius: 4px; color: var(--text); text-decoration: none; border-bottom: 1px solid rgba(233, 237, 248, 0.12); }
+.search-results a:hover, .search-results a:focus-visible { background: rgba(255, 255, 255, 0.1); }
+.search-results .r-title { display: block; font-weight: 700; font-size: 14px; color: var(--sky); }
+.search-results .r-where { display: block; font-size: 12px; color: var(--text-muted); }
+.search-results .r-snip { display: block; font-size: 13px; color: var(--text-soft); line-height: 1.4; }
+.search-results mark { background: rgba(255, 215, 106, 0.3); color: #fff; border-radius: 2px; }
+.searching .chapters-nav, .searching .menu-label { display: none; }
 
 /* Section list under the current chapter in the side menu */
 .menu-sub { margin: 2px 0 8px 32px; padding-left: 8px; border-left: 1px solid var(--line); }
@@ -287,3 +329,6 @@ body.menu-hidden .rail { display: flex; }
   body.menu-hidden .rail { flex-basis: 100%; flex-direction: row; justify-content: flex-start; }
   .rail .px { writing-mode: horizontal-tb; padding: 0 4px; }
 }
+
+.toc-group:only-child { break-inside: auto; }
+.toc-group li { break-inside: avoid; }
