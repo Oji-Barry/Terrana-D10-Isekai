@@ -45,8 +45,9 @@
     });
   }
 
+  var isChapter = chapters.some(function (c) { return c[0] === page; });
   var navHtml = nav.map(function (n) {
-    var cur = page === n[0] ? ' aria-current="page"' : '';
+    var cur = (page === n[0] || (n[0] === 'rulebook' && isChapter)) ? ' aria-current="page"' : '';
     return '<a href="' + root + n[2] + '"' + cur + '>' + n[1] + '</a>';
   }).join('') + '<a class="login" href="' + root + 'account/index.html">Log In</a>';
 
@@ -82,8 +83,9 @@
         '<input id="site-search" type="search" placeholder="Search rules...">' +
         '<button class="icon-btn" type="button" id="menu-hide" aria-label="Hide chapter menu" aria-controls="chapter-menu">' + chevLeft + '</button>' +
       '</div>' +
+      '<div class="search-results" id="search-results" aria-live="polite"></div>' +
       '<div class="menu-label px">CHAPTERS</div>' +
-      '<nav aria-label="Chapters">' + menuHtml + '</nav>';
+      '<nav class="chapters-nav" aria-label="Chapters">' + menuHtml + '</nav>';
 
     var rail = document.createElement('div');
     rail.className = 'rail win';
@@ -93,6 +95,84 @@
 
     layout.insertBefore(rail, layout.firstChild);
     layout.insertBefore(side, rail);
+
+    // Rulebook search: looks through rulebook/search.json
+    var input = document.getElementById('site-search');
+    var results = document.getElementById('search-results');
+    var index = null;
+    var loading = null;
+    function loadIndex() {
+      if (index) return Promise.resolve(index);
+      if (!loading) {
+        loading = fetch(root + 'rulebook/search.json').then(function (r) { return r.json(); })
+          .then(function (d) {
+            index = d.map(function (e) { e.lt = e.t.toLowerCase(); e.ls = e.s.toLowerCase(); return e; });
+            return index;
+          });
+      }
+      return loading;
+    }
+    function snippet(text, lower, words) {
+      var at = -1;
+      words.forEach(function (w) { var i = lower.indexOf(w); if (i >= 0 && (at < 0 || i < at)) at = i; });
+      if (at < 0) return '';
+      var start = Math.max(0, at - 50);
+      var s = (start > 0 ? '...' : '') + text.slice(start, at + 110) + '...';
+      var out = esc(s);
+      words.forEach(function (w) {
+        out = out.replace(new RegExp('(' + w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'ig'), '<mark>$1</mark>');
+      });
+      return out;
+    }
+    function runSearch() {
+      var q = input.value.trim().toLowerCase();
+      if (q.length < 2) {
+        results.innerHTML = '';
+        side.classList.remove('searching');
+        return;
+      }
+      side.classList.add('searching');
+      loadIndex().then(function (idx) {
+        if (input.value.trim().toLowerCase() !== q) return;
+        var words = q.split(/\s+/).filter(Boolean);
+        var hits = [];
+        idx.forEach(function (e) {
+          var score = 0;
+          for (var i = 0; i < words.length; i++) {
+            var inTitle = e.ls.indexOf(words[i]) >= 0;
+            var inText = e.lt.indexOf(words[i]) >= 0;
+            if (!inTitle && !inText) return;
+            score += inTitle ? 10 : 1;
+          }
+          if (e.lt.indexOf(q) >= 0) score += 5;
+          hits.push([score, e]);
+        });
+        hits.sort(function (a, b) { return b[0] - a[0]; });
+        if (!hits.length) {
+          results.innerHTML = '<div class="hint">Nothing found for "' + esc(input.value.trim()) + '".</div>';
+          return;
+        }
+        results.innerHTML = '<div class="hint">' + hits.length + (hits.length === 1 ? ' match' : ' matches') +
+          (hits.length > 25 ? ', showing the top 25' : '') + '</div>' +
+          hits.slice(0, 25).map(function (h) {
+            var e = h[1];
+            return '<a href="' + root + 'rulebook/' + e.p + '.html#' + e.id + '">' +
+              '<span class="r-title">' + esc(e.s) + '</span>' +
+              '<span class="r-where">' + esc(e.c) + '</span>' +
+              '<span class="r-snip">' + snippet(e.t, e.lt, words) + '</span></a>';
+          }).join('');
+      }).catch(function () {
+        results.innerHTML = '<div class="hint">Search could not load. Try refreshing the page.</div>';
+      });
+    }
+    var timer = null;
+    input.addEventListener('input', function () {
+      clearTimeout(timer);
+      timer = setTimeout(runSearch, 150);
+    });
+    input.addEventListener('keydown', function (ev) {
+      if (ev.key === 'Escape') { input.value = ''; runSearch(); }
+    });
 
     // On a chapter page, list its sections under the current chapter
     var secs = document.querySelectorAll('.content section[id]:not(#top)');
