@@ -94,6 +94,41 @@
     layout.insertBefore(rail, layout.firstChild);
     layout.insertBefore(side, rail);
 
+    // On a chapter page, list its sections under the current chapter
+    var secs = document.querySelectorAll('.content section[id]:not(#top)');
+    var curItem = side.querySelector('.menu-item[aria-current="page"]');
+    if (secs.length && curItem) {
+      var sub = document.createElement('div');
+      sub.className = 'menu-sub';
+      var links = [];
+      Array.prototype.forEach.call(secs, function (s) {
+        var h = s.querySelector('h2');
+        if (!h) return;
+        var a = document.createElement('a');
+        a.href = '#' + s.id;
+        a.textContent = h.textContent;
+        sub.appendChild(a);
+        links.push([s, a]);
+      });
+      curItem.parentNode.insertBefore(sub, curItem.nextSibling);
+
+      // Highlight the section being read
+      if ('IntersectionObserver' in window) {
+        var obs = new IntersectionObserver(function (entries) {
+          entries.forEach(function (e) {
+            if (!e.isIntersecting) return;
+            links.forEach(function (l) { l[1].classList.toggle('here', l[0] === e.target); });
+          });
+        }, { rootMargin: '-20% 0px -70% 0px' });
+        links.forEach(function (l) { obs.observe(l[0]); });
+      }
+
+      // On phones, close the menu after picking a section
+      sub.addEventListener('click', function () {
+        if (window.matchMedia('(max-width: 760px)').matches) setHidden(true, false);
+      });
+    }
+
     var KEY = 'terrana-menu-hidden';
     function setHidden(hidden, save) {
       document.body.classList.toggle('menu-hidden', hidden);
