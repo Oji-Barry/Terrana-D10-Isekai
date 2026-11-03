@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="en" data-root="../">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Log In | Jimothy's D10 Isekai JRPG</title>
+<link rel="stylesheet" href="../assets/site.css">
+<link rel="icon" href="../assets/icons/d10.svg" type="image/svg+xml">
+</head>
+<body data-page="account" data-address="www.terrana.ccn/account/">
+<div class="page">
+  <div id="site-top"></div>
+
+  <main class="content narrow">
+    <div id="loading" class="panel win"><p class="center">Loading...</p></div>
+
+    <!-- Logged out: Log In / Sign Up -->
+    <section id="guest" class="panel win" hidden>
+      <div class="tabs" role="tablist" aria-label="Log in or sign up">
+        <button type="button" role="tab" id="tab-login" aria-selected="true" aria-controls="form-login">Log In</button>
+        <button type="button" role="tab" id="tab-signup" aria-selected="false" aria-controls="form-signup">Sign Up</button>
+      </div>
+
+      <form id="form-login" class="form" role="tabpanel" aria-labelledby="tab-login" novalidate>
+        <h1>Log In</h1>
+        <label for="li-user">Username</label>
+        <input id="li-user" name="username" autocomplete="username" autocapitalize="none" spellcheck="false" required>
+        <label for="li-pass">Password</label>
+        <input id="li-pass" name="password" type="password" autocomplete="current-password" required>
+        <label class="check"><input id="li-remember" type="checkbox" checked> Keep me signed in for 30 days</label>
+        <p class="form-msg" id="li-msg" role="alert"></p>
+        <button class="act primary" type="submit">Log In</button>
+        <p class="hint">Forgot your password? Ask your Storyteller to set you a temporary one.</p>
+      </form>
+
+      <form id="form-signup" class="form" role="tabpanel" aria-labelledby="tab-signup" novalidate hidden>
+        <h1>Sign Up</h1>
+        <p class="hint">Just a username and a password. No email or phone number needed.</p>
+        <label for="su-user">Username</label>
+        <input id="su-user" name="username" autocomplete="username" autocapitalize="none" spellcheck="false" maxlength="20" required aria-describedby="su-user-hint">
+        <span class="field-hint" id="su-user-hint">3 to 20 letters, numbers, dashes, or underscores</span>
+        <label for="su-pass">Password</label>
+        <input id="su-pass" name="password" type="password" autocomplete="new-password" required aria-describedby="su-pass-hint">
+        <span class="field-hint" id="su-pass-hint">At least 8 characters</span>
+        <label for="su-pass2">Type the password again</label>
+        <input id="su-pass2" name="password2" type="password" autocomplete="new-password" required>
+        <label class="check"><input id="su-remember" type="checkbox" checked> Keep me signed in for 30 days</label>
+        <p class="form-msg" id="su-msg" role="alert"></p>
+        <button class="act primary" type="submit">Make My Account</button>
+      </form>
+    </section>
+
+    <!-- Logged in: account settings -->
+    <section id="member" class="panel win" hidden>
+      <h1>My Account</h1>
+      <p class="center">Logged in as <strong id="me-name"></strong></p>
+      <div class="button-row center-row">
+        <a class="act primary" href="../characters/index.html">My Characters</a>
+        <button class="act" type="button" id="logout">Log Out</button>
+      </div>
+
+      <form id="form-pass" class="form" novalidate>
+        <h2>Change Password</h2>
+        <label for="np-pass">New password</label>
+        <input id="np-pass" type="password" autocomplete="new-password" required>
+        <label for="np-pass2">Type it again</label>
+        <input id="np-pass2" type="password" autocomplete="new-password" required>
+        <p class="form-msg" id="np-msg" role="alert"></p>
+        <button class="act" type="submit">Change Password</button>
+      </form>
+    </section>
+
+    <!-- Admin only -->
+    <section id="admin" class="panel win" hidden>
+      <h2>Storyteller Tools</h2>
+      <form id="form-reset" class="form" novalidate>
+        <h3>Reset a Player's Password</h3>
+        <p class="hint">Set a temporary password, give it to the player, and have them change it after they log in.</p>
+        <label for="rs-user">Player's username</label>
+        <input id="rs-user" autocapitalize="none" spellcheck="false" required>
+        <label for="rs-pass">Temporary password</label>
+        <input id="rs-pass" type="text" autocomplete="off" required>
+        <p class="form-msg" id="rs-msg" role="alert"></p>
+        <button class="act" type="submit">Set Temporary Password</button>
+      </form>
+    </section>
+  </main>
+
+  <div id="site-bottom"></div>
+</div>
+<script src="../vendor/supabase-2.118.0.js"></script>
+<script src="../assets/site.js"></script>
+<script src="../assets/auth.js"></script>
+<script>
+(function () {
+  var A = window.Terrana.auth;
+  var $ = function (id) { return document.getElementById(id); };
+
+  function say(id, text, good) {
+    var el = $(id);
+    el.textContent = text || '';
+    el.classList.toggle('good', !!good);
+  }
+  function busy(form, on) {
+    var b = form.querySelector('button[type=submit]');
+    b.disabled = on;
+    b.setAttribute('aria-busy', on ? 'true' : 'false');
+  }
+
+  // Tabs
+  function pick(which) {
+    var login = which === 'login';
+    $('tab-login').setAttribute('aria-selected', String(login));
+    $('tab-signup').setAttribute('aria-selected', String(!login));
+    $('form-login').hidden = !login;
+    $('form-signup').hidden = login;
+    (login ? $('li-user') : $('su-user')).focus();
+  }
+  $('tab-login').addEventListener('click', function () { pick('login'); });
+  $('tab-signup').addEventListener('click', function () { pick('signup'); });
+
+  function goHome() {
+    var next = new URLSearchParams(location.search).get('next');
+    location.href = next && /^[a-z0-9/_.-]+$/i.test(next) ? '../' + next : '../characters/index.html';
+  }
+
+  $('form-login').addEventListener('submit', async function (e) {
+    e.preventDefault();
+    var f = e.target;
+    say('li-msg', '');
+    var u = $('li-user').value.trim(), p = $('li-pass').value;
+    if (!u || !p) { say('li-msg', 'Type your username and password.'); return; }
+    busy(f, true);
+    try { await A.logIn(u, p, $('li-remember').checked); goHome(); }
+    catch (err) { say('li-msg', err.message); busy(f, false); }
+  });
+
+  $('form-signup').addEventListener('submit', async function (e) {
+    e.preventDefault();
+    var f = e.target;
+    say('su-msg', '');
+    var u = $('su-user').value.trim(), p = $('su-pass').value, p2 = $('su-pass2').value;
+    if (!A.USERNAME.test(u)) { say('su-msg', 'Usernames are 3 to 20 letters, numbers, dashes, or underscores.'); return; }
+    if (p.length < 8) { say('su-msg', 'Your password needs at least 8 characters.'); return; }
+    if (p !== p2) { say('su-msg', 'The two passwords do not match.'); return; }
+    busy(f, true);
+    try { await A.signUp(u, p, $('su-remember').checked); goHome(); }
+    catch (err) { say('su-msg', err.message); busy(f, false); }
+  });
+
+  $('logout').addEventListener('click', async function () {
+    await A.logOut();
+    location.reload();
+  });
+
+  $('form-pass').addEventListener('submit', async function (e) {
+    e.preventDefault();
+    var f = e.target;
+    var p = $('np-pass').value, p2 = $('np-pass2').value;
+    if (p !== p2) { say('np-msg', 'The two passwords do not match.'); return; }
+    busy(f, true);
+    try { await A.changePassword(p); f.reset(); say('np-msg', 'Password changed.', true); }
+    catch (err) { say('np-msg', err.message); }
+    busy(f, false);
+  });
+
+  $('form-reset').addEventListener('submit', async function (e) {
+    e.preventDefault();
+    var f = e.target;
+    var u = $('rs-user').value.trim(), p = $('rs-pass').value;
+    busy(f, true);
+    try { await A.adminResetPassword(u, p); say('rs-msg', 'Done. ' + u + ' can now log in with the temporary password.', true); f.reset(); }
+    catch (err) { say('rs-msg', err.message); }
+    busy(f, false);
+  });
+
+  A.currentPlayer().then(function (me) {
+    $('loading').hidden = true;
+    if (me) {
+      $('member').hidden = false;
+      $('me-name').textContent = me.username;
+      $('admin').hidden = !me.is_admin;
+      document.title = 'My Account | Jimothy’s D10 Isekai JRPG';
+    } else {
+      $('guest').hidden = false;
+      if (location.hash === '#signup') pick('signup');
+    }
+  }).catch(function () {
+    $('loading').innerHTML = '<p class="center">Could not reach the server. Try refreshing the page.</p>';
+  });
+})();
+</script>
+</body>
+</html>
