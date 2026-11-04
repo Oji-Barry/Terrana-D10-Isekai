@@ -446,3 +446,10 @@ button.act { cursor: pointer; font-family: var(--body); }
 .home-item { margin-bottom: 4px; border-bottom: 1px solid var(--line); border-radius: 4px 4px 0 0; }
 
 @media (max-width: 760px) { .panel h2 { font-size: 23px; } }
+
+/* Downloads */
+.dl-list { list-style: none; margin: 12px 0 0; padding: 0; display: grid; gap: 10px; }
+.dl-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 12px; border: 1px solid rgba(255, 255, 255, 0.18); border-radius: 8px; background: rgba(0, 0, 0, 0.18); }
+.dl-name { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.dl-kind { font-size: 14px; color: var(--text-soft); }
+@media (max-width: 520px) { .dl-row { flex-direction: column; align-items: stretch; } .dl-row .act { text-align: center; } }
