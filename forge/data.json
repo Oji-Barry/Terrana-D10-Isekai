@@ -5544,6 +5544,176 @@
      }
     }
    ]
+  },
+  {
+   "name": "Dragon's Blade Style",
+   "weapons": "Natural Weapons",
+   "primary": "Dexterity + Martial Arts",
+   "secondary": "Perception + Dodge",
+   "link": "../rulebook/ch12.html#learning-styles-dragons-blade-style",
+   "ranks": [
+    {
+     "rank": 1,
+     "title": "Elementary",
+     "id": "dragons-blade-style-rank-1-elementary",
+     "default": {
+      "name": "Natural Arsenal",
+      "id": "dragons-blade-style-natural-arsenal",
+      "use": "Combat",
+      "text": "Your natural weapons count as a weapon with a Rating equal to half your dots, rounded up, unless your Heritage Magic gives them a better one. They can't be dropped or disarmed."
+     },
+     "a": {
+      "name": "Rake",
+      "id": "dragons-blade-style-rake",
+      "use": "Combat",
+      "text": "Attack with two natural weapons at once, such as both claws or a claw and a bite. Add your dots to that one attack roll."
+     },
+     "b": {
+      "name": "Pounce",
+      "id": "dragons-blade-style-pounce",
+      "use": "Combat",
+      "text": "Add your dots to an attack roll made right after moving at least 1 zone."
+     }
+    },
+    {
+     "rank": 2,
+     "title": "Intermediate",
+     "id": "dragons-blade-style-rank-2-intermediate",
+     "default": {
+      "name": "Climbing Claws",
+      "id": "dragons-blade-style-climbing-claws",
+      "use": "Both",
+      "text": "Add your dots to climbing rolls. You can climb wood, stone, or ice with no gear."
+     },
+     "a": {
+      "name": "Rend",
+      "id": "dragons-blade-style-rend",
+      "use": "Combat",
+      "text": "On a hit, spend 1 AP to give the target Bleeding."
+     },
+     "b": {
+      "name": "Latch On",
+      "id": "dragons-blade-style-latch-on",
+      "use": "Combat",
+      "text": "On a hit, spend 1 AP: the target is Grappled by you. While you hold them, you can still attack them with your other natural weapons."
+     }
+    },
+    {
+     "rank": 3,
+     "title": "Advanced",
+     "id": "dragons-blade-style-rank-3-advanced",
+     "default": {
+      "name": "Ram",
+      "id": "dragons-blade-style-ram",
+      "use": "Combat",
+      "text": "Move up to 2 zones in a straight line and strike the first enemy you reach with your horns, head, or body. A hit pushes them 1 zone away. You end in an empty zone."
+     },
+     "a": {
+      "name": "Feral Frenzy",
+      "id": "dragons-blade-style-feral-frenzy",
+      "use": "Combat",
+      "text": "Each hit on the same target this round adds 1 die to your next attack roll against them, up to your dots."
+     },
+     "b": {
+      "name": "Sweep",
+      "id": "dragons-blade-style-sweep",
+      "use": "Combat",
+      "text": "A tail, a wing, or a low swipe knocks the target Prone instead of dealing damage."
+     }
+    },
+    {
+     "rank": 4,
+     "title": "Saint",
+     "id": "dragons-blade-style-rank-4-saint",
+     "default": {
+      "name": "Thick Hide",
+      "id": "dragons-blade-style-thick-hide",
+      "use": "Combat",
+      "text": "While you wear no armor, add half your dots to your BDT."
+     },
+     "a": {
+      "name": "Hamstring",
+      "id": "dragons-blade-style-hamstring",
+      "use": "Combat",
+      "text": "A called shot to a leg that hits leaves the target Rooted until the end of their next turn, and they spend 1 extra AP to move for the rest of the scene."
+     },
+     "b": {
+      "name": "Gore",
+      "id": "dragons-blade-style-gore",
+      "use": "Combat",
+      "text": "A Ram that hits with horns, tusks, or fangs also has Armor Penetration equal to half your dots and gives the target Bleeding."
+     }
+    },
+    {
+     "rank": 5,
+     "title": "Royal",
+     "id": "dragons-blade-style-rank-5-royal",
+     "default": {
+      "name": "Apex Presence",
+      "id": "dragons-blade-style-apex-presence",
+      "use": "Both",
+      "text": "Beasts know a predator when they see one. Add your dots to rolls to intimidate or command animals, and to intimidate anyone who sees your natural weapons bared."
+     },
+     "a": {
+      "name": "Whirlwind of Claws",
+      "id": "dragons-blade-style-whirlwind-of-claws",
+      "use": "Combat",
+      "text": "Spend 2 AP: one attack roll against every enemy in all adjacent zones."
+     },
+     "b": {
+      "name": "Savage Maul",
+      "id": "dragons-blade-style-savage-maul",
+      "use": "Combat",
+      "text": "Spend 2 AP: claw, claw, bite. One attack roll strikes the same target three times, and they defend against it three times."
+     }
+    },
+    {
+     "rank": 6,
+     "title": "Imperial",
+     "id": "dragons-blade-style-rank-6-imperial",
+     "default": {
+      "name": "Spirit Claws",
+      "id": "dragons-blade-style-spirit-claws",
+      "use": "Combat",
+      "text": "Your natural weapons can harm incorporeal and conjured things as if they were solid, and they have Magic Penetration equal to half your dots."
+     },
+     "a": {
+      "name": "Throat Strike",
+      "id": "dragons-blade-style-throat-strike",
+      "use": "Combat",
+      "text": "A called shot to the throat that hits makes the target lose 2 AP on their next turn, and they can't speak until the end of it."
+     },
+     "b": {
+      "name": "Blood Feast",
+      "id": "dragons-blade-style-blood-feast",
+      "use": "Combat",
+      "text": "Once per scene, when a bite meets the target's LDT, heal Bashing damage equal to half your dots."
+     }
+    },
+    {
+     "rank": 7,
+     "title": "Divine",
+     "id": "dragons-blade-style-rank-7-divine",
+     "default": {
+      "name": "Apex Predator",
+      "id": "dragons-blade-style-apex-predator",
+      "use": "Both",
+      "text": "Creatures of animal intelligence won't attack you unless magic or a master forces them to, and nothing within 3 zones can catch you by surprise."
+     },
+     "a": {
+      "name": "The Red Hunt",
+      "id": "dragons-blade-style-the-red-hunt",
+      "use": "Combat",
+      "text": "Spend 3 AP: move up to 2 zones and make one attack roll against every enemy you pass adjacent to. Everyone you hit also gets Bleeding. End in any empty zone along your path."
+     },
+     "b": {
+      "name": "Death Grip",
+      "id": "dragons-blade-style-death-grip",
+      "use": "Combat",
+      "text": "Once per story, while you have a target Grappled, one bite or claw automatically hits and meets their ADT."
+     }
+    }
+   ]
   }
  ],
  "knowledges": [
