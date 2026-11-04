@@ -140,6 +140,14 @@
       forgeBtn.textContent = f ? 'Continue in Forge' : 'Start in Forge';
       forgeBtn.setAttribute('aria-label', forgeBtn.textContent + ': ' + c.name);
       btns.appendChild(forgeBtn);
+      if (c.sheet && c.sheet.view) {
+        var sheetBtn = document.createElement('a');
+        sheetBtn.className = 'act small';
+        sheetBtn.href = 'sheet.html?id=' + encodeURIComponent(c.id);
+        sheetBtn.textContent = 'View Sheet';
+        sheetBtn.setAttribute('aria-label', 'View Sheet: ' + c.name);
+        btns.appendChild(sheetBtn);
+      }
       [['Rename', 'rename'], ['Download', 'download'], ['Delete', 'delete']].forEach(function (b) {
         var btn = document.createElement('button');
         btn.type = 'button';

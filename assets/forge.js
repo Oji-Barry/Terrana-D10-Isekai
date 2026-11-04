@@ -1741,6 +1741,122 @@
     window.scrollTo(0, Math.max(0, top));
   }
 
+  // ---------- sheet snapshot ----------
+  // Every value the Character Sheet page needs, keyed by the sheet's data-field
+  // names (Character Sheet v9.7). Numbers fill dot rows, true ticks a box.
+  function sheetView() {
+    var v = {}, k = function (s) { return s.toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_|_$/g, ''); };
+    var h = heritage();
+    v['char.name'] = ch.name || '';
+    v['char.player'] = (me && me.username) || '';
+    v['char.trope'] = build.trope || '';
+    var r = build.role || {};
+    v['char.role'] = ((r.position || '') + ' ' + (r.style || '')).trim();
+    var drives = Object.keys(build.drives || {}).map(function (x) { return build.drives[x]; }).filter(Boolean);
+    v['char.drive'] = drives.join(', ');
+    v['char.heritage'] = v['bio.heritage'] = h ? h.name : '';
+    v['char.level'] = String(level());
+    v['bio.name'] = ch.name || '';
+    COLS.forEach(function (c) {
+      if (colNumber(c)) v['attr_group.' + k(c)] = String(colNumber(c));
+      D.attributes[c].forEach(function (a) { v['attr.' + k(a)] = attrTotal(a); });
+    });
+    GROUPS.forEach(function (g) {
+      var n = (build.ab_groups || {})[g];
+      if (n) v['ability_group.' + k(g)] = String(n);
+      D.abilities[g].forEach(function (a) {
+        var key = 'ability.' + k(a.name);
+        v[key] = abTotal(a.name);
+        if ((build.pl || {})[a.name]) v[key + '.mark'] = true;
+        var sp = specList(a.name).map(function (x, i) { return x === OTHER ? ((build.spec_other || {})[a.name + '|' + i] || '') : x; })
+          .filter(function (x) { return x && x.trim(); });
+        if ((build.pl || {})[a.name]) sp.unshift('PL');
+        if (sp.length) v[key + '.specialty'] = sp.join(', ');
+      });
+    });
+    // Merits, Flaws, Backgrounds: row 1 is Resources
+    v['merit.1'] = bgVal('Resources');
+    var rows = [];
+    D.backgrounds.forEach(function (b) {
+      if (b.name === 'Resources' || !bgVal(b.name)) return;
+      var who = ((build.bg_names || {})[b.name] || '').trim();
+      rows.push([b.name + (who ? ' (' + who + ')' : ''), bgVal(b.name)]);
+    });
+    [['merits', D.merits, ''], ['flaws', D.flaws, 'Flaw: ']].forEach(function (g) {
+      Object.keys(build[g[0]] || {}).forEach(function (n) {
+        var m = byName(g[1], n), val = build[g[0]][n], label = n;
+        if (m && m.options && String(val).charAt(0) === 'n') label += ' (' + m.options[Number(String(val).slice(1))].name + ')';
+        var dots = m && m.cost && m.cost.kind === 'per_dot' ? Number(val) : (isFinite(Number(val)) ? Number(val) : (m && m.cost && m.cost.cost) || 0);
+        rows.push([g[2] + label, dots]);
+      });
+    });
+    rows.slice(0, 9).forEach(function (x, i) { v['merit.' + (i + 2) + '.name'] = x[0]; v['merit.' + (i + 2)] = x[1] || 0; });
+    (build.guilds || []).filter(function (g) { return g && g.name; }).slice(0, 6).forEach(function (g, i) { v['guild.' + (i + 1) + '.name'] = g.name; v['guild.' + (i + 1)] = g.dots || 0; });
+    // Combat Styles and Magical Knowledges
+    var styles = D.styles.filter(function (x) { return styleTotal(x.name); });
+    styles.slice(0, 10).forEach(function (x, i) { v['style.' + (i + 1) + '.name'] = x.name; v['style.' + (i + 1)] = styleTotal(x.name); });
+    var knows = [];
+    if (hmOn()) knows.push({ name: hmName() + ' (Heritage)', dots: hmVal(), hm: true });
+    D.knowledges.forEach(function (x) { if (knowTotal(x.name)) knows.push({ name: x.name, dots: knowTotal(x.name), item: x }); });
+    knows.slice(0, 10).forEach(function (x, i) { v['knowledge.' + (i + 1) + '.name'] = x.name; v['knowledge.' + (i + 1)] = x.dots; });
+    // Detail cards: each style or knowledge with its picks per rank
+    var cards = [], spells = [];
+    styles.forEach(function (st) {
+      var mine = (build.style_picks || {})[st.name] || {};
+      var ranks = {};
+      for (var r = 1; r <= Math.min(styleTotal(st.name), 7); r++) {
+        var rk = st.ranks[r - 1]; if (!rk) continue;
+        var ps = picksAt(mine[r]).map(function (p) { return (rk[p] || {}).name; }).filter(Boolean);
+        ranks[r] = [rk.default ? rk.default.name : ''].concat(ps).filter(Boolean).join(' + ');
+      }
+      cards.push({ name: st.name, tier: styleVal(st.name) ? 'Primary' : 'Secondary', pool: st.primary + ' / ' + st.secondary, ranks: ranks });
+    });
+    function knowCard(name, item, tier, store, upTo, school) {
+      var mine = (build[store] || {})[item.name] || {}, ranks = {};
+      for (var r = 1; r <= Math.min(upTo, item.ranks.length); r++) {
+        var rk = item.ranks[r - 1];
+        var ps = picksAt(mine[r]).map(function (p) {
+          if (p.indexOf('c:') === 0) { var cb = comboById(p.slice(2)); if (cb) spells.push([cb.name, cb.schools.join('+'), cb.dots, cb.cost]); return cb ? cb.name : ''; }
+          var sp = rk.spells[+p]; if (sp) spells.push([sp.name, school, r, (sp.cost || '').replace(/\s*\(.*$/, '').split(',')[0]]);
+          return sp ? sp.name : '';
+        }).filter(Boolean);
+        ranks[r] = [rk.default ? rk.default.name : ''].concat(ps).filter(Boolean).join(' + ');
+      }
+      cards.push({ name: name, tier: tier, pool: '', ranks: ranks });
+    }
+    var hi = hmItem();
+    if (hi) knowCard(hmName() + ' (Heritage)', hi, 'Primary', 'hm_picks', hmVal(), hmName());
+    D.knowledges.forEach(function (x) {
+      var t = knowTotal(x.name); if (!t) return;
+      if (x.ranks) knowCard(x.name, x, knowVal(x.name) + knowFree(x.name) ? 'Primary' : 'Secondary', 'know_picks', t, x.name);
+      else cards.push({ name: x.name, tier: knowVal(x.name) + knowFree(x.name) ? 'Primary' : 'Secondary', pool: '', ranks: {} });
+    });
+    cards.slice(0, 8).forEach(function (c, i) {
+      var p = 'detail.' + (i + 1) + '.';
+      v[p + 'name'] = c.name; v[p + 'tier'] = c.tier; if (c.pool) v[p + 'pool'] = c.pool;
+      Object.keys(c.ranks).forEach(function (r) { v[p + 'rank.' + r] = c.ranks[r]; });
+    });
+    spells.slice(0, 10).forEach(function (x, i) {
+      var p = 'spell.' + (i + 1) + '.';
+      v[p + 'name'] = x[0]; v[p + 'school'] = x[1]; v[p + 'rank'] = String(x[2]); if (x[3]) v[p + 'mana'] = String(x[3]);
+    });
+    // Willpower, Fate, Sanity, Mana, Virtues and Vices
+    v['willpower.dots'] = statVal('Willpower'); v['fate.dots'] = statVal('Fate'); v['sanity.dots'] = statVal('Sanity');
+    v['mana.dots'] = manaTotal();
+    // Mana pool = (Magic + Circle Magic) x Mana; Max Mana per Turn = Fortitude + Mana
+    v['mana.pool.max'] = v['mana.pool.current'] = String((abTotal('Magic') + abTotal('Circle Magic')) * manaTotal());
+    v['mana.per_turn.max'] = v['mana.per_turn.current'] = String(attrTotal('Fortitude') + manaTotal());
+    var POS = { virtue2: 1, virtue1: 2, central: 3, vice1: 4, vice2: 5 };
+    D.scales.forEach(function (sc) { v['vv.' + k(sc.name)] = POS[(build.scales || {})[slug(sc.name)] || 'central']; });
+    // Companions
+    var sm = [];
+    if (knowTotal('Summoning Magic') && companionText(build.starter_summon)) sm.push([(build.starter_summon.name || 'SumMonz'), build.starter_summon.kind === 'spirit' ? 'Spirit' : 'Fiend', 'F', companionText(build.starter_summon)]);
+    if ((build.merits || {})['Familiar Bond'] && companionText(build.familiar)) sm.push([(build.familiar.name || 'Familiar'), 'Familiar', 'F', companionText(build.familiar)]);
+    sm.forEach(function (x, i) { var p = 'summon.' + (i + 1) + '.'; v[p + 'name'] = x[0]; v[p + 'type'] = x[1]; v[p + 'dots'] = x[2]; v[p + 'notes'] = x[3]; });
+    if (build.pl_occupation || build.pl_job) v['profile.past_life'] = build.pl_occupation || build.pl_job;
+    return v;
+  }
+
   // ---------- saving ----------
   async function save(nextStep) {
     var sheet = Object.assign({}, ch.sheet || {});
@@ -1750,6 +1866,7 @@
     forge.unfinished = forge.complete ? stillToDo() : unfinished();
     sheet.build = build;
     sheet.forge = forge;
+    try { sheet.view = sheetView(); } catch (e) { console.warn('sheet view', e); }
     var res = await db.from('characters').update({ sheet: sheet }).eq('id', ch.id).select('sheet, updated_at').single();
     if (res.error) throw res.error;
     ch.sheet = res.data.sheet;
