@@ -434,7 +434,11 @@
           var id = 'col-' + col;
           var sel = el('select', { id: id }, [el('option', { value: '', text: 'Designation...' })]);
           ['Affinity', 'Standard', 'Aversion'].forEach(function (dname) {
-            var o = el('option', { value: dname, text: dname + ' (' + COLNUM[dname] + ')' });
+            // each designation is used once, and the Attribute Flaw column can't be Affinity
+            var takenBy = COLS.filter(function (c) { return c !== col && build.attr_cols[c] === dname; })[0];
+            var flawBlock = dname === 'Affinity' && flaw === col;
+            var o = el('option', { value: dname, text: dname + ' (' + COLNUM[dname] + ')' + (takenBy ? ' (used by ' + takenBy + ')' : flawBlock ? ' (Attribute Flaw)' : '') });
+            if ((takenBy || flawBlock) && !stMode()) o.disabled = true;
             if (build.attr_cols[col] === dname) o.selected = true;
             sel.appendChild(o);
           });
