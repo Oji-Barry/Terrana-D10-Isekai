@@ -63,3 +63,26 @@
 .cv-opts small { display: block; color: var(--text-muted); }
 details.cv-more > summary { cursor: pointer; color: var(--sky); font-weight: 700; padding: 6px 0; }
 @media (max-width: 520px) { .cv-xp-top { grid-template-columns: minmax(0, 1fr); } }
+.cv-sheettop { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 6px 14px; margin: 6px 0 4px; }
+.cv-sheettop > div { border-bottom: 1px solid var(--line); padding: 3px 0; min-width: 0; }
+.cv-sheettop dt { font-size: 12px; color: var(--gold); font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; }
+.cv-sheettop dd { margin: 0; overflow-wrap: anywhere; }
+.cv-grid3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+@media (max-width: 820px) { .cv-grid3 { grid-template-columns: minmax(0, 1fr); } }
+.cv-money { display: grid; gap: 4px; }
+.cv-coin { display: flex; justify-content: space-between; align-items: center; gap: 8px; font-size: 14px; }
+.cv-stepper { display: inline-flex; align-items: center; gap: 4px; }
+.cv-stepper button { width: 28px; height: 28px; border-radius: 4px; border: 1px solid var(--line); background: rgba(0, 0, 0, 0.3); color: var(--text); cursor: pointer; font-weight: 800; }
+.cv-stepper input, .cv-slot input, .cv-slot textarea, .cv-item input { min-height: 32px; padding: 4px 6px; border: 1px solid var(--line); border-radius: 4px; background: rgba(0, 0, 0, 0.35); color: var(--text); font: inherit; }
+.cv-stepper input { width: 80px; text-align: center; }
+.cv-slot { display: grid; gap: 2px; margin: 6px 0; }
+.cv-slot label { font-weight: 700; font-size: 13px; color: var(--text-soft); }
+.cv-slot input, .cv-slot textarea { width: 100%; }
+.cv-slot.extra label { color: var(--text-muted); }
+.cv-slot.extra input { border-style: dashed; }
+.cv-items { display: grid; gap: 6px; margin: 6px 0; }
+.cv-item { display: flex; gap: 6px; align-items: center; }
+.cv-item input:first-child { flex: 1; min-width: 0; }
+.cv-savebar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin: 0 0 12px; }
+.cv-mf { border-bottom: 1px solid rgba(233, 237, 248, 0.1); }
+.cv-mf .cv-row { border-bottom: 0; }

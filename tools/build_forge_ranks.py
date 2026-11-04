@@ -156,6 +156,35 @@ def main():
                     'link': '../rulebook/ch13.html#' + n['id'], 'ranks': None, 'circle': True})
     if out:
         data['knowledges'][i:i + 1] = out
+    # Short "what it does" text for every Merit and Flaw (Chapter 9) and Heritage Merit (Chapter 8)
+    p9 = open('rulebook/ch9.html', encoding='utf-8').read()
+    def effect_of(anchor):
+        m = re.search(r'<tr id="%s">(.*?)</tr>' % re.escape(anchor), p9, re.S)
+        if m:
+            tds = re.findall(r'<td>(.*?)</td>', m.group(1), re.S)
+            return clean(tds[-1]) if tds else ''
+        m = re.search(r'id="%s"[^>]*>.*?</(?:h3|h4|div)>\s*(?:<p class="tagline">.*?</p>\s*)?<p>(.*?)</p>' % re.escape(anchor), p9, re.S)
+        return clean(m.group(1)) if m else ''
+    missing = []
+    for key in ('merits', 'flaws'):
+        for x in data[key]:
+            anchor = (x.get('link') or '').split('#')[-1]
+            t = effect_of(anchor) if anchor else ''
+            if t:
+                x['text'] = t
+            else:
+                missing.append(x['name'])
+    p8 = open('rulebook/ch8.html', encoding='utf-8').read()
+    for h in data['heritages']:
+        i = p8.find('id="%s"' % h['link'].split('#')[-1])
+        j = p8.find('Heritage Magic:', i)
+        seg = p8[i:j if j > i else i + 20000]
+        h['merit_text'] = {}
+        for nm in h['heritage_merits']:
+            m = re.search(r'<li><strong>%s: </strong>(.*?)</li>' % re.escape(html.escape(nm, quote=True).replace('&#x27;', "'")).replace("'", "(?:'|&#x27;)"), seg, re.S)
+            if m:
+                h['merit_text'][nm] = clean(m.group(1))
+    print('merit/flaw text missing for', len(missing), missing[:12])
     hm = heritage_magic(open('rulebook/ch8.html', encoding='utf-8').read())
     data['heritage_magic'] = hm
     for h in data['heritages']:

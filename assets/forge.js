@@ -22,6 +22,7 @@
   var forge = {};    // progress: { step, done: [], ok: [] }
   var step = 1;
   var XPS = { log: [], buys: [] }; // experience after creation: sheet.xp
+  var EXTRA = { gear: {}, money: {} }; // sheet.gear and sheet.money (the character page)
 
   // ---------- small helpers ----------
   function el(tag, attrs, kids) {
@@ -1609,6 +1610,7 @@
     D.styles.forEach(function (x) { st += styleTotal(x.name); });
     D.knowledges.forEach(function (x) { kn += knowTotal(x.name); });
     var her = hmVal();
+    extraPowers().forEach(function (p) { her += xpDots('vp', p); });
     return [['Attributes', a], ['Mana', manaTotal()], ['Abilities', ab], ['Combat Styles', st], ['Magical Knowledges', kn], ['Heritage Magic', her]];
   }
   function level() { return levelParts().reduce(function (s, x) { return s + x[1]; }, 0); }
@@ -1742,6 +1744,13 @@
     window.scrollTo(0, Math.max(0, top));
   }
 
+  // Money on hand (Chapter 14 coins)
+  var COINS = [['sc', 'Small Copper', 0.1], ['lc', 'Large Copper', 1], ['ss', 'Small Silver', 10], ['ls', 'Large Silver', 100], ['sg', 'Small Gold', 1000], ['lg', 'Large Gold', 10000], ['kg', 'King\u2019s Gold', 100000]];
+  function moneyText(m) {
+    return COINS.filter(function (c) { return (m[c[0]] || 0) > 0; }).map(function (c) { return m[c[0]] + ' ' + c[1]; }).join(', ');
+  }
+  window.TerranaCoins = COINS;
+
   // ---------- sheet snapshot ----------
   // Every value the Character Sheet page needs, keyed by the sheet's data-field
   // names (Character Sheet v9.7). Numbers fill dot rows, true ticks a box.
@@ -1855,6 +1864,17 @@
     if ((build.merits || {})['Familiar Bond'] && companionText(build.familiar)) sm.push([(build.familiar.name || 'Familiar'), 'Familiar', 'F', companionText(build.familiar)]);
     sm.forEach(function (x, i) { var p = 'summon.' + (i + 1) + '.'; v[p + 'name'] = x[0]; v[p + 'type'] = x[1]; v[p + 'dots'] = x[2]; v[p + 'notes'] = x[3]; });
     if (build.pl_occupation || build.pl_job) v['profile.past_life'] = build.pl_occupation || build.pl_job;
+    // Equipment, belt, money, and notes from the character page
+    var gw = (EXTRA.gear || {}).worn || {};
+    ['headgear', 'torso', 'left_arm', 'right_arm', 'legs', 'footwear', 'main_weapon', 'side_arm', 'alt_weapons'].forEach(function (x) { if (gw[x]) v['equip.' + x] = gw[x]; });
+    var carried = ((EXTRA.gear || {}).carried || []).map(function (i) { return (i.qty > 1 ? i.qty + ' ' : '') + i.name; }).filter(Boolean);
+    if (carried.length) v['equip.stowed'] = carried.join(', ');
+    ((EXTRA.gear || {}).belt || []).forEach(function (b2, i) { if (b2 && i < 7) v['belt.' + (i + 1)] = b2; });
+    var mn = moneyText(EXTRA.money || {});
+    if (mn) v['resources.funds'] = mn;
+    var nt = (EXTRA.gear || {}).notes || {};
+    ['quests', 'npcs', 'locations', 'lore', 'leads', 'general'].forEach(function (x) { if (nt[x]) v['notes.' + x] = nt[x]; });
+    if (carried.length || ((EXTRA.gear || {}).stash || []).length) v['profile.inventory'] = carried.concat(((EXTRA.gear || {}).stash || []).map(function (i) { return (i.qty > 1 ? i.qty + ' ' : '') + i.name + ' (stash)'; })).join(', ');
     return v;
   }
 
@@ -1905,7 +1925,10 @@
   // ---------- Experience after creation ----------
   // sheet.xp = { log: [{ id, d, amt, note }], buys: [{ id, d, kind, name, cost, label, pick }] }
   // kinds: attr, ab, spec, style, know, hm, mana (one dot each), opt (an unchosen option), combo
-  var DOT_KINDS = { attr: 1, ab: 1, style: 1, know: 1, hm: 1, mana: 1 };
+  var DOT_KINDS = { attr: 1, ab: 1, style: 1, know: 1, hm: 1, mana: 1, vp: 1 };
+  // Vampires: the other Vampiric Powers, bought with XP after creation
+  function extraPowers() { var h = heritage(); return h && h.name === 'Vampire' ? VPOWERS.filter(function (p) { return p !== build.heritage.vpower && xpDots('vp', p) > 0; }) : []; }
+  function vpItem(p) { var d = (D.heritage_magic || {})[p]; return d && d.ranks ? { name: p, ranks: d.ranks, link: '../rulebook/ch8.html#' + d.id } : null; }
   function xpDots(kind, name) {
     var n = 0;
     (XPS.buys || []).forEach(function (b) { if (b.kind === kind && (b.name || '') === (name || '')) n++; });
@@ -1924,14 +1947,15 @@
     if (kind === 'know') { var k = knowTotal(name) + 1; return { next: k, cost: k * (knowVal(name) + knowFree(name) ? 5 : 6) }; }
     if (kind === 'hm') { var h = hmVal() + 1; return { next: h, cost: h * 5 }; }
     if (kind === 'mana') { var m = manaTotal() + 1; return { next: m, cost: m * 7 }; }
+    if (kind === 'vp') { var v = xpDots('vp', name) + 1; return { next: v, cost: v * 5 }; }
     if (kind === 'spec') return { next: specList(name).length + 1, cost: 5 };
     return null;
   }
   function xpCurrent(kind, name) {
     return kind === 'attr' ? attrTotal(name) : kind === 'ab' ? abTotal(name) : kind === 'style' ? styleTotal(name)
-      : kind === 'know' ? knowTotal(name) : kind === 'hm' ? hmVal() : kind === 'mana' ? manaTotal() : 0;
+      : kind === 'know' ? knowTotal(name) : kind === 'hm' ? hmVal() : kind === 'mana' ? manaTotal() : kind === 'vp' ? xpDots('vp', name) : 0;
   }
-  function pickStoreFor(kind) { return kind === 'style' ? 'style_picks' : kind === 'hm' ? 'hm_picks' : 'know_picks'; }
+  function pickStoreFor(kind) { return kind === 'style' ? 'style_picks' : kind === 'hm' || kind === 'vp' ? 'hm_picks' : 'know_picks'; }
   function addPick(store, item, rank, val) {
     build[store] = build[store] || {};
     var mine = build[store][item] = build[store][item] || {};
@@ -1959,10 +1983,15 @@
       if (specList(a.name).length < 3) out.push({ kind: 'spec', name: a.name, label: a.name + ' specialty', group: 'Specialties', cur: specList(a.name).length, next: specList(a.name).length + 1, cost: 5, ok: 5 <= unspent, needsText: true, suggestions: D.specialties[a.name] || [] });
     }); });
     D.styles.forEach(function (st) { dot('style', st.name, st.name, 'Combat Styles', { ranks: st.ranks, tier: styleVal(st.name) ? 'P' : 'S' }); });
-    if (hmOn()) {
+    if (hmOn() && !(heritage().name === 'Vampire' && !build.heritage.vpower)) {
       var hi = hmItem();
       dot('hm', '', hmName() + ' (Heritage)', 'Magical Knowledges', { ranks: hi ? hi.ranks : null, tier: 'P', itemName: hmName() });
     }
+    if (heritage() && heritage().name === 'Vampire') VPOWERS.forEach(function (p) {
+      if (p === build.heritage.vpower) return;
+      var vi = vpItem(p);
+      dot('vp', p, p + ' (Vampiric Power)', 'Magical Knowledges', { ranks: vi ? vi.ranks : null, tier: 'P' });
+    });
     D.knowledges.forEach(function (k) { dot('know', k.name, k.name, 'Magical Knowledges', { ranks: k.ranks, tier: knowVal(k.name) + knowFree(k.name) ? 'P' : 'S' }); });
     dot('mana', '', 'Mana', 'Mana');
     // Options not picked at ranks you already have: Rank x2
@@ -2020,6 +2049,7 @@
       if (o.ranks && o.ranks[o.next - 1]) {
         if (extra.pick === undefined || extra.pick === null || extra.pick === '') throw new Error('Choose the option for Rank ' + o.next + '.');
         var store = pickStoreFor(o.kind), item = o.kind === 'hm' ? hmName() : o.name;
+        if (o.kind === 'hm' && heritage() && heritage().name === 'Vampire' && !build.heritage.vpower) throw new Error('Choose your Vampiric Power in the Forge (Step 4) first.');
         addPick(store, item, o.next, extra.pick);
         b.pick = { store: store, item: item, rank: o.next, val: String(extra.pick) };
       }
@@ -2078,7 +2108,8 @@
         return { name: sc.name, pos: POSL[v], side: side, high: /2$/.test(v), drive: (build.drives || {})[slug(sc.name)] || '', link: sc.link };
       }),
       heritage: h ? { name: h.name, link: h.link, rare: h.rare, innate: build.heritage.innate || '', innate_flaw: h.name === 'Demon' ? build.heritage.innate_flaw : h.innate_flaw,
-        attribute_flaw: h.name === 'Demon' ? build.heritage.attribute_flaw : h.attribute_flaw, merit: build.heritage.merit || '' } : null,
+        attribute_flaw: h.name === 'Demon' ? build.heritage.attribute_flaw : h.attribute_flaw, merit: build.heritage.merit || '',
+        merit_text: ((h.merit_text || {})[build.heritage.merit] || ''), vpower: build.heritage.vpower || '', adapt: build.heritage.adapt || '' } : null,
       stats: ['Willpower', 'Fate', 'Sanity'].map(function (n) { var x = byName(D.stats, n) || {}; return { name: n, dots: statVal(n), used: x.used_for || '' }; }),
       mana: { dots: manaTotal(), pool: (abTotal('Magic') + abTotal('Circle Magic')) * manaTotal(), mt: attrTotal('Fortitude') + manaTotal() },
       combat: { initiative: attrTotal('Dexterity') + attrTotal('Perception'), move: moveZones(attrTotal('Dexterity')), bdt: attrTotal('Fortitude') + Number((build.merits || {}).Resilience || 0) },
@@ -2094,7 +2125,9 @@
       merits: [], flaws: [], backgrounds: [], guilds: (build.guilds || []).filter(function (g) { return g && g.name; }),
       companions: [],
       xp: { earned: xpEarned(), spent: xpSpent(), log: (XPS.log || []).slice(), buys: (XPS.buys || []).slice() },
-      st: !!(me && me.is_admin)
+      st: !!(me && me.is_admin),
+      drives: Object.keys(build.drives || {}).map(function (k) { return build.drives[k]; }).filter(Boolean),
+      gear: EXTRA.gear || {}, money: EXTRA.money || {}
     };
     m.xp.unspent = m.xp.earned - m.xp.spent;
     D.styles.forEach(function (st) {
@@ -2120,8 +2153,14 @@
       var he = hi ? knowEntry(hmName(), hk, hmVal(), 'Primary', 'hm_picks', 'ch8', { heritage: true }) : { name: hmName(), dots: hmVal(), tier: 'Primary', link: hk.link, ranks: [], heritage: true, page: 'ch8' };
       if (h && h.name === 'Demon') he.tribal = Object.keys(build.tribal || {}).filter(function (k) { return +k <= hmVal(); }).sort().map(function (k) { return { rank: +k, name: build.tribal[k] }; });
       if (!hi && hd) he.single = true;
+      if (h && h.name === 'Vampire' && !build.heritage.vpower) { he.single = false; he.needsPower = true; he.name = 'Vampiric Powers'; }
+      if (h && h.name === 'Hyuman' && !build.heritage.adapt) he.needsAdapt = true;
       m.knowledges.push(he);
     }
+    extraPowers().forEach(function (p) {
+      var vi = vpItem(p);
+      m.knowledges.push(knowEntry(p, vi, xpDots('vp', p), 'Vampiric Power', 'hm_picks', 'ch8', { heritage: true, extraPower: true }));
+    });
     D.knowledges.forEach(function (k) {
       var t = knowTotal(k.name); if (!t) return;
       var tier = knowVal(k.name) + knowFree(k.name) ? 'Primary' : 'Secondary';
@@ -2136,7 +2175,9 @@
         if (x.options && String(val).charAt(0) === 'n') opt = x.options[Number(String(val).slice(1))];
         if (!opt && (x.points || x.cost || {}).options && String(val).charAt(0) === 'n') opt = (x.points || x.cost).options[Number(String(val).slice(1))];
         var note = ((build.flaw_notes || {})[n] || (build.merit_notes || {})[n] || '').trim();
-        g[2].push({ name: n, value: val, link: x.link, group: x.group, cost: (x.cost || x.points || {}).text || '', option: opt, note: note });
+        var item = { name: n, value: val, link: x.link, group: x.group, cost: (x.cost || x.points || {}).text || '', option: opt, note: note, text: x.text || '' };
+        if (n === 'Familiar Bond' && build.familiar && companionText(build.familiar)) item.note = 'Familiar: ' + companionText(build.familiar) + (note ? '. ' + note : '');
+        g[2].push(item);
       });
     });
     if ((build.merits || {})['Familiar Bond'] && build.familiar) m.companions.push({ kind: 'Familiar', c: build.familiar, text: companionText(build.familiar), dots: Number(build.merits['Familiar Bond']) || 1 });
@@ -2179,6 +2220,11 @@
       var hp = (build.hm_picks || {})[hi.name] || {};
       for (var r2 = 1; r2 <= Math.min(hmVal(), hi.ranks.length); r2++) picksAt(hp[r2]).forEach(function (v) { addSpell(hi.ranks[r2 - 1].spells[+v], hi.name, 'hm', r2, { mana_to: (hd && hd.mana_to) || 'either', page: 'ch8' }); });
     }
+    extraPowers().forEach(function (p) {
+      var vi = vpItem(p), d2 = xpDots('vp', p), pk = (build.hm_picks || {})[p] || {};
+      k.dots[p] = d2;
+      if (vi) for (var r3 = 1; r3 <= Math.min(d2, vi.ranks.length); r3++) picksAt(pk[r3]).forEach(function (v) { addSpell(vi.ranks[r3 - 1].spells[+v], p, 'hm', r3, { mana_to: ((D.heritage_magic || {})[p] || {}).mana_to || 'either', page: 'ch8' }); });
+    });
     D.styles.forEach(function (st) {
       var t = styleTotal(st.name); if (!t) return;
       k.maneuvers.push({ name: 'Attack', style: st.name, rank: 0, use: 'Combat', text: 'A standard attack with this Style.', pool: st.primary + ' + ' + st.name, page: 'ch12', id: '' });
@@ -2211,6 +2257,7 @@
     build = (row.sheet && row.sheet.build) || {};
     forge = (row.sheet && row.sheet.forge) || { step: 1, done: [], ok: [] };
     XPS = (row.sheet && row.sheet.xp) || { log: [], buys: [] };
+    EXTRA = { gear: (row.sheet && row.sheet.gear) || {}, money: (row.sheet && row.sheet.money) || {} };
   }
   window.TerranaForgeView = function (data, row, player) { headlessLoad(data, row, player); return sheetView(); };
   // The website character page: a model to draw, plus XP actions that change build and xp.
@@ -2223,7 +2270,8 @@
     buy: function (offer, extra) { xpBuy(offer, extra); return characterModel(); },
     undo: function (id) { xpUndo(id); return characterModel(); },
     combosFor: function (school, r) { return combosFor(school, r); },
-    sheet: function () { return { build: build, xp: XPS, view: sheetView() }; },
+    sheet: function () { return { build: build, xp: XPS, view: sheetView(), gear: EXTRA.gear, money: EXTRA.money }; },
+    setExtras: function (gear, money) { EXTRA = { gear: gear || {}, money: money || {} }; return characterModel(); },
     combatKit: combatKit
   };
   if (window.FORGE_HEADLESS) return;

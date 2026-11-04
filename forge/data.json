@@ -1680,7 +1680,11 @@
    ],
    "heritage_magic": "Skycall",
    "creation_allowed": true,
-   "link": "../rulebook/ch8.html#part-1-common-heritages-avian"
+   "link": "../rulebook/ch8.html#part-1-common-heritages-avian",
+   "merit_text": {
+    "Aerial Agility": "Grants a free specialty in Acrobatics called Aerial Agility, providing a bonus die on rolls involving flight maneuvers, aerial combat, and movement in three dimensional space.",
+    "Keen Eye": "Grants a free specialty in Awareness called Keen Eye, providing a bonus die on sight based Awareness rolls including long distance observation and spotting hidden things."
+   }
   },
   {
    "name": "Beastfolk",
@@ -1694,7 +1698,11 @@
    ],
    "heritage_magic": "Howling Magic",
    "creation_allowed": true,
-   "link": "../rulebook/ch8.html#part-1-common-heritages-beastfolk"
+   "link": "../rulebook/ch8.html#part-1-common-heritages-beastfolk",
+   "merit_text": {
+    "Pack Sense": "Grants a free specialty in Awareness called Pack Sense. While at least one ally occupies a zone adjacent to yours, touching it directly or diagonally, you also gain a bonus die on attack rolls.",
+    "Predator's Instinct": "Grants a free specialty in either Awareness or Athletics reflecting the character's natural hunting instincts and physical predatory capability."
+   }
   },
   {
    "name": "Bestial Demon",
@@ -1708,7 +1716,11 @@
    ],
    "heritage_magic": "Feral Blood",
    "creation_allowed": true,
-   "link": "../rulebook/ch8.html#part-1-common-heritages-bestial-demon"
+   "link": "../rulebook/ch8.html#part-1-common-heritages-bestial-demon",
+   "merit_text": {
+    "Beast Sense": "Gain a free specialty in any ability that reflects a natural heightened sense tied to your animal type. Work with your Storyteller to define which ability and specialty name fits.",
+    "Feral Surge": "Once per combat scene per dot in this merit you may add your dots as bonus dice to a single attack roll, representing a burst of pure animal instinct and ferocity."
+   }
   },
   {
    "name": "Brutes",
@@ -1722,7 +1734,11 @@
    ],
    "heritage_magic": "Titan's Weight",
    "creation_allowed": true,
-   "link": "../rulebook/ch8.html#part-1-common-heritages-brutes"
+   "link": "../rulebook/ch8.html#part-1-common-heritages-brutes",
+   "merit_text": {
+    "Brute Force": "Grants a free specialty in Melee or Martial Arts called Brute Force, reflecting their natural aptitude for leveraging their size and strength in combat.",
+    "Thick Hide": "Grants a free specialty in Endurance called Thick Hide, providing a bonus die against physical damage reflecting their naturally tough and resilient body."
+   }
   },
   {
    "name": "Dwarf",
@@ -1736,7 +1752,11 @@
    ],
    "heritage_magic": "Earthsong",
    "creation_allowed": true,
-   "link": "../rulebook/ch8.html#part-1-common-heritages-dwarf"
+   "link": "../rulebook/ch8.html#part-1-common-heritages-dwarf",
+   "merit_text": {
+    "Dwarven Crafting": "Grants a free specialty in Crafts reflecting the Dwarf's natural gift for making and repairing physical objects.",
+    "Dwarven Constitution": "Grants a free specialty in Endurance called Iron Gut, providing a bonus die against poison, toxins, and other ingested or inhaled hazards."
+   }
   },
   {
    "name": "Elf",
@@ -1750,7 +1770,11 @@
    ],
    "heritage_magic": "Verdant Communion",
    "creation_allowed": true,
-   "link": "../rulebook/ch8.html#part-1-common-heritages-elf"
+   "link": "../rulebook/ch8.html#part-1-common-heritages-elf",
+   "merit_text": {
+    "Elven Compass": "Grants a free specialty in Survival called Elven Compass, providing a bonus die on any Survival roll involving navigation and orientation.",
+    "Mana Touched": "Grants one additional starting dot in Mana beyond the standard starting value of 1."
+   }
   },
   {
    "name": "Gremlinesque",
@@ -1764,7 +1788,11 @@
    ],
    "heritage_magic": "Tinker's Spark",
    "creation_allowed": true,
-   "link": "../rulebook/ch8.html#part-1-common-heritages-gremlinesque"
+   "link": "../rulebook/ch8.html#part-1-common-heritages-gremlinesque",
+   "merit_text": {
+    "Tinker": "Grants a free specialty in either Crafts or Implements reflecting their innate knack for gadgets and mechanisms.",
+    "Scurry": "Grants a free specialty in Acrobatics reflecting their ability to move through cluttered, tight, and chaotic environments at speed."
+   }
   },
   {
    "name": "Halfling",
@@ -1778,7 +1806,11 @@
    ],
    "heritage_magic": "Hearthluck",
    "creation_allowed": true,
-   "link": "../rulebook/ch8.html#part-1-common-heritages-halfling"
+   "link": "../rulebook/ch8.html#part-1-common-heritages-halfling",
+   "merit_text": {
+    "A Lil Luck": "Once per session you may add your dots in this merit to any single roll. Can be declared before or after the initial roll, similar to a Willpower spend.",
+    "Disarming Charm": "Grants a free specialty in Subterfuge called Disarming Charm, providing a bonus die on Subterfuge rolls where the Halfling's small stature and non-threatening appearance work in their favor."
+   }
   },
   {
    "name": "Hyuman",
@@ -1792,7 +1824,11 @@
    ],
    "heritage_magic": "Adaptation",
    "creation_allowed": true,
-   "link": "../rulebook/ch8.html#part-1-common-heritages-hyuman"
+   "link": "../rulebook/ch8.html#part-1-common-heritages-hyuman",
+   "merit_text": {
+    "Hyuman Adaptability": "Grants a 5-5-5 attribute spread instead of the standard Affinity/Standard/Aversion designation.",
+    "Tenacity": "A dotted merit. Whenever the character regains Willpower, they regain 1 additional point for each dot in this merit."
+   }
   },
   {
    "name": "Immortal Mix",
@@ -1806,7 +1842,11 @@
    ],
    "heritage_magic": "Undying Flesh",
    "creation_allowed": true,
-   "link": "../rulebook/ch8.html#part-1-common-heritages-immortal-mix"
+   "link": "../rulebook/ch8.html#part-1-common-heritages-immortal-mix",
+   "merit_text": {
+    "Four Armed Fighting": "As long as you are not wielding a weapon you may make one additional Martial Arts attack per turn. Wielding a weapon requires enough fine motor coordination across four arms that your other arms hang back rather than risk harming yourself.",
+    "Quadbidextrous": "When wielding a melee weapon you may grip it with multiple hands. Each hand gripping the weapon beyond the first adds 1 bonus die to damage rolls. The weapon must be long enough for all hands to grasp simultaneously such as a polearm, nagamaki, or claymore. Cannot be combined with Four Armed Fighting."
+   }
   },
   {
    "name": "Ogre / Oni",
@@ -1820,7 +1860,11 @@
    ],
    "heritage_magic": "Oni Ward",
    "creation_allowed": true,
-   "link": "../rulebook/ch8.html#part-1-common-heritages-ogre-oni"
+   "link": "../rulebook/ch8.html#part-1-common-heritages-ogre-oni",
+   "merit_text": {
+    "Iron Gut": "Grants a free specialty in Endurance called Iron Gut, providing a bonus die on Endurance rolls against poison, toxins, and ingested or inhaled hazards.",
+    "Peacemaker": "Grants a free specialty in Diplomacy called Peacemaker, providing a bonus die on Diplomacy rolls when attempting to de-escalate conflict, negotiate terms, or find common ground before a situation turns violent."
+   }
   },
   {
    "name": "Reptilian / Bug",
@@ -1834,7 +1878,11 @@
    ],
    "heritage_magic": "Venom",
    "creation_allowed": true,
-   "link": "../rulebook/ch8.html#part-1-common-heritages-reptilian-bug"
+   "link": "../rulebook/ch8.html#part-1-common-heritages-reptilian-bug",
+   "merit_text": {
+    "Scaled Hide": "Grants a free specialty in Endurance called Scaled Hide, providing a bonus die against physical damage reflecting their natural armor.",
+    "Toxic Knack": "Grants a free specialty in a magic ability of the player's choice with Storyteller approval, reflecting an innate toxic, chemical, or biological production unique to their creature type."
+   }
   },
   {
    "name": "Corporeal Undead",
@@ -1848,7 +1896,11 @@
    ],
    "heritage_magic": "Deathless",
    "creation_allowed": true,
-   "link": "../rulebook/ch8.html#part-2-rare-heritages-storyteller-approval-required-corporeal-undead"
+   "link": "../rulebook/ch8.html#part-2-rare-heritages-storyteller-approval-required-corporeal-undead",
+   "merit_text": {
+    "Undying Resilience": "Grants a free specialty in Endurance called Undying, providing a bonus die against poison, disease, and environmental hazards that affect living tissue.",
+    "Death Sense": "Grants a free specialty in Awareness called Death Sense, providing a bonus die on Awareness rolls to detect the presence of death, undead creatures, or necrotic magic in the surrounding area."
+   }
   },
   {
    "name": "Demon",
@@ -1863,7 +1915,12 @@
    ],
    "heritage_magic": "Tribal Magic",
    "creation_allowed": true,
-   "link": "../rulebook/ch8.html#part-2-rare-heritages-storyteller-approval-required-demon"
+   "link": "../rulebook/ch8.html#part-2-rare-heritages-storyteller-approval-required-demon",
+   "merit_text": {
+    "Tribal Gift": "Grants a free specialty in one ability chosen with the Storyteller that reflects your tribe's nature, providing a bonus die when that gift applies.",
+    "Demon Tongue": "Grants a free specialty in Diplomacy called Demon Tongue, providing a bonus die on rolls to deal with the tribes, domains, and Demon Kings of the Demon Continent.",
+    "Mana Born": "Grants a free specialty in Attunement called Mana Born, providing a bonus die on rolls to sense dense ambient mana and to resist mana sickness."
+   }
   },
   {
    "name": "Devils",
@@ -1879,7 +1936,13 @@
    ],
    "heritage_magic": "Contract Magic",
    "creation_allowed": true,
-   "link": "../rulebook/ch8.html#part-2-rare-heritages-storyteller-approval-required-devils"
+   "link": "../rulebook/ch8.html#part-2-rare-heritages-storyteller-approval-required-devils",
+   "merit_text": {
+    "Devil Wings": "Your wings are strong enough for true flight. Grants a free specialty in Athletics called Flight, providing a bonus die on Athletics rolls made while flying. Without this merit a devil can still glide, but cannot gain altitude.",
+    "Emotional Taste": "A dotted merit. During combat, if anyone within a number of zones equal to your dots in this merit is showing a strong emotion tied to your Devil Type, you may gain 1 additional mana during your Upkeep Phase. You can do this a number of times per combat equal to your dots in this merit.",
+    "Emotional Harvest": "Whenever you would regain mana through any means you regain double that amount instead.",
+    "Devil Spawn": "Available only if one parent is a non-devil heritage. You may choose one merit from that heritage instead of the options listed here. Devil Spawn are Fey Touched (see Fey Touched at the start of this chapter)."
+   }
   },
   {
    "name": "Dragonfolk",
@@ -1893,7 +1956,11 @@
    ],
    "heritage_magic": "Dragon Blood",
    "creation_allowed": true,
-   "link": "../rulebook/ch8.html#part-2-rare-heritages-storyteller-approval-required-dragonfolk"
+   "link": "../rulebook/ch8.html#part-2-rare-heritages-storyteller-approval-required-dragonfolk",
+   "merit_text": {
+    "Greater Mana Usage": "Each dot in this merit adds 1 to the character's maximum Mana Per Turn beyond the standard calculation.",
+    "Dragon's Might": "Grants a free specialty in Melee or Martial Arts called Dragon's Might, providing a bonus die on attack rolls that leverage raw physical strength."
+   }
   },
   {
    "name": "Fey",
@@ -1907,7 +1974,11 @@
    ],
    "heritage_magic": "Fey Magic",
    "creation_allowed": true,
-   "link": "../rulebook/ch8.html#part-2-rare-heritages-storyteller-approval-required-fey"
+   "link": "../rulebook/ch8.html#part-2-rare-heritages-storyteller-approval-required-fey",
+   "merit_text": {
+    "Nature Bond": "Grants a free specialty in Survival reflecting their deep and instinctive connection to natural environments and living things.",
+    "Wellspring": "A dotted merit. During combat, you may gain 1 additional mana during your Upkeep Phase. You can do this a number of times per combat equal to your dots in this merit."
+   }
   },
   {
    "name": "Fishfolk",
@@ -1921,7 +1992,11 @@
    ],
    "heritage_magic": "Tidewarden",
    "creation_allowed": true,
-   "link": "../rulebook/ch8.html#part-2-rare-heritages-storyteller-approval-required-fishfolk"
+   "link": "../rulebook/ch8.html#part-2-rare-heritages-storyteller-approval-required-fishfolk",
+   "merit_text": {
+    "Water Sense": "Grants a free specialty in Magic called Water Sense, providing a bonus die on Water Magic rolls reflecting the Fishfolk's natural attunement to aquatic mana.",
+    "Deep Dweller": "Grants a free specialty in Endurance called Deep Dweller, providing a bonus die on Endurance rolls involving pressure, depth, sustained physical stress, and harsh environmental conditions."
+   }
   },
   {
    "name": "Incorporeal Undead",
@@ -1935,7 +2010,11 @@
    ],
    "heritage_magic": "Manifestation",
    "creation_allowed": false,
-   "link": "../rulebook/ch8.html#part-2-rare-heritages-storyteller-approval-required-incorporeal-undead"
+   "link": "../rulebook/ch8.html#part-2-rare-heritages-storyteller-approval-required-incorporeal-undead",
+   "merit_text": {
+    "Unseen": "Grants a free specialty in Stealth called Unseen, providing a bonus die to rolls to stay unnoticed.",
+    "Grave Voice": "Grants a free specialty in Insight called Grave Voice, providing a bonus die to read the intentions of the living and the dead."
+   }
   },
   {
    "name": "Merfolk",
@@ -1949,7 +2028,11 @@
    ],
    "heritage_magic": "Siren Song",
    "creation_allowed": true,
-   "link": "../rulebook/ch8.html#part-2-rare-heritages-storyteller-approval-required-merfolk"
+   "link": "../rulebook/ch8.html#part-2-rare-heritages-storyteller-approval-required-merfolk",
+   "merit_text": {
+    "Tide Born": "Grants a free specialty in Athletics called Swimming, providing a bonus die on Athletics rolls made in or under water.",
+    "Striking Beauty": "Grants a free specialty in either Expression or Performance (player's choice), reflecting the Merfolk's natural magnetism and captivating presence."
+   }
   },
   {
    "name": "Migurd",
@@ -1963,7 +2046,11 @@
    ],
    "heritage_magic": "Mindvoice",
    "creation_allowed": true,
-   "link": "../rulebook/ch8.html#part-2-rare-heritages-storyteller-approval-required-migurd"
+   "link": "../rulebook/ch8.html#part-2-rare-heritages-storyteller-approval-required-migurd",
+   "merit_text": {
+    "Telepathic Read": "Grants a free specialty in Insight called Telepathic Read, providing a bonus die on Insight rolls to read surface intentions and emotional states of those nearby.",
+    "Demon Continent Instinct": "Grants a free specialty in Awareness called Danger Sense, providing a bonus die on Awareness rolls to detect threats, ambushes, and hostile intentions before they manifest."
+   }
   },
   {
    "name": "Shifters",
@@ -1977,7 +2064,11 @@
    ],
    "heritage_magic": "Transformation",
    "creation_allowed": true,
-   "link": "../rulebook/ch8.html#part-2-rare-heritages-storyteller-approval-required-shifters"
+   "link": "../rulebook/ch8.html#part-2-rare-heritages-storyteller-approval-required-shifters",
+   "merit_text": {
+    "Faceswap": "Grants a free specialty in Subterfuge called Faceswap, providing a bonus die on Subterfuge rolls made to pass as someone else.",
+    "Adaptive": "Grants a free specialty in either Athletics or Endurance reflecting their body's natural capacity to physically adapt to the demands placed on it."
+   }
   },
   {
    "name": "Skyfolk",
@@ -1991,7 +2082,11 @@
    ],
    "heritage_magic": "Heaven's Wing",
    "creation_allowed": true,
-   "link": "../rulebook/ch8.html#part-2-rare-heritages-storyteller-approval-required-skyfolk"
+   "link": "../rulebook/ch8.html#part-2-rare-heritages-storyteller-approval-required-skyfolk",
+   "merit_text": {
+    "Far Sight": "Grants a free specialty in Awareness called Far Sight, providing a bonus die on Awareness rolls involving long distance observation, spotting hidden things, or reading atmospheric and weather conditions.",
+    "Wind Born": "Grants a free specialty in Endurance called Wind Born, providing a bonus die on Endurance rolls made while airborne or against environmental hazards related to altitude, wind, and weather."
+   }
   },
   {
    "name": "Slime",
@@ -2005,7 +2100,11 @@
    ],
    "heritage_magic": "Morph",
    "creation_allowed": true,
-   "link": "../rulebook/ch8.html#part-2-rare-heritages-storyteller-approval-required-slime"
+   "link": "../rulebook/ch8.html#part-2-rare-heritages-storyteller-approval-required-slime",
+   "merit_text": {
+    "Elastic": "Grants a free specialty in Acrobatics called Elastic, providing a bonus die on rolls to squeeze through gaps, stretch, or land a fall.",
+    "Hidden Pocket": "You can store one hand-sized object inside your body. A normal search cannot find it, and drawing it costs no AP."
+   }
   },
   {
    "name": "Superd",
@@ -2019,7 +2118,11 @@
    ],
    "heritage_magic": "Soulbound",
    "creation_allowed": true,
-   "link": "../rulebook/ch8.html#part-2-rare-heritages-storyteller-approval-required-superd"
+   "link": "../rulebook/ch8.html#part-2-rare-heritages-storyteller-approval-required-superd",
+   "merit_text": {
+    "Third Eye": "Grants a free specialty in Awareness called Third Eye, providing a bonus die on Awareness rolls to detect living beings and sense the flow of mana in the surrounding area.",
+    "Soul Spear": "Grants a bonus die on all attack rolls made with the character's personal tail spear. The spear itself is indestructible by conventional means and requires Cosmic rank magic to damage."
+   }
   },
   {
    "name": "Tiny",
@@ -2033,7 +2136,11 @@
    ],
    "heritage_magic": "Glamour",
    "creation_allowed": true,
-   "link": "../rulebook/ch8.html#part-2-rare-heritages-storyteller-approval-required-tiny"
+   "link": "../rulebook/ch8.html#part-2-rare-heritages-storyteller-approval-required-tiny",
+   "merit_text": {
+    "Hard to Hit": "Each dot in this merit adds a bonus die to Dodge rolls.",
+    "Tiny Terror": "Grants a free specialty in Stealth, reflecting their ability to hide in spaces no other heritage could fit."
+   }
   },
   {
    "name": "Vampire",
@@ -2046,7 +2153,10 @@
    ],
    "heritage_magic": "Vampiric Powers",
    "creation_allowed": true,
-   "link": "../rulebook/ch8.html#part-2-rare-heritages-storyteller-approval-required-vampire"
+   "link": "../rulebook/ch8.html#part-2-rare-heritages-storyteller-approval-required-vampire",
+   "merit_text": {
+    "Resilience": "A dotted merit with no mana cost. Each dot raises the character's BDT by 1 beyond the normal calculation."
+   }
   }
  ],
  "merits": [
@@ -2058,7 +2168,8 @@
     "kind": "fixed",
     "cost": 2
    },
-   "link": "../rulebook/ch9.html#core-merits-ambidextrous"
+   "link": "../rulebook/ch9.html#core-merits-ambidextrous",
+   "text": "No penalty for using your off hand in combat or for fine work."
   },
   {
    "name": "Bonus Aggravated Health",
@@ -2072,7 +2183,8 @@
     ],
     "unit": "box"
    },
-   "link": "../rulebook/ch9.html#core-merits-bonus-aggravated-health"
+   "link": "../rulebook/ch9.html#core-merits-bonus-aggravated-health",
+   "text": "Unlocks one or both of the dotted Aggravated health boxes on your sheet."
   },
   {
    "name": "Bonus Lethal Health",
@@ -2086,7 +2198,8 @@
     ],
     "unit": "box"
    },
-   "link": "../rulebook/ch9.html#core-merits-bonus-lethal-health"
+   "link": "../rulebook/ch9.html#core-merits-bonus-lethal-health",
+   "text": "Unlocks one or both of the dotted Lethal health boxes on your sheet."
   },
   {
    "name": "Gifted Athlete",
@@ -2097,7 +2210,8 @@
     "per": 2,
     "max": 3
    },
-   "link": "../rulebook/ch9.html#core-merits-gifted-athlete"
+   "link": "../rulebook/ch9.html#core-merits-gifted-athlete",
+   "text": "Each dot adds a bonus die to Athletics rolls and rolls to push your body physically."
   },
   {
    "name": "Iron Will",
@@ -2108,7 +2222,8 @@
     "per": 2,
     "max": 3
    },
-   "link": "../rulebook/ch9.html#core-merits-iron-will"
+   "link": "../rulebook/ch9.html#core-merits-iron-will",
+   "text": "Each dot adds 1 dot of Willpower."
   },
   {
    "name": "Keen Senses",
@@ -2119,7 +2234,8 @@
     "per": 2,
     "max": 3
    },
-   "link": "../rulebook/ch9.html#core-merits-keen-senses"
+   "link": "../rulebook/ch9.html#core-merits-keen-senses",
+   "text": "Each dot adds a bonus die to Perception rolls."
   },
   {
    "name": "Natural Armor",
@@ -2130,7 +2246,8 @@
     "per": 4,
     "max": 3
    },
-   "link": "../rulebook/ch9.html#core-merits-natural-armor"
+   "link": "../rulebook/ch9.html#core-merits-natural-armor",
+   "text": "Scales, hide, or tough skin. Each dot adds 1 to your BDT like armor, without wearing any. It stacks with worn armor."
   },
   {
    "name": "Quick Reflexes",
@@ -2141,7 +2258,8 @@
     "per": 2,
     "max": 3
    },
-   "link": "../rulebook/ch9.html#core-merits-quick-reflexes"
+   "link": "../rulebook/ch9.html#core-merits-quick-reflexes",
+   "text": "Each dot adds a bonus die to Initiative rolls (Dexterity + Perception)."
   },
   {
    "name": "Resilience",
@@ -2152,7 +2270,8 @@
     "per": 2,
     "max": 7
    },
-   "link": "../rulebook/ch9.html#core-merits-resilience"
+   "link": "../rulebook/ch9.html#core-merits-resilience",
+   "text": "Each dot adds 1 to your damage threshold (your BDT, and so your LDT and ADT as well)."
   },
   {
    "name": "Survivor's Grit",
@@ -2163,7 +2282,8 @@
     "per": 2,
     "max": 5
    },
-   "link": "../rulebook/ch9.html#core-merits-survivors-grit"
+   "link": "../rulebook/ch9.html#core-merits-survivors-grit",
+   "text": "Each dot adds a bonus die to rolls to resist environmental hazards, starvation, extreme conditions, and anything that pushes you to the edge of what you can endure."
   },
   {
    "name": "Animal Kinship",
@@ -2174,7 +2294,8 @@
     "per": 2,
     "max": 3
    },
-   "link": "../rulebook/ch9.html#core-merits-animal-kinship"
+   "link": "../rulebook/ch9.html#core-merits-animal-kinship",
+   "text": "Animals trust you. Each dot adds a bonus die to rolls to calm, handle, or ride animals and beasts."
   },
   {
    "name": "Born Negotiator",
@@ -2185,7 +2306,8 @@
     "per": 2,
     "max": 3
    },
-   "link": "../rulebook/ch9.html#core-merits-born-negotiator"
+   "link": "../rulebook/ch9.html#core-merits-born-negotiator",
+   "text": "Each dot adds a bonus die to Commerce and Diplomacy rolls made to strike a deal."
   },
   {
    "name": "Come Back",
@@ -2196,7 +2318,8 @@
     "per": 2,
     "max": 3
    },
-   "link": "../rulebook/ch9.html#core-merits-come-back"
+   "link": "../rulebook/ch9.html#core-merits-come-back",
+   "text": "Each dot adds a bonus die to spoken rolls in social combat. You may also use a sharp remark to start social combat outside a fight."
   },
   {
    "name": "Commanding Voice",
@@ -2207,7 +2330,8 @@
     "per": 2,
     "max": 3
    },
-   "link": "../rulebook/ch9.html#core-merits-commanding-voice"
+   "link": "../rulebook/ch9.html#core-merits-commanding-voice",
+   "text": "Each dot adds a bonus die to rolls to give orders, rally allies, or take charge in a crisis."
   },
   {
    "name": "Disquieting Presence",
@@ -2218,7 +2342,8 @@
     "per": 2,
     "max": 3
    },
-   "link": "../rulebook/ch9.html#core-merits-disquieting-presence"
+   "link": "../rulebook/ch9.html#core-merits-disquieting-presence",
+   "text": "Each dot adds a bonus die to Presence rolls. Your eerie nature draws attention whether you want it or not, and it is not always welcome."
   },
   {
    "name": "Honest Face",
@@ -2229,7 +2354,8 @@
     "per": 2,
     "max": 3
    },
-   "link": "../rulebook/ch9.html#core-merits-honest-face"
+   "link": "../rulebook/ch9.html#core-merits-honest-face",
+   "text": "Each dot adds a bonus die to rolls to be believed when you are telling the truth."
   },
   {
    "name": "Natural Leader",
@@ -2240,7 +2366,8 @@
     "per": 2,
     "max": 3
    },
-   "link": "../rulebook/ch9.html#core-merits-natural-leader"
+   "link": "../rulebook/ch9.html#core-merits-natural-leader",
+   "text": "Once per scene, give one ally bonus dice equal to your dots on a single roll you helped plan."
   },
   {
    "name": "Silver Tongue",
@@ -2251,7 +2378,8 @@
     "per": 2,
     "max": 3
    },
-   "link": "../rulebook/ch9.html#core-merits-silver-tongue"
+   "link": "../rulebook/ch9.html#core-merits-silver-tongue",
+   "text": "Each dot adds a bonus die to Persuasion rolls."
   },
   {
    "name": "Social Butterfly",
@@ -2262,7 +2390,8 @@
     "per": 2,
     "max": 3
    },
-   "link": "../rulebook/ch9.html#core-merits-social-butterfly"
+   "link": "../rulebook/ch9.html#core-merits-social-butterfly",
+   "text": "Each dot adds a bonus die to social rolls in group settings."
   },
   {
    "name": "Striking Looks",
@@ -2273,7 +2402,8 @@
     "per": 2,
     "max": 3
    },
-   "link": "../rulebook/ch9.html#core-merits-striking-looks"
+   "link": "../rulebook/ch9.html#core-merits-striking-looks",
+   "text": "Each dot adds a bonus die to social rolls where your appearance matters."
   },
   {
    "name": "Calm Mind",
@@ -2284,7 +2414,8 @@
     "per": 2,
     "max": 3
    },
-   "link": "../rulebook/ch9.html#core-merits-calm-mind"
+   "link": "../rulebook/ch9.html#core-merits-calm-mind",
+   "text": "Each dot adds a bonus die to rolls to resist Sanity damage."
   },
   {
    "name": "Danger Sense",
@@ -2294,7 +2425,8 @@
     "kind": "fixed",
     "cost": 2
    },
-   "link": "../rulebook/ch9.html#core-merits-danger-sense"
+   "link": "../rulebook/ch9.html#core-merits-danger-sense",
+   "text": "Once per scene the Storyteller may warn you of danger before it strikes, even without a roll."
   },
   {
    "name": "Direction Sense",
@@ -2304,7 +2436,8 @@
     "kind": "fixed",
     "cost": 3
    },
-   "link": "../rulebook/ch9.html#core-merits-direction-sense"
+   "link": "../rulebook/ch9.html#core-merits-direction-sense",
+   "text": "You always know which way you are facing and can retrace any path you have traveled."
   },
   {
    "name": "Eidetic Memory",
@@ -2314,7 +2447,8 @@
     "kind": "fixed",
     "cost": 2
    },
-   "link": "../rulebook/ch9.html#core-merits-eidetic-memory"
+   "link": "../rulebook/ch9.html#core-merits-eidetic-memory",
+   "text": "Perfect recall of anything you have directly experienced. It does not grant knowledge you never had."
   },
   {
    "name": "Encyclopedic Knowledge",
@@ -2324,7 +2458,8 @@
     "kind": "fixed",
     "cost": 3
    },
-   "link": "../rulebook/ch9.html#core-merits-encyclopedic-knowledge"
+   "link": "../rulebook/ch9.html#core-merits-encyclopedic-knowledge",
+   "text": "Once per scene, in any field where you have at least 1 dot in the matching ability, ask the Storyteller one factual question your character could plausibly know and get a true answer."
   },
   {
    "name": "Iron Focus",
@@ -2335,7 +2470,8 @@
     "per": 2,
     "max": 3
    },
-   "link": "../rulebook/ch9.html#core-merits-iron-focus"
+   "link": "../rulebook/ch9.html#core-merits-iron-focus",
+   "text": "Each dot adds a bonus die to rolls to resist distraction, fear, and magic that affects the mind."
   },
   {
    "name": "Jack of All Trades",
@@ -2345,7 +2481,8 @@
     "kind": "fixed",
     "cost": 4
    },
-   "link": "../rulebook/ch9.html#core-merits-jack-of-all-trades"
+   "link": "../rulebook/ch9.html#core-merits-jack-of-all-trades",
+   "text": "You never roll fewer than 1 die for an ability you have no dots in."
   },
   {
    "name": "Multilingual",
@@ -2356,7 +2493,8 @@
     "per": 2,
     "max": 5
    },
-   "link": "../rulebook/ch9.html#core-merits-multilingual"
+   "link": "../rulebook/ch9.html#core-merits-multilingual",
+   "text": "Each dot grants fluency in one more language. The languages of Terrana are Hyuman Tongue, Demon Tongue, Beast Tongue (with dialects including Elven and Dwarven), Sky Tongue, Sea Tongue, and Dragon Tongue."
   },
   {
    "name": "Sharp Mind",
@@ -2367,7 +2505,8 @@
     "per": 2,
     "max": 3
    },
-   "link": "../rulebook/ch9.html#core-merits-sharp-mind"
+   "link": "../rulebook/ch9.html#core-merits-sharp-mind",
+   "text": "Each dot adds a bonus die to Intelligence rolls to solve puzzles, codes, and problems."
   },
   {
    "name": "Tactical Mind",
@@ -2377,7 +2516,8 @@
     "kind": "fixed",
     "cost": 3
    },
-   "link": "../rulebook/ch9.html#core-merits-tactical-mind"
+   "link": "../rulebook/ch9.html#core-merits-tactical-mind",
+   "text": "Once per combat, during the Planning Phase, give one ally 1 AP that does not come from your own."
   },
   {
    "name": "Arcane Ward",
@@ -2388,7 +2528,8 @@
     "per": 2,
     "max": 3
    },
-   "link": "../rulebook/ch9.html#core-merits-arcane-ward"
+   "link": "../rulebook/ch9.html#core-merits-arcane-ward",
+   "text": "Each dot adds a bonus die to rolls to resist spells."
   },
   {
    "name": "Aura Sensitivity",
@@ -2399,7 +2540,8 @@
     "per": 2,
     "max": 3
    },
-   "link": "../rulebook/ch9.html#core-merits-aura-sensitivity"
+   "link": "../rulebook/ch9.html#core-merits-aura-sensitivity",
+   "text": "Sense the emotional state and rough power of beings nearby. Each dot increases the range and accuracy."
   },
   {
    "name": "Deep Well",
@@ -2409,7 +2551,8 @@
     "kind": "fixed",
     "cost": 4
    },
-   "link": "../rulebook/ch9.html#core-merits-deep-well"
+   "link": "../rulebook/ch9.html#core-merits-deep-well",
+   "text": "Regain 1 extra mana during each Upkeep Phase."
   },
   {
    "name": "Elemental Kinship",
@@ -2420,7 +2563,8 @@
     "per": 2,
     "max": 3
    },
-   "link": "../rulebook/ch9.html#core-merits-elemental-kinship"
+   "link": "../rulebook/ch9.html#core-merits-elemental-kinship",
+   "text": "Choose one casting school. Each dot adds 1 to your BDT against that school's attacks."
   },
   {
    "name": "Leyline Sense",
@@ -2430,7 +2574,8 @@
     "kind": "fixed",
     "cost": 2
    },
-   "link": "../rulebook/ch9.html#core-merits-leyline-sense"
+   "link": "../rulebook/ch9.html#core-merits-leyline-sense",
+   "text": "You always know the direction of the nearest strong source of mana, such as a dungeon, a ley line, or a Void Opening."
   },
   {
    "name": "Magical Affinity",
@@ -2440,7 +2585,8 @@
     "kind": "fixed",
     "cost": 5
    },
-   "link": "../rulebook/ch9.html#core-merits-magical-affinity"
+   "link": "../rulebook/ch9.html#core-merits-magical-affinity",
+   "text": "One free dot in Mana or in a single Magical Knowledge of your choice. A knowledge taken this way gets a P."
   },
   {
    "name": "Mana Reservoir",
@@ -2451,7 +2597,8 @@
     "per": 2,
     "max": 5
    },
-   "link": "../rulebook/ch9.html#core-merits-mana-reservoir"
+   "link": "../rulebook/ch9.html#core-merits-mana-reservoir",
+   "text": "Each dot adds 2 to your Mana Pool."
   },
   {
    "name": "Spell Memory",
@@ -2462,7 +2609,8 @@
     "per": 2,
     "max": 3
    },
-   "link": "../rulebook/ch9.html#core-merits-spell-memory"
+   "link": "../rulebook/ch9.html#core-merits-spell-memory",
+   "text": "Each dot lets you prepare one more spell beyond your Intelligence."
   },
   {
    "name": "Spell Touched",
@@ -2473,7 +2621,8 @@
     "per": 2,
     "max": 3
    },
-   "link": "../rulebook/ch9.html#core-merits-spell-touched"
+   "link": "../rulebook/ch9.html#core-merits-spell-touched",
+   "text": "Trace magic from a past event lingers in your body. Each dot adds a bonus die to rolls with one Magical Knowledge chosen at creation."
   },
   {
    "name": "Steady Focus",
@@ -2484,7 +2633,8 @@
     "per": 2,
     "max": 3
    },
-   "link": "../rulebook/ch9.html#core-merits-steady-focus"
+   "link": "../rulebook/ch9.html#core-merits-steady-focus",
+   "text": "Each dot adds a bonus die to rolls to keep a persistent spell going when you are hurt or distracted."
   },
   {
    "name": "Familiar Bond",
@@ -2495,7 +2645,8 @@
     "per": 2,
     "max": 3
    },
-   "link": "../rulebook/ch9.html#core-merits-familiar-bond"
+   "link": "../rulebook/ch9.html#core-merits-familiar-bond",
+   "text": "A creature is bonded to your soul. It works like a SumMonz, but it can stay with you in its basic form at no mana cost, and calling it to full strength costs mana like any summon. It does not count toward how many SumMonz you can have on the field. Taking this Merit at creation gives you one familiar: a tiny or small Rank F creature that is easy to train (see Starter Familiars below). Add your Familiar Bond dots to your familiar's Attack and Defense pools; they never help any other SumMonz. Each dot either strengthens the familiar you have or adds another one."
   },
   {
    "name": "Fast Healer",
@@ -2506,7 +2657,8 @@
     "per": 2,
     "max": 3
    },
-   "link": "../rulebook/ch9.html#core-merits-fast-healer"
+   "link": "../rulebook/ch9.html#core-merits-fast-healer",
+   "text": "Each dot lets you heal 1 extra Bashing damage whenever you take a short or long rest."
   },
   {
    "name": "Fey Touched",
@@ -2518,7 +2670,8 @@
     "max": 2,
     "unit": "Gift"
    },
-   "link": "../rulebook/ch9.html#core-merits-fey-touched"
+   "link": "../rulebook/ch9.html#core-merits-fey-touched",
+   "text": "One parent was Fey or a devil. Choose Gifts from the Fey Touched list below."
   },
   {
    "name": "Hard to Kill",
@@ -2528,7 +2681,8 @@
     "kind": "fixed",
     "cost": 4
    },
-   "link": "../rulebook/ch9.html#core-merits-hard-to-kill"
+   "link": "../rulebook/ch9.html#core-merits-hard-to-kill",
+   "text": "Once per story arc, when you would mark your last Aggravated box, you do not mark it."
   },
   {
    "name": "Lucky",
@@ -2538,7 +2692,8 @@
     "kind": "fixed",
     "cost": 5
    },
-   "link": "../rulebook/ch9.html#core-merits-lucky"
+   "link": "../rulebook/ch9.html#core-merits-lucky",
+   "text": "Once per story arc, reroll any single roll entirely."
   },
   {
    "name": "Night Eyes",
@@ -2548,7 +2703,8 @@
     "kind": "fixed",
     "cost": 2
    },
-   "link": "../rulebook/ch9.html#core-merits-night-eyes"
+   "link": "../rulebook/ch9.html#core-merits-night-eyes",
+   "text": "You see in darkness as well as in dim light."
   },
   {
    "name": "Old Soul",
@@ -2558,7 +2714,8 @@
     "kind": "fixed",
     "cost": 2
    },
-   "link": "../rulebook/ch9.html#core-merits-old-soul"
+   "link": "../rulebook/ch9.html#core-merits-old-soul",
+   "text": "You remember more than one life. Choose a second Past Life Occupation."
   },
   {
    "name": "Second Wind",
@@ -2568,7 +2725,8 @@
     "kind": "fixed",
     "cost": 3
    },
-   "link": "../rulebook/ch9.html#core-merits-second-wind"
+   "link": "../rulebook/ch9.html#core-merits-second-wind",
+   "text": "Once per combat, neutralize 2 Bashing damage without spending an action."
   },
   {
    "name": "Youthful Charisma",
@@ -2579,7 +2737,8 @@
     "per": 2,
     "max": 3
    },
-   "link": "../rulebook/ch9.html#core-merits-youthful-charisma"
+   "link": "../rulebook/ch9.html#core-merits-youthful-charisma",
+   "text": "Each dot adds a bonus die to social rolls where seeming innocent, harmless, or younger than you are helps."
   },
   {
    "name": "Magic Eye: Mana Perception",
@@ -2589,7 +2748,8 @@
     "kind": "fixed",
     "cost": 5
    },
-   "link": "../rulebook/ch9.html#magic-eyes-mana-perception"
+   "link": "../rulebook/ch9.html#magic-eyes-mana-perception",
+   "text": "See mana itself: spells, enchantments, mana flows, and roughly how much mana a being holds."
   },
   {
    "name": "Magic Eye: Identification",
@@ -2599,7 +2759,8 @@
     "kind": "fixed",
     "cost": 5
    },
-   "link": "../rulebook/ch9.html#magic-eyes-identification"
+   "link": "../rulebook/ch9.html#magic-eyes-identification",
+   "text": "Look at an item or creature to learn what it is. The Storyteller gives you one key fact each time you look."
   },
   {
    "name": "Magic Eye: X-Ray",
@@ -2609,7 +2770,8 @@
     "kind": "fixed",
     "cost": 5
    },
-   "link": "../rulebook/ch9.html#magic-eyes-x-ray"
+   "link": "../rulebook/ch9.html#magic-eyes-x-ray",
+   "text": "See through solid matter, up to your Perception in zones."
   },
   {
    "name": "Magic Eye: Clairvoyant",
@@ -2619,7 +2781,8 @@
     "kind": "fixed",
     "cost": 5
    },
-   "link": "../rulebook/ch9.html#magic-eyes-clairvoyant"
+   "link": "../rulebook/ch9.html#magic-eyes-clairvoyant",
+   "text": "See a place you know as if you stood there, anywhere in the same region. You are blind to your own surroundings while you look."
   },
   {
    "name": "Magic Eye: Foresight",
@@ -2629,7 +2792,8 @@
     "kind": "fixed",
     "cost": 7
    },
-   "link": "../rulebook/ch9.html#magic-eyes-foresight"
+   "link": "../rulebook/ch9.html#magic-eyes-foresight",
+   "text": "Glimpse a moment ahead. Add 2 bonus dice to every defense roll while the eye is open."
   },
   {
    "name": "Magic Eye: Absorption",
@@ -2639,7 +2803,8 @@
     "kind": "fixed",
     "cost": 7
    },
-   "link": "../rulebook/ch9.html#magic-eyes-absorption"
+   "link": "../rulebook/ch9.html#magic-eyes-absorption",
+   "text": "When a spell hits you, roll Composure + Attunement. Each success reduces the spell's damage by 1 and adds 1 mana to your pool."
   },
   {
    "name": "Magic Eye: All-Seeing",
@@ -2649,7 +2814,8 @@
     "kind": "fixed",
     "cost": 7
    },
-   "link": "../rulebook/ch9.html#magic-eyes-all-seeing"
+   "link": "../rulebook/ch9.html#magic-eyes-all-seeing",
+   "text": "See in total darkness, through illusions and invisibility, and in every direction at once. You cannot be surprised."
   },
   {
    "name": "Magic Eye: Absolute Void",
@@ -2659,7 +2825,8 @@
     "kind": "fixed",
     "cost": 7
    },
-   "link": "../rulebook/ch9.html#magic-eyes-absolute-void"
+   "link": "../rulebook/ch9.html#magic-eyes-absolute-void",
+   "text": "Spend 4 mana to turn one zone you can see into an unbreakable barrier until your next turn. Nothing passes through it, including attacks and spells."
   },
   {
    "name": "Magic Eye: Tracking",
@@ -2669,7 +2836,8 @@
     "kind": "fixed",
     "cost": 5
    },
-   "link": "../rulebook/ch9.html#magic-eyes-tracking"
+   "link": "../rulebook/ch9.html#magic-eyes-tracking",
+   "text": "Follow the trail of anyone you have seen, through any terrain, if the trail is no more than a day old."
   },
   {
    "name": "Magic Eye: Superd",
@@ -2679,7 +2847,8 @@
     "kind": "fixed",
     "cost": 5
    },
-   "link": "../rulebook/ch9.html#magic-eyes-superd"
+   "link": "../rulebook/ch9.html#magic-eyes-superd",
+   "text": "See living things by their life force, even through walls, and know whether each one means you harm."
   },
   {
    "name": "Magic Eye: Affection",
@@ -2689,7 +2858,8 @@
     "kind": "fixed",
     "cost": 5
    },
-   "link": "../rulebook/ch9.html#magic-eyes-affection"
+   "link": "../rulebook/ch9.html#magic-eyes-affection",
+   "text": "Anyone who meets your gaze is drawn to like you. Add 2 bonus dice to social rolls with them; they resist with Composure."
   },
   {
    "name": "Devil's Fruit",
@@ -2700,7 +2870,8 @@
     "per": 7,
     "max": 2
    },
-   "link": "../rulebook/ch9.html#special-powers-devils-fruit"
+   "link": "../rulebook/ch9.html#special-powers-devils-fruit",
+   "text": "Inspired by One Piece. A single transformative power of the Logia, Paramecia, or Zoan type. The player proposes it and the Storyteller sets it. You cannot swim without a heavy penalty."
   },
   {
    "name": "Shadow Monarch",
@@ -2711,7 +2882,8 @@
     "per": 7,
     "max": 2
    },
-   "link": "../rulebook/ch9.html#special-powers-shadow-monarch"
+   "link": "../rulebook/ch9.html#special-powers-shadow-monarch",
+   "text": "Inspired by Solo Leveling. Raise defeated enemies as shadow soldiers whose strength scales with your dots. Requires at least 1 dot in Shade Magic."
   },
   {
    "name": "Bankai Potential",
@@ -2722,7 +2894,8 @@
     "per": 7,
     "max": 2
    },
-   "link": "../rulebook/ch9.html#special-powers-bankai-potential"
+   "link": "../rulebook/ch9.html#special-powers-bankai-potential",
+   "text": "Inspired by Bleach. Your main weapon holds a dormant spirit. Awakening it in play unlocks a powered-up form designed with the Storyteller."
   },
   {
    "name": "Titan Shift",
@@ -2733,7 +2906,8 @@
     "per": 7,
     "max": 2
    },
-   "link": "../rulebook/ch9.html#special-powers-titan-shift"
+   "link": "../rulebook/ch9.html#special-powers-titan-shift",
+   "text": "Inspired by Attack on Titan. Transform into a massive, powerful form for a number of turns per session equal to your dots. You are exhausted when it ends."
   },
   {
    "name": "Cursed Energy",
@@ -2744,7 +2918,8 @@
     "per": 7,
     "max": 2
    },
-   "link": "../rulebook/ch9.html#special-powers-cursed-energy"
+   "link": "../rulebook/ch9.html#special-powers-cursed-energy",
+   "text": "Inspired by Jujutsu Kaisen. A personal cursed technique designed with the Storyteller. At higher ranks each use costs 1 Sanity."
   },
   {
    "name": "Nen Awakening",
@@ -2755,7 +2930,8 @@
     "per": 7,
     "max": 2
    },
-   "link": "../rulebook/ch9.html#special-powers-nen-awakening"
+   "link": "../rulebook/ch9.html#special-powers-nen-awakening",
+   "text": "Inspired by Hunter x Hunter. Your Nen is awakened as an Enhancer, Emitter, Transmuter, Conjurer, Manipulator, or Specialist, and your type shapes a unique ability designed with the Storyteller."
   },
   {
    "name": "Witch Factor",
@@ -2766,7 +2942,8 @@
     "per": 7,
     "max": 2
    },
-   "link": "../rulebook/ch9.html#special-powers-witch-factor"
+   "link": "../rulebook/ch9.html#special-powers-witch-factor",
+   "text": "Inspired by Re:Zero. You carry the essence of one of the Witches of Sin: extraordinary power tied to that sin, with consequences that grow the more you use it."
   },
   {
    "name": "Breath Style",
@@ -2777,7 +2954,8 @@
     "per": 7,
     "max": 2
    },
-   "link": "../rulebook/ch9.html#special-powers-breath-style"
+   "link": "../rulebook/ch9.html#special-powers-breath-style",
+   "text": "Inspired by Demon Slayer. A breathing technique that floods your body with power for a number of turns per scene equal to your dots, with extra effects against monsters and demons. Designed with the Storyteller."
   },
   {
    "name": "Unique Skill",
@@ -2788,7 +2966,8 @@
     "per": 7,
     "max": 2
    },
-   "link": "../rulebook/ch9.html#special-powers-unique-skill"
+   "link": "../rulebook/ch9.html#special-powers-unique-skill",
+   "text": "Inspired by That Time I Got Reincarnated as a Slime. A gift from your arrival in Terrana, such as an analysis voice like the Slime King's Great Sage, or a skill that devours and copies what it consumes. Designed with the Storyteller."
   },
   {
    "name": "Prosthetic Limb",
@@ -2799,7 +2978,8 @@
     "cost": 4
    },
    "heavy": false,
-   "link": "../rulebook/ch9.html#arcane-enhancements-prosthetic-limb"
+   "link": "../rulebook/ch9.html#arcane-enhancements-prosthetic-limb",
+   "text": "A working automaton limb that replaces a lost one and removes the Missing Limb penalty."
   },
   {
    "name": "Filter Lungs",
@@ -2810,7 +2990,8 @@
     "cost": 4
    },
    "heavy": false,
-   "link": "../rulebook/ch9.html#arcane-enhancements-filter-lungs"
+   "link": "../rulebook/ch9.html#arcane-enhancements-filter-lungs",
+   "text": "Immune to airborne poisons and gases, and you can hold your breath for 10 minutes."
   },
   {
    "name": "Optic Implants",
@@ -2821,7 +3002,8 @@
     "cost": 4
    },
    "heavy": false,
-   "link": "../rulebook/ch9.html#arcane-enhancements-optic-implants"
+   "link": "../rulebook/ch9.html#arcane-enhancements-optic-implants",
+   "text": "See in darkness, and add a bonus die to sight-based Perception rolls."
   },
   {
    "name": "Skill Chip",
@@ -2832,7 +3014,8 @@
     "cost": 4
    },
    "heavy": false,
-   "link": "../rulebook/ch9.html#arcane-enhancements-skill-chip"
+   "link": "../rulebook/ch9.html#arcane-enhancements-skill-chip",
+   "text": "+1 bonus dot to one Ability."
   },
   {
    "name": "Reinforced Bones",
@@ -2843,7 +3026,8 @@
     "cost": 5
    },
    "heavy": false,
-   "link": "../rulebook/ch9.html#arcane-enhancements-reinforced-bones"
+   "link": "../rulebook/ch9.html#arcane-enhancements-reinforced-bones",
+   "text": "+1 to your BDT."
   },
   {
    "name": "Hidden Blade",
@@ -2854,7 +3038,8 @@
     "cost": 5
    },
    "heavy": false,
-   "link": "../rulebook/ch9.html#arcane-enhancements-hidden-blade"
+   "link": "../rulebook/ch9.html#arcane-enhancements-hidden-blade",
+   "text": "A retractable weapon built into your arm. It cannot be disarmed and passes searches."
   },
   {
    "name": "Spring Legs",
@@ -2865,7 +3050,8 @@
     "cost": 5
    },
    "heavy": false,
-   "link": "../rulebook/ch9.html#arcane-enhancements-spring-legs"
+   "link": "../rulebook/ch9.html#arcane-enhancements-spring-legs",
+   "text": "Leap one zone straight up or over an obstacle as part of your move."
   },
   {
    "name": "Muscle Weave",
@@ -2876,7 +3062,8 @@
     "cost": 6
    },
    "heavy": false,
-   "link": "../rulebook/ch9.html#arcane-enhancements-muscle-weave"
+   "link": "../rulebook/ch9.html#arcane-enhancements-muscle-weave",
+   "text": "+1 bonus dot to Strength or Fortitude."
   },
   {
    "name": "Reflex Wiring",
@@ -2887,7 +3074,8 @@
     "cost": 6
    },
    "heavy": false,
-   "link": "../rulebook/ch9.html#arcane-enhancements-reflex-wiring"
+   "link": "../rulebook/ch9.html#arcane-enhancements-reflex-wiring",
+   "text": "+1 bonus dot to Dexterity or Perception."
   },
   {
    "name": "Neural Link",
@@ -2898,7 +3086,8 @@
     "cost": 6
    },
    "heavy": false,
-   "link": "../rulebook/ch9.html#arcane-enhancements-neural-link"
+   "link": "../rulebook/ch9.html#arcane-enhancements-neural-link",
+   "text": "+1 bonus dot to Intelligence or Wisdom, and you can interface directly with implements."
   },
   {
    "name": "Subdermal Plating",
@@ -2909,7 +3098,8 @@
     "cost": 7
    },
    "heavy": true,
-   "link": "../rulebook/ch9.html#arcane-enhancements-subdermal-plating"
+   "link": "../rulebook/ch9.html#arcane-enhancements-subdermal-plating",
+   "text": "+2 to your BDT. It stacks with worn armor."
   },
   {
    "name": "Jump Jets",
@@ -2920,7 +3110,8 @@
     "cost": 8
    },
    "heavy": true,
-   "link": "../rulebook/ch9.html#arcane-enhancements-jump-jets"
+   "link": "../rulebook/ch9.html#arcane-enhancements-jump-jets",
+   "text": "Mechanical flight at double your movement. You must use all of your movement every turn or begin to fall."
   },
   {
    "name": "Mana Capacitor",
@@ -2931,7 +3122,8 @@
     "cost": 8
    },
    "heavy": true,
-   "link": "../rulebook/ch9.html#arcane-enhancements-mana-capacitor"
+   "link": "../rulebook/ch9.html#arcane-enhancements-mana-capacitor",
+   "text": "Stores up to 5 mana outside your pool, which you can draw on in any turn."
   }
  ],
  "flaws": [
@@ -2944,7 +3136,8 @@
     "per": 1,
     "max": 5
    },
-   "link": "../rulebook/ch9.html#core-flaws-addiction"
+   "link": "../rulebook/ch9.html#core-flaws-addiction",
+   "text": "You need a substance or experience to function at your best. Each dot makes the dependency, and going without, worse."
   },
   {
    "name": "Blind",
@@ -2954,7 +3147,8 @@
     "kind": "fixed",
     "cost": 7
    },
-   "link": "../rulebook/ch9.html#core-flaws-blind"
+   "link": "../rulebook/ch9.html#core-flaws-blind",
+   "text": "You cannot see. Sight-based rolls are impossible or made at a severe penalty. Other senses may compensate over time with Storyteller approval."
   },
   {
    "name": "Chronic Pain",
@@ -2965,7 +3159,8 @@
     "per": 1,
     "max": 3
    },
-   "link": "../rulebook/ch9.html#core-flaws-chronic-pain"
+   "link": "../rulebook/ch9.html#core-flaws-chronic-pain",
+   "text": "Once you take any damage in a scene, each dot adds a penalty die to your physical rolls for the rest of it."
   },
   {
    "name": "Clumsy",
@@ -2976,7 +3171,8 @@
     "per": 1,
     "max": 3
    },
-   "link": "../rulebook/ch9.html#core-flaws-clumsy"
+   "link": "../rulebook/ch9.html#core-flaws-clumsy",
+   "text": "Each dot adds a penalty die to Dexterity rolls that need quick or delicate movement."
   },
   {
    "name": "Deaf",
@@ -2986,7 +3182,8 @@
     "kind": "fixed",
     "cost": 5
    },
-   "link": "../rulebook/ch9.html#core-flaws-deaf"
+   "link": "../rulebook/ch9.html#core-flaws-deaf",
+   "text": "You cannot hear. Hearing-based rolls are impossible, and social rolls that depend on speech suffer heavy penalties."
   },
   {
    "name": "Frail",
@@ -2997,7 +3194,8 @@
     "per": 1,
     "max": 2
    },
-   "link": "../rulebook/ch9.html#core-flaws-frail"
+   "link": "../rulebook/ch9.html#core-flaws-frail",
+   "text": "Each dot removes one of your Lethal health boxes."
   },
   {
    "name": "Glass Jaw",
@@ -3008,7 +3206,8 @@
     "per": 1,
     "max": 3
    },
-   "link": "../rulebook/ch9.html#core-flaws-glass-jaw"
+   "link": "../rulebook/ch9.html#core-flaws-glass-jaw",
+   "text": "Each dot lowers your BDT by 1."
   },
   {
    "name": "Missing Limb",
@@ -3021,7 +3220,8 @@
      5
     ]
    },
-   "link": "../rulebook/ch9.html#core-flaws-missing-limb"
+   "link": "../rulebook/ch9.html#core-flaws-missing-limb",
+   "text": "Effects depend on the limb and the Storyteller. Automaton prosthetics are common in Terrana, and some people prefer them."
   },
   {
    "name": "Sickly",
@@ -3032,7 +3232,8 @@
     "per": 1,
     "max": 3
    },
-   "link": "../rulebook/ch9.html#core-flaws-sickly"
+   "link": "../rulebook/ch9.html#core-flaws-sickly",
+   "text": "Each dot adds a penalty die to rolls to resist disease and poison."
   },
   {
    "name": "Slow",
@@ -3043,7 +3244,8 @@
     "per": 1,
     "max": 3
    },
-   "link": "../rulebook/ch9.html#core-flaws-slow"
+   "link": "../rulebook/ch9.html#core-flaws-slow",
+   "text": "Each dot lowers your Initiative by 1."
   },
   {
    "name": "Awkward",
@@ -3054,7 +3256,8 @@
     "per": 1,
     "max": 3
    },
-   "link": "../rulebook/ch9.html#core-flaws-awkward"
+   "link": "../rulebook/ch9.html#core-flaws-awkward",
+   "text": "Each dot adds a penalty die to social rolls with strangers."
   },
   {
    "name": "Dark Secret",
@@ -3065,7 +3268,8 @@
     "per": 1,
     "max": 4
    },
-   "link": "../rulebook/ch9.html#core-flaws-dark-secret"
+   "link": "../rulebook/ch9.html#core-flaws-dark-secret",
+   "text": "Something you are hiding. Each dot raises how bad it is and what happens if it comes out."
   },
   {
    "name": "Debt",
@@ -3076,7 +3280,8 @@
     "per": 1,
     "max": 3
    },
-   "link": "../rulebook/ch9.html#core-flaws-debt"
+   "link": "../rulebook/ch9.html#core-flaws-debt",
+   "text": "You owe someone powerful. Each dot raises the size of the debt and the threat of not paying."
   },
   {
    "name": "Enemy",
@@ -3090,7 +3295,8 @@
      5
     ]
    },
-   "link": "../rulebook/ch9.html#core-flaws-enemy"
+   "link": "../rulebook/ch9.html#core-flaws-enemy",
+   "text": "A named enemy who grows more powerful with each dot. The Storyteller controls them and brings them in at dramatic moments."
   },
   {
    "name": "Honest to a Fault",
@@ -3100,7 +3306,8 @@
     "kind": "fixed",
     "cost": 3
    },
-   "link": "../rulebook/ch9.html#core-flaws-honest-to-a-fault"
+   "link": "../rulebook/ch9.html#core-flaws-honest-to-a-fault",
+   "text": "You cannot tell a deliberate lie. Subterfuge rolls to deceive automatically fail."
   },
   {
    "name": "Infamous Family",
@@ -3111,7 +3318,8 @@
     "per": 1,
     "max": 3
    },
-   "link": "../rulebook/ch9.html#core-flaws-infamous-family"
+   "link": "../rulebook/ch9.html#core-flaws-infamous-family",
+   "text": "Each dot adds a penalty die to social rolls with anyone who knows your family name."
   },
   {
    "name": "Notoriety",
@@ -3122,7 +3330,8 @@
     "per": 1,
     "max": 3
    },
-   "link": "../rulebook/ch9.html#core-flaws-notoriety"
+   "link": "../rulebook/ch9.html#core-flaws-notoriety",
+   "text": "Each dot adds a penalty die to social rolls with groups who know your bad reputation."
   },
   {
    "name": "Outcast",
@@ -3133,7 +3342,8 @@
     "per": 1,
     "max": 3
    },
-   "link": "../rulebook/ch9.html#core-flaws-outcast"
+   "link": "../rulebook/ch9.html#core-flaws-outcast",
+   "text": "Your own people have cast you out. Each dot adds a penalty die to social rolls with your heritage or home community."
   },
   {
    "name": "Sworn Rival",
@@ -3143,7 +3353,8 @@
     "kind": "fixed",
     "cost": 2
    },
-   "link": "../rulebook/ch9.html#core-flaws-sworn-rival"
+   "link": "../rulebook/ch9.html#core-flaws-sworn-rival",
+   "text": "Someone your equal is determined to beat you and keeps turning up to try. The Storyteller controls them."
   },
   {
    "name": "Ward",
@@ -3154,7 +3365,8 @@
     "per": 1,
     "max": 3
    },
-   "link": "../rulebook/ch9.html#core-flaws-ward"
+   "link": "../rulebook/ch9.html#core-flaws-ward",
+   "text": "Someone depends on you completely. Each dot makes them more vulnerable and more trouble."
   },
   {
    "name": "Absent-Minded",
@@ -3165,7 +3377,8 @@
     "per": 1,
     "max": 3
    },
-   "link": "../rulebook/ch9.html#core-flaws-absent-minded"
+   "link": "../rulebook/ch9.html#core-flaws-absent-minded",
+   "text": "Each dot adds a penalty die to rolls to remember details, plans, or where you left things."
   },
   {
    "name": "Amnesia",
@@ -3180,7 +3393,8 @@
      5
     ]
    },
-   "link": "../rulebook/ch9.html#core-flaws-amnesia"
+   "link": "../rulebook/ch9.html#core-flaws-amnesia",
+   "text": "Gaps in your memory. Each dot makes them larger and more of your past unreachable."
   },
   {
    "name": "Compulsion",
@@ -3191,7 +3405,8 @@
     "per": 1,
     "max": 4
    },
-   "link": "../rulebook/ch9.html#core-flaws-compulsion"
+   "link": "../rulebook/ch9.html#core-flaws-compulsion",
+   "text": "A behavior you cannot easily resist. Each dot makes it trigger more often and harder to suppress."
   },
   {
    "name": "Gullible",
@@ -3202,7 +3417,8 @@
     "per": 1,
     "max": 3
    },
-   "link": "../rulebook/ch9.html#core-flaws-gullible"
+   "link": "../rulebook/ch9.html#core-flaws-gullible",
+   "text": "Each dot adds a penalty die to Insight rolls to spot a lie."
   },
   {
    "name": "Haunted",
@@ -3216,7 +3432,8 @@
      4
     ]
    },
-   "link": "../rulebook/ch9.html#core-flaws-haunted"
+   "link": "../rulebook/ch9.html#core-flaws-haunted",
+   "text": "Something follows you: a spirit, a curse, a recurring event. It worsens with each dot, and the Storyteller controls it."
   },
   {
    "name": "Insomnia",
@@ -3227,7 +3444,8 @@
     "per": 1,
     "max": 2
    },
-   "link": "../rulebook/ch9.html#core-flaws-insomnia"
+   "link": "../rulebook/ch9.html#core-flaws-insomnia",
+   "text": "Each dot lowers the Bashing damage you heal from a long rest by 1."
   },
   {
    "name": "Nightmares",
@@ -3238,7 +3456,8 @@
     "per": 1,
     "max": 2
    },
-   "link": "../rulebook/ch9.html#core-flaws-nightmares"
+   "link": "../rulebook/ch9.html#core-flaws-nightmares",
+   "text": "Each dot lowers the Willpower you regain from rest by 1."
   },
   {
    "name": "Paranoid",
@@ -3249,7 +3468,8 @@
     "per": 1,
     "max": 3
    },
-   "link": "../rulebook/ch9.html#core-flaws-paranoid"
+   "link": "../rulebook/ch9.html#core-flaws-paranoid",
+   "text": "Each dot adds a penalty die to rolls to trust or work with others, including helping them."
   },
   {
    "name": "Phobia",
@@ -3260,7 +3480,8 @@
     "per": 1,
     "max": 4
    },
-   "link": "../rulebook/ch9.html#core-flaws-phobia"
+   "link": "../rulebook/ch9.html#core-flaws-phobia",
+   "text": "An irrational fear of something specific. Each dot makes it more crippling when triggered."
   },
   {
    "name": "Reckless",
@@ -3270,7 +3491,8 @@
     "kind": "fixed",
     "cost": 2
    },
-   "link": "../rulebook/ch9.html#core-flaws-reckless"
+   "link": "../rulebook/ch9.html#core-flaws-reckless",
+   "text": "You must pass a Composure roll to retreat or hold back from danger."
   },
   {
    "name": "Cursed",
@@ -3357,7 +3579,8 @@
      "dots": null,
      "text": "The curse is slowly winning. The Storyteller marks a tally each session. When it fills, something terrible happens, such as a death, a transformation, or a great loss, unless the curse is broken first."
     }
-   ]
+   ],
+   "text": "Choose one of these curses or design your own with the Storyteller. They come in three tiers: an inconvenience (2 or 3 points), a burden (4 or 5 points), and a curse that defines your life (6 or 7 points). Any curse can be broken in play, usually as the goal of a story."
   },
   {
    "name": "Magic Averse",
@@ -3368,7 +3591,8 @@
     "per": 1,
     "max": 7
    },
-   "link": "../rulebook/ch9.html#core-flaws-magic-averse"
+   "link": "../rulebook/ch9.html#core-flaws-magic-averse",
+   "text": "Each dot locks you out of one of the seven casting schools. Choose them at creation with Storyteller approval."
   },
   {
    "name": "Mana Beacon",
@@ -3378,7 +3602,8 @@
     "kind": "fixed",
     "cost": 2
    },
-   "link": "../rulebook/ch9.html#core-flaws-mana-beacon"
+   "link": "../rulebook/ch9.html#core-flaws-mana-beacon",
+   "text": "Your mana can be sensed from far away. Spirits, voidlings, and anyone hunting magic find you more easily."
   },
   {
    "name": "Mana Deficient",
@@ -3389,7 +3614,8 @@
     "per": 1,
     "max": 5
    },
-   "link": "../rulebook/ch9.html#core-flaws-mana-deficient"
+   "link": "../rulebook/ch9.html#core-flaws-mana-deficient",
+   "text": "Each dot lowers your Mana Pool by 2."
   },
   {
    "name": "Mana Leak",
@@ -3400,7 +3626,8 @@
     "per": 1,
     "max": 3
    },
-   "link": "../rulebook/ch9.html#core-flaws-mana-leak"
+   "link": "../rulebook/ch9.html#core-flaws-mana-leak",
+   "text": "Each dot drains 1 mana from your pool during every Upkeep Phase."
   },
   {
    "name": "Mana Sensitive",
@@ -3411,7 +3638,8 @@
     "per": 1,
     "max": 3
    },
-   "link": "../rulebook/ch9.html#core-flaws-mana-sensitive"
+   "link": "../rulebook/ch9.html#core-flaws-mana-sensitive",
+   "text": "Each dot adds a penalty die to all rolls in areas of high ambient mana, and mana sickness affects you sooner."
   },
   {
    "name": "Slow Channel",
@@ -3422,7 +3650,8 @@
     "per": 1,
     "max": 3
    },
-   "link": "../rulebook/ch9.html#core-flaws-slow-channel"
+   "link": "../rulebook/ch9.html#core-flaws-slow-channel",
+   "text": "Each dot lowers your Maximum Mana Per Turn by 1."
   },
   {
    "name": "Unstable Magic",
@@ -3433,7 +3662,8 @@
     "per": 1,
     "max": 3
    },
-   "link": "../rulebook/ch9.html#core-flaws-unstable-magic"
+   "link": "../rulebook/ch9.html#core-flaws-unstable-magic",
+   "text": "Your spells can misfire. At 1 dot, a casting roll with three or more 1s misfires; at 2 dots, two or more; at 3 dots, any 1. The Storyteller decides what goes wrong."
   },
   {
    "name": "Void Touched",
@@ -3443,7 +3673,8 @@
     "kind": "fixed",
     "cost": 3
    },
-   "link": "../rulebook/ch9.html#core-flaws-void-touched"
+   "link": "../rulebook/ch9.html#core-flaws-void-touched",
+   "text": "You were exposed to Void energy. Voidlings notice you more readily, and you take a penalty die on rolls to resist Void effects."
   },
   {
    "name": "Wild Mana",
@@ -3453,7 +3684,8 @@
     "kind": "fixed",
     "cost": 2
    },
-   "link": "../rulebook/ch9.html#core-flaws-wild-mana"
+   "link": "../rulebook/ch9.html#core-flaws-wild-mana",
+   "text": "Whenever you add extra mana to a roll, roll one die. On a 1 the extra mana is spent but adds nothing."
   },
   {
    "name": "Devil's Bargain",
@@ -3545,7 +3777,8 @@
      "dots": 3,
      "text": "The bargain has an end date set with your Storyteller. When it arrives, you pay in full or lose the power forever, and the patron comes to collect."
     }
-   ]
+   ],
+   "text": "Choose one of these bargains or design your own with the Storyteller. Each is a debt, a limit, or a weakness. 1 dot gives 3 points back, 2 dots give 5, and 3 dots give 7. A bargain can be paid off or broken in play, but whoever holds the contract wrote it carefully."
   }
  ],
  "guilds": [
