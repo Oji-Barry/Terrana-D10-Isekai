@@ -348,10 +348,11 @@
   // limit (optional): dots above it can't be filled right now and are faded out
   // Outside Storyteller Mode nothing can be filled past 5 at creation (the
   // Golden Rule), unless noCap is set (Willpower, Fate, Sanity).
-  function dotRow(label, value, max, base, onSet, limit, noCap) {
+  function dotRow(label, value, max, base, onSet, limit, noCap, readOnly) {
     base = base || 0;
     if (limit === undefined || limit === null) limit = max;
     if (!noCap && !stMode()) limit = Math.min(limit, 5);
+    if (readOnly) limit = value;
     var row = el('div', { class: 'dots', role: 'group', 'aria-label': label });
     for (var i = 1; i <= max; i++) {
       (function (n) {
@@ -363,7 +364,7 @@
           class: 'dot' + (on ? ' on' : '') + (locked ? ' locked' : '') + (out ? ' out' : '') + (n > 5 ? ' over5' : ''),
           'aria-label': label + ': ' + n + (n === 1 ? ' dot' : ' dots') + (out ? ' (no dots left)' : ''),
           'aria-pressed': on ? 'true' : 'false',
-          disabled: locked || out ? 'disabled' : null
+          disabled: locked || out || readOnly ? 'disabled' : null
         });
         b.addEventListener('click', function () {
           var v = (n === value) ? Math.max(base, n - 1) : n;
@@ -952,7 +953,7 @@
   }
   function statStart(n) { return n === 'Willpower' ? startWillpower() : 5; }
   S[9] = {
-    intro: 'Fill in 5 dots of each. If both of your highs are Vices, Willpower is 4. If both are Virtues, it is 6. One of each leaves it at 5. Fate and Sanity can only be changed at creation by Merits and Flaws.',
+    intro: 'These are filled in for you: 5 dots of each. If both of your highs are Vices, Willpower is 4. If both are Virtues, it is 6. One of each leaves it at 5. Fate and Sanity can only be changed at creation by Merits and Flaws.',
     link: '../rulebook/ch11.html',
     render: function (p) {
       build.stats = build.stats || {};
@@ -961,11 +962,11 @@
       ['Willpower', 'Fate', 'Sanity'].forEach(function (n) {
         p.appendChild(el('div', { class: 'trait stat' }, [
           el('span', { class: 'trait-name', text: n }),
-          dotRow(n, statVal(n), 10, 0, function (v) { build.stats[n] = v; refresh(true); }, null, true),
-          statVal(n) !== statStart(n) ? el('button', { type: 'button', class: 'act small', text: 'Reset to ' + statStart(n), onclick: function () { delete build.stats[n]; refresh(true); } }) : null
+          dotRow(n, statVal(n), 10, 0, function (v) { build.stats[n] = v; refresh(true); }, null, true, !stMode()),
+          stMode() && statVal(n) !== statStart(n) ? el('button', { type: 'button', class: 'act small', text: 'Reset to ' + statStart(n), onclick: function () { delete build.stats[n]; refresh(true); } }) : null
         ]));
       });
-      p.appendChild(el('p', { class: 'hint', text: 'Only change these if a Merit or Flaw you took says so.' }));
+      p.appendChild(el('p', { class: 'hint', text: stMode() ? 'Storyteller Mode: change these only if a Merit or Flaw says so.' : 'These are set by the rules. If a Merit or Flaw changes them, your Storyteller adjusts them in Storyteller Mode.' }));
       if (stMode()) storytellerExtras(p);
     },
     check: function () {
