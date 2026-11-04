@@ -737,20 +737,65 @@
   }
  ],
  "roles": {
-  "lines": [
+  "positions": [
    "Frontline",
    "Midline",
    "Backline"
   ],
-  "examples": [
-   "Frontline Tank",
-   "Frontline Fighter",
-   "Midline Healer",
-   "Midline Support",
-   "Backline Mage",
-   "Backline Rogue"
+  "styles": [
+   "Archer",
+   "Assassin",
+   "Bard",
+   "Berserker",
+   "Brawler",
+   "Bruiser",
+   "Caster",
+   "Commander",
+   "Controller",
+   "Defender",
+   "Duelist",
+   "Enchanter",
+   "Fighter",
+   "Grappler",
+   "Guardian",
+   "Gunner",
+   "Healer",
+   "Hunter",
+   "Mage",
+   "Medic",
+   "Monk",
+   "Rogue",
+   "Saboteur",
+   "Scout",
+   "Skirmisher",
+   "Sniper",
+   "Striker",
+   "Summoner",
+   "Support",
+   "Tactician",
+   "Tank",
+   "Trapper",
+   "Vanguard",
+   "Warden"
   ]
  },
+ "freebie_presets": [
+  {
+   "name": "Newb",
+   "points": 7,
+   "note": "The standard starting character."
+  },
+  {
+   "name": "Veteran",
+   "points": 14,
+   "note": "Double the points. Check with your Storyteller."
+  },
+  {
+   "name": "Legend",
+   "points": 28,
+   "note": "Double again. Check with your Storyteller."
+  }
+ ],
  "heritages": [
   {
    "name": "Avian",

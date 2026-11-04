@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en" data-root="../">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Character Forge | Jimothy's D10 Isekai JRPG</title>
+<link rel="stylesheet" href="../assets/site.css">
+<link rel="stylesheet" href="../assets/forge.css">
+<link rel="icon" href="../assets/icons/d10.svg" type="image/svg+xml">
+</head>
+<body data-page="forge" data-address="www.terrana.ccn/forge/">
+<div class="page">
+  <div id="site-top"></div>
+
+  <main class="content forge" id="forge">
+    <div class="panel win" id="forge-loading"><p class="center">Loading...</p></div>
+
+    <section class="panel win" id="forge-pick" hidden>
+      <h1>Character Forge</h1>
+      <p class="center">Build a character one step at a time, following Chapter 6.</p>
+      <div class="button-row center-row" id="forge-pick-buttons"></div>
+    </section>
+
+    <div id="forge-main" hidden>
+      <nav class="win steps" aria-label="Creation steps">
+        <div class="steps-name px" id="forge-charname"></div>
+        <ol id="step-list"></ol>
+        <a class="steps-exit" href="../characters/index.html">Back to My Characters</a>
+      </nav>
+
+      <div class="forge-body">
+        <section class="panel win step-panel" id="step-panel" aria-live="polite"></section>
+
+        <aside class="win forge-side" aria-label="Character so far">
+          <div class="counter" id="counter" hidden></div>
+          <h2 class="px side-title">So Far</h2>
+          <dl class="sofar" id="sofar"></dl>
+        </aside>
+      </div>
+
+      <div class="win forge-nav">
+        <button class="act" type="button" id="btn-back">Back</button>
+        <div class="counter-mini" id="counter-mini" aria-live="polite" hidden></div>
+        <a class="act" href="../characters/index.html" id="btn-exit">My Characters</a>
+        <button class="act primary" type="button" id="btn-next">Next</button>
+      </div>
+    </div>
+  </main>
+
+  <div id="site-bottom"></div>
+</div>
+
+<dialog id="dlg-save" class="ff-dialog" aria-labelledby="save-title">
+  <div class="ff-window">
+    <p class="ff-title px" id="save-title">Save and Continue?</p>
+    <div id="save-warnings"></div>
+    <div class="ff-choices">
+      <button type="button" class="ff-choice" id="save-yes">Yes</button>
+      <button type="button" class="ff-choice" id="save-no">No</button>
+    </div>
+  </div>
+</dialog>
+
+<script src="../vendor/supabase-2.118.0.js"></script>
+<script src="../assets/site.js"></script>
+<script src="../assets/auth.js"></script>
+<script src="../assets/forge.js"></script>
+</body>
+</html>

@@ -167,9 +167,24 @@ def main(src):
                        'link': link(links, 'ch7', r[0])})
     data['scales'] = scales
 
-    data['roles'] = {'lines': ['Frontline', 'Midline', 'Backline'],
-                     'examples': ['Frontline Tank', 'Frontline Fighter', 'Midline Healer',
-                                  'Midline Support', 'Backline Mage', 'Backline Rogue']}
+    # Step 3: a Position, then one fighting word (the same list for every Position)
+    data['roles'] = {
+        'positions': ['Frontline', 'Midline', 'Backline'],
+        'styles': sorted([
+            'Archer', 'Assassin', 'Bard', 'Berserker', 'Brawler', 'Bruiser', 'Caster', 'Commander',
+            'Controller', 'Defender', 'Duelist', 'Enchanter', 'Fighter', 'Grappler', 'Guardian',
+            'Gunner', 'Healer', 'Hunter', 'Mage', 'Medic', 'Monk', 'Rogue', 'Saboteur', 'Scout',
+            'Skirmisher', 'Sniper', 'Striker', 'Summoner', 'Support', 'Tactician', 'Tank',
+            'Trapper', 'Vanguard', 'Warden',
+        ]),
+    }
+
+    # Step 12: how many Freebie Points, set with the Storyteller
+    data['freebie_presets'] = [
+        {'name': 'Newb', 'points': 7, 'note': 'The standard starting character.'},
+        {'name': 'Veteran', 'points': 14, 'note': 'Double the points. Check with your Storyteller.'},
+        {'name': 'Legend', 'points': 28, 'note': 'Double again. Check with your Storyteller.'},
+    ]
 
     # Heritages
     heritages = []
