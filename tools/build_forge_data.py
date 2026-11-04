@@ -184,8 +184,29 @@ def parse_cost(text):
     if m:
         c.update(kind='range', min=int(m.group(1)), max=int(m.group(2)))
         return c
+    if t in ('2 to 7, by curse', '3, 5, or 7 points back (1 to 3 dots)'):
+        c['kind'] = 'named'  # options are read from Chapter 9, see named_options()
+        return c
     c['kind'] = 'storyteller'
     return c
+
+
+def named_options(path):
+    """Read the Curses and Devil's Bargains lists from Chapter 9."""
+    doc = docx.Document(path)
+    out, heading = {}, None
+    for b in rb.blocks(doc):
+        if isinstance(b, Table):
+            continue
+        txt = b.text.strip()
+        if rb.style_name(b).startswith('Heading'):
+            heading = txt if txt in ('Curses', "Devil's Bargains") else None
+            continue
+        m = heading and re.match(r'^(.+?) \((?:(\d) dots?, )?(\d) points?\): (.+)$', txt)
+        if m:
+            out.setdefault(heading, []).append({'name': m.group(1), 'points': int(m.group(3)),
+                                                'dots': int(m.group(2)) if m.group(2) else None, 'text': m.group(4)})
+    return out
 
 
 def split_names(s):
@@ -306,6 +327,16 @@ def main(src):
     for r in qr.get('Enhancements', []):
         merits.append({'name': r[0], 'group': 'Arcane Enhancements', 'cost': parse_cost(r[1]),
                        'heavy': 'heavy' in r[1], 'link': link(links, 'ch9', r[0])})
+    named = named_options(os.path.join(src, 'Jimothy D10 - Chapter 9 - Merits and Flaws.docx'))
+    for f in flaws:
+        if f['points'].get('kind') == 'named':
+            f['points']['min'], f['points']['max'] = (2, 7) if f['name'] == 'Cursed' else (3, 7)
+            f['options'] = named['Curses' if f['name'] == 'Cursed' else "Devil's Bargains"]
+            f['points']['options'] = f['options']
+            f['link'] = '../rulebook/ch9.html#' + ('core-flaws-curses' if f['name'] == 'Cursed' else 'special-powers-devils-bargains')
+            assert len(f['options']) == 6, f['name']
+            if f['name'] != 'Cursed':
+                f['points']['levels'] = [3, 5, 7]
     data['merits'] = [m for m in merits if m['name'] != 'Magic Eye']  # the eyes are listed one by one
     data['flaws'] = flaws
 

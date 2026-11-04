@@ -239,3 +239,4 @@
 .pl-count { color: var(--gold); font-size: 15px; margin: 4px 0 0; }
 .field.specialty select, .field.specialty input { width: 100%; }
 .field.specialty input { margin-top: 4px; }
+.pick-detail { margin: 0; padding: 0 14px 12px; }

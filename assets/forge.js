@@ -720,9 +720,14 @@
       c.options.forEach(function (pts, i) { o.push({ v: 'c' + i, pts: pts, label: lbl('Option ' + (i + 1), pts) }); });
     } else if (c.kind === 'range') {
       for (var p2 = c.min; p2 <= c.max; p2++) o.push({ v: 'r' + p2, pts: p2, label: lbl('Set with your Storyteller', p2) });
+    } else if (c.kind === 'named') {
+      // a list from the book, then Other at each point level
+      (c.options || []).forEach(function (x, i) { o.push({ v: 'n' + i, pts: x.points, label: lbl(x.name + (x.dots ? ', ' + x.dots + ' dot' + (x.dots > 1 ? 's' : '') : ''), x.points) }); });
+      (c.levels || range(c.min, c.max)).forEach(function (pts) { o.push({ v: 'r' + pts, pts: pts, label: lbl('Other, made with your Storyteller', pts) }); });
     }
     return o;
   }
+  function range(a, b) { var r = []; for (var i = a; i <= b; i++) r.push(i); return r; }
   function picksTotal(kind) {
     var list = kind === 'flaws' ? D.flaws : D.merits, picks = build[kind] || {}, t = 0;
     Object.keys(picks).forEach(function (name) {
@@ -749,6 +754,7 @@
       groups[g].forEach(function (m) {
         var id = kind + '-' + slug(m.name);
         var c = kind === 'flaws' ? m.points : m.cost;
+        if (m.options) c.options = m.options;
         var sel = el('select', { id: id }, [el('option', { value: '', text: 'None' })]);
         costOptions(c, kind === 'flaws').forEach(function (o) {
           var op = el('option', { value: o.v, text: o.label });
@@ -757,7 +763,7 @@
         });
         sel.addEventListener('change', function () {
           if (sel.value) build[kind][m.name] = sel.value; else delete build[kind][m.name];
-          refresh();
+          refresh(!!m.options);
         });
         det.appendChild(el('div', { class: 'pick-row' }, [
           el('label', { for: id, class: 'pick-name', text: m.name }),
@@ -765,6 +771,17 @@
           sel,
           bookLink(m.link, 'Rules')
         ]));
+        // the chosen curse or bargain, or a box to describe your own
+        var v = build[kind][m.name] || '';
+        if (m.options && v.charAt(0) === 'n') {
+          det.appendChild(el('p', { class: 'hint pick-detail', text: m.options[Number(v.slice(1))].text }));
+        } else if (m.options && v.charAt(0) === 'r') {
+          build.flaw_notes = build.flaw_notes || {};
+          var nid = id + '-note';
+          var note = el('input', { id: nid, maxlength: '200', value: build.flaw_notes[m.name] || '', placeholder: 'Describe it as agreed with your Storyteller' });
+          note.addEventListener('input', function () { build.flaw_notes[m.name] = note.value; refresh(); });
+          det.appendChild(el('div', { class: 'field pick-detail' }, [el('label', { for: nid, text: 'Your ' + (m.name === 'Cursed' ? 'curse' : 'bargain') }), note]));
+        }
       });
       p.appendChild(det);
     });
@@ -793,6 +810,10 @@
           var item = byName(kind === 'flaws' ? D.flaws : D.merits, name);
           var c = item && (kind === 'flaws' ? item.points : item.cost);
           if (c && c.kind === 'range') w.push({ key: 'st.' + slug(name), text: name + ' is set with your Storyteller. Agree on the points together.' });
+          if (c && c.kind === 'named' && String(build[kind][name]).charAt(0) === 'r') {
+            w.push({ key: 'st.' + slug(name), text: 'Your own ' + name + ' needs your Storyteller to agree on it.' });
+            if (!((build.flaw_notes || {})[name] || '').trim()) w.push({ key: 'note.' + slug(name), text: 'Describe your ' + (name === 'Cursed' ? 'curse' : 'bargain') + '.' });
+          }
           if (c && c.kind === 'per_dot' && Number(build[kind][name]) > c.max) w.push({ key: 'max.' + slug(name), text: name + ' is above its usual max of ' + c.max + '.' });
         });
       });
@@ -802,7 +823,12 @@
       var out = [];
       var ms = Object.keys(build.merits || {}), fs = Object.keys(build.flaws || {});
       if (ms.length) out.push(['Merits', ms.join(', ')]);
-      if (fs.length) out.push(['Flaws', fs.join(', ')]);
+      if (fs.length) out.push(['Flaws', fs.map(function (n) {
+        var f = byName(D.flaws, n), v = String(build.flaws[n]);
+        if (f && f.options && v.charAt(0) === 'n') return n + ' (' + f.options[Number(v.slice(1))].name + ')';
+        if (f && f.options && v.charAt(0) === 'r') return n + ' (' + (((build.flaw_notes || {})[n] || '').trim() || 'Other') + ')';
+        return n;
+      }).join(', ')]);
       return out;
     }
   };
@@ -953,7 +979,7 @@
   // ---------- unfinished steps ----------
   // Warnings that mean "not done yet" rather than "check with your Storyteller".
   // Saving with these is fine, but the step stays marked and you are reminded again.
-  var TODO_RE = /^(trope\.none|drive\.|role\.(position|style)|her\.(none|demon\.blank|innate|merit)$|cols\.unset|attr\.left|grp\.(unset|left)|spec\.[A-Z]|pl\.(none|name|few)|bg\.left|guild\.noname)/;
+  var TODO_RE = /^(trope\.none|drive\.|role\.(position|style)|her\.(none|demon\.blank|innate|merit)$|cols\.unset|attr\.left|grp\.(unset|left)|spec\.[A-Z]|pl\.(none|name|few)|bg\.left|guild\.noname|note\.)/;
   function isTodo(w) { return TODO_RE.test(w.key); }
   function todos(n) { return stMode() ? [] : S[n].check().filter(isTodo); }
   function unfinished() {
