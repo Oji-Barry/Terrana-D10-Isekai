@@ -398,6 +398,16 @@
     D.attributes[col].forEach(function (a) { spent += attrVal(a) - attrBase(a); });
     return n - spent;
   }
+  // The highest dot an attribute can be filled to right now: its column cap
+  // (Aversion 4, or 5 if Innate), never above 5 at creation, and no more than
+  // the column has dots left for. Dots above this are faded out.
+  function attrLimit(a, col) {
+    var cap = colNumber(col);
+    var limit = Math.min(5, cap === null ? 5 : cap + (a === innateAttr() ? 1 : 0));
+    var left = colLeft(col);
+    if (left !== null) limit = Math.min(limit, attrVal(a) + Math.max(0, left));
+    return limit;
+  }
   function attributeFlawCol() {
     var h = heritage();
     if (!h) return null;
@@ -436,8 +446,8 @@
           var base = attrBase(a);
           box.appendChild(el('div', { class: 'trait' }, [
             el('span', { class: 'trait-name', text: a + (a === innateAttr() ? ' (Innate)' : '') }),
-            dotRow(a, attrVal(a), dotMax(5), base, function (v) { build.attrs[a] = v; refresh(true); },
-              stMode() || colLeft(col) === null ? null : attrVal(a) + Math.max(0, colLeft(col)))
+            dotRow(a, attrVal(a), stMode() ? 10 : 7, base, function (v) { build.attrs[a] = v; refresh(true); },
+              stMode() ? null : attrLimit(a, col))
           ]));
         });
         grid.appendChild(box);
@@ -634,8 +644,8 @@
           });
           box.appendChild(el('div', { class: 'trait' }, [
             el('span', { class: 'trait-name', title: a.used_for, text: a.name }),
-            dotRow(a.name, v, dotMax(5), 0, function (nv) { build.abilities[a.name] = nv; refresh(true); },
-              stMode() || groupLeft(g) === null ? null : v + Math.max(0, groupLeft(g))),
+            dotRow(a.name, v, stMode() ? 10 : 7, 0, function (nv) { build.abilities[a.name] = nv; refresh(true); },
+              stMode() ? null : Math.min(5, groupLeft(g) === null ? 5 : v + Math.max(0, groupLeft(g)))),
             el('label', { class: 'pl-check', for: plId }, [pl, ' PL'])
           ]));
           specialtyBoxes(box, a);
