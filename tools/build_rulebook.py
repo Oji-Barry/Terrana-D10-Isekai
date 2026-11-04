@@ -6,6 +6,7 @@ Writes, inside the repo:
   rulebook/<slug>.html      one page per chapter (front, ch1..ch16, terms)
   rulebook/index.html       the Rulebook landing page
   rulebook/search.json      what the search box looks through
+  rulebook/toc.json         each chapter's sections, for the chapter menu
 """
 import glob
 import hashlib
@@ -470,7 +471,8 @@ def build(path, slug, prev_slug, next_slug, pics):
     page = PAGE.format(
         title=esc(heading), slug=slug, kicker=esc(kicker), heading=esc(heading), cover=cover_html,
         toc=''.join(toc_html), sections='\n\n'.join(out_sections), pager=pager)
-    return page, search
+    toc = [{'id': x['id'], 's': x['title']} for x in sections]
+    return page, search, toc
 
 
 PAGE = '''<!doctype html>
@@ -564,12 +566,14 @@ def main(src_dir):
     os.makedirs('rulebook', exist_ok=True)
     pics = None
     search = []
+    tocs = {}
     slugs = [c[0] for c in CHAPTERS]
     for idx, (slug, fname, _) in enumerate(CHAPTERS):
         path = os.path.join(src_dir, 'Jimothy D10 - ' + fname + '.docx')
         prev_slug = slugs[idx - 1] if idx > 0 else ''
         next_slug = slugs[idx + 1] if idx + 1 < len(slugs) else ''
-        page, s = build(path, slug, prev_slug, next_slug, pics)
+        page, s, t = build(path, slug, prev_slug, next_slug, pics)
+        tocs[slug] = t
         with open('rulebook/' + slug + '.html', 'w', encoding='utf-8') as fh:
             fh.write(page)
         search += s
@@ -578,6 +582,8 @@ def main(src_dir):
         e['c'] = NAME[e['p']]
     with open('rulebook/search.json', 'w', encoding='utf-8') as fh:
         json.dump(search, fh, ensure_ascii=False, separators=(',', ':'))
+    with open('rulebook/toc.json', 'w', encoding='utf-8') as fh:
+        json.dump(tocs, fh, ensure_ascii=False, separators=(',', ':'))
     with open('rulebook/index.html', 'w', encoding='utf-8') as fh:
         fh.write(build_index())
     print('wrote rulebook/index.html and rulebook/search.json')

@@ -53,7 +53,7 @@
 
   var menuHtml = chapters.map(function (c) {
     var cur = page === c[0] ? ' aria-current="page"' : '';
-    return '<a class="menu-item" href="' + root + 'rulebook/' + c[0] + '.html"' + cur + '>' +
+    return '<a class="menu-item" data-slug="' + c[0] + '" href="' + root + 'rulebook/' + c[0] + '.html"' + cur + '>' +
       '<span class="num">' + esc(c[1]) + '</span><span>' + esc(c[2]) + '</span></a>';
   }).join('');
 
@@ -174,56 +174,32 @@
       if (ev.key === 'Escape') { input.value = ''; runSearch(); }
     });
 
-    // On a chapter page, list its sections under the current chapter
-    var secs = document.querySelectorAll('.content section[id]:not(#top)');
-    var curItem = side.querySelector('.menu-item[aria-current="page"]');
-    if (secs.length && curItem) {
-      var sub = document.createElement('div');
-      sub.className = 'menu-sub';
-      var links = [];
-      Array.prototype.forEach.call(secs, function (s) {
-        var h = s.querySelector('h2');
-        if (!h) return;
-        var a = document.createElement('a');
-        a.href = '#' + s.id;
-        a.textContent = h.textContent;
-        sub.appendChild(a);
-        links.push([s, a]);
-      });
-      curItem.parentNode.insertBefore(sub, curItem.nextSibling);
-
-      // Highlight the section being read
-      if ('IntersectionObserver' in window) {
-        var obs = new IntersectionObserver(function (entries) {
-          entries.forEach(function (e) {
-            if (!e.isIntersecting) return;
-            links.forEach(function (l) { l[1].classList.toggle('here', l[0] === e.target); });
-          });
-        }, { rootMargin: '-20% 0px -70% 0px' });
-        links.forEach(function (l) { obs.observe(l[0]); });
-      }
-
-      // On phones, close the menu after picking a section
-      sub.addEventListener('click', function () {
-        if (window.matchMedia('(max-width: 760px)').matches) setHidden(true, false);
-      });
-    }
-
+    // ---- Showing and hiding the menu ----
     var KEY = 'terrana-menu-hidden';
+    function isPhone() { return window.matchMedia('(max-width: 760px)').matches; }
+
+    var backdrop = document.createElement('div');
+    backdrop.className = 'menu-backdrop';
+    backdrop.setAttribute('aria-hidden', 'true');
+    document.body.appendChild(backdrop);
+
     function setHidden(hidden, save) {
       document.body.classList.toggle('menu-hidden', hidden);
-      if (save) {
+      document.body.classList.toggle('menu-open-phone', !hidden && isPhone());
+      if (save && !isPhone()) {
         try { localStorage.setItem(KEY, hidden ? '1' : '0'); } catch (e) { /* storage blocked: fine */ }
       }
     }
 
-    var saved = null;
-    try { saved = localStorage.getItem(KEY); } catch (e) { saved = null; }
-    if (saved === null) {
-      setHidden(window.matchMedia('(max-width: 760px)').matches, false);
+    if (isPhone()) {
+      setHidden(true, false); // phones always start with the menu tucked away
     } else {
+      var saved = null;
+      try { saved = localStorage.getItem(KEY); } catch (e) { saved = null; }
       setHidden(saved === '1', false);
     }
+    // Let the slide animation run only after the first paint
+    requestAnimationFrame(function () { document.body.classList.add('menu-ready'); });
 
     document.getElementById('menu-hide').addEventListener('click', function () {
       setHidden(true, true);
@@ -233,6 +209,106 @@
       setHidden(false, true);
       document.getElementById('menu-hide').focus();
     });
+    backdrop.addEventListener('click', function () { setHidden(true, false); });
+    document.addEventListener('keydown', function (ev) {
+      if (ev.key === 'Escape' && isPhone() && !document.body.classList.contains('menu-hidden')) {
+        setHidden(true, false);
+        document.getElementById('menu-show').focus();
+      }
+    });
+
+    // ---- Chapter drop-downs ----
+    // First tap on a chapter opens its contents; a second tap goes to it.
+    var toc = null;
+    function loadToc() {
+      if (toc) return Promise.resolve(toc);
+      return fetch(root + 'rulebook/toc.json').then(function (r) { return r.json(); })
+        .then(function (d) { toc = d; return d; });
+    }
+
+    var spyLinks = [];
+    function buildSub(item) {
+      var slug = item.getAttribute('data-slug');
+      var sub = document.createElement('div');
+      sub.className = 'menu-sub';
+      sub.id = 'sub-' + slug;
+      item.setAttribute('aria-controls', sub.id);
+      item.parentNode.insertBefore(sub, item.nextSibling);
+
+      var secs = document.querySelectorAll('.content section[id]:not(#top)');
+      if (slug === page && secs.length) {
+        spyLinks = [];
+        Array.prototype.forEach.call(secs, function (sec) {
+          var h = sec.querySelector('h2');
+          if (!h) return;
+          var a = document.createElement('a');
+          a.href = '#' + sec.id;
+          a.textContent = h.textContent;
+          sub.appendChild(a);
+          spyLinks.push([sec, a]);
+        });
+        if ('IntersectionObserver' in window) {
+          var obs = new IntersectionObserver(function (entries) {
+            entries.forEach(function (e) {
+              if (!e.isIntersecting) return;
+              spyLinks.forEach(function (l) { l[1].classList.toggle('here', l[0] === e.target); });
+            });
+          }, { rootMargin: '-20% 0px -70% 0px' });
+          spyLinks.forEach(function (l) { obs.observe(l[0]); });
+        }
+      } else {
+        sub.innerHTML = '<span class="menu-sub-note">Loading...</span>';
+        loadToc().then(function (d) {
+          var list = d[slug] || [];
+          sub.textContent = '';
+          list.forEach(function (x) {
+            var a = document.createElement('a');
+            a.href = root + 'rulebook/' + slug + '.html#' + x.id;
+            a.textContent = x.s;
+            sub.appendChild(a);
+          });
+        }).catch(function () {
+          sub.innerHTML = '<span class="menu-sub-note">Could not load this list. Tap the chapter again to open it.</span>';
+        });
+      }
+      return sub;
+    }
+
+    var items = side.querySelectorAll('.chapters-nav .menu-item');
+    function openItem(item) {
+      Array.prototype.forEach.call(items, function (it) {
+        var open = it === item;
+        it.classList.toggle('picked', open);
+        it.setAttribute('aria-expanded', open ? 'true' : 'false');
+        var sub = document.getElementById('sub-' + it.getAttribute('data-slug'));
+        if (sub) sub.hidden = !open;
+      });
+      if (!document.getElementById('sub-' + item.getAttribute('data-slug'))) buildSub(item);
+    }
+
+    Array.prototype.forEach.call(items, function (it) {
+      it.setAttribute('aria-expanded', 'false');
+      it.addEventListener('click', function (ev) {
+        if (!it.classList.contains('picked')) {
+          ev.preventDefault();
+          openItem(it);
+          return;
+        }
+        // Second tap: go to that chapter (the top of it, if it is this page)
+        if (it.getAttribute('data-slug') === page) {
+          ev.preventDefault();
+          location.hash = 'top';
+          if (isPhone()) setHidden(true, false);
+        }
+      });
+    });
+
+    side.addEventListener('click', function (ev) {
+      if (ev.target.closest('.menu-sub a') && isPhone()) setHidden(true, false);
+    });
+
+    var curItem = side.querySelector('.chapters-nav .menu-item[aria-current="page"]');
+    if (curItem) openItem(curItem);
   }
 
   var bottom = document.getElementById('site-bottom');
