@@ -436,7 +436,8 @@
           var base = attrBase(a);
           box.appendChild(el('div', { class: 'trait' }, [
             el('span', { class: 'trait-name', text: a + (a === innateAttr() ? ' (Innate)' : '') }),
-            dotRow(a, attrVal(a), dotMax(a === innateAttr() ? 7 : 6), base, function (v) { build.attrs[a] = v; refresh(true); })
+            dotRow(a, attrVal(a), dotMax(5), base, function (v) { build.attrs[a] = v; refresh(true); },
+              stMode() || colLeft(col) === null ? null : attrVal(a) + Math.max(0, colLeft(col)))
           ]));
         });
         grid.appendChild(box);
