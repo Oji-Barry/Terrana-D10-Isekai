@@ -151,8 +151,7 @@ a:hover { color: var(--gold-hover); }
 .menu-item:hover { background: rgba(255, 255, 255, 0.08); color: #fff; }
 .menu-item .num { min-width: 22px; color: var(--text-muted); }
 .menu-item[aria-current="page"] { background: rgba(255, 255, 255, 0.14); }
-.menu-item[aria-current="page"]::before,
-.menu-item:focus-visible::before {
+.menu-item.picked::before {
   content: '';
   position: absolute;
   left: 6px;
@@ -381,3 +380,48 @@ button.act { cursor: pointer; font-family: var(--body); }
 .dialog { width: min(460px, calc(100vw - 32px)); padding: 20px; }
 .dialog::backdrop { background: rgba(3, 5, 18, 0.7); }
 .dialog .button-row { justify-content: flex-end; }
+
+/* Chapter drop-downs */
+.menu-item.picked { background: rgba(255, 255, 255, 0.1); }
+.menu-item[aria-current="page"] { color: var(--gold); }
+.menu-sub-note { display: block; padding: 6px 8px; font-size: 13px; color: var(--text-muted); }
+.menu-backdrop { display: none; }
+
+/* Phones: the chapter menu slides in from the left over the page */
+@media (max-width: 760px) {
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    z-index: 50;
+    width: min(320px, 86vw);
+    max-width: none;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    border-radius: 0 8px 8px 0;
+    transform: translateX(0);
+  }
+  body.menu-hidden .sidebar {
+    display: block !important;
+    transform: translateX(-105%);
+    visibility: hidden;
+  }
+  body.menu-ready .sidebar { transition: transform 0.25s ease, visibility 0s linear 0s; }
+  body.menu-ready.menu-hidden .sidebar { transition: transform 0.25s ease, visibility 0s linear 0.25s; }
+  .rail, body.menu-hidden .rail { display: flex; flex-basis: 100%; flex-direction: row; justify-content: flex-start; }
+  .rail .px { writing-mode: horizontal-tb; padding: 0 4px; }
+  body.menu-open-phone .menu-backdrop { display: block; position: fixed; inset: 0; z-index: 40; background: rgba(3, 5, 18, 0.65); }
+  body.menu-open-phone { overflow: hidden; }
+}
+@media (prefers-reduced-motion: reduce) {
+  body.menu-ready .sidebar, body.menu-ready.menu-hidden .sidebar { transition: none; }
+}
+
+/* Keep the chapter menu (or its Chapters button) in view while scrolling */
+.sidebar, .rail { position: sticky; top: 12px; }
+.sidebar { max-height: calc(100vh - 24px); overflow-y: auto; overscroll-behavior: contain; }
+@media (max-width: 760px) {
+  .rail, body.menu-hidden .rail { position: sticky; top: 0; z-index: 30; margin-top: -4px; }
+  .sidebar { position: fixed; top: 0; max-height: none; }
+}
