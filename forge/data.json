@@ -3630,77 +3630,1870 @@
    "weapons": "Short Blades",
    "primary": "Dexterity + Melee",
    "secondary": "Dexterity + Stealth",
-   "link": "../rulebook/ch12.html#learning-styles-quickcut-style"
+   "link": "../rulebook/ch12.html#learning-styles-quickcut-style",
+   "ranks": [
+    {
+     "rank": 1,
+     "title": "Elementary",
+     "id": "quickcut-style-rank-1-elementary",
+     "default": {
+      "name": "Skinner's Hands",
+      "id": "quickcut-style-skinners-hands",
+      "use": "Outside combat",
+      "text": "You're skilled at field-dressing, skinning, butchering, and knife work (whittling, cutting rope, scraping hides). Add your dots to rolls to skin or harvest a creature. Each success also saves one extra usable part (hide, sinew, horn, or gland)."
+     },
+     "a": {
+      "name": "Quick Hands",
+      "id": "quickcut-style-quick-hands",
+      "use": "Combat",
+      "text": "Drawing or swapping to a short blade costs no AP. Add your dots to initiative if you start combat with one in hand."
+     },
+     "b": {
+      "name": "Find the Gap",
+      "id": "quickcut-style-find-the-gap",
+      "use": "Combat",
+      "text": "Add your dots to attack rolls against a target that hasn't acted yet this round."
+     }
+    },
+    {
+     "rank": 2,
+     "title": "Intermediate",
+     "id": "quickcut-style-rank-2-intermediate",
+     "default": {
+      "name": "Throwing Edge",
+      "id": "quickcut-style-throwing-edge",
+      "use": "Both",
+      "text": "You can throw any short blade using this Style's Primary pool, at a target up to double your Strength in zones away. It works outside a fight too, to hunt small game or cut a rope."
+     },
+     "a": {
+      "name": "Twin Grip",
+      "id": "quickcut-style-twin-grip",
+      "use": "Combat",
+      "text": "Wield a short blade in each hand. When you attack with both, add your dots to that one attack roll."
+     },
+     "b": {
+      "name": "Pin and Run",
+      "id": "quickcut-style-pin-and-run",
+      "use": "Combat",
+      "text": "When a thrown blade hits, spend 1 AP to pin the target's clothing or foot. They're Rooted until the end of their next turn."
+     }
+    },
+    {
+     "rank": 3,
+     "title": "Advanced",
+     "id": "quickcut-style-rank-3-advanced",
+     "default": {
+      "name": "Hidden Steel",
+      "id": "quickcut-style-hidden-steel",
+      "use": "Both",
+      "text": "You get one extra Belt slot (slot 4), which can only hold short blades. Drawing from it costs no AP. Add your dots to rolls to keep a blade hidden when you're searched."
+     },
+     "a": {
+      "name": "Opening Cut",
+      "id": "quickcut-style-opening-cut",
+      "use": "Combat",
+      "text": "On a hit, spend 1 AP to give the target Bleeding, at a rating equal to your dots."
+     },
+     "b": {
+      "name": "Slip Away",
+      "id": "quickcut-style-slip-away",
+      "use": "Combat",
+      "text": "After you make a melee attack, move 1 zone for free."
+     }
+    },
+    {
+     "rank": 4,
+     "title": "Saint",
+     "id": "quickcut-style-rank-4-saint",
+     "default": {
+      "name": "Butcher's Eye",
+      "id": "quickcut-style-butchers-eye",
+      "use": "Outside combat",
+      "text": "One look tells you how a creature is put together and where it's weak. Add your dots to rolls to cut out poison, treat a wound with a knife, or track something you've wounded."
+     },
+     "a": {
+      "name": "Weak Point",
+      "id": "quickcut-style-weak-point",
+      "use": "Combat",
+      "text": "Once per round, a short blade hit has Armor Penetration equal to half your dots."
+     },
+     "b": {
+      "name": "Dancer's Step",
+      "id": "quickcut-style-dancers-step",
+      "use": "Combat",
+      "text": "Add your dots to defense rolls against an adjacent enemy you've hit this round."
+     }
+    },
+    {
+     "rank": 5,
+     "title": "Royal",
+     "id": "quickcut-style-rank-5-royal",
+     "default": {
+      "name": "Fan of Knives",
+      "id": "quickcut-style-fan-of-knives",
+      "use": "Combat",
+      "text": "One thrown attack can target up to three creatures within throwing range, using one attack roll."
+     },
+     "a": {
+      "name": "Second Strike",
+      "id": "quickcut-style-second-strike",
+      "use": "Combat",
+      "text": "If your attack roll beats the target's defense by 3 or more successes, add your dots to the damage."
+     },
+     "b": {
+      "name": "Ghost Step",
+      "id": "quickcut-style-ghost-step",
+      "use": "Combat",
+      "text": "Once per round, when your defense roll beats an adjacent attack, make a Counter with a short blade, then move 1 zone for free."
+     }
+    },
+    {
+     "rank": 6,
+     "title": "Imperial",
+     "id": "quickcut-style-rank-6-imperial",
+     "default": {
+      "name": "Unseen Approach",
+      "id": "quickcut-style-unseen-approach",
+      "use": "Both",
+      "text": "Add your dots to Stealth rolls. Your first hit on a target that hasn't noticed you counts as meeting the next-higher damage threshold."
+     },
+     "a": {
+      "name": "Severing Strike",
+      "id": "quickcut-style-severing-strike",
+      "use": "Combat",
+      "text": "A called shot that hits a limb gives the target -2 dice on rolls using that limb for the rest of the scene."
+     },
+     "b": {
+      "name": "Breath Cut",
+      "id": "quickcut-style-breath-cut",
+      "use": "Combat",
+      "text": "Spend 2 AP: on a hit, the target also loses 2 AP on their next turn."
+     }
+    },
+    {
+     "rank": 7,
+     "title": "Divine",
+     "id": "quickcut-style-rank-7-divine",
+     "default": {
+      "name": "Every Edge Is Mine",
+      "id": "quickcut-style-every-edge-is-mine",
+      "use": "Both",
+      "text": "Anything with an edge or point (a glass shard, a broken sword, a sharpened spoon) counts as a short blade for you, with a Rating equal to your dots."
+     },
+     "a": {
+      "name": "Death of a Thousand Cuts",
+      "id": "quickcut-style-death-of-a-thousand-cuts",
+      "use": "Combat",
+      "text": "Spend 3 AP: one attack roll against every enemy in all adjacent zones. Each one you hit also gets Bleeding, at a rating equal to your dots."
+     },
+     "b": {
+      "name": "The Last Mercy",
+      "id": "quickcut-style-the-last-mercy",
+      "use": "Combat",
+      "text": "Once per story, a hit on a target at their -4 wound penalty or worse automatically meets their ADT."
+     }
+    }
+   ]
   },
   {
    "name": "Silver Arc Style",
    "weapons": "Long Blades",
    "primary": "Dexterity + Melee",
    "secondary": "Perception + Dodge",
-   "link": "../rulebook/ch12.html#learning-styles-silver-arc-style"
+   "link": "../rulebook/ch12.html#learning-styles-silver-arc-style",
+   "ranks": [
+    {
+     "rank": 1,
+     "title": "Elementary",
+     "id": "silver-arc-style-rank-1-elementary",
+     "default": {
+      "name": "Sword Sense",
+      "id": "silver-arc-style-sword-sense",
+      "use": "Outside combat",
+      "text": "One look tells you a blade's quality, balance, and maker, and you can sharpen, maintain, and care for any sword. Add your dots to rolls to appraise or repair a blade."
+     },
+     "a": {
+      "name": "Clean Line",
+      "id": "silver-arc-style-clean-line",
+      "use": "Combat",
+      "text": "Add your dots to an attack roll made right after moving 1 zone."
+     },
+     "b": {
+      "name": "High Guard",
+      "id": "silver-arc-style-high-guard",
+      "use": "Combat",
+      "text": "Add your dots to defense rolls on any round you don't attack."
+     }
+    },
+    {
+     "rank": 2,
+     "title": "Intermediate",
+     "id": "silver-arc-style-rank-2-intermediate",
+     "default": {
+      "name": "The Salute",
+      "id": "silver-arc-style-the-salute",
+      "use": "Outside combat",
+      "text": "You know the dueling customs of Terrana's sword schools. A formal challenge from you has to be openly answered or openly refused. Add your dots to social rolls about duels, honor, and exhibition bouts."
+     },
+     "a": {
+      "name": "Riposte",
+      "id": "silver-arc-style-riposte",
+      "use": "Combat",
+      "text": "Once per round, when your defense roll beats an adjacent melee attack, make a Counter."
+     },
+     "b": {
+      "name": "Bind",
+      "id": "silver-arc-style-bind",
+      "use": "Combat",
+      "text": "On a hit, spend 1 AP to tie up the target's weapon. Their next attack roll takes a flat penalty die."
+     }
+    },
+    {
+     "rank": 3,
+     "title": "Advanced",
+     "id": "silver-arc-style-rank-3-advanced",
+     "default": {
+      "name": "Versatile Grip",
+      "id": "silver-arc-style-versatile-grip",
+      "use": "Combat",
+      "text": "Switch between a one-handed and two-handed grip for free. Two-handed, add half your dots to damage. One-handed, your other hand is free for a shield or an item."
+     },
+     "a": {
+      "name": "Twin Blades",
+      "id": "silver-arc-style-twin-blades",
+      "use": "Combat",
+      "text": "Wield a long blade in each hand. When you attack with both, add your dots to that one attack roll."
+     },
+     "b": {
+      "name": "Disarming Edge",
+      "id": "silver-arc-style-disarming-edge",
+      "use": "Combat",
+      "text": "On a hit, spend 1 AP to make the target drop their weapon into an adjacent zone."
+     }
+    },
+    {
+     "rank": 4,
+     "title": "Saint",
+     "id": "silver-arc-style-rank-4-saint",
+     "default": {
+      "name": "Named Strike",
+      "id": "silver-arc-style-named-strike",
+      "use": "Both",
+      "text": "Name your signature cut. Once per scene, add your dots to its damage. Anyone who has seen it before recognizes your school, which helps your reputation and ruins disguises."
+     },
+     "a": {
+      "name": "Crossing Cut",
+      "id": "silver-arc-style-crossing-cut",
+      "use": "Combat",
+      "text": "One attack roll against two adjacent enemies."
+     },
+     "b": {
+      "name": "Perfect Parry",
+      "id": "silver-arc-style-perfect-parry",
+      "use": "Combat",
+      "text": "Once per scene, a failed defense roll against a melee attack counts as a success."
+     }
+    },
+    {
+     "rank": 5,
+     "title": "Royal",
+     "id": "silver-arc-style-rank-5-royal",
+     "default": {
+      "name": "Duelist's Name",
+      "id": "silver-arc-style-duelists-name",
+      "use": "Outside combat",
+      "text": "Anyone who knows sword work knows you. Add your dots to social rolls to impress or intimidate them."
+     },
+     "a": {
+      "name": "Blade Dance",
+      "id": "silver-arc-style-blade-dance",
+      "use": "Combat",
+      "text": "Spend 2 AP: one attack roll against every enemy in all adjacent zones."
+     },
+     "b": {
+      "name": "Unbroken Rhythm",
+      "id": "silver-arc-style-unbroken-rhythm",
+      "use": "Combat",
+      "text": "Once you've hit the same target three times in a row this scene, add your dots to all your attack and defense rolls against them for the rest of the scene."
+     }
+    },
+    {
+     "rank": 6,
+     "title": "Imperial",
+     "id": "silver-arc-style-rank-6-imperial",
+     "default": {
+      "name": "Cut the Unseen",
+      "id": "silver-arc-style-cut-the-unseen",
+      "use": "Both",
+      "text": "Your blade can strike and harm incorporeal and conjured things as if they were solid, and can cut what usually can't be cut (smoke-forms, webs of spun magic)."
+     },
+     "a": {
+      "name": "Unseen Line",
+      "id": "silver-arc-style-unseen-line",
+      "use": "Combat",
+      "text": "Once per scene, the target can't add bonus dice from any source to their defense against this attack."
+     },
+     "b": {
+      "name": "Return Stroke",
+      "id": "silver-arc-style-return-stroke",
+      "use": "Combat",
+      "text": "When your defense roll beats a melee attack by 3 or more successes, make a Counter. This is in addition to any other Counter you have."
+     }
+    },
+    {
+     "rank": 7,
+     "title": "Divine",
+     "id": "silver-arc-style-rank-7-divine",
+     "default": {
+      "name": "Master of the School",
+      "id": "silver-arc-style-master-of-the-school",
+      "use": "Outside combat",
+      "text": "You're recognized as a sword master. You may found a school, and anyone who trained under you can call on your name."
+     },
+     "a": {
+      "name": "One Thousand Schools",
+      "id": "silver-arc-style-one-thousand-schools",
+      "use": "Combat",
+      "text": "Spend 3 AP: move up to 2 zones and make one attack roll against every enemy you pass adjacent to. End in any empty zone along your path."
+     },
+     "b": {
+      "name": "One Perfect Cut",
+      "id": "silver-arc-style-one-perfect-cut",
+      "use": "Combat",
+      "text": "Once per story, a hit that meets BDT counts as meeting ADT."
+     }
+    }
+   ]
   },
   {
    "name": "Timberfall Style",
    "weapons": "Axes",
    "primary": "Strength + Melee",
    "secondary": "Fortitude + Endurance",
-   "link": "../rulebook/ch12.html#learning-styles-timberfall-style"
+   "link": "../rulebook/ch12.html#learning-styles-timberfall-style",
+   "ranks": [
+    {
+     "rank": 1,
+     "title": "Elementary",
+     "id": "timberfall-style-rank-1-elementary",
+     "default": {
+      "name": "Woodsman's Grip",
+      "id": "timberfall-style-woodsmans-grip",
+      "use": "Outside combat",
+      "text": "You can fell trees, split logs, clear brush, and build simple shelters and fires in half the usual time with an axe. Add your dots to rolls to cut through wood, doors, or barricades."
+     },
+     "a": {
+      "name": "Heavy Hands",
+      "id": "timberfall-style-heavy-hands",
+      "use": "Combat",
+      "text": "Add your dots to damage while wielding an axe in two hands."
+     },
+     "b": {
+      "name": "Hook and Pull",
+      "id": "timberfall-style-hook-and-pull",
+      "use": "Combat",
+      "text": "On a hit, spend 1 AP to hook the target with your axe head. Either pull them 1 zone toward you into an empty zone, or yank their shield aside so they lose its Armor bonus until their next turn."
+     }
+    },
+    {
+     "rank": 2,
+     "title": "Intermediate",
+     "id": "timberfall-style-rank-2-intermediate",
+     "default": {
+      "name": "Toss the Hatchet",
+      "id": "timberfall-style-toss-the-hatchet",
+      "use": "Both",
+      "text": "You can throw hatchets and hand axes using this Style's Primary pool, up to 2 zones."
+     },
+     "a": {
+      "name": "Shield Breaker",
+      "id": "timberfall-style-shield-breaker",
+      "use": "Combat",
+      "text": "A hit on a shield-bearer lowers that shield's Armor bonus by 1 for the rest of the scene. This stacks."
+     },
+     "b": {
+      "name": "Second Wind",
+      "id": "timberfall-style-second-wind",
+      "use": "Combat",
+      "text": "After you take damage, spend 1 AP to add your dots to your next attack roll this round."
+     }
+    },
+    {
+     "rank": 3,
+     "title": "Advanced",
+     "id": "timberfall-style-rank-3-advanced",
+     "default": {
+      "name": "Battle Rhythm",
+      "id": "timberfall-style-battle-rhythm",
+      "use": "Outside combat",
+      "text": "Woodchopping contests, lumberjack feats, work songs, war chants. Add your dots to rolls for feats of strength, or to keep a work crew or war band moving."
+     },
+     "a": {
+      "name": "Cleave",
+      "id": "timberfall-style-cleave",
+      "use": "Combat",
+      "text": "One attack roll against your target and one other adjacent enemy."
+     },
+     "b": {
+      "name": "Momentum",
+      "id": "timberfall-style-momentum",
+      "use": "Combat",
+      "text": "If you only moved last round and didn't attack, add your dots to this round's attack roll."
+     }
+    },
+    {
+     "rank": 4,
+     "title": "Saint",
+     "id": "timberfall-style-rank-4-saint",
+     "default": {
+      "name": "Splitter",
+      "id": "timberfall-style-splitter",
+      "use": "Both",
+      "text": "Your axe has full Armor Penetration against doors, barricades, wooden walls, and other objects. One hit breaks open an ordinary wooden door."
+     },
+     "a": {
+      "name": "Armor Breaker",
+      "id": "timberfall-style-armor-breaker",
+      "use": "Combat",
+      "text": "On a hit, the target's Armor drops by 1 for the rest of the scene. This stacks."
+     },
+     "b": {
+      "name": "Rooted Stance",
+      "id": "timberfall-style-rooted-stance",
+      "use": "Combat",
+      "text": "Add your dots to rolls to resist being pushed, knocked Prone, or Rooted."
+     }
+    },
+    {
+     "rank": 5,
+     "title": "Royal",
+     "id": "timberfall-style-rank-5-royal",
+     "default": {
+      "name": "Woodsman's Legacy",
+      "id": "timberfall-style-woodsmans-legacy",
+      "use": "Outside combat",
+      "text": "With an axe and timber, you can build a raft, a palisade, or a footbridge in a few hours instead of days."
+     },
+     "a": {
+      "name": "Wide Arc",
+      "id": "timberfall-style-wide-arc",
+      "use": "Combat",
+      "text": "Spend 2 AP: one attack roll against every enemy in all adjacent zones."
+     },
+     "b": {
+      "name": "Bone Breaker",
+      "id": "timberfall-style-bone-breaker",
+      "use": "Combat",
+      "text": "A called shot that hits a limb gives the target -2 dice on rolls using that limb until it's healed."
+     }
+    },
+    {
+     "rank": 6,
+     "title": "Imperial",
+     "id": "timberfall-style-rank-6-imperial",
+     "default": {
+      "name": "Unstoppable Swing",
+      "id": "timberfall-style-unstoppable-swing",
+      "use": "Combat",
+      "text": "Once per scene, an attack has full Armor Penetration."
+     },
+     "a": {
+      "name": "Felling Blow",
+      "id": "timberfall-style-felling-blow",
+      "use": "Combat",
+      "text": "A hit that meets LDT also knocks the target Prone."
+     },
+     "b": {
+      "name": "Berserker's Due",
+      "id": "timberfall-style-berserkers-due",
+      "use": "Combat",
+      "text": "While you're at your -2 wound penalty or worse, add your dots to damage."
+     }
+    },
+    {
+     "rank": 7,
+     "title": "Divine",
+     "id": "timberfall-style-rank-7-divine",
+     "default": {
+      "name": "Timber",
+      "id": "timberfall-style-timber",
+      "use": "Both",
+      "text": "One swing fells anything that grew or was built from wood: a gate, an old tree, a ship's mast. Outside combat this takes no time at all. In combat it costs 3 AP."
+     },
+     "a": {
+      "name": "The Woodsman's Judgment",
+      "id": "timberfall-style-the-woodsmans-judgment",
+      "use": "Combat",
+      "text": "Spend 3 AP: one attack roll against every enemy in all adjacent zones. Everyone you hit is knocked Prone."
+     },
+     "b": {
+      "name": "World Splitter",
+      "id": "timberfall-style-world-splitter",
+      "use": "Combat",
+      "text": "Once per story, a hit has full Armor Penetration and counts as meeting the next-higher damage threshold. The target's weapon or shield also breaks."
+     }
+    }
+   ]
   },
   {
    "name": "Heron's Reach Style",
    "weapons": "Polearms",
    "primary": "Dexterity + Melee",
    "secondary": "Perception + Awareness",
-   "link": "../rulebook/ch12.html#learning-styles-herons-reach-style"
+   "link": "../rulebook/ch12.html#learning-styles-herons-reach-style",
+   "ranks": [
+    {
+     "rank": 1,
+     "title": "Elementary",
+     "id": "herons-reach-style-rank-1-elementary",
+     "default": {
+      "name": "Reach",
+      "id": "herons-reach-style-reach",
+      "use": "Combat",
+      "text": "With a polearm, you can attack targets up to 2 zones away, not only adjacent ones."
+     },
+     "a": {
+      "name": "Herder's Staff",
+      "id": "herons-reach-style-herders-staff",
+      "use": "Outside combat",
+      "text": "Add your dots to rolls to herd animals, fish with a spear, or test ice, mud, or deep water ahead of you."
+     },
+     "b": {
+      "name": "Held Line",
+      "id": "herons-reach-style-held-line",
+      "use": "Combat",
+      "text": "Add your dots to attack rolls against an enemy who moved into your reach this round."
+     }
+    },
+    {
+     "rank": 2,
+     "title": "Intermediate",
+     "id": "herons-reach-style-rank-2-intermediate",
+     "default": {
+      "name": "Pole Vault",
+      "id": "herons-reach-style-pole-vault",
+      "use": "Both",
+      "text": "Once per round, vault on your polearm to move 1 extra zone. You can clear a gap, a low wall, or a Prone body this way."
+     },
+     "a": {
+      "name": "Sweep",
+      "id": "herons-reach-style-sweep",
+      "use": "Combat",
+      "text": "A low strike knocks the target Prone instead of dealing damage."
+     },
+     "b": {
+      "name": "Push Back",
+      "id": "herons-reach-style-push-back",
+      "use": "Combat",
+      "text": "A hit also pushes the target 1 zone away from you."
+     }
+    },
+    {
+     "rank": 3,
+     "title": "Advanced",
+     "id": "herons-reach-style-rank-3-advanced",
+     "default": {
+      "name": "Standard Bearer",
+      "id": "herons-reach-style-standard-bearer",
+      "use": "Outside combat",
+      "text": "A banner on your polearm draws people to you. Add your dots to rolls to lead, signal, or hold a group together."
+     },
+     "a": {
+      "name": "Set Against the Charge",
+      "id": "herons-reach-style-set-against-the-charge",
+      "use": "Combat",
+      "text": "When an enemy who moved this round attacks you, add your dots to your defense roll. If your defense beats their attack, make a Counter."
+     },
+     "b": {
+      "name": "Cutting Line",
+      "id": "herons-reach-style-cutting-line",
+      "use": "Combat",
+      "text": "One attack roll against two enemies in a straight line within your reach."
+     }
+    },
+    {
+     "rank": 4,
+     "title": "Saint",
+     "id": "herons-reach-style-rank-4-saint",
+     "default": {
+      "name": "Phalanx",
+      "id": "herons-reach-style-phalanx",
+      "use": "Combat",
+      "text": "You and any adjacent ally holding a polearm or shield each add half your dots to defense rolls."
+     },
+     "a": {
+      "name": "Pin",
+      "id": "herons-reach-style-pin",
+      "use": "Combat",
+      "text": "On a hit, spend 1 AP to leave the target Rooted until the end of their next turn."
+     },
+     "b": {
+      "name": "Whirling Guard",
+      "id": "herons-reach-style-whirling-guard",
+      "use": "Combat",
+      "text": "On a round you don't attack, make one defense roll, adding your dots, and use it against every melee attack made on you that round."
+     }
+    },
+    {
+     "rank": 5,
+     "title": "Royal",
+     "id": "herons-reach-style-rank-5-royal",
+     "default": {
+      "name": "Long Reach",
+      "id": "herons-reach-style-long-reach",
+      "use": "Combat",
+      "text": "Your Reach extends to 3 zones."
+     },
+     "a": {
+      "name": "Lever and Lift",
+      "id": "herons-reach-style-lever-and-lift",
+      "use": "Outside combat",
+      "text": "Use your polearm as a lever or pole. Add your dots to rolls to pry open gates, lift a portcullis, or knock down something high."
+     },
+     "b": {
+      "name": "Zone Denial",
+      "id": "herons-reach-style-zone-denial",
+      "use": "Combat",
+      "text": "An enemy within your reach has to spend 1 extra AP for each zone it moves away from you."
+     }
+    },
+    {
+     "rank": 6,
+     "title": "Imperial",
+     "id": "herons-reach-style-rank-6-imperial",
+     "default": {
+      "name": "Unyielding",
+      "id": "herons-reach-style-unyielding",
+      "use": "Combat",
+      "text": "An enemy you've hit this round can't push you, Root you, or knock you Prone."
+     },
+     "a": {
+      "name": "Line Breaker",
+      "id": "herons-reach-style-line-breaker",
+      "use": "Combat",
+      "text": "Spend 2 AP: one attack roll against every enemy in a straight line out to the end of your reach."
+     },
+     "b": {
+      "name": "Piercing Thrust",
+      "id": "herons-reach-style-piercing-thrust",
+      "use": "Combat",
+      "text": "A hit on a Rooted or Prone target has full Armor Penetration."
+     }
+    },
+    {
+     "rank": 7,
+     "title": "Divine",
+     "id": "herons-reach-style-rank-7-divine",
+     "default": {
+      "name": "Heron's Patience",
+      "id": "herons-reach-style-herons-patience",
+      "use": "Both",
+      "text": "You can stand perfectly still for hours. You notice anything that moves within your reach, even while resting, and it can't catch you by surprise. Add your dots to Awareness rolls."
+     },
+     "a": {
+      "name": "The Unbroken Spear",
+      "id": "herons-reach-style-the-unbroken-spear",
+      "use": "Combat",
+      "text": "Spend 3 AP: one attack roll against every enemy within your reach."
+     },
+     "b": {
+      "name": "Sky Piercer",
+      "id": "herons-reach-style-sky-piercer",
+      "use": "Combat",
+      "text": "Once per story, throw your polearm like a javelin at any target you can see. It hits automatically and counts as meeting the next-higher damage threshold."
+     }
+    }
+   ]
   },
   {
    "name": "Wallguard Style",
    "weapons": "Shields",
    "primary": "Strength + Melee",
    "secondary": "Fortitude + Endurance",
-   "link": "../rulebook/ch12.html#learning-styles-wallguard-style"
+   "link": "../rulebook/ch12.html#learning-styles-wallguard-style",
+   "ranks": [
+    {
+     "rank": 1,
+     "title": "Elementary",
+     "id": "wallguard-style-rank-1-elementary",
+     "default": {
+      "name": "Watchful Guard",
+      "id": "wallguard-style-watchful-guard",
+      "use": "Outside combat",
+      "text": "Bodyguard work, sentry duty, watching a camp. Add your dots to Awareness rolls to spot threats to someone you're protecting."
+     },
+     "a": {
+      "name": "Sturdy Stance",
+      "id": "wallguard-style-sturdy-stance",
+      "use": "Combat",
+      "text": "While holding a shield on a round you don't attack, add half your dots to your BDT."
+     },
+     "b": {
+      "name": "Shield Bash",
+      "id": "wallguard-style-shield-bash",
+      "use": "Combat",
+      "text": "Attack with your shield using this Style's Primary pool. A hit pushes the target 1 zone away."
+     }
+    },
+    {
+     "rank": 2,
+     "title": "Intermediate",
+     "id": "wallguard-style-rank-2-intermediate",
+     "default": {
+      "name": "Cover Ally",
+      "id": "wallguard-style-cover-ally",
+      "use": "Combat",
+      "text": "Spend 1 AP: an adjacent ally adds your dots to their next defense roll this round."
+     },
+     "a": {
+      "name": "Hold the Line",
+      "id": "wallguard-style-hold-the-line",
+      "use": "Combat",
+      "text": "Add your dots to rolls to resist being pushed, knocked Prone, or moved."
+     },
+     "b": {
+      "name": "Arrow Catcher",
+      "id": "wallguard-style-arrow-catcher",
+      "use": "Combat",
+      "text": "Add your dots to defense rolls against ranged attacks."
+     }
+    },
+    {
+     "rank": 3,
+     "title": "Advanced",
+     "id": "wallguard-style-rank-3-advanced",
+     "default": {
+      "name": "Shield Wall",
+      "id": "wallguard-style-shield-wall",
+      "use": "Combat",
+      "text": "While an adjacent ally also holds a shield, you both add half your dots to your BDT."
+     },
+     "a": {
+      "name": "Turtle",
+      "id": "wallguard-style-turtle",
+      "use": "Combat",
+      "text": "On a round you take no Action, make one defense roll, adding your dots, and use it against every attack made on you that round."
+     },
+     "b": {
+      "name": "Dent the Plate",
+      "id": "wallguard-style-dent-the-plate",
+      "use": "Combat",
+      "text": "A hit with your shield lowers the target's Armor by 1 for the rest of the scene. This stacks."
+     }
+    },
+    {
+     "rank": 4,
+     "title": "Saint",
+     "id": "wallguard-style-rank-4-saint",
+     "default": {
+      "name": "Steady the Line",
+      "id": "wallguard-style-steady-the-line",
+      "use": "Both",
+      "text": "Add your dots to rolls to lead a defense. Adjacent allies add your dots to rolls to resist fear."
+     },
+     "a": {
+      "name": "Counter Bash",
+      "id": "wallguard-style-counter-bash",
+      "use": "Combat",
+      "text": "Once per round, when your defense roll beats a melee attack, make a Counter with your shield."
+     },
+     "b": {
+      "name": "Interpose",
+      "id": "wallguard-style-interpose",
+      "use": "Combat",
+      "text": "Once per round, when an adjacent ally is hit, you take the hit instead, and your BDT applies."
+     }
+    },
+    {
+     "rank": 5,
+     "title": "Royal",
+     "id": "wallguard-style-rank-5-royal",
+     "default": {
+      "name": "Shield Throw",
+      "id": "wallguard-style-shield-throw",
+      "use": "Combat",
+      "text": "Throw your shield using this Style's Primary pool, up to 3 zones. A hit pushes the target 1 zone. The shield rebounds to your hand at the start of your next turn."
+     },
+     "a": {
+      "name": "Unbreakable Guard",
+      "id": "wallguard-style-unbreakable-guard",
+      "use": "Combat",
+      "text": "Once per scene, a hit that would meet your LDT counts as meeting only your BDT."
+     },
+     "b": {
+      "name": "Bulwark",
+      "id": "wallguard-style-bulwark",
+      "use": "Combat",
+      "text": "Cover Ally now protects every adjacent ally for the same 1 AP."
+     }
+    },
+    {
+     "rank": 6,
+     "title": "Imperial",
+     "id": "wallguard-style-rank-6-imperial",
+     "default": {
+      "name": "Ride the Shield",
+      "id": "wallguard-style-ride-the-shield",
+      "use": "Both",
+      "text": "Ride your shield down a slope, snowbank, or staircase, or float on it as a small raft. In combat, one adjacent ally behind it adds your dots to defense rolls against ranged attacks."
+     },
+     "a": {
+      "name": "Ram",
+      "id": "wallguard-style-ram",
+      "use": "Combat",
+      "text": "Move up to 2 zones in a straight line and make one attack roll against the first enemy you reach. On a hit they're pushed 1 zone and knocked Prone."
+     },
+     "b": {
+      "name": "Ricochet Throw",
+      "id": "wallguard-style-ricochet-throw",
+      "use": "Combat",
+      "text": "Your Shield Throw can hit two targets with one attack roll, bouncing from one to the other."
+     }
+    },
+    {
+     "rank": 7,
+     "title": "Divine",
+     "id": "wallguard-style-rank-7-divine",
+     "default": {
+      "name": "Living Wall",
+      "id": "wallguard-style-living-wall",
+      "use": "Combat",
+      "text": "An enemy has to spend 1 extra AP to move into any zone adjacent to you."
+     },
+     "a": {
+      "name": "The Last Wall",
+      "id": "wallguard-style-the-last-wall",
+      "use": "Combat",
+      "text": "For the rest of the scene, you can redirect any attack against an adjacent ally onto yourself, adding your dots to your defense roll against it."
+     },
+     "b": {
+      "name": "Unbroken",
+      "id": "wallguard-style-unbroken",
+      "use": "Combat",
+      "text": "Once per story, while you hold your shield, you can't be Incapacitated this scene. Damage that would Incapacitate you leaves your last Health box empty instead."
+     }
+    }
+   ]
   },
   {
    "name": "Ten Count Style",
    "weapons": "Boxing",
    "primary": "Strength + Martial Arts",
    "secondary": "Fortitude + Endurance",
-   "link": "../rulebook/ch12.html#learning-styles-ten-count-style"
+   "link": "../rulebook/ch12.html#learning-styles-ten-count-style",
+   "ranks": [
+    {
+     "rank": 1,
+     "title": "Elementary",
+     "id": "ten-count-style-rank-1-elementary",
+     "default": {
+      "name": "Iron Chin",
+      "id": "ten-count-style-iron-chin",
+      "use": "Both",
+      "text": "Add your dots to rolls to resist being knocked out, losing AP, or being intimidated by physical threats."
+     },
+     "a": {
+      "name": "Jab",
+      "id": "ten-count-style-jab",
+      "use": "Combat",
+      "text": "On a hit, spend 1 AP for a second strike on the same target, which they defend against using that same attack roll."
+     },
+     "b": {
+      "name": "Bob and Weave",
+      "id": "ten-count-style-bob-and-weave",
+      "use": "Combat",
+      "text": "Add your dots to defense rolls against fists and melee weapons."
+     }
+    },
+    {
+     "rank": 2,
+     "title": "Intermediate",
+     "id": "ten-count-style-rank-2-intermediate",
+     "default": {
+      "name": "Roadwork",
+      "id": "ten-count-style-roadwork",
+      "use": "Outside combat",
+      "text": "Running, skipping rope, hours of training. Add your dots to Athletics rolls for long runs and hard exertion. You don't tire from a long march or a chase."
+     },
+     "a": {
+      "name": "Body Shot",
+      "id": "ten-count-style-body-shot",
+      "use": "Combat",
+      "text": "A hit also makes the target lose 1 AP on their next turn."
+     },
+     "b": {
+      "name": "Guard Up",
+      "id": "ten-count-style-guard-up",
+      "use": "Combat",
+      "text": "While fighting unarmed, add half your dots to your BDT against unarmed attacks."
+     }
+    },
+    {
+     "rank": 3,
+     "title": "Advanced",
+     "id": "ten-count-style-rank-3-advanced",
+     "default": {
+      "name": "Prize Fighter",
+      "id": "ten-count-style-prize-fighter",
+      "use": "Outside combat",
+      "text": "Add your dots to rolls to win over a crowd, talk up a fight, or read the odds on one."
+     },
+     "a": {
+      "name": "Combination",
+      "id": "ten-count-style-combination",
+      "use": "Combat",
+      "text": "If your attack roll beats the target's defense by 3 or more successes, a follow-up punch adds your dots to the damage."
+     },
+     "b": {
+      "name": "Cut Off the Ring",
+      "id": "ten-count-style-cut-off-the-ring",
+      "use": "Combat",
+      "text": "On a hit, the target has to spend 1 extra AP to move away from you on their next turn."
+     }
+    },
+    {
+     "rank": 4,
+     "title": "Saint",
+     "id": "ten-count-style-rank-4-saint",
+     "default": {
+      "name": "Cornerman",
+      "id": "ten-count-style-cornerman",
+      "use": "Outside combat",
+      "text": "You know how to patch up cuts and swelling. Outside combat, each success on your roll heals as Basic healing, Bashing damage only."
+     },
+     "a": {
+      "name": "Haymaker",
+      "id": "ten-count-style-haymaker",
+      "use": "Combat",
+      "text": "Spend 1 AP to add your dots to damage. If you miss, take a flat penalty die on defense rolls until your next turn."
+     },
+     "b": {
+      "name": "Counterpuncher",
+      "id": "ten-count-style-counterpuncher",
+      "use": "Combat",
+      "text": "Once per round, when your defense roll beats an adjacent attack, make a Counter."
+     }
+    },
+    {
+     "rank": 5,
+     "title": "Royal",
+     "id": "ten-count-style-rank-5-royal",
+     "default": {
+      "name": "Granite Jaw",
+      "id": "ten-count-style-granite-jaw",
+      "use": "Combat",
+      "text": "Your Bashing wound penalties count one step lower (-1 becomes none, -2 becomes -1, -4 becomes -2)."
+     },
+     "a": {
+      "name": "Liver Shot",
+      "id": "ten-count-style-liver-shot",
+      "use": "Combat",
+      "text": "On a hit, the target takes a flat penalty die on every roll until the end of their next turn."
+     },
+     "b": {
+      "name": "Barrage",
+      "id": "ten-count-style-barrage",
+      "use": "Combat",
+      "text": "Spend 2 AP: one attack roll strikes the same target three times, and they defend against it three times."
+     }
+    },
+    {
+     "rank": 6,
+     "title": "Imperial",
+     "id": "ten-count-style-rank-6-imperial",
+     "default": {
+      "name": "Ring Sense",
+      "id": "ten-count-style-ring-sense",
+      "use": "Combat",
+      "text": "Add your dots to initiative. No one within 2 zones of you can catch you by surprise."
+     },
+     "a": {
+      "name": "Knockout Blow",
+      "id": "ten-count-style-knockout-blow",
+      "use": "Combat",
+      "text": "A called shot to the head that hits makes the target lose 3 AP on their next turn."
+     },
+     "b": {
+      "name": "Rope-a-Dope",
+      "id": "ten-count-style-rope-a-dope",
+      "use": "Combat",
+      "text": "Each attack that misses you this round adds 1 die to your next attack roll, up to your dots."
+     }
+    },
+    {
+     "rank": 7,
+     "title": "Divine",
+     "id": "ten-count-style-rank-7-divine",
+     "default": {
+      "name": "Champion's Belt",
+      "id": "ten-count-style-champions-belt",
+      "use": "Both",
+      "text": "Add your dots to social rolls anywhere fighting is respected. Once per story, you can declare a fight a sanctioned bout, and most people will honor its rules."
+     },
+     "a": {
+      "name": "Final Bell",
+      "id": "ten-count-style-final-bell",
+      "use": "Combat",
+      "text": "Spend 3 AP: one attack roll strikes the same target a number of times equal to your dots, and they defend against each strike separately."
+     },
+     "b": {
+      "name": "Down for the Count",
+      "id": "ten-count-style-down-for-the-count",
+      "use": "Combat",
+      "text": "Once per story, a hit that meets LDT on a target at their -2 wound penalty or worse knocks them out (Incapacitated)."
+     }
+    }
+   ]
   },
   {
    "name": "Drifting Leaf Style",
    "weapons": "Kung Fu",
    "primary": "Dexterity + Martial Arts",
    "secondary": "Perception + Dodge",
-   "link": "../rulebook/ch12.html#learning-styles-drifting-leaf-style"
+   "link": "../rulebook/ch12.html#learning-styles-drifting-leaf-style",
+   "ranks": [
+    {
+     "rank": 1,
+     "title": "Elementary",
+     "id": "drifting-leaf-style-rank-1-elementary",
+     "default": {
+      "name": "Flowing Breath",
+      "id": "drifting-leaf-style-flowing-breath",
+      "use": "Both",
+      "text": "Add your dots to rolls to resist pain, fear, or exhaustion, using breathing and meditation."
+     },
+     "a": {
+      "name": "Redirect",
+      "id": "drifting-leaf-style-redirect",
+      "use": "Combat",
+      "text": "Once per round, when your defense roll beats an adjacent melee attack, send the attacker stumbling 1 zone in any direction you choose, into an empty zone."
+     },
+     "b": {
+      "name": "Still Water",
+      "id": "drifting-leaf-style-still-water",
+      "use": "Combat",
+      "text": "Once per round, after a successful defense roll, move 1 zone for free."
+     }
+    },
+    {
+     "rank": 2,
+     "title": "Intermediate",
+     "id": "drifting-leaf-style-rank-2-intermediate",
+     "default": {
+      "name": "Silk Step",
+      "id": "drifting-leaf-style-silk-step",
+      "use": "Both",
+      "text": "Add your dots to Acrobatics rolls. You can run along a wall for 1 zone, cross narrow ledges at full speed, and jump 1 extra zone."
+     },
+     "a": {
+      "name": "Deflecting Palm",
+      "id": "drifting-leaf-style-deflecting-palm",
+      "use": "Combat",
+      "text": "Add your dots to defense rolls against ranged attacks."
+     },
+     "b": {
+      "name": "Sweeping Kick",
+      "id": "drifting-leaf-style-sweeping-kick",
+      "use": "Combat",
+      "text": "A low kick knocks the target Prone instead of dealing damage."
+     }
+    },
+    {
+     "rank": 3,
+     "title": "Advanced",
+     "id": "drifting-leaf-style-rank-3-advanced",
+     "default": {
+      "name": "Feather Fall",
+      "id": "drifting-leaf-style-feather-fall",
+      "use": "Both",
+      "text": "For falling damage, count every fall as shorter by a number of zones (10 feet each) equal to your dots."
+     },
+     "a": {
+      "name": "Pressure Point",
+      "id": "drifting-leaf-style-pressure-point",
+      "use": "Combat",
+      "text": "On a hit, spend 1 AP: the target takes a flat penalty die on rolls using one limb for the rest of the scene."
+     },
+     "b": {
+      "name": "Locking Hand",
+      "id": "drifting-leaf-style-locking-hand",
+      "use": "Combat",
+      "text": "On a hit, spend 1 AP to leave the target Rooted until the end of their next turn."
+     }
+    },
+    {
+     "rank": 4,
+     "title": "Saint",
+     "id": "drifting-leaf-style-rank-4-saint",
+     "default": {
+      "name": "Empty Hand",
+      "id": "drifting-leaf-style-empty-hand",
+      "use": "Combat",
+      "text": "While unarmed, add your dots to defense rolls against armed enemies."
+     },
+     "a": {
+      "name": "Counting River",
+      "id": "drifting-leaf-style-counting-river",
+      "use": "Combat",
+      "text": "On a hit, strike the same target a second time for free. They defend against that same attack roll."
+     },
+     "b": {
+      "name": "Borrowed Force",
+      "id": "drifting-leaf-style-borrowed-force",
+      "use": "Combat",
+      "text": "Once per round, when your defense roll beats an adjacent melee attack, make a Counter. Add the attacker's weapon Rating to its damage."
+     }
+    },
+    {
+     "rank": 5,
+     "title": "Royal",
+     "id": "drifting-leaf-style-rank-5-royal",
+     "default": {
+      "name": "Monk's Discipline",
+      "id": "drifting-leaf-style-monks-discipline",
+      "use": "Outside combat",
+      "text": "You can go without food or sleep for a number of days equal to your dots with no penalty."
+     },
+     "a": {
+      "name": "Leaf on the Wind",
+      "id": "drifting-leaf-style-leaf-on-the-wind",
+      "use": "Combat",
+      "text": "Once per scene, a failed defense roll counts as a success."
+     },
+     "b": {
+      "name": "Rising Kick",
+      "id": "drifting-leaf-style-rising-kick",
+      "use": "Combat",
+      "text": "Leap 1 zone and attack. A hit knocks the target Prone."
+     }
+    },
+    {
+     "rank": 6,
+     "title": "Imperial",
+     "id": "drifting-leaf-style-rank-6-imperial",
+     "default": {
+      "name": "One Inch Strike",
+      "id": "drifting-leaf-style-one-inch-strike",
+      "use": "Combat",
+      "text": "Add your dots to the damage of any strike you make without moving that round."
+     },
+     "a": {
+      "name": "Mountain Stillness",
+      "id": "drifting-leaf-style-mountain-stillness",
+      "use": "Combat",
+      "text": "On a round you don't move, every attack against you takes a flat penalty die."
+     },
+     "b": {
+      "name": "Snatch the Arrow",
+      "id": "drifting-leaf-style-snatch-the-arrow",
+      "use": "Combat",
+      "text": "Once per round, when your defense roll beats a thrown or fired attack, catch it and send it back as a Counter at any target in sight."
+     }
+    },
+    {
+     "rank": 7,
+     "title": "Divine",
+     "id": "drifting-leaf-style-rank-7-divine",
+     "default": {
+      "name": "Leaf Walking",
+      "id": "drifting-leaf-style-leaf-walking",
+      "use": "Both",
+      "text": "Each round, you can cross a number of zones equal to your dots over water, leaves, or branches too thin to hold you."
+     },
+     "a": {
+      "name": "The Thousand Hand Form",
+      "id": "drifting-leaf-style-the-thousand-hand-form",
+      "use": "Combat",
+      "text": "Spend 3 AP: one attack roll against every enemy in all adjacent zones, then move 1 zone for free."
+     },
+     "b": {
+      "name": "Enlightened Palm",
+      "id": "drifting-leaf-style-enlightened-palm",
+      "use": "Combat",
+      "text": "Once per story, one unarmed strike has full Armor Penetration and full Magic Penetration, and counts as meeting the next-higher damage threshold."
+     }
+    }
+   ]
   },
   {
    "name": "Main Event Style",
    "weapons": "Wrestling",
    "primary": "Strength + Martial Arts (or Athletics)",
    "secondary": "Fortitude + Endurance",
-   "link": "../rulebook/ch12.html#learning-styles-main-event-style"
+   "link": "../rulebook/ch12.html#learning-styles-main-event-style",
+   "ranks": [
+    {
+     "rank": 1,
+     "title": "Elementary",
+     "id": "main-event-style-rank-1-elementary",
+     "default": {
+      "name": "Crowd Favorite",
+      "id": "main-event-style-crowd-favorite",
+      "use": "Outside combat",
+      "text": "An entrance, a taunt, a pose. Add your dots to rolls to work a crowd, intimidate someone before a fight, or sell a story."
+     },
+     "a": {
+      "name": "Lock Up",
+      "id": "main-event-style-lock-up",
+      "use": "Combat",
+      "text": "On an unarmed hit, spend 1 AP: the target is Grappled by you instead of taking damage."
+     },
+     "b": {
+      "name": "Body Slam",
+      "id": "main-event-style-body-slam",
+      "use": "Combat",
+      "text": "On an unarmed hit, the target is also knocked Prone."
+     }
+    },
+    {
+     "rank": 2,
+     "title": "Intermediate",
+     "id": "main-event-style-rank-2-intermediate",
+     "default": {
+      "name": "Steel Chair",
+      "id": "main-event-style-steel-chair",
+      "use": "Both",
+      "text": "Improvised objects (chairs, bottles, ladders, tables) count as proper weapons for you. Add half your dots to their damage."
+     },
+     "a": {
+      "name": "Clothesline",
+      "id": "main-event-style-clothesline",
+      "use": "Combat",
+      "text": "If you moved at least 1 zone before attacking, a hit adds your dots to damage and knocks the target Prone."
+     },
+     "b": {
+      "name": "Sleeper Hold",
+      "id": "main-event-style-sleeper-hold",
+      "use": "Combat",
+      "text": "While you have someone Grappled, every Upkeep they fail to break free, they lose 2 AP that turn."
+     }
+    },
+    {
+     "rank": 3,
+     "title": "Advanced",
+     "id": "main-event-style-rank-3-advanced",
+     "default": {
+      "name": "Kayfabe",
+      "id": "main-event-style-kayfabe",
+      "use": "Outside combat",
+      "text": "You can fake a fight, a fall, or an injury well enough to fool anyone watching. Add your dots to Chicanery or Subterfuge rolls to stage anything physical."
+     },
+     "a": {
+      "name": "Suplex",
+      "id": "main-event-style-suplex",
+      "use": "Combat",
+      "text": "While grappling, spend 1 AP to slam your target: damage equal to your dots, the target is knocked Prone, and the grapple ends."
+     },
+     "b": {
+      "name": "Dropkick",
+      "id": "main-event-style-dropkick",
+      "use": "Combat",
+      "text": "Leap 1 zone and attack. A hit pushes the target 1 zone. If you miss, you land Prone."
+     }
+    },
+    {
+     "rank": 4,
+     "title": "Saint",
+     "id": "main-event-style-rank-4-saint",
+     "default": {
+      "name": "No-Sell",
+      "id": "main-event-style-no-sell",
+      "use": "Combat",
+      "text": "Once per scene, shrug off a hit. It counts as meeting one threshold lower (LDT becomes BDT; BDT does no damage)."
+     },
+     "a": {
+      "name": "Figure-Four Leglock",
+      "id": "main-event-style-figure-four-leglock",
+      "use": "Combat",
+      "text": "Every Upkeep your target stays Grappled by you, they take damage equal to your dots. When they break free, they're Rooted until the end of their next turn."
+     },
+     "b": {
+      "name": "DDT",
+      "id": "main-event-style-ddt",
+      "use": "Combat",
+      "text": "While grappling, spend 1 AP: damage equal to your dots, the target loses 2 AP on their next turn, and the grapple ends."
+     }
+    },
+    {
+     "rank": 5,
+     "title": "Royal",
+     "id": "main-event-style-rank-5-royal",
+     "default": {
+      "name": "Face of the Match",
+      "id": "main-event-style-face-of-the-match",
+      "use": "Outside combat",
+      "text": "Fans and rivals know your name. Add your dots to social rolls with anyone who loves a good fight. Once per story, call in a favor from a fan."
+     },
+     "a": {
+      "name": "Piledriver",
+      "id": "main-event-style-piledriver",
+      "use": "Combat",
+      "text": "While grappling, spend 2 AP: damage equal to twice your dots, the target is knocked Prone, and the grapple ends."
+     },
+     "b": {
+      "name": "Powerbomb",
+      "id": "main-event-style-powerbomb",
+      "use": "Combat",
+      "text": "While grappling, spend 2 AP to throw your target 1 zone into another enemy. One attack roll against both. Everyone hit is knocked Prone, and the grapple ends."
+     }
+    },
+    {
+     "rank": 6,
+     "title": "Imperial",
+     "id": "main-event-style-rank-6-imperial",
+     "default": {
+      "name": "Off the Top Rope",
+      "id": "main-event-style-off-the-top-rope",
+      "use": "Both",
+      "text": "From any height (a table, a balcony, a ledge), dive onto a target up to 2 zones away. Add your dots to the attack roll. You take no falling damage from the dive."
+     },
+     "a": {
+      "name": "Chokeslam",
+      "id": "main-event-style-chokeslam",
+      "use": "Combat",
+      "text": "Spend 2 AP: lift an adjacent target and slam them down. Damage equal to your dots, they're knocked Prone, and they lose 2 AP on their next turn. No grapple needed."
+     },
+     "b": {
+      "name": "Signature Move",
+      "id": "main-event-style-signature-move",
+      "use": "Combat",
+      "text": "Name your finisher. Once per scene, a successful Grapple on a target at their -4 wound penalty or worse ends their fight: they submit or are knocked out (Incapacitated)."
+     }
+    },
+    {
+     "rank": 7,
+     "title": "Divine",
+     "id": "main-event-style-rank-7-divine",
+     "default": {
+      "name": "Undisputed Champion",
+      "id": "main-event-style-undisputed-champion",
+      "use": "Both",
+      "text": "Once per story, declare a bout a title match. For the rest of the scene, you can't be pinned, made to submit, or knocked out by non-lethal means."
+     },
+     "a": {
+      "name": "The Finish",
+      "id": "main-event-style-the-finish",
+      "use": "Combat",
+      "text": "While grappling, spend 3 AP: damage equal to three times your dots, counted as meeting the next-higher damage threshold. The grapple ends."
+     },
+     "b": {
+      "name": "Tag Team",
+      "id": "main-event-style-tag-team",
+      "use": "Combat",
+      "text": "When an adjacent ally attacks a target you have Grappled, they add your dots to their attack roll."
+     }
+    }
+   ]
   },
   {
    "name": "Windreader Style",
    "weapons": "Bows",
    "primary": "Dexterity + Ranged",
    "secondary": "Perception + Awareness",
-   "link": "../rulebook/ch12.html#learning-styles-windreader-style"
+   "link": "../rulebook/ch12.html#learning-styles-windreader-style",
+   "ranks": [
+    {
+     "rank": 1,
+     "title": "Elementary",
+     "id": "windreader-style-rank-1-elementary",
+     "default": {
+      "name": "Hunter's Eye",
+      "id": "windreader-style-hunters-eye",
+      "use": "Outside combat",
+      "text": "Add your dots to rolls to track, stalk, or read animal sign."
+     },
+     "a": {
+      "name": "Steady Draw",
+      "id": "windreader-style-steady-draw",
+      "use": "Combat",
+      "text": "Add your dots to attack rolls made without moving that round."
+     },
+     "b": {
+      "name": "Ready Nock",
+      "id": "windreader-style-ready-nock",
+      "use": "Combat",
+      "text": "Add your dots to initiative while holding a bow."
+     }
+    },
+    {
+     "rank": 2,
+     "title": "Intermediate",
+     "id": "windreader-style-rank-2-intermediate",
+     "default": {
+      "name": "Fletcher's Craft",
+      "id": "windreader-style-fletchers-craft",
+      "use": "Outside combat",
+      "text": "You can make arrows and string bows from raw materials, about a quiver's worth of arrows in an hour."
+     },
+     "a": {
+      "name": "Pinning Shot",
+      "id": "windreader-style-pinning-shot",
+      "use": "Combat",
+      "text": "On a hit, spend 1 AP to leave the target Rooted until the end of their next turn."
+     },
+     "b": {
+      "name": "Cover Shot",
+      "id": "windreader-style-cover-shot",
+      "use": "Combat",
+      "text": "Spend 1 AP: an ally within your range adds your dots to their next defense roll."
+     }
+    },
+    {
+     "rank": 3,
+     "title": "Advanced",
+     "id": "windreader-style-rank-3-advanced",
+     "default": {
+      "name": "Quiver Belt",
+      "id": "windreader-style-quiver-belt",
+      "use": "Both",
+      "text": "You get one extra Belt slot (slot 4), for special arrows only. Drawing from it costs no AP."
+     },
+     "a": {
+      "name": "Arcing Shot",
+      "id": "windreader-style-arcing-shot",
+      "use": "Combat",
+      "text": "Ignore cover. You can also hit a target you can't see if an ally can see it."
+     },
+     "b": {
+      "name": "Silent Shot",
+      "id": "windreader-style-silent-shot",
+      "use": "Combat",
+      "text": "Shooting doesn't give away your position if you're hidden. Add your dots to Stealth rolls right after a shot."
+     }
+    },
+    {
+     "rank": 4,
+     "title": "Saint",
+     "id": "windreader-style-rank-4-saint",
+     "default": {
+      "name": "Trick Arrows",
+      "id": "windreader-style-trick-arrows",
+      "use": "Both",
+      "text": "You know how to rig rope arrows (a line between two zones that anyone can cross), smoke, noisemakers, and blunt arrows that deal kinetic damage."
+     },
+     "a": {
+      "name": "Marksman's Patience",
+      "id": "windreader-style-marksmans-patience",
+      "use": "Combat",
+      "text": "Spend your whole Action aiming. Your next shot adds twice your dots to the attack roll."
+     },
+     "b": {
+      "name": "Twin Nock",
+      "id": "windreader-style-twin-nock",
+      "use": "Combat",
+      "text": "One attack roll against two targets within range."
+     }
+    },
+    {
+     "rank": 5,
+     "title": "Royal",
+     "id": "windreader-style-rank-5-royal",
+     "default": {
+      "name": "Long Eye",
+      "id": "windreader-style-long-eye",
+      "use": "Combat",
+      "text": "Ignore the -2 dice penalty for half cover."
+     },
+     "a": {
+      "name": "Volley",
+      "id": "windreader-style-volley",
+      "use": "Combat",
+      "text": "Spend 2 AP: one attack roll against a target zone and every zone adjacent to it."
+     },
+     "b": {
+      "name": "Heart Seeker",
+      "id": "windreader-style-heart-seeker",
+      "use": "Combat",
+      "text": "A called shot to a vital spot has full Armor Penetration."
+     }
+    },
+    {
+     "rank": 6,
+     "title": "Imperial",
+     "id": "windreader-style-rank-6-imperial",
+     "default": {
+      "name": "Eagle Eye",
+      "id": "windreader-style-eagle-eye",
+      "use": "Both",
+      "text": "You see clearly at great distances, enough to read a sign a mile away."
+     },
+     "a": {
+      "name": "Splitting Shot",
+      "id": "windreader-style-splitting-shot",
+      "use": "Combat",
+      "text": "When you hit, the arrow keeps going and also hits the next creature in a straight line behind the target, using the same attack roll."
+     },
+     "b": {
+      "name": "The Last Arrow",
+      "id": "windreader-style-the-last-arrow",
+      "use": "Combat",
+      "text": "Once per scene, re-roll a missed shot at your full pool."
+     }
+    },
+    {
+     "rank": 7,
+     "title": "Divine",
+     "id": "windreader-style-rank-7-divine",
+     "default": {
+      "name": "Wind's Voice",
+      "id": "windreader-style-winds-voice",
+      "use": "Both",
+      "text": "You always know what the wind and weather will do. Your arrows ignore penalties from wind, weather, and magical concealment."
+     },
+     "a": {
+      "name": "The Thousand Arrow Storm",
+      "id": "windreader-style-the-thousand-arrow-storm",
+      "use": "Combat",
+      "text": "Spend 3 AP: one attack roll against every enemy you can see within range."
+     },
+     "b": {
+      "name": "One True Shot",
+      "id": "windreader-style-one-true-shot",
+      "use": "Combat",
+      "text": "Once per story, an arrow automatically hits anything you can see and meets its ADT."
+     }
+    }
+   ]
   },
   {
    "name": "Sundown Style",
    "weapons": "Hand Guns",
    "primary": "Dexterity + Ranged",
    "secondary": "Perception + Awareness",
-   "link": "../rulebook/ch12.html#learning-styles-sundown-style"
+   "link": "../rulebook/ch12.html#learning-styles-sundown-style",
+   "ranks": [
+    {
+     "rank": 1,
+     "title": "Elementary",
+     "id": "sundown-style-rank-1-elementary",
+     "default": {
+      "name": "Gunsmith's Hands",
+      "id": "sundown-style-gunsmiths-hands",
+      "use": "Outside combat",
+      "text": "You can clean, maintain, and repair hand guns and cast your own bullets. Add your dots to rolls to fix or identify firearms."
+     },
+     "a": {
+      "name": "Fast Draw",
+      "id": "sundown-style-fast-draw",
+      "use": "Combat",
+      "text": "Drawing a holstered hand gun costs no AP. Add your dots to initiative while one is holstered."
+     },
+     "b": {
+      "name": "Point Blank",
+      "id": "sundown-style-point-blank",
+      "use": "Combat",
+      "text": "Add your dots to damage against an adjacent target."
+     }
+    },
+    {
+     "rank": 2,
+     "title": "Intermediate",
+     "id": "sundown-style-rank-2-intermediate",
+     "default": {
+      "name": "Trick Shooting",
+      "id": "sundown-style-trick-shooting",
+      "use": "Outside combat",
+      "text": "Coins in the air, candle wicks, bottles off a fence. Add your dots to rolls to show off your shooting."
+     },
+     "a": {
+      "name": "Double Tap",
+      "id": "sundown-style-double-tap",
+      "use": "Combat",
+      "text": "One attack roll fires twice at one target, and they defend against it twice."
+     },
+     "b": {
+      "name": "Hip Fire",
+      "id": "sundown-style-hip-fire",
+      "use": "Combat",
+      "text": "Add your dots to attack rolls made after moving that round."
+     }
+    },
+    {
+     "rank": 3,
+     "title": "Advanced",
+     "id": "sundown-style-rank-3-advanced",
+     "default": {
+      "name": "Speed Loader",
+      "id": "sundown-style-speed-loader",
+      "use": "Combat",
+      "text": "You get one extra Belt slot (slot 4), for ammunition only. Reloading from it costs no AP."
+     },
+     "a": {
+      "name": "Disarm Shot",
+      "id": "sundown-style-disarm-shot",
+      "use": "Combat",
+      "text": "A called shot to the hand or weapon that hits makes the target drop it into an adjacent zone."
+     },
+     "b": {
+      "name": "Covering Fire",
+      "id": "sundown-style-covering-fire",
+      "use": "Combat",
+      "text": "Spend 1 AP: an ally within your range adds your dots to their next defense roll."
+     }
+    },
+    {
+     "rank": 4,
+     "title": "Saint",
+     "id": "sundown-style-rank-4-saint",
+     "default": {
+      "name": "Two Guns",
+      "id": "sundown-style-two-guns",
+      "use": "Combat",
+      "text": "Wield a hand gun in each hand. When you fire both, add your dots to that one attack roll."
+     },
+     "a": {
+      "name": "Ricochet",
+      "id": "sundown-style-ricochet",
+      "use": "Combat",
+      "text": "Bank a shot off a hard surface to ignore cover."
+     },
+     "b": {
+      "name": "Gunslinger's Volley",
+      "id": "sundown-style-gunslingers-volley",
+      "use": "Combat",
+      "text": "One attack roll against two targets within range."
+     }
+    },
+    {
+     "rank": 5,
+     "title": "Royal",
+     "id": "sundown-style-rank-5-royal",
+     "default": {
+      "name": "Reputation",
+      "id": "sundown-style-reputation",
+      "use": "Outside combat",
+      "text": "Your name gets around saloons and frontier towns. Add your dots to rolls to intimidate, and most people think twice before drawing on you."
+     },
+     "a": {
+      "name": "Fan the Hammer",
+      "id": "sundown-style-fan-the-hammer",
+      "use": "Combat",
+      "text": "Spend 2 AP: one attack roll fires up to three times, at any mix of targets in range. Each shot is defended separately."
+     },
+     "b": {
+      "name": "Dead Eye",
+      "id": "sundown-style-dead-eye",
+      "use": "Combat",
+      "text": "A called shot to a vital spot that hits counts as meeting the next-higher damage threshold."
+     }
+    },
+    {
+     "rank": 6,
+     "title": "Imperial",
+     "id": "sundown-style-rank-6-imperial",
+     "default": {
+      "name": "Showdown",
+      "id": "sundown-style-showdown",
+      "use": "Combat",
+      "text": "You win every initiative tie, and you act before any enemy you can see who starts combat with a weapon holstered."
+     },
+     "a": {
+      "name": "Empty the Chamber",
+      "id": "sundown-style-empty-the-chamber",
+      "use": "Combat",
+      "text": "Once per scene, spend all your remaining AP on one shot at one target, adding twice your dots to the damage."
+     },
+     "b": {
+      "name": "Last Stand",
+      "id": "sundown-style-last-stand",
+      "use": "Combat",
+      "text": "While you're at your -2 wound penalty or worse, add your dots to attack rolls."
+     }
+    },
+    {
+     "rank": 7,
+     "title": "Divine",
+     "id": "sundown-style-rank-7-divine",
+     "default": {
+      "name": "Bullet Time",
+      "id": "sundown-style-bullet-time",
+      "use": "Combat",
+      "text": "Once per scene, act for one turn as if you had the full 6 AP."
+     },
+     "a": {
+      "name": "The Last Gunslinger",
+      "id": "sundown-style-the-last-gunslinger",
+      "use": "Combat",
+      "text": "Spend 3 AP: one attack roll against every enemy you can see within range."
+     },
+     "b": {
+      "name": "One Bullet, One Truth",
+      "id": "sundown-style-one-bullet-one-truth",
+      "use": "Combat",
+      "text": "Once per story, a shot automatically hits anything you can see and meets its ADT."
+     }
+    }
+   ]
   },
   {
    "name": "Iron Rain Style",
    "weapons": "Large Guns",
    "primary": "Fortitude + Ranged",
    "secondary": "Strength + Athletics",
-   "link": "../rulebook/ch12.html#learning-styles-iron-rain-style"
+   "link": "../rulebook/ch12.html#learning-styles-iron-rain-style",
+   "ranks": [
+    {
+     "rank": 1,
+     "title": "Elementary",
+     "id": "iron-rain-style-rank-1-elementary",
+     "default": {
+      "name": "Gunner's Hands",
+      "id": "iron-rain-style-gunners-hands",
+      "use": "Outside combat",
+      "text": "You can haul, mount, and maintain heavy weapons, and you carry a large gun without slowing down."
+     },
+     "a": {
+      "name": "Brace",
+      "id": "iron-rain-style-brace",
+      "use": "Combat",
+      "text": "Add your dots to attack rolls made without moving that round."
+     },
+     "b": {
+      "name": "Scope In",
+      "id": "iron-rain-style-scope-in",
+      "use": "Combat",
+      "text": "Add your dots to called shots."
+     }
+    },
+    {
+     "rank": 2,
+     "title": "Intermediate",
+     "id": "iron-rain-style-rank-2-intermediate",
+     "default": {
+      "name": "Demolition Sense",
+      "id": "iron-rain-style-demolition-sense",
+      "use": "Outside combat",
+      "text": "Add your dots to rolls to find structural weak points, where to breach a wall, or the best firing position."
+     },
+     "a": {
+      "name": "Suppressing Fire",
+      "id": "iron-rain-style-suppressing-fire",
+      "use": "Combat",
+      "text": "Spend 1 AP: one attack roll at a target zone and every zone adjacent to it. It deals no damage, but every enemy there takes a flat penalty die on their next roll, whether you hit or not."
+     },
+     "b": {
+      "name": "Knockback",
+      "id": "iron-rain-style-knockback",
+      "use": "Combat",
+      "text": "A hit pushes the target 1 zone away."
+     }
+    },
+    {
+     "rank": 3,
+     "title": "Advanced",
+     "id": "iron-rain-style-rank-3-advanced",
+     "default": {
+      "name": "Ammo Belt",
+      "id": "iron-rain-style-ammo-belt",
+      "use": "Combat",
+      "text": "You get one extra Belt slot (slot 4), for ammunition only. Reloading from it costs no AP."
+     },
+     "a": {
+      "name": "Armor Piercing",
+      "id": "iron-rain-style-armor-piercing",
+      "use": "Combat",
+      "text": "Your shots have Armor Penetration equal to half your dots."
+     },
+     "b": {
+      "name": "Field Repair",
+      "id": "iron-rain-style-field-repair",
+      "use": "Both",
+      "text": "Clear a jam or fix a damaged gun for 1 AP in combat. Outside combat, add your dots to repair rolls."
+     }
+    },
+    {
+     "rank": 4,
+     "title": "Saint",
+     "id": "iron-rain-style-rank-4-saint",
+     "default": {
+      "name": "Dug In",
+      "id": "iron-rain-style-dug-in",
+      "use": "Combat",
+      "text": "On a round you don't move, add half your dots to your BDT against ranged attacks."
+     },
+     "a": {
+      "name": "Wide Blast",
+      "id": "iron-rain-style-wide-blast",
+      "use": "Combat",
+      "text": "One attack roll against every zone directly and diagonally forward of you."
+     },
+     "b": {
+      "name": "Long Shot",
+      "id": "iron-rain-style-long-shot",
+      "use": "Combat",
+      "text": "Your shots punch through thin cover such as wood, plaster, or a thin wall: a target with full cover behind it has only half cover."
+     }
+    },
+    {
+     "rank": 5,
+     "title": "Royal",
+     "id": "iron-rain-style-rank-5-royal",
+     "default": {
+      "name": "Quartermaster's Eye",
+      "id": "iron-rain-style-quartermasters-eye",
+      "use": "Outside combat",
+      "text": "One look at an enemy camp tells you roughly their numbers, gear, and supplies."
+     },
+     "a": {
+      "name": "Breach",
+      "id": "iron-rain-style-breach",
+      "use": "Combat",
+      "text": "A shot destroys a door, a section of wooden wall, or one piece of cover."
+     },
+     "b": {
+      "name": "Walking Fire",
+      "id": "iron-rain-style-walking-fire",
+      "use": "Combat",
+      "text": "Spend 2 AP: one attack roll against every enemy in a straight line within range."
+     }
+    },
+    {
+     "rank": 6,
+     "title": "Imperial",
+     "id": "iron-rain-style-rank-6-imperial",
+     "default": {
+      "name": "Unshakeable",
+      "id": "iron-rain-style-unshakeable",
+      "use": "Combat",
+      "text": "On a round you don't move, enemy effects can't push you, knock you Prone, or make you lose AP."
+     },
+     "a": {
+      "name": "Devastator",
+      "id": "iron-rain-style-devastator",
+      "use": "Combat",
+      "text": "A hit lowers the target's Armor by 2 for the rest of the scene."
+     },
+     "b": {
+      "name": "Scorched Line",
+      "id": "iron-rain-style-scorched-line",
+      "use": "Combat",
+      "text": "Once per round, a shot at a target you've already hit this scene has full Armor Penetration."
+     }
+    },
+    {
+     "rank": 7,
+     "title": "Divine",
+     "id": "iron-rain-style-rank-7-divine",
+     "default": {
+      "name": "One-Man Battery",
+      "id": "iron-rain-style-one-man-battery",
+      "use": "Both",
+      "text": "You can load, aim, and fire siege weapons (cannons, ballistae) alone, with no crew."
+     },
+     "a": {
+      "name": "The Siege Breaker",
+      "id": "iron-rain-style-the-siege-breaker",
+      "use": "Combat",
+      "text": "Spend 3 AP: one attack roll against every enemy within 2 zones of a target zone. All cover in that area is destroyed."
+     },
+     "b": {
+      "name": "Last Belt",
+      "id": "iron-rain-style-last-belt",
+      "use": "Combat",
+      "text": "Once per story, one attack automatically hits every enemy in your line of sight and meets at least their LDT."
+     }
+    }
+   ]
   }
  ],
  "knowledges": [
@@ -3709,63 +5502,1424 @@
    "kind": "Casting school",
    "extra_mana_dice": "Damage",
    "focus": "Heat and burning. Imposes Burning.",
-   "link": "../rulebook/ch13.html#fire-magic"
+   "link": "../rulebook/ch13.html#fire-magic",
+   "ranks": [
+    {
+     "rank": 1,
+     "title": "Core",
+     "id": "fire-magic-rank-1-core",
+     "default": {
+      "name": "Heat Tolerance",
+      "note": "Permanent",
+      "text": "Damage you take from ordinary, non-magical heat and flame is halved (rounded down), and you can briefly handle hot coals or metal."
+     },
+     "spells": [
+      {
+       "name": "Ignite",
+       "id": "fire-magic-ignite",
+       "cost": "1",
+       "text": "A flick of concentrated heat thrown directly at a target."
+      },
+      {
+       "name": "Kindle",
+       "id": "fire-magic-kindle",
+       "cost": "1",
+       "text": "The most basic application of fire. Make a thing burn."
+      }
+     ]
+    },
+    {
+     "rank": 2,
+     "title": "Terrestrial",
+     "id": "fire-magic-rank-2-terrestrial",
+     "default": {
+      "name": "Warmth",
+      "note": "Attuned: holds 1 of your M/T while active",
+      "text": "You and allies in adjacent zones are unaffected by non-magical cold and cannot gain the Chilled condition from weather."
+     },
+     "spells": [
+      {
+       "name": "Fire Bolt",
+       "id": "fire-magic-fire-bolt",
+       "cost": "2",
+       "text": "A reliable aimed bolt. Goes where it is aimed. Burns what it hits."
+      },
+      {
+       "name": "Burning Ground",
+       "id": "fire-magic-burning-ground",
+       "cost": "2",
+       "text": "The ground burns. Not intensely. But it burns."
+      }
+     ]
+    },
+    {
+     "rank": 3,
+     "title": "Aerial",
+     "id": "fire-magic-rank-3-aerial",
+     "default": {
+      "name": "Reach of Flame",
+      "note": "Permanent",
+      "text": "Your Fire spells with a range of Adjacent zone can target a zone one step further away."
+     },
+     "spells": [
+      {
+       "name": "Fire Breath",
+       "id": "fire-magic-fire-breath",
+       "cost": "3",
+       "text": "A broad expulsion of fire from the caster's hands or mouth."
+      },
+      {
+       "name": "Flame Wall",
+       "id": "fire-magic-flame-wall",
+       "cost": "3",
+       "text": "A vertical sheet of fire that punishes anyone who walks through it."
+      }
+     ]
+    },
+    {
+     "rank": 4,
+     "title": "Lunar",
+     "id": "fire-magic-rank-4-lunar",
+     "default": {
+      "name": "Flare",
+      "note": "2 mana, Reaction",
+      "text": "When an enemy in an adjacent zone attacks you, a flash of fire bursts from your body. That attack loses 2 dice."
+     },
+     "spells": [
+      {
+       "name": "Fire Lash",
+       "id": "fire-magic-fire-lash",
+       "cost": "4",
+       "text": "A lash of fire that cuts a straight line through everything in its path."
+      },
+      {
+       "name": "Ember Cloak",
+       "id": "fire-magic-ember-cloak",
+       "cost": "4",
+       "text": "The caster burns. Anyone who reaches for them learns it immediately."
+      }
+     ]
+    },
+    {
+     "rank": 5,
+     "title": "Stellar",
+     "id": "fire-magic-rank-5-stellar",
+     "default": {
+      "name": "Searing",
+      "note": "Permanent",
+      "text": "Damage from your Fire spells ignores 1 point of the armor portion of a target's DT."
+     },
+     "spells": [
+      {
+       "name": "Fireball",
+       "id": "fire-magic-fireball",
+       "cost": "5",
+       "text": "The classic. A ball of fire that explodes on impact and covers the area."
+      },
+      {
+       "name": "Piercing Flame",
+       "id": "fire-magic-piercing-flame",
+       "cost": "5",
+       "text": "Fire focused down to a point of intense penetration."
+      }
+     ]
+    },
+    {
+     "rank": 6,
+     "title": "Galactic",
+     "id": "fire-magic-rank-6-galactic",
+     "default": {
+      "name": "Living Flame",
+      "note": "Attuned: holds 2 of your M/T while active",
+      "text": "Your body is wreathed in fire. Any target that hits you with a melee attack gains the Burning condition."
+     },
+     "spells": [
+      {
+       "name": "Rain of Fire",
+       "id": "fire-magic-rain-of-fire",
+       "cost": "6",
+       "text": "The sky over multiple zones ignites. Everyone below learns at once."
+      },
+      {
+       "name": "Fire Elemental",
+       "id": "fire-magic-fire-elemental",
+       "cost": "6",
+       "text": "A semi-autonomous entity of concentrated flame that attacks on command."
+      }
+     ]
+    },
+    {
+     "rank": 7,
+     "title": "Cosmic",
+     "id": "fire-magic-rank-7-cosmic",
+     "default": {
+      "name": "Heart of the Sun",
+      "note": "Permanent",
+      "text": "Burning applied by your Fire spells deals 1 Lethal on a successful resistance roll and 1 Aggravated on a failed one."
+     },
+     "spells": [
+      {
+       "name": "Inferno",
+       "id": "fire-magic-inferno",
+       "cost": "7",
+       "text": "The world, briefly, is on fire."
+      },
+      {
+       "name": "Eternal Flame",
+       "id": "fire-magic-eternal-flame",
+       "cost": "7",
+       "text": "A fire that stays. It does not go out. It does not diminish. It simply burns."
+      }
+     ]
+    }
+   ]
   },
   {
    "name": "Water",
    "kind": "Casting school",
    "extra_mana_dice": "Attack or damage",
    "focus": "Force, cold, and flow. Imposes Chilled; moves targets.",
-   "link": "../rulebook/ch13.html#water-magic"
+   "link": "../rulebook/ch13.html#water-magic",
+   "ranks": [
+    {
+     "rank": 1,
+     "title": "Core",
+     "id": "water-magic-rank-1-core",
+     "default": {
+      "name": "Water Breathing",
+      "note": "Attuned: holds 1 of your M/T while active",
+      "text": "You can breathe underwater and swim at your normal movement."
+     },
+     "spells": [
+      {
+       "name": "Water Bolt",
+       "id": "water-magic-water-bolt",
+       "cost": "1",
+       "text": "Water moving very fast in one direction. It hits hard."
+      },
+      {
+       "name": "Chill Touch",
+       "id": "water-magic-chill-touch",
+       "cost": "1",
+       "text": "Cold applied directly. Not violence yet. Just cold."
+      }
+     ]
+    },
+    {
+     "rank": 2,
+     "title": "Terrestrial",
+     "id": "water-magic-rank-2-terrestrial",
+     "default": {
+      "name": "Purify",
+      "note": "1 mana, Instant",
+      "text": "Make up to a zone of water clean and safe to drink, or draw a few gallons of fresh water out of the air."
+     },
+     "spells": [
+      {
+       "name": "Water Jet",
+       "id": "water-magic-water-jet",
+       "cost": "2",
+       "text": "A stream of water that pushes as hard as it hits."
+      },
+      {
+       "name": "Ice Patch",
+       "id": "water-magic-ice-patch",
+       "cost": "2",
+       "text": "The floor gets slick. The transition from upright to down is fast."
+      }
+     ]
+    },
+    {
+     "rank": 3,
+     "title": "Aerial",
+     "id": "water-magic-rank-3-aerial",
+     "default": {
+      "name": "Flowing Form",
+      "note": "Permanent",
+      "text": "You gain 1 bonus die on Dexterity + Dodge rolls against Fire Magic."
+     },
+     "spells": [
+      {
+       "name": "Frost Lance",
+       "id": "water-magic-frost-lance",
+       "cost": "3",
+       "text": "Cold compressed to a point and thrown. It gets into the target in more ways than one."
+      },
+      {
+       "name": "Water Shield",
+       "id": "water-magic-water-shield",
+       "cost": "3",
+       "text": "Water intercedes between the caster and whatever is coming."
+      }
+     ]
+    },
+    {
+     "rank": 4,
+     "title": "Lunar",
+     "id": "water-magic-rank-4-lunar",
+     "default": {
+      "name": "Water Walking",
+      "note": "Attuned: holds 2 of your M/T while active",
+      "text": "You can move across the surface of water and other liquids as if it were solid ground."
+     },
+     "spells": [
+      {
+       "name": "Flash Freeze",
+       "id": "water-magic-flash-freeze",
+       "cost": "4",
+       "text": "Sudden total freezing. Not cold. Frozen."
+      },
+      {
+       "name": "Quench",
+       "id": "water-magic-quench",
+       "cost": "4",
+       "text": "Every flame in the zone goes out at once."
+      }
+     ]
+    },
+    {
+     "rank": 5,
+     "title": "Stellar",
+     "id": "water-magic-rank-5-stellar",
+     "default": {
+      "name": "Deep Cold",
+      "note": "Permanent",
+      "text": "A target that gains the Chilled condition from your Water spells also loses their free move while Chilled."
+     },
+     "spells": [
+      {
+       "name": "Tidal Pull",
+       "id": "water-magic-tidal-pull",
+       "cost": "5",
+       "text": "A wave that hits a target and pulls them back with it."
+      },
+      {
+       "name": "Ice Armor",
+       "id": "water-magic-ice-armor",
+       "cost": "5",
+       "text": "Ice plate. It holds until it is melted. Which takes work."
+      }
+     ]
+    },
+    {
+     "rank": 6,
+     "title": "Galactic",
+     "id": "water-magic-rank-6-galactic",
+     "default": {
+      "name": "Slip Away",
+      "note": "3 mana, Reaction",
+      "text": "When you would be pushed, pulled, or dragged, you flow like water instead. Ignore the forced movement and move 1 zone in a direction of your choice."
+     },
+     "spells": [
+      {
+       "name": "Blizzard",
+       "id": "water-magic-blizzard",
+       "cost": "6",
+       "text": "Multiple zones become extremely cold and hostile all at once."
+      },
+      {
+       "name": "Countercurrent",
+       "id": "water-magic-countercurrent",
+       "cost": "6",
+       "text": "An incoming attack gets turned around and aimed somewhere else."
+      }
+     ]
+    },
+    {
+     "rank": 7,
+     "title": "Cosmic",
+     "id": "water-magic-rank-7-cosmic",
+     "default": {
+      "name": "Absolute Zero",
+      "note": "Permanent",
+      "text": "Frozen conditions from your Water spells can only be ended by Fire Magic that exceeds your cast successes, and a Frozen target cannot use Reactions."
+     },
+     "spells": [
+      {
+       "name": "Deluge",
+       "id": "water-magic-deluge",
+       "cost": "7",
+       "text": "A wave fills everything that can be seen. There is nowhere to go."
+      },
+      {
+       "name": "Glacier",
+       "id": "water-magic-glacier",
+       "cost": "7",
+       "text": "A zone becomes a glacier all at once."
+      }
+     ]
+    }
+   ]
   },
   {
    "name": "Air",
    "kind": "Casting school",
    "extra_mana_dice": "Attack",
    "focus": "Wind, speed, and precision. Ranged attacks and control.",
-   "link": "../rulebook/ch13.html#air-magic"
+   "link": "../rulebook/ch13.html#air-magic",
+   "ranks": [
+    {
+     "rank": 1,
+     "title": "Core",
+     "id": "air-magic-rank-1-core",
+     "default": {
+      "name": "Light Step",
+      "note": "Permanent",
+      "text": "Treat every fall as one vertical zone shorter when working out falling damage."
+     },
+     "spells": [
+      {
+       "name": "Wind Strike",
+       "id": "air-magic-wind-strike",
+       "cost": "1",
+       "text": "Wind with a point to it."
+      },
+      {
+       "name": "Gust",
+       "id": "air-magic-gust",
+       "cost": "1",
+       "text": "A targeted push of air with real force behind it."
+      }
+     ]
+    },
+    {
+     "rank": 2,
+     "title": "Terrestrial",
+     "id": "air-magic-rank-2-terrestrial",
+     "default": {
+      "name": "Whisper",
+      "note": "1 mana, Instant",
+      "text": "Send a short spoken message of a sentence or two on the wind to one person within line of sight. Only they hear it."
+     },
+     "spells": [
+      {
+       "name": "Air Blade",
+       "id": "air-magic-air-blade",
+       "cost": "2",
+       "text": "Air made sharp. It cuts."
+      },
+      {
+       "name": "Deflecting Wind",
+       "id": "air-magic-deflecting-wind",
+       "cost": "2",
+       "text": "A wall of moving air that blows an incoming attack off course."
+      }
+     ]
+    },
+    {
+     "rank": 3,
+     "title": "Aerial",
+     "id": "air-magic-rank-3-aerial",
+     "default": {
+      "name": "Tailwind",
+      "note": "Attuned: holds 2 of your M/T while active",
+      "text": "Your movement increases by 1 zone each turn."
+     },
+     "spells": [
+      {
+       "name": "Cyclone",
+       "id": "air-magic-cyclone",
+       "cost": "3",
+       "text": "Everything in front gets blown back."
+      },
+      {
+       "name": "Wind Sprint",
+       "id": "air-magic-wind-sprint",
+       "cost": "3",
+       "text": "The wind pushes from behind. The caster moves faster than they should."
+      }
+     ]
+    },
+    {
+     "rank": 4,
+     "title": "Lunar",
+     "id": "air-magic-rank-4-lunar",
+     "default": {
+      "name": "Eye of the Wind",
+      "note": "Permanent",
+      "text": "Your ranged Air spells ignore dice penalties from wind, weather, and non-magical visibility."
+     },
+     "spells": [
+      {
+       "name": "Tornado Bolt",
+       "id": "air-magic-tornado-bolt",
+       "cost": "4",
+       "text": "A miniature tornado shot in a line, knocking everyone it touches off their feet."
+      },
+      {
+       "name": "Wind Wall",
+       "id": "air-magic-wind-wall",
+       "cost": "4",
+       "text": "A wall of wind that stops things from passing through it."
+      }
+     ]
+    },
+    {
+     "rank": 5,
+     "title": "Stellar",
+     "id": "air-magic-rank-5-stellar",
+     "default": {
+      "name": "Updraft Leap",
+      "note": "3 mana, Instant",
+      "text": "Leap up to 2 vertical zones, or across 2 zones, and land safely."
+     },
+     "spells": [
+      {
+       "name": "Shearing Gale",
+       "id": "air-magic-shearing-gale",
+       "cost": "5",
+       "text": "A gale strong enough to move everything in a zone at once."
+      },
+      {
+       "name": "Fog of War",
+       "id": "air-magic-fog-of-war",
+       "cost": "5",
+       "text": "A fog thick enough that ranged targeting becomes near impossible."
+      }
+     ]
+    },
+    {
+     "rank": 6,
+     "title": "Galactic",
+     "id": "air-magic-rank-6-galactic",
+     "default": {
+      "name": "Gale Force",
+      "note": "Permanent",
+      "text": "Targets your Air spells push or Knock Down are pushed 1 additional zone."
+     },
+     "spells": [
+      {
+       "name": "Updraft Strike",
+       "id": "air-magic-updraft-strike",
+       "cost": "6",
+       "text": "Up. Involuntarily."
+      },
+      {
+       "name": "Sustained Flight",
+       "id": "air-magic-sustained-flight",
+       "cost": "6",
+       "text": "The air carries the caster. They go where they choose."
+      }
+     ]
+    },
+    {
+     "rank": 7,
+     "title": "Cosmic",
+     "id": "air-magic-rank-7-cosmic",
+     "default": {
+      "name": "Storm Crown",
+      "note": "Attuned: holds 3 of your M/T while active",
+      "text": "Ranged attacks and targeted spells against you lose dice equal to your Air dots."
+     },
+     "spells": [
+      {
+       "name": "Grand Cyclone",
+       "id": "air-magic-grand-cyclone",
+       "cost": "7",
+       "text": "The wind takes everyone somewhere else."
+      },
+      {
+       "name": "Eye of the Storm",
+       "id": "air-magic-eye-of-the-storm",
+       "cost": "7",
+       "text": "A permanent storm with a quiet center. The storm belongs to the caster."
+      }
+     ]
+    }
+   ]
   },
   {
    "name": "Earth",
    "kind": "Casting school",
    "extra_mana_dice": "Damage",
    "focus": "Stone and terrain. Barriers and heavy damage.",
-   "link": "../rulebook/ch13.html#earth-magic"
+   "link": "../rulebook/ch13.html#earth-magic",
+   "ranks": [
+    {
+     "rank": 1,
+     "title": "Core",
+     "id": "earth-magic-rank-1-core",
+     "default": {
+      "name": "Stonefoot",
+      "note": "Permanent",
+      "text": "You gain 1 bonus die on rolls to resist being pushed, pulled, or Knocked Down."
+     },
+     "spells": [
+      {
+       "name": "Stone Throw",
+       "id": "earth-magic-stone-throw",
+       "cost": "1",
+       "text": "A rock. Thrown with magic. It hits hard."
+      },
+      {
+       "name": "Earthen Shield",
+       "id": "earth-magic-earthen-shield",
+       "cost": "1",
+       "text": "Earth up in front of the caster. Gone after the attack."
+      }
+     ]
+    },
+    {
+     "rank": 2,
+     "title": "Terrestrial",
+     "id": "earth-magic-rank-2-terrestrial",
+     "default": {
+      "name": "Shape Stone",
+      "note": "1 mana, Instant",
+      "text": "Reshape a small amount of stone or earth by hand: dig a hole, raise a step, seal a crack, or carve a handhold."
+     },
+     "spells": [
+      {
+       "name": "Rock Barrage",
+       "id": "earth-magic-rock-barrage",
+       "cost": "2",
+       "text": "Several rocks at once. Still from the ground. Still going where they are aimed."
+      },
+      {
+       "name": "Rubble Field",
+       "id": "earth-magic-rubble-field",
+       "cost": "2",
+       "text": "The ground becomes a mess of broken rock. Walking through it is a problem."
+      }
+     ]
+    },
+    {
+     "rank": 3,
+     "title": "Aerial",
+     "id": "earth-magic-rank-3-aerial",
+     "default": {
+      "name": "Bedrock",
+      "note": "Permanent",
+      "text": "Earth Magic defensive spells you cast add 1 more to the DT bonus they grant."
+     },
+     "spells": [
+      {
+       "name": "Stone Spike",
+       "id": "earth-magic-stone-spike",
+       "cost": "3",
+       "text": "A spike of rock explodes up from beneath a target's feet."
+      },
+      {
+       "name": "Stone Wall",
+       "id": "earth-magic-stone-wall",
+       "cost": "3",
+       "text": "Stone rises between two zones and stays there."
+      }
+     ]
+    },
+    {
+     "rank": 4,
+     "title": "Lunar",
+     "id": "earth-magic-rank-4-lunar",
+     "default": {
+      "name": "Tremorsense",
+      "note": "2 mana, Instant",
+      "text": "Until the start of the next Upkeep Phase, you know the location of every creature touching the ground in adjacent zones, even hidden ones."
+     },
+     "spells": [
+      {
+       "name": "Boulder Crash",
+       "id": "earth-magic-boulder-crash",
+       "cost": "4",
+       "text": "A very large rock applied to a single target with a great deal of force."
+      },
+      {
+       "name": "Tremor",
+       "id": "earth-magic-tremor",
+       "cost": "4",
+       "text": "The ground shakes. Everyone on it goes down."
+      }
+     ]
+    },
+    {
+     "rank": 5,
+     "title": "Stellar",
+     "id": "earth-magic-rank-5-stellar",
+     "default": {
+      "name": "Living Stone",
+      "note": "Attuned: holds 3 of your M/T while active",
+      "text": "Your skin hardens like stone. Your BDT increases by 1."
+     },
+     "spells": [
+      {
+       "name": "Stoneskin",
+       "id": "earth-magic-stoneskin",
+       "cost": "5",
+       "text": "The caster becomes partially stone. They are harder to hurt and harder to ignore."
+      },
+      {
+       "name": "Earthquake",
+       "id": "earth-magic-earthquake",
+       "cost": "5",
+       "text": "The ground around the caster becomes unreliable all at once."
+      }
+     ]
+    },
+    {
+     "rank": 6,
+     "title": "Galactic",
+     "id": "earth-magic-rank-6-galactic",
+     "default": {
+      "name": "Unyielding Ground",
+      "note": "Permanent",
+      "text": "Difficult terrain created by your Earth spells costs enemies 1 additional AP to move through, and you and your allies ignore it."
+     },
+     "spells": [
+      {
+       "name": "Meteor Strike",
+       "id": "earth-magic-meteor-strike",
+       "cost": "6",
+       "text": "A great deal of earth falls on a great deal of people at once."
+      },
+      {
+       "name": "Stone Fortress",
+       "id": "earth-magic-stone-fortress",
+       "cost": "6",
+       "text": "A stone fort rises from the ground in a turn. The caster is inside it."
+      }
+     ]
+    },
+    {
+     "rank": 7,
+     "title": "Cosmic",
+     "id": "earth-magic-rank-7-cosmic",
+     "default": {
+      "name": "Mountain's Weight",
+      "note": "Permanent",
+      "text": "A target Knocked Down by your Earth spells is also Rooted until their next Upkeep Phase."
+     },
+     "spells": [
+      {
+       "name": "Continental Shift",
+       "id": "earth-magic-continental-shift",
+       "cost": "7",
+       "text": "The caster moves the world. Only a little. It is enough."
+      },
+      {
+       "name": "Earth Titan",
+       "id": "earth-magic-earth-titan",
+       "cost": "7",
+       "text": "The caster stops being a person and starts being a problem."
+      }
+     ]
+    }
+   ]
   },
   {
    "name": "Nature",
    "kind": "Casting school",
    "extra_mana_dice": "Attack or damage",
    "focus": "Growth, vines, and spores. Roots, terrain, damage over time.",
-   "link": "../rulebook/ch13.html#nature-magic"
+   "link": "../rulebook/ch13.html#nature-magic",
+   "ranks": [
+    {
+     "rank": 1,
+     "title": "Core",
+     "id": "nature-magic-rank-1-core",
+     "default": {
+      "name": "Forest Sense",
+      "note": "Permanent",
+      "text": "You gain 1 bonus die on Survival rolls in natural wilderness, and you can always identify a plant and what it does."
+     },
+     "spells": [
+      {
+       "name": "Thorn Shot",
+       "id": "nature-magic-thorn-shot",
+       "cost": "1",
+       "text": "A thorn. Much faster than normal thorns."
+      },
+      {
+       "name": "Entangle",
+       "id": "nature-magic-entangle",
+       "cost": "1",
+       "text": "Vines grab a target and hold on."
+      }
+     ]
+    },
+    {
+     "rank": 2,
+     "title": "Terrestrial",
+     "id": "nature-magic-rank-2-terrestrial",
+     "default": {
+      "name": "Bloom",
+      "note": "1 mana, Instant",
+      "text": "Make a plant grow a full season in moments: ripen fruit, sprout a seed into a sapling, or spread a vine across a wall."
+     },
+     "spells": [
+      {
+       "name": "Vine Whip",
+       "id": "nature-magic-vine-whip",
+       "cost": "2",
+       "text": "A vine that reaches and pulls."
+      },
+      {
+       "name": "Spore Burst",
+       "id": "nature-magic-spore-burst",
+       "cost": "2",
+       "text": "A burst of organic poison. Invisible. Persistent."
+      }
+     ]
+    },
+    {
+     "rank": 3,
+     "title": "Aerial",
+     "id": "nature-magic-rank-3-aerial",
+     "default": {
+      "name": "Thornhide",
+      "note": "Attuned: holds 2 of your M/T while active",
+      "text": "Thorns grow along your skin and clothing. Any target that hits you with a melee attack takes 1 damage."
+     },
+     "spells": [
+      {
+       "name": "Thorn Barrage",
+       "id": "nature-magic-thorn-barrage",
+       "cost": "3",
+       "text": "A wide spray of thorns. Messy. Effective."
+      },
+      {
+       "name": "Vine Curtain",
+       "id": "nature-magic-vine-curtain",
+       "cost": "3",
+       "text": "A wall of vines that would rather hold than block."
+      }
+     ]
+    },
+    {
+     "rank": 4,
+     "title": "Lunar",
+     "id": "nature-magic-rank-4-lunar",
+     "default": {
+      "name": "Deep Roots",
+      "note": "Permanent",
+      "text": "Targets Rooted by your Nature spells need 1 additional success to break free."
+     },
+     "spells": [
+      {
+       "name": "Constricting Roots",
+       "id": "nature-magic-constricting-roots",
+       "cost": "4",
+       "text": "Roots that seize and keep tightening."
+      },
+      {
+       "name": "Overgrowth Zone",
+       "id": "nature-magic-overgrowth-zone",
+       "cost": "4",
+       "text": "The zone becomes a problem for anyone who needs to move through it."
+      }
+     ]
+    },
+    {
+     "rank": 5,
+     "title": "Stellar",
+     "id": "nature-magic-rank-5-stellar",
+     "default": {
+      "name": "Plant Memory",
+      "note": "3 mana, Instant",
+      "text": "Touch a plant and ask it what it witnessed in the last day. It answers with simple impressions of who passed and what happened."
+     },
+     "spells": [
+      {
+       "name": "Barrage of Thorns",
+       "id": "nature-magic-barrage-of-thorns",
+       "cost": "5",
+       "text": "The entire zone becomes hostile ground."
+      },
+      {
+       "name": "Green Passage",
+       "id": "nature-magic-green-passage",
+       "cost": "5",
+       "text": "Branches part. Roots settle. The forest lets you through."
+      }
+     ]
+    },
+    {
+     "rank": 6,
+     "title": "Galactic",
+     "id": "nature-magic-rank-6-galactic",
+     "default": {
+      "name": "Virulence",
+      "note": "Permanent",
+      "text": "Poisoned conditions from your Nature spells start with a damage value 2 higher."
+     },
+     "spells": [
+      {
+       "name": "Grove of Thorns",
+       "id": "nature-magic-grove-of-thorns",
+       "cost": "6",
+       "text": "A spreading thicket that grabs and holds everything it can reach."
+      },
+      {
+       "name": "Living Armor",
+       "id": "nature-magic-living-armor",
+       "cost": "6",
+       "text": "The caster is wrapped in something alive. It grows back when damaged."
+      }
+     ]
+    },
+    {
+     "rank": 7,
+     "title": "Cosmic",
+     "id": "nature-magic-rank-7-cosmic",
+     "default": {
+      "name": "Verdant Path",
+      "note": "Attuned: holds 4 of your M/T while active",
+      "text": "Plants surge up wherever you walk. Each zone you leave becomes difficult terrain for enemies until the start of the next Upkeep Phase."
+     },
+     "spells": [
+      {
+       "name": "World Tree",
+       "id": "nature-magic-world-tree",
+       "cost": "7",
+       "text": "A tree grows. Immediately and everywhere. The battlefield adapts to the tree."
+      },
+      {
+       "name": "Blight",
+       "id": "nature-magic-blight",
+       "cost": "7",
+       "text": "Everything green dies. The people in it follow."
+      }
+     ]
+    }
+   ]
   },
   {
    "name": "Bright",
    "kind": "Casting school",
    "extra_mana_dice": "Attack",
    "focus": "Radiance. Harms undead, buffs the living, transfers mana.",
-   "link": "../rulebook/ch13.html#bright-magic"
+   "link": "../rulebook/ch13.html#bright-magic",
+   "ranks": [
+    {
+     "rank": 1,
+     "title": "Core",
+     "id": "bright-magic-rank-1-core",
+     "default": {
+      "name": "Sense Undead",
+      "note": "Permanent",
+      "text": "You always know when undead are in adjacent zones, even when they are hidden."
+     },
+     "spells": [
+      {
+       "name": "Radiant Bolt",
+       "id": "bright-magic-radiant-bolt",
+       "cost": "1",
+       "text": "A flash of radiant energy. For most people, harmless. For undead, not."
+      },
+      {
+       "name": "Glow",
+       "id": "bright-magic-glow",
+       "cost": "1",
+       "text": "The shadows have nowhere left to sit."
+      }
+     ]
+    },
+    {
+     "rank": 2,
+     "title": "Terrestrial",
+     "id": "bright-magic-rank-2-terrestrial",
+     "default": {
+      "name": "Halo",
+      "note": "Attuned: holds 1 of your M/T while active",
+      "text": "A soft light surrounds you. Non-magical darkness has no effect on you, and you can light your surroundings at will."
+     },
+     "spells": [
+      {
+       "name": "Light Ray",
+       "id": "bright-magic-light-ray",
+       "cost": "2",
+       "text": "Radiant energy with reach. It strips shadow from what it touches."
+      },
+      {
+       "name": "Blessing",
+       "id": "bright-magic-blessing",
+       "cost": "2",
+       "text": "A sustained radiant enhancement that makes one kind of task easier."
+      }
+     ]
+    },
+    {
+     "rank": 3,
+     "title": "Aerial",
+     "id": "bright-magic-rank-3-aerial",
+     "default": {
+      "name": "Radiance",
+      "note": "Permanent",
+      "text": "Your Bright attacks against undead ignore 1 point of the armor portion of their DT."
+     },
+     "spells": [
+      {
+       "name": "Holy Burst",
+       "id": "bright-magic-holy-burst",
+       "cost": "3",
+       "text": "A burst of holy light that sweeps a cone of undead targets."
+      },
+      {
+       "name": "Beacon",
+       "id": "bright-magic-beacon",
+       "cost": "3",
+       "text": "A light so bright it feels like courage."
+      }
+     ]
+    },
+    {
+     "rank": 4,
+     "title": "Lunar",
+     "id": "bright-magic-rank-4-lunar",
+     "default": {
+      "name": "Inspire",
+      "note": "2 mana, Instant",
+      "text": "An ally in an adjacent zone gains 1 bonus die on their next roll this turn."
+     },
+     "spells": [
+      {
+       "name": "Radiant Wave",
+       "id": "bright-magic-radiant-wave",
+       "cost": "4",
+       "text": "The zone flares with radiant energy. Everything undead in it learns."
+      },
+      {
+       "name": "Mana Transfer",
+       "id": "bright-magic-mana-transfer",
+       "cost": "4 (spent by the caster; the amount transferred is separate)",
+       "text": "The caster opens a channel and lets mana flow. The only Bright ability that can do this."
+      }
+     ]
+    },
+    {
+     "rank": 5,
+     "title": "Stellar",
+     "id": "bright-magic-rank-5-stellar",
+     "default": {
+      "name": "Purity",
+      "note": "Permanent",
+      "text": "You gain bonus dice equal to half your Bright dots (rounded up) on resistance rolls against Shade Magic."
+     },
+     "spells": [
+      {
+       "name": "Smite",
+       "id": "bright-magic-smite",
+       "cost": "5",
+       "text": "Radiant energy that hits an undead target with twice the force. Then strips their shadows."
+      },
+      {
+       "name": "Turn Undead",
+       "id": "bright-magic-turn-undead",
+       "cost": "5",
+       "text": "The dead remember, for a moment, that they were meant to rest."
+      }
+     ]
+    },
+    {
+     "rank": 6,
+     "title": "Galactic",
+     "id": "bright-magic-rank-6-galactic",
+     "default": {
+      "name": "Aura of Dawn",
+      "note": "Attuned: holds 3 of your M/T while active",
+      "text": "Undead in zones adjacent to you lose 1 die on attack rolls."
+     },
+     "spells": [
+      {
+       "name": "Consecration",
+       "id": "bright-magic-consecration",
+       "cost": "6",
+       "text": "The zone is consecrated. The undead feel it immediately."
+      },
+      {
+       "name": "Radiant Pillar",
+       "id": "bright-magic-radiant-pillar",
+       "cost": "6",
+       "text": "Light falls everywhere at once. Every undead target in sight is addressed."
+      }
+     ]
+    },
+    {
+     "rank": 7,
+     "title": "Cosmic",
+     "id": "bright-magic-rank-7-cosmic",
+     "default": {
+      "name": "Sanctified",
+      "note": "Permanent",
+      "text": "When your Bright Magic opposes or dispels Shade Magic, your successes count double."
+     },
+     "spells": [
+      {
+       "name": "Final Light",
+       "id": "bright-magic-final-light",
+       "cost": "7",
+       "text": "There is no getting back up from this."
+      },
+      {
+       "name": "Holy Ground",
+       "id": "bright-magic-holy-ground",
+       "cost": "7",
+       "text": "The entire visible world is consecrated simultaneously. Undead cannot stand in it."
+      }
+     ]
+    }
+   ]
   },
   {
    "name": "Shade",
    "kind": "Casting school",
    "extra_mana_dice": "Damage",
    "focus": "Darkness and drain. Harms the living, buffs undead, drains mana.",
-   "link": "../rulebook/ch13.html#shade-magic"
+   "link": "../rulebook/ch13.html#shade-magic",
+   "ranks": [
+    {
+     "rank": 1,
+     "title": "Core",
+     "id": "shade-magic-rank-1-core",
+     "default": {
+      "name": "Darksight",
+      "note": "Permanent",
+      "text": "You see in non-magical darkness as if it were lit."
+     },
+     "spells": [
+      {
+       "name": "Shadow Bolt",
+       "id": "shade-magic-shadow-bolt",
+       "cost": "1",
+       "text": "Shadow with force behind it. The living feel it."
+      },
+      {
+       "name": "Dim",
+       "id": "shade-magic-dim",
+       "cost": "1",
+       "text": "The light goes. Not all at once. But enough."
+      }
+     ]
+    },
+    {
+     "rank": 2,
+     "title": "Terrestrial",
+     "id": "shade-magic-rank-2-terrestrial",
+     "default": {
+      "name": "Hush",
+      "note": "1 mana, Instant",
+      "text": "Every sound you make is muffled until the start of the next Upkeep Phase. You gain 2 bonus dice on Stealth rolls during that time."
+     },
+     "spells": [
+      {
+       "name": "Corruption Bolt",
+       "id": "shade-magic-corruption-bolt",
+       "cost": "2",
+       "text": "Shadow that drains as well as damages."
+      },
+      {
+       "name": "Shadow Cloak",
+       "id": "shade-magic-shadow-cloak",
+       "cost": "2",
+       "text": "Shadows gather around the caster. They are harder to see. Harder to target."
+      }
+     ]
+    },
+    {
+     "rank": 3,
+     "title": "Aerial",
+     "id": "shade-magic-rank-3-aerial",
+     "default": {
+      "name": "Lingering Dark",
+      "note": "Permanent",
+      "text": "Darkness from your Shade spells can only be dispelled by Bright Magic that exceeds your cast successes."
+     },
+     "spells": [
+      {
+       "name": "Shadow Spike",
+       "id": "shade-magic-shadow-spike",
+       "cost": "3",
+       "text": "Shadow that leaves a mark harder to heal than ordinary wounds."
+      },
+      {
+       "name": "Fog of Dread",
+       "id": "shade-magic-fog-of-dread",
+       "cost": "3",
+       "text": "The darkness fills the zone and stays. The living find it draining."
+      }
+     ]
+    },
+    {
+     "rank": 4,
+     "title": "Lunar",
+     "id": "shade-magic-rank-4-lunar",
+     "default": {
+      "name": "Veil",
+      "note": "Attuned: holds 2 of your M/T while active",
+      "text": "While you are in a Dimmed or Darkened zone, you gain bonus dice equal to your Shade dots on Stealth rolls."
+     },
+     "spells": [
+      {
+       "name": "Ethereal Shade",
+       "id": "shade-magic-ethereal-shade",
+       "cost": "4",
+       "text": "A layer of shadow that limits how fast a living target can recover magic."
+      },
+      {
+       "name": "Shadow Step",
+       "id": "shade-magic-shadow-step",
+       "cost": "4",
+       "text": "Where there is shadow, the caster can be."
+      }
+     ]
+    },
+    {
+     "rank": 5,
+     "title": "Stellar",
+     "id": "shade-magic-rank-5-stellar",
+     "default": {
+      "name": "Grave Whisper",
+      "note": "3 mana, Instant",
+      "text": "Touch a corpse and ask it one question. It answers with what it knew in life, in as few words as possible."
+     },
+     "spells": [
+      {
+       "name": "Mass Drain",
+       "id": "shade-magic-mass-drain",
+       "cost": "5",
+       "text": "Shadow that reaches all living targets in a zone at once."
+      },
+      {
+       "name": "Animate Dead",
+       "id": "shade-magic-animate-dead",
+       "cost": "5",
+       "text": "Something dead gets up. It does what the caster says."
+      }
+     ]
+    },
+    {
+     "rank": 6,
+     "title": "Galactic",
+     "id": "shade-magic-rank-6-galactic",
+     "default": {
+      "name": "Hunger",
+      "note": "Permanent",
+      "text": "Living targets that lose mana to your Shade spells lose 1 additional mana."
+     },
+     "spells": [
+      {
+       "name": "Black Pulse",
+       "id": "shade-magic-black-pulse",
+       "cost": "6",
+       "text": "Shadow goes everywhere. Everything living in sight feels it."
+      },
+      {
+       "name": "Permanent Darkness",
+       "id": "shade-magic-permanent-darkness",
+       "cost": "6",
+       "text": "The darkness becomes a permanent feature of the zone."
+      }
+     ]
+    },
+    {
+     "rank": 7,
+     "title": "Cosmic",
+     "id": "shade-magic-rank-7-cosmic",
+     "default": {
+      "name": "Umbral Form",
+      "note": "Attuned: holds 4 of your M/T while active",
+      "text": "Your body becomes partly shadow. While you are in a Dimmed or Darkened zone, attacks and targeted spells against you lose dice equal to your Shade dots."
+     },
+     "spells": [
+      {
+       "name": "Eclipse",
+       "id": "shade-magic-eclipse",
+       "cost": "7",
+       "text": "The area goes dark. Not dim. Dark. The kind of dark that drains."
+      },
+      {
+       "name": "Soul Drain",
+       "id": "shade-magic-soul-drain",
+       "cost": "7",
+       "text": "Shadow that reaches into a living target and pulls out more than mana."
+      }
+     ]
+    }
+   ]
   },
   {
    "name": "Battle Aura",
    "kind": "Discipline",
    "extra_mana_dice": "Attack or damage",
    "focus": "Mana through body and weapon. Pairs with Combat Styles.",
-   "link": "../rulebook/ch13.html#battle-aura"
+   "link": "../rulebook/ch13.html#battle-aura",
+   "ranks": [
+    {
+     "rank": 1,
+     "title": "Core",
+     "id": "battle-aura-rank-1-core",
+     "default": {
+      "name": "Surge",
+      "note": "1 mana per die, Instant",
+      "text": "Push fighting spirit into your body for one Strength, Dexterity, or Fortitude roll that isn’t an attack, such as lifting, climbing, sprinting, or breaking free of a grapple. Each mana adds 1 die, up to the usual cap. Outside of combat, from Rank 2 on, one Surge can carry you through a whole extended task, such as a long climb or a day of hauling."
+     },
+     "spells": [
+      {
+       "name": "Aura Fist",
+       "id": "battle-aura-aura-fist",
+       "cost": "1",
+       "text": "The practitioner's fists or feet are coated in fighting spirit. Lasts for this action only."
+      },
+      {
+       "name": "Aura Blade",
+       "id": "battle-aura-aura-blade",
+       "cost": "1",
+       "text": "The wielded weapon is coated in fighting spirit for a single strike."
+      }
+     ]
+    },
+    {
+     "rank": 2,
+     "title": "Terrestrial",
+     "id": "battle-aura-rank-2-terrestrial",
+     "default": {
+      "name": "Aura Edge",
+      "note": "Attuned: holds 2 of your M/T while active",
+      "text": "Your weapon and unarmed attacks gain Armor Penetration and Magic Penetration equal to half your Battle Aura dots, rounded up. They ignore that many points of the armor portion of a target’s DT, and that many points of the portion added by magic. This stacks with Armor Penetration from your Combat Style."
+     },
+     "spells": [
+      {
+       "name": "Iron Body",
+       "id": "battle-aura-iron-body",
+       "cost": "2",
+       "text": "The body hardens with concentrated fighting spirit, reinforcing it against incoming strikes."
+      },
+      {
+       "name": "Aura Coat",
+       "id": "battle-aura-aura-coat",
+       "cost": "2",
+       "text": "The weapon is coated in a sustained layer of fighting spirit that persists between strikes."
+      }
+     ]
+    },
+    {
+     "rank": 3,
+     "title": "Aerial",
+     "id": "battle-aura-rank-3-aerial",
+     "default": {
+      "name": "Aura Read",
+      "note": "2 mana, Instant",
+      "text": "Read the fighting spirit of one creature you can see within a number of zones equal to your Battle Aura dots. Roll Perception + Awareness + Battle Aura. On a success you learn its highest Combat Style rank, its Battle Aura rank, and whether it means to fight you right now. With 3 or more successes you also learn whether it is hiding how strong it is."
+     },
+     "spells": [
+      {
+       "name": "Aegis Pulse",
+       "id": "battle-aura-aegis-pulse",
+       "cost": "3",
+       "text": "A sudden flare of fighting spirit at the moment of impact, hardening the body against the blow."
+      },
+      {
+       "name": "Counter Pulse",
+       "id": "battle-aura-counter-pulse",
+       "cost": "3",
+       "text": "The practitioner channels their fighting spirit into an immediate counter strike following damage from a melee attack."
+      }
+     ]
+    },
+    {
+     "rank": 4,
+     "title": "Lunar",
+     "id": "battle-aura-rank-4-lunar",
+     "default": {
+      "name": "Aura Hand",
+      "note": "3 mana, Instant",
+      "text": "Reach out with projected fighting spirit up to 2 zones away and roll Strength + Athletics + Battle Aura. Push or pull a creature 1 zone into an empty zone (Defend: Strength + Athletics), or lift, move, or hold an object you could lift with your own hands, such as opening a door or catching a falling ally."
+     },
+     "spells": [
+      {
+       "name": "Aura Wave",
+       "id": "battle-aura-aura-wave",
+       "cost": "4, or 1 Willpower",
+       "text": "A visible wave of fighting spirit launched forward in a straight line."
+      },
+      {
+       "name": "Aura Parry",
+       "id": "battle-aura-aura-parry",
+       "cost": "4, or 1 Willpower",
+       "text": "The practitioner projects their fighting spirit outward at the moment of an incoming attack."
+      }
+     ]
+    },
+    {
+     "rank": 5,
+     "title": "Stellar",
+     "id": "battle-aura-rank-5-stellar",
+     "default": {
+      "name": "Battle Presence",
+      "note": "Permanent",
+      "text": "People near you can feel your fighting spirit without being touched. Add your Battle Aura dots to rolls to intimidate, and to your own rolls to resist fear."
+     },
+     "spells": [
+      {
+       "name": "Aura Cone",
+       "id": "battle-aura-aura-cone",
+       "cost": "5, or 2 Willpower",
+       "text": "A fan of fighting spirit projected outward from the body, covering a wide forward arc."
+      },
+      {
+       "name": "Aura Transfer",
+       "id": "battle-aura-aura-transfer",
+       "cost": "5, or 2 Willpower",
+       "text": "The practitioner channels their fighting spirit directly into an ally, temporarily bolstering their physical capabilities."
+      }
+     ]
+    },
+    {
+     "rank": 6,
+     "title": "Galactic",
+     "id": "battle-aura-rank-6-galactic",
+     "default": {
+      "name": "Empowered Flight",
+      "note": "see Flight above",
+      "text": "You can fly by projecting fighting spirit downward, following the Flight rules at the start of this section."
+     },
+     "spells": [
+      {
+       "name": "Twin Wave",
+       "id": "battle-aura-twin-wave",
+       "cost": "6, or 3 Willpower",
+       "text": "Two simultaneous waves of fighting spirit projected in different directions."
+      },
+      {
+       "name": "Aura Shroud",
+       "id": "battle-aura-aura-shroud",
+       "cost": "6, or 3 Willpower",
+       "text": "The practitioner extends their fighting spirit outward to cover allies in a protective layer."
+      }
+     ]
+    },
+    {
+     "rank": 7,
+     "title": "Cosmic",
+     "id": "battle-aura-rank-7-cosmic",
+     "default": {
+      "name": "Sovereign Aura",
+      "note": "Attuned: holds 4 of your M/T while active",
+      "text": "Enemies within a number of zones equal to your Battle Aura dots, whose Battle Aura and Combat Style ratings are all lower than your Battle Aura dots, roll Composure + Presence when they first come into range. If they roll fewer successes than your Battle Aura dots, they lose 1 die on all rolls while they stay in range. Outside of combat, anyone affected won’t start a fight with you unless they’re cornered."
+     },
+     "spells": [
+      {
+       "name": "Omega Burst",
+       "id": "battle-aura-omega-burst",
+       "cost": "7, or 4 Willpower",
+       "text": "A total release of fighting spirit in all directions at once. Every nearby target is pushed back."
+      },
+      {
+       "name": "Aura Ascendant",
+       "id": "battle-aura-aura-ascendant",
+       "cost": "7, or 4 Willpower",
+       "text": "A total channeling of fighting spirit into the body simultaneously enhancing all physical attributes."
+      }
+     ]
+    }
+   ]
   },
   {
    "name": "Circle Magic",
    "kind": "Ritual disciplines",
    "extra_mana_dice": "None in combat",
    "focus": "Scrolls, divination, summoning, teleportation, contracts, binding, wards, and more.",
-   "link": "../rulebook/ch13.html#part-three-circle-magic"
+   "link": "../rulebook/ch13.html#part-three-circle-magic",
+   "ranks": null
   }
  ],
  "freebies": {

@@ -377,6 +377,7 @@ button.act { cursor: pointer; font-family: var(--body); }
 .char-name { font-family: var(--pixel); font-size: 20px; color: var(--gold); overflow-wrap: anywhere; }
 .char-meta { font-size: 13px; color: var(--text-muted); }
 .char-unfinished { font-size: 13px; color: var(--gold); }
+.char-complete { font-size: 13px; font-weight: 700; color: #a8f0c0; }
 .char-actions { display: flex; flex-wrap: wrap; gap: 6px; }
 
 .dialog { width: min(460px, calc(100vw - 32px)); padding: 20px; }

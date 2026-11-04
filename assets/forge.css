@@ -244,3 +244,30 @@
 .guild-pick select { width: 100%; }
 .guild-pick .hint { margin: 0; }
 .guild-pick input { flex: none; width: 100%; }
+
+/* Steps 10 and 11: styles and knowledges */
+.sk-card { border: 1px solid rgba(233, 237, 248, 0.25); border-radius: 6px; padding: 10px 14px; margin: 10px 0; background: rgba(0, 0, 0, 0.15); }
+.sk-card.picked { border-color: var(--gold); }
+.sk-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 16px; }
+.sk-name { flex: 1 1 260px; min-width: 0; font-weight: 700; font-size: 17px; }
+.sk-meta { display: block; font-weight: 400; margin-top: 2px; }
+.pmark { color: var(--gold); font-size: 16px; }
+.rank-pick { border: 0; border-top: 1px solid rgba(233, 237, 248, 0.15); margin: 10px 0 0; padding: 8px 0 0; }
+.rank-pick legend { padding: 0; font-weight: 700; }
+.rank-default { margin: 4px 0 6px; }
+.rank-opt { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 4px 10px; align-items: start; padding: 6px 0; }
+.rank-opt input { width: 20px; height: 20px; margin-top: 2px; accent-color: var(--gold); }
+.rank-opt label { cursor: pointer; }
+.rank-text { display: block; }
+
+/* Step 12: freebie dots */
+.dot.earned { background: var(--gold); border-color: var(--gold); opacity: 0.75; cursor: default; box-shadow: none; }
+.dot.fb { background: var(--sky); border-color: var(--sky); box-shadow: 0 0 6px rgba(127, 209, 255, 0.5); }
+.fb-line { padding: 4px 14px; }
+
+/* Step 13: level */
+.level-box { max-width: 420px; margin: 10px auto; border: 2px solid var(--gold); border-radius: 6px; padding: 8px 16px; background: rgba(0, 0, 0, 0.25); }
+.level-row { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid rgba(233, 237, 248, 0.15); font-size: 17px; }
+.level-row .px { color: var(--gold); font-size: 20px; }
+.level-row.total { border-bottom: 0; font-size: 22px; }
+.level-row.total .px { font-size: 28px; }
