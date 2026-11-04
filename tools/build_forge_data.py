@@ -16,6 +16,72 @@ sys.path.insert(0, os.path.dirname(__file__))
 import build_rulebook as rb  # noqa: E402
 
 
+SPECIALTIES = {
+    'Athletics': ['Climbing', 'Running', 'Swimming', 'Jumping', 'Flying', 'Lifting'],
+    'Endurance': ['Long Hours', 'Pain', 'Poison', 'Heat and Cold', 'Hunger and Thirst', 'Sickness'],
+    'Martial Arts': ['Boxing', 'Kicks', 'Grappling', 'Disarms', 'Pressure Points', 'Brawling'],
+    'Melee': ['Swords', 'Axes', 'Polearms', 'Shields', 'Knives', 'Hammers and Maces'],
+    'Ranged': ['Bows', 'Guns', 'Thrown Weapons', 'Moving Targets', 'Long Range', 'Trick Shots'],
+    'Acrobatics': ['Balance', 'Tumbling', 'Breaking Falls', 'Parkour', 'Contortion', 'Aerial Tricks'],
+    'Chicanery': ['Disguises', 'Cons', 'Cheating at Games', 'Dirty Tricks', 'Forgery', 'Smuggling'],
+    'Dodge': ['Projectiles', 'Melee Attacks', 'Spells', 'Traps', 'Explosions', 'Grabs'],
+    'Sleight of Hand': ['Pickpocketing', 'Palming', 'Card Tricks', 'Lockpicking', 'Disarming Traps', 'Quick Draw'],
+    'Stealth': ['Shadows', 'Crowds', 'Silent Movement', 'Tailing', 'Wilderness', 'Breaking In'],
+    'Expression': ['Writing', 'Painting', 'Songwriting', 'Speeches', 'Storytelling', 'Teaching'],
+    'Performance': ['Singing', 'Instruments', 'Acting', 'Dance', 'Comedy', 'Stage Magic'],
+    'Presence': ['Commanding', 'Intimidation', 'Inspiring', 'First Impressions', 'Calming Others', 'Standing Firm'],
+    'Persuasion': ['Debate', 'Sales Pitch', 'Charm', 'Pleading', 'Rallying a Crowd', 'Recruiting'],
+    'Subterfuge': ['Lying', 'Poker Face', 'Keeping Secrets', 'Misdirection', 'Spin', 'Interrogation'],
+    'Commerce': ['Haggling', 'Appraisal', 'Bookkeeping', 'Trade Routes', 'Customer Service', 'Black Markets'],
+    'Diplomacy': ['Peace Talks', 'Alliances', 'Hostage Talks', 'Court Politics', 'Guild Politics', 'Legal Disputes'],
+    'Etiquette': ['High Society', 'Bedside Manner', 'Hospitality', 'Religious Rites', 'Military Protocol', 'Foreign Customs'],
+    'Pilot': ['Ships', 'Wagons and Carts', 'Airships', 'Long Hauls', 'Rough Terrain', 'Chases'],
+    'Ride': ['Horses', 'Flying Mounts', 'Beasts of Burden', 'Mounted Combat', 'Long Rides', 'Training Mounts'],
+    'Alchemy': ['Healing Potions', 'Antidotes', 'Poisons', 'Herbalism', 'Elements', 'Explosives'],
+    'Attunement': ['Holy Relics', 'Weapons', 'Armor', 'Jewelry', 'Quick Bonding', 'Multiple Items'],
+    'Circle Magic': ['Scrolls', 'Wards', 'Contracts', 'Summoning', 'Group Rituals', 'Implements'],
+    'Implements': ['Wands and Staves', 'Magitech', 'Invention', 'Lab Equipment', 'Enchanted Tools', 'Coding'],
+    'Magic': ['Quick Casting', 'Precision', 'Raw Power', 'Defensive Spells', 'Sustained Spells', 'Countering Spells'],
+    'Artifacts': ['Identification', 'Ancient Relics', 'Repair', 'Machines', 'Curses', 'Dungeon Loot'],
+    'Awareness': ['Sight', 'Hearing', 'Scent', 'Taste', 'Danger', 'Searching'],
+    'Crafts': ['Cooking', 'Smithing', 'Woodworking', 'Tailoring', 'Mechanics', 'Jewelcrafting'],
+    'Insight': ['Lies', 'Motives', 'Emotions', 'Symptoms', 'Crowd Mood', 'Hidden Loyalties'],
+    'Survival': ['Tracking', 'Foraging', 'Shelter', 'Navigation', 'Weather', 'Trapping'],
+}
+
+OCCUPATIONS = [
+    ('Chef or Cook', 'Crafts (Cooking), Alchemy (Herbalism), Endurance (Long Hours), Awareness (Taste)'),
+    ('Nurse or Paramedic', 'Alchemy (Healing Potions), Insight (Symptoms), Endurance (Long Hours), Awareness (Sight)'),
+    ('Doctor', 'Alchemy (Antidotes), Insight (Symptoms), Awareness (Searching), Etiquette (Bedside Manner)'),
+    ('Police Officer', 'Awareness (Danger), Insight (Lies), Martial Arts (Grappling), Ranged (Guns), Presence (Commanding)'),
+    ('Soldier', 'Ranged (Guns), Melee (Knives), Endurance (Pain), Athletics (Running), Etiquette (Military Protocol)'),
+    ('Firefighter', 'Athletics (Climbing), Endurance (Heat and Cold), Awareness (Danger)'),
+    ('Pro Athlete', 'Athletics (Running), Endurance (Pain), Acrobatics (Balance)'),
+    ('Martial Arts Instructor', 'Martial Arts (Kicks), Dodge (Melee Attacks), Acrobatics (Breaking Falls), Expression (Teaching)'),
+    ('Dancer', 'Performance (Dance), Acrobatics (Tumbling), Athletics (Jumping)'),
+    ('Musician', 'Performance (Instruments), Expression (Songwriting), Presence (First Impressions)'),
+    ('Actor', 'Performance (Acting), Subterfuge (Poker Face), Expression (Storytelling), Presence (First Impressions)'),
+    ('Stage Magician', 'Performance (Stage Magic), Sleight of Hand (Card Tricks), Subterfuge (Misdirection)'),
+    ('Writer or Journalist', 'Expression (Writing), Insight (Motives), Awareness (Searching), Persuasion (Debate)'),
+    ('Artist or Designer', 'Expression (Painting), Crafts (Tailoring), Awareness (Sight)'),
+    ('Teacher', 'Expression (Teaching), Presence (Calming Others), Insight (Emotions)'),
+    ('Salesperson', 'Persuasion (Sales Pitch), Commerce (Customer Service), Chicanery (Cons), Insight (Motives)'),
+    ('Business Owner', 'Commerce (Bookkeeping), Diplomacy (Alliances), Persuasion (Recruiting), Presence (Commanding)'),
+    ('Bartender or Server', 'Etiquette (Hospitality), Insight (Emotions), Commerce (Customer Service), Persuasion (Charm)'),
+    ('Lawyer', 'Diplomacy (Legal Disputes), Persuasion (Debate), Insight (Lies), Subterfuge (Spin)'),
+    ('Politician', 'Diplomacy (Court Politics), Persuasion (Rallying a Crowd), Presence (Inspiring), Etiquette (High Society), Subterfuge (Spin)'),
+    ('Priest or Clergy', 'Attunement (Holy Relics), Etiquette (Religious Rites), Presence (Calming Others), Insight (Emotions)'),
+    ('Scientist', 'Alchemy (Elements), Implements (Lab Equipment), Artifacts (Identification), Awareness (Searching)'),
+    ('Engineer or Mechanic', 'Crafts (Mechanics), Implements (Invention), Artifacts (Machines)'),
+    ('Programmer', 'Implements (Coding), Artifacts (Machines), Awareness (Searching)'),
+    ('Truck or Delivery Driver', 'Pilot (Long Hauls), Endurance (Long Hours), Awareness (Danger)'),
+    ('Farmer or Rancher', 'Ride (Beasts of Burden), Survival (Weather), Endurance (Long Hours), Crafts (Woodworking)'),
+    ('Hunter or Outdoorsman', 'Ranged (Moving Targets), Survival (Tracking), Stealth (Wilderness), Awareness (Sight)'),
+    ('Gamer', 'Awareness (Searching), Insight (Motives), Chicanery (Cheating at Games)'),
+    ('Thief or Con Artist', 'Sleight of Hand (Pickpocketing), Stealth (Shadows), Chicanery (Disguises), Subterfuge (Lying)'),
+]
+
+
 def table_rows(t):
     rows = []
     for r in t.rows:
@@ -148,6 +214,22 @@ def main(src):
     data['abilities'] = {}
     for g in groups:
         data['abilities'][g] = [{'name': r[0], 'used_for': r[1]} for r in qr.get(g, [])]
+
+    # Specialty choices for each ability (Other lets players write their own)
+    data['specialties'] = SPECIALTIES
+    names = {a['name'] for g in data['abilities'].values() for a in g}
+    assert set(SPECIALTIES) == names, set(SPECIALTIES) ^ names
+
+    # Past Life Occupations: each PL ability with the specialty it starts with
+    data['occupations'] = []
+    for job, picks in OCCUPATIONS:
+        pl = []
+        for p in picks.split(', '):
+            ab, sp = re.match(r'^(.+) \((.+)\)$', p).groups()
+            assert sp in SPECIALTIES[ab], (job, ab, sp)
+            pl.append({'ability': ab, 'specialty': sp})
+        assert 3 <= len(pl) <= 5, job
+        data['occupations'].append({'name': job, 'pl': pl})
 
     # Tropes
     tropes = []

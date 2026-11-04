@@ -221,3 +221,20 @@
   .counter-mini b { font-size: 16px; }
   #btn-back, #btn-next { flex: 1 1 40%; justify-content: center; }
 }
+
+/* Unfinished steps and the Last Check */
+.step-btn.todo { border-color: var(--gold); color: var(--gold); border-style: dashed; }
+.ff-dialog.wide { width: min(520px, calc(100vw - 32px)); }
+.ff-window .center { text-align: center; }
+#last-list { max-height: 50vh; overflow-y: auto; margin-top: 8px; }
+.last-step { border-top: 1px solid var(--line); padding-top: 6px; margin-top: 6px; }
+.last-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.last-head .act { font-family: var(--body); }
+
+/* Past Life Occupation */
+.pl-box { margin: 0 0 14px; padding: 12px 16px; border: 2px solid var(--gold); border-radius: 6px; background: rgba(0, 0, 0, 0.25); }
+.pl-box legend { font-size: 24px; padding: 0 10px; margin: 0 auto; }
+.pl-box select, .pl-box input { width: 100%; max-width: 420px; }
+.pl-count { color: var(--gold); font-size: 15px; margin: 4px 0 0; }
+.field.specialty select, .field.specialty input { width: 100%; }
+.field.specialty input { margin-top: 4px; }

@@ -61,6 +61,18 @@
   </div>
 </dialog>
 
+<dialog id="dlg-last" class="ff-dialog wide" aria-labelledby="last-title">
+  <div class="ff-window">
+    <p class="ff-title px" id="last-title">Last Check</p>
+    <p class="ff-note center">These steps still have something left to do. Finish them now, or finish anyway if your Storyteller says it's fine.</p>
+    <div id="last-list"></div>
+    <div class="ff-choices">
+      <button type="button" class="ff-choice" id="last-finish">Finish Anyway</button>
+      <button type="button" class="ff-choice" id="last-back">Go Back</button>
+    </div>
+  </div>
+</dialog>
+
 <script src="../vendor/supabase-2.118.0.js"></script>
 <script src="../assets/site.js"></script>
 <script src="../assets/auth.js"></script>
