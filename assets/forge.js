@@ -345,19 +345,22 @@
   function dotMax(normal) { return stMode() ? 10 : normal; }
 
   // A row of clickable dots. base = dots that come free (drawn locked).
-  function dotRow(label, value, max, base, onSet) {
+  // limit (optional): dots above it can't be filled right now and are faded out
+  function dotRow(label, value, max, base, onSet, limit) {
     base = base || 0;
+    if (limit === undefined || limit === null) limit = max;
     var row = el('div', { class: 'dots', role: 'group', 'aria-label': label });
     for (var i = 1; i <= max; i++) {
       (function (n) {
         var on = n <= value;
         var locked = n <= base;
+        var out = !on && n > limit;
         var b = el('button', {
           type: 'button',
-          class: 'dot' + (on ? ' on' : '') + (locked ? ' locked' : '') + (n > 5 ? ' over5' : ''),
-          'aria-label': label + ': ' + n + (n === 1 ? ' dot' : ' dots'),
+          class: 'dot' + (on ? ' on' : '') + (locked ? ' locked' : '') + (out ? ' out' : '') + (n > 5 ? ' over5' : ''),
+          'aria-label': label + ': ' + n + (n === 1 ? ' dot' : ' dots') + (out ? ' (no dots left)' : ''),
           'aria-pressed': on ? 'true' : 'false',
-          disabled: locked ? 'disabled' : null
+          disabled: locked || out ? 'disabled' : null
         });
         b.addEventListener('click', function () {
           var v = (n === value) ? Math.max(base, n - 1) : n;
@@ -630,7 +633,8 @@
           });
           box.appendChild(el('div', { class: 'trait' }, [
             el('span', { class: 'trait-name', title: a.used_for, text: a.name }),
-            dotRow(a.name, v, dotMax(7), 0, function (nv) { build.abilities[a.name] = nv; refresh(true); }),
+            dotRow(a.name, v, dotMax(7), 0, function (nv) { build.abilities[a.name] = nv; refresh(true); },
+              stMode() || groupLeft(g) === null ? null : v + Math.max(0, groupLeft(g))),
             el('label', { class: 'pl-check', for: plId }, [pl, ' PL'])
           ]));
           specialtyBoxes(box, a);

@@ -167,6 +167,7 @@
 .dot.on { background: var(--gold); border-color: var(--gold); box-shadow: 0 0 6px rgba(255, 215, 106, 0.5); }
 .dot.locked { cursor: default; opacity: 0.85; background: #b8c3ef; border-color: #b8c3ef; box-shadow: none; }
 .dot.over5:not(.on) { border-style: dashed; opacity: 0.6; }
+.dot.out { opacity: 0.18; cursor: not-allowed; }
 .dot:hover:not([disabled]) { border-color: #fff; }
 .dot:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
 .dot-n { min-width: 24px; margin-left: 6px; font-size: 18px; color: var(--gold); }
