@@ -21,6 +21,7 @@
   var build = {};    // the character's choices
   var forge = {};    // progress: { step, done: [], ok: [] }
   var step = 1;
+  var XPS = { log: [], buys: [] }; // experience after creation: sheet.xp
 
   // ---------- small helpers ----------
   function el(tag, attrs, kids) {
@@ -1041,13 +1042,13 @@
     return build.fb;
   }
   function fbOf(kind, n) { return ((build.fb || {})[kind] || {})[n] || 0; }
-  function attrTotal(a) { return attrVal(a) + fbOf('attrs', a); }
-  function abTotal(a) { return abVal(a) + fbOf('abilities', a); }
+  function attrTotal(a) { return attrVal(a) + fbOf('attrs', a) + xpDots('attr', a); }
+  function abTotal(a) { return abVal(a) + fbOf('abilities', a) + xpDots('ab', a); }
   function styleVal(n) { return (build.styles || {})[n] || 0; }
   function knowVal(n) { return (build.knows || {})[n] || 0; }
-  function styleTotal(n) { return styleVal(n) + fbOf('styles', n); }
-  function knowTotal(n) { return knowVal(n) + knowFree(n) + fbOf('knows', n); }
-  function manaTotal() { return 1 + ((build.fb || {}).mana || 0); }
+  function styleTotal(n) { return styleVal(n) + fbOf('styles', n) + xpDots('style', n); }
+  function knowTotal(n) { return knowVal(n) + knowFree(n) + fbOf('knows', n) + xpDots('know', n); }
+  function manaTotal() { return 1 + ((build.fb || {}).mana || 0) + xpDots('mana', ''); }
   // dots for Steps 10 and 11 come from the Physical or Mental column
   function skBudget(col) {
     if (evenSpreadSafe()) return 5;
@@ -1062,7 +1063,7 @@
   function knowFree(n) { return hyAdapt() === 'k:' + n ? 1 : 0; }
   function hmOn() { var a = hyAdapt(); return !!heritage() && !(a && a.indexOf('k:') === 0); }
   function hmBase() { return hmOn() ? Math.max(1, build.hm_dots || 1) : 0; }
-  function hmVal() { return hmOn() ? hmBase() + ((build.fb || {}).hm || 0) : 0; }
+  function hmVal() { return hmOn() ? hmBase() + ((build.fb || {}).hm || 0) + xpDots('hm', '') : 0; }
   function hmName() {
     var h = heritage(); if (!h) return '';
     if (h.name === 'Demon') return (build.heritage.magic || '').trim() || 'Tribal Magic';
@@ -1901,13 +1902,269 @@
     $('save-yes').focus();
   }
 
+  // ---------- Experience after creation ----------
+  // sheet.xp = { log: [{ id, d, amt, note }], buys: [{ id, d, kind, name, cost, label, pick }] }
+  // kinds: attr, ab, spec, style, know, hm, mana (one dot each), opt (an unchosen option), combo
+  var DOT_KINDS = { attr: 1, ab: 1, style: 1, know: 1, hm: 1, mana: 1 };
+  function xpDots(kind, name) {
+    var n = 0;
+    (XPS.buys || []).forEach(function (b) { if (b.kind === kind && (b.name || '') === (name || '')) n++; });
+    return n;
+  }
+  function xpEarned() { return (XPS.log || []).reduce(function (s, x) { return s + (Number(x.amt) || 0); }, 0); }
+  function xpSpent() { return (XPS.buys || []).reduce(function (s, x) { return s + (Number(x.cost) || 0); }, 0); }
+  function xpCap(kind) { var st = !!(me && me.is_admin); return kind === 'mana' ? (st ? 20 : 10) : (st ? 10 : 7); }
+  function styleItem(n) { return byName(D.styles, n); }
+  function knowItem(n) { return byName(D.knowledges, n); }
+  // What the next purchase of each trait costs, by the Chapter 6 table
+  function xpCost(kind, name) {
+    if (kind === 'attr') { var a = attrTotal(name) + 1; return { next: a, cost: a * 5 }; }
+    if (kind === 'ab') { var b = abTotal(name) + 1; return { next: b, cost: b * ((build.pl || {})[name] ? 2 : 3) }; }
+    if (kind === 'style') { var c = styleTotal(name) + 1; return { next: c, cost: c * (styleVal(name) ? 5 : 6) }; }
+    if (kind === 'know') { var k = knowTotal(name) + 1; return { next: k, cost: k * (knowVal(name) + knowFree(name) ? 5 : 6) }; }
+    if (kind === 'hm') { var h = hmVal() + 1; return { next: h, cost: h * 5 }; }
+    if (kind === 'mana') { var m = manaTotal() + 1; return { next: m, cost: m * 7 }; }
+    if (kind === 'spec') return { next: specList(name).length + 1, cost: 5 };
+    return null;
+  }
+  function xpCurrent(kind, name) {
+    return kind === 'attr' ? attrTotal(name) : kind === 'ab' ? abTotal(name) : kind === 'style' ? styleTotal(name)
+      : kind === 'know' ? knowTotal(name) : kind === 'hm' ? hmVal() : kind === 'mana' ? manaTotal() : 0;
+  }
+  function pickStoreFor(kind) { return kind === 'style' ? 'style_picks' : kind === 'hm' ? 'hm_picks' : 'know_picks'; }
+  function addPick(store, item, rank, val) {
+    build[store] = build[store] || {};
+    var mine = build[store][item] = build[store][item] || {};
+    var cur = picksAt(mine[rank]);
+    if (cur.indexOf(String(val)) < 0) cur.push(String(val));
+    mine[rank] = cur.length === 1 ? cur[0] : cur;
+  }
+  function dropPick(store, item, rank, val) {
+    var mine = ((build[store] || {})[item]) || {};
+    var cur = picksAt(mine[rank]).filter(function (x) { return x !== String(val); });
+    if (cur.length) mine[rank] = cur.length === 1 ? cur[0] : cur; else delete mine[rank];
+  }
+  function newId() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 7); }
+  // Every purchase the character can make right now
+  function xpOffers() {
+    var out = [], unspent = xpEarned() - xpSpent();
+    function dot(kind, name, label, group, extra) {
+      var c = xpCost(kind, name), cur = xpCurrent(kind, name);
+      if (cur >= xpCap(kind)) return;
+      out.push(Object.assign({ kind: kind, name: name, label: label, group: group, cur: cur, next: c.next, cost: c.cost, ok: c.cost <= unspent }, extra || {}));
+    }
+    COLS.forEach(function (c) { D.attributes[c].forEach(function (a) { dot('attr', a, a, 'Attributes'); }); });
+    GROUPS.forEach(function (g) { D.abilities[g].forEach(function (a) { dot('ab', a.name, a.name + ((build.pl || {})[a.name] ? ' (PL)' : ''), 'Abilities'); }); });
+    GROUPS.forEach(function (g) { D.abilities[g].forEach(function (a) {
+      if (specList(a.name).length < 3) out.push({ kind: 'spec', name: a.name, label: a.name + ' specialty', group: 'Specialties', cur: specList(a.name).length, next: specList(a.name).length + 1, cost: 5, ok: 5 <= unspent, needsText: true, suggestions: D.specialties[a.name] || [] });
+    }); });
+    D.styles.forEach(function (st) { dot('style', st.name, st.name, 'Combat Styles', { ranks: st.ranks, tier: styleVal(st.name) ? 'P' : 'S' }); });
+    if (hmOn()) {
+      var hi = hmItem();
+      dot('hm', '', hmName() + ' (Heritage)', 'Magical Knowledges', { ranks: hi ? hi.ranks : null, tier: 'P', itemName: hmName() });
+    }
+    D.knowledges.forEach(function (k) { dot('know', k.name, k.name, 'Magical Knowledges', { ranks: k.ranks, tier: knowVal(k.name) + knowFree(k.name) ? 'P' : 'S' }); });
+    dot('mana', '', 'Mana', 'Mana');
+    // Options not picked at ranks you already have: Rank x2
+    D.styles.forEach(function (st) {
+      var t = styleTotal(st.name), mine = (build.style_picks || {})[st.name] || {};
+      for (var r = 1; r <= Math.min(t, st.ranks.length); r++) {
+        var have = picksAt(mine[r]);
+        if (!have.length) continue;
+        ['a', 'b'].forEach(function (o) { if (have.indexOf(o) < 0) out.push({ kind: 'opt', src: 'style', name: st.name, rank: r, pick: o, label: st.name + ' Rank ' + r + ': ' + st.ranks[r - 1][o].name, group: 'Options You Did Not Pick', cost: r * 2, ok: r * 2 <= unspent }); });
+      }
+    });
+    D.knowledges.forEach(function (k) {
+      if (!k.ranks) return;
+      var t = knowTotal(k.name), mine = (build.know_picks || {})[k.name] || {};
+      for (var r = 1; r <= Math.min(t, k.ranks.length); r++) {
+        var have = picksAt(mine[r]).filter(function (x) { return x.indexOf('c:') !== 0; });
+        if (!have.length && !picksAt(mine[r]).length) continue;
+        ['0', '1'].forEach(function (o) { var sp = k.ranks[r - 1].spells[+o]; if (sp && have.indexOf(o) < 0) out.push({ kind: 'opt', src: 'know', name: k.name, rank: r, pick: o, label: k.name + ' Rank ' + r + ': ' + sp.name, group: 'Options You Did Not Pick', cost: r * 2, ok: r * 2 <= unspent }); });
+      }
+    });
+    var hi2 = hmItem();
+    if (hi2 && heritage() && heritage().name === 'Hyuman') {
+      var hp = (build.hm_picks || {})[hi2.name] || {};
+      for (var r2 = 1; r2 <= Math.min(hmVal(), hi2.ranks.length); r2++) {
+        var hv = picksAt(hp[r2]);
+        if (!hv.length) continue;
+        ['0', '1'].forEach(function (o) { if (hv.indexOf(o) < 0) out.push({ kind: 'opt', src: 'hm', name: hi2.name, rank: r2, pick: o, label: hi2.name + ' Rank ' + r2 + ': ' + hi2.ranks[r2 - 1].spells[+o].name + ' (Hyuman)', group: 'Options You Did Not Pick', cost: r2 * 2, ok: r2 * 2 <= unspent }); });
+      }
+    }
+    // Combination spells you qualify for and don't know: Rank x2 per school
+    var known = {};
+    Object.keys(build.know_picks || {}).forEach(function (sc) { Object.keys(build.know_picks[sc]).forEach(function (r) { picksAt(build.know_picks[sc][r]).forEach(function (v) { if (v.indexOf('c:') === 0) known[v.slice(2)] = 1; }); }); });
+    (D.combos || []).forEach(function (c) {
+      if (known[c.id] || !comboMet(c)) return;
+      var cost = c.dots * 2 * c.schools.length;
+      out.push({ kind: 'combo', name: c.id, label: c.name + ' (' + c.schools.join(' + ') + ')', group: 'Combination Spells', cost: cost, ok: cost <= unspent, text: c.text });
+    });
+    return out;
+  }
+  // Make a purchase. o is an offer from xpOffers(); extra = { pick, text }
+  function xpBuy(o, extra) {
+    extra = extra || {};
+    var unspent = xpEarned() - xpSpent();
+    var st = !!(me && me.is_admin);
+    if (o.cost > unspent && !st) throw new Error('Not enough XP. This costs ' + o.cost + ' and you have ' + unspent + '.');
+    var b = { id: newId(), d: new Date().toISOString(), kind: o.kind, name: o.name || '', cost: o.cost, label: o.label };
+    if (o.kind === 'spec') {
+      var t = (extra.text || '').trim();
+      if (!t) throw new Error('Name the specialty first.');
+      build.specialties = build.specialties || {};
+      var list = specList(o.name); list.push(t); build.specialties[o.name] = list;
+      b.text = t; b.label = o.name + ': ' + t;
+    } else if (DOT_KINDS[o.kind]) {
+      b.label = o.label + ' ' + o.cur + ' to ' + o.next;
+      if (o.ranks && o.ranks[o.next - 1]) {
+        if (extra.pick === undefined || extra.pick === null || extra.pick === '') throw new Error('Choose the option for Rank ' + o.next + '.');
+        var store = pickStoreFor(o.kind), item = o.kind === 'hm' ? hmName() : o.name;
+        addPick(store, item, o.next, extra.pick);
+        b.pick = { store: store, item: item, rank: o.next, val: String(extra.pick) };
+      }
+    } else if (o.kind === 'opt') {
+      var s2 = pickStoreFor(o.src);
+      addPick(s2, o.name, o.rank, o.pick);
+      b.pick = { store: s2, item: o.name, rank: o.rank, val: String(o.pick) };
+    } else if (o.kind === 'combo') {
+      var c = comboById(o.name);
+      addPick('know_picks', c.schools[0], c.dots, 'c:' + c.id);
+      b.pick = { store: 'know_picks', item: c.schools[0], rank: c.dots, val: 'c:' + c.id };
+    }
+    XPS.buys = XPS.buys || [];
+    XPS.buys.push(b);
+    return b;
+  }
+  // Undo a purchase (only the newest one, so later picks never point at a missing dot)
+  function xpUndo(id) {
+    var buys = XPS.buys || [];
+    var last = buys[buys.length - 1];
+    if (!last || last.id !== id) throw new Error('Only the most recent purchase can be undone.');
+    if (last.pick) dropPick(last.pick.store, last.pick.item, last.pick.rank, last.pick.val);
+    if (last.kind === 'spec') {
+      var l = specList(last.name), i = l.lastIndexOf(last.text);
+      if (i >= 0) { l.splice(i, 1); build.specialties[last.name] = l; }
+    }
+    buys.pop();
+  }
+  function xpAward(amt, note) {
+    amt = Math.round(Number(amt));
+    if (!amt) throw new Error('Enter how much XP.');
+    XPS.log = XPS.log || [];
+    XPS.log.push({ id: newId(), d: new Date().toISOString(), amt: amt, note: (note || '').trim().slice(0, 200) });
+  }
+  function xpRemoveAward(id) {
+    var l = XPS.log || [], i = l.map(function (x) { return x.id; }).indexOf(id);
+    if (i < 0) return;
+    var after = l.slice(0, i).concat(l.slice(i + 1));
+    var earned = after.reduce(function (s, x) { return s + (Number(x.amt) || 0); }, 0);
+    if (earned < xpSpent()) throw new Error('That XP is already spent. Undo purchases first.');
+    XPS.log = after;
+  }
+
+  // ---------- Character model for the website character page ----------
+  function moveZones(d) { return d >= 7 ? 3 : d >= 5 ? 2 : 1; }
+  function characterModel() {
+    var h = heritage(), r = build.role || {};
+    var POSL = { virtue2: 'High Virtue', virtue1: 'Low Virtue', central: 'Central', vice1: 'Low Vice', vice2: 'High Vice' };
+    var m = {
+      name: ch.name, player: (me && me.username) || '', level: level(), levelParts: levelParts(),
+      trope: build.trope ? byName(D.tropes, build.trope) : null,
+      role: ((r.position || '') + ' ' + (r.style || '')).trim(),
+      scales: D.scales.map(function (sc) {
+        var v = (build.scales || {})[slug(sc.name)] || 'central';
+        var side = /^virtue/.test(v) ? sc.virtue : /^vice/.test(v) ? sc.vice : '';
+        return { name: sc.name, pos: POSL[v], side: side, high: /2$/.test(v), drive: (build.drives || {})[slug(sc.name)] || '', link: sc.link };
+      }),
+      heritage: h ? { name: h.name, link: h.link, rare: h.rare, innate: build.heritage.innate || '', innate_flaw: h.name === 'Demon' ? build.heritage.innate_flaw : h.innate_flaw,
+        attribute_flaw: h.name === 'Demon' ? build.heritage.attribute_flaw : h.attribute_flaw, merit: build.heritage.merit || '' } : null,
+      stats: ['Willpower', 'Fate', 'Sanity'].map(function (n) { var x = byName(D.stats, n) || {}; return { name: n, dots: statVal(n), used: x.used_for || '' }; }),
+      mana: { dots: manaTotal(), pool: (abTotal('Magic') + abTotal('Circle Magic')) * manaTotal(), mt: attrTotal('Fortitude') + manaTotal() },
+      combat: { initiative: attrTotal('Dexterity') + attrTotal('Perception'), move: moveZones(attrTotal('Dexterity')), bdt: attrTotal('Fortitude') + Number((build.merits || {}).Resilience || 0) },
+      attrs: COLS.map(function (c) { return { col: c, num: colNumber(c), des: (build.attr_cols || {})[c] || '', list: D.attributes[c].map(function (a) { return { name: a, dots: attrTotal(a), innate: a === innateAttr() }; }) }; }),
+      abilities: GROUPS.map(function (g) {
+        return { group: g, num: (build.ab_groups || {})[g] || null, list: D.abilities[g].map(function (a) {
+          var sp = specList(a.name).map(function (x, i) { return x === OTHER ? ((build.spec_other || {})[a.name + '|' + i] || '') : x; }).filter(function (x) { return x && x.trim(); });
+          return { name: a.name, dots: abTotal(a.name), pl: !!(build.pl || {})[a.name], specs: sp, used: a.used_for || '' };
+        }) };
+      }),
+      past_life: build.pl_occupation || build.pl_job || '',
+      styles: [], knowledges: [], combos: [],
+      merits: [], flaws: [], backgrounds: [], guilds: (build.guilds || []).filter(function (g) { return g && g.name; }),
+      companions: [],
+      xp: { earned: xpEarned(), spent: xpSpent(), log: (XPS.log || []).slice(), buys: (XPS.buys || []).slice() },
+      st: !!(me && me.is_admin)
+    };
+    m.xp.unspent = m.xp.earned - m.xp.spent;
+    D.styles.forEach(function (st) {
+      var t = styleTotal(st.name); if (!t) return;
+      var mine = (build.style_picks || {})[st.name] || {};
+      m.styles.push({ name: st.name, link: st.link, dots: t, tier: styleVal(st.name) ? 'Primary' : 'Secondary', weapons: st.weapons, primary: st.primary, secondary: st.secondary,
+        ranks: st.ranks.slice(0, t).map(function (rk) {
+          var have = picksAt(mine[rk.rank]);
+          return { rank: rk.rank, title: rk.title, id: rk.id, def: rk.default, picks: ['a', 'b'].filter(function (o) { return have.indexOf(o) >= 0; }).map(function (o) { return Object.assign({ opt: o === 'a' ? 'Option A' : 'Option B' }, rk[o]); }) };
+        }) });
+    });
+    function knowEntry(name, item, dots, tier, store, page, extra) {
+      var mine = (build[store] || {})[item.name] || {};
+      return Object.assign({ name: name, dots: dots, tier: tier, link: item.link, ranks: (item.ranks || []).slice(0, dots).map(function (rk) {
+        var have = picksAt(mine[rk.rank]);
+        return { rank: rk.rank, title: rk.title, id: rk.id, def: rk.default, picks: rk.spells.map(function (sp, i) { return have.indexOf(String(i)) >= 0 ? Object.assign({}, sp, { opt: sp.opt ? 'Option ' + sp.opt : '' }) : null; }).filter(Boolean),
+          combos: have.filter(function (v) { return v.indexOf('c:') === 0; }).map(function (v) { return comboById(v.slice(2)); }).filter(Boolean) };
+      }), page: page }, extra || {});
+    }
+    var hi = hmItem(), hd = hmData();
+    if (hmOn()) {
+      var hk = { name: hmName(), ranks: hi ? hi.ranks : null, link: hd ? '../rulebook/ch8.html#' + hd.id : (h ? h.link : '') };
+      var he = hi ? knowEntry(hmName(), hk, hmVal(), 'Primary', 'hm_picks', 'ch8', { heritage: true }) : { name: hmName(), dots: hmVal(), tier: 'Primary', link: hk.link, ranks: [], heritage: true, page: 'ch8' };
+      if (h && h.name === 'Demon') he.tribal = Object.keys(build.tribal || {}).filter(function (k) { return +k <= hmVal(); }).sort().map(function (k) { return { rank: +k, name: build.tribal[k] }; });
+      if (!hi && hd) he.single = true;
+      m.knowledges.push(he);
+    }
+    D.knowledges.forEach(function (k) {
+      var t = knowTotal(k.name); if (!t) return;
+      var tier = knowVal(k.name) + knowFree(k.name) ? 'Primary' : 'Secondary';
+      if (k.ranks) m.knowledges.push(knowEntry(k.name, k, t, tier, 'know_picks', 'ch13', { kind: k.kind }));
+      else m.knowledges.push({ name: k.name, dots: t, tier: tier, link: k.link, ranks: [], circle: true, kind: k.kind, focus: k.focus });
+    });
+    m.knowledges.forEach(function (k) { (k.ranks || []).forEach(function (rk) { (rk.combos || []).forEach(function (c) { m.combos.push(c); }); }); });
+    D.backgrounds.forEach(function (b) { var v = bgVal(b.name); if (v) m.backgrounds.push({ name: b.name, dots: v, link: b.link, what: b.what, who: ((build.bg_names || {})[b.name] || '').trim() }); });
+    [['merits', D.merits, m.merits], ['flaws', D.flaws, m.flaws]].forEach(function (g) {
+      Object.keys(build[g[0]] || {}).forEach(function (n) {
+        var x = byName(g[1], n) || {}, val = build[g[0]][n], opt = null;
+        if (x.options && String(val).charAt(0) === 'n') opt = x.options[Number(String(val).slice(1))];
+        if (!opt && (x.points || x.cost || {}).options && String(val).charAt(0) === 'n') opt = (x.points || x.cost).options[Number(String(val).slice(1))];
+        var note = ((build.flaw_notes || {})[n] || (build.merit_notes || {})[n] || '').trim();
+        g[2].push({ name: n, value: val, link: x.link, group: x.group, cost: (x.cost || x.points || {}).text || '', option: opt, note: note });
+      });
+    });
+    if ((build.merits || {})['Familiar Bond'] && build.familiar) m.companions.push({ kind: 'Familiar', c: build.familiar, text: companionText(build.familiar), dots: Number(build.merits['Familiar Bond']) || 1 });
+    if (knowTotal('Summoning Magic') && build.starter_summon) m.companions.push({ kind: build.starter_summon.kind === 'spirit' ? 'SumMonz (Spirit)' : 'SumMonz (Fiend)', c: build.starter_summon, text: companionText(build.starter_summon), summoning: knowTotal('Summoning Magic') });
+    m.offers = xpOffers();
+    return m;
+  }
+
   // Headless use by the Character Sheet page: fill a sheet from a saved build
   // without drawing the Forge.
-  window.TerranaForgeView = function (data, row, player) {
+  function headlessLoad(data, row, player) {
     D = data; ch = row; me = player || null;
     build = (row.sheet && row.sheet.build) || {};
     forge = (row.sheet && row.sheet.forge) || { step: 1, done: [], ok: [] };
-    return sheetView();
+    XPS = (row.sheet && row.sheet.xp) || { log: [], buys: [] };
+  }
+  window.TerranaForgeView = function (data, row, player) { headlessLoad(data, row, player); return sheetView(); };
+  // The website character page: a model to draw, plus XP actions that change build and xp.
+  // After an action, save { build, xp, view } back to the character row.
+  window.TerranaCharacter = {
+    load: function (data, row, player) { headlessLoad(data, row, player); return characterModel(); },
+    model: characterModel,
+    award: function (amt, note) { xpAward(amt, note); return characterModel(); },
+    removeAward: function (id) { xpRemoveAward(id); return characterModel(); },
+    buy: function (offer, extra) { xpBuy(offer, extra); return characterModel(); },
+    undo: function (id) { xpUndo(id); return characterModel(); },
+    combosFor: function (school, r) { return combosFor(school, r); },
+    sheet: function () { return { build: build, xp: XPS, view: sheetView() }; }
   };
   if (window.FORGE_HEADLESS) return;
 
@@ -2021,6 +2278,7 @@
     ch = r.data;
     build = (ch.sheet && ch.sheet.build) || {};
     forge = (ch.sheet && ch.sheet.forge) || { step: 1, done: [], ok: [] };
+    XPS = (ch.sheet && ch.sheet.xp) || { log: [], buys: [] };
     step = Math.min(Math.max(forge.step || 1, 1), BUILT);
     $('forge-charname').textContent = ch.name;
     document.title = ch.name + ' | Character Forge';

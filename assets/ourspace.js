@@ -435,7 +435,7 @@
         cp.updated_at ? el('p', { class: 'os-meta', text: 'Last updated ' + day(cp.updated_at) }) : null
       ])]),
       cp.status ? el('p', {}, [el('strong', { text: 'Status: ' }), cp.status]) : null,
-      canSheet ? el('a', { class: 'os-btn', href: '../characters/sheet.html?id=' + encodeURIComponent(id), text: 'View Character Sheet' }) : null,
+      canSheet ? el('a', { class: 'os-btn', href: '../characters/view.html?id=' + encodeURIComponent(id), text: 'View Character Sheet' }) : null,
       mine ? el('a', { class: 'os-btn go', href: 'edit.html?c=' + encodeURIComponent(id), text: 'Edit This Page' }) : null,
       !mine && rel === 'friends' ? el('a', { class: 'os-btn go', href: 'messages.html?to=' + encodeURIComponent(owner.username) + '&tc=' + encodeURIComponent(id), text: 'Send ' + cp.name + ' a Message' }) : null,
       !mine && me && rel !== 'friends' ? el('p', { class: 'os-hint' }, ['Become friends with ', el('a', { href: uLink(owner.username), text: owner.username }), ' to message their characters.']) : null
