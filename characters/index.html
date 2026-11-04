@@ -143,9 +143,9 @@
       if (c.sheet && (c.sheet.view || c.sheet.build)) {
         var sheetBtn = document.createElement('a');
         sheetBtn.className = 'act small';
-        sheetBtn.href = 'sheet.html?id=' + encodeURIComponent(c.id);
-        sheetBtn.textContent = 'View Sheet';
-        sheetBtn.setAttribute('aria-label', 'View Sheet: ' + c.name);
+        sheetBtn.href = 'view.html?id=' + encodeURIComponent(c.id);
+        sheetBtn.textContent = 'View Character';
+        sheetBtn.setAttribute('aria-label', 'View Character: ' + c.name);
         btns.appendChild(sheetBtn);
       }
       var osBtn = document.createElement('a');
