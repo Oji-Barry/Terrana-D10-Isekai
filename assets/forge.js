@@ -335,7 +335,7 @@
       var out = [['Heritage', h.name]];
       if (build.heritage.innate) out.push(['Innate', build.heritage.innate + ' (2 dots)']);
       if (build.heritage.merit) out.push(['Heritage Merit', build.heritage.merit]);
-      out.push(['Heritage Magic', h.heritage_magic + ' 1 (P)']);
+      out.push(['Heritage Magic', hmName() + ' ' + hmVal() + ' (P)']);
       return out;
     }
   };
@@ -1049,7 +1049,10 @@
   }
   function evenSpreadSafe() { return hyumanAdapt(); }
   function styleLeft() { var b = skBudget('Physical'); if (b === null) return null; var s = 0; D.styles.forEach(function (x) { s += styleVal(x.name); }); return b - s; }
-  function knowLeft() { var b = skBudget('Mental'); if (b === null) return null; var s = 0; D.knowledges.forEach(function (x) { s += knowVal(x.name); }); return b - s; }
+  // Heritage Magic: 1 free dot from Step 4, more can be bought with knowledge dots
+  function hmVal() { return heritage() ? Math.max(1, build.hm_dots || 1) : 0; }
+  function hmName() { var h = heritage(); return h ? (h.name === 'Demon' && build.heritage.magic ? build.heritage.magic : h.heritage_magic) : ''; }
+  function knowLeft() { var b = skBudget('Mental'); if (b === null) return null; var s = 0; D.knowledges.forEach(function (x) { s += knowVal(x.name); }); if (heritage()) s += hmVal() - 1; return b - s; }
   // Combination spells: open to a casting school's rank once every school in
   // the combination has enough dots (2 each for two schools, 3 each for three)
   // A rank's pick is one value for players; Storyteller Mode can keep several
@@ -1250,14 +1253,25 @@
 
   // ---------- Step 11: Magical Knowledges ----------
   S[11] = {
-    intro: 'Your Mental column decides how many dots you spend on Magical Knowledges (casting schools, Battle Aura, and Circle Magic): 7 for Affinity, 5 for Standard, or 3 for Aversion, up to 5 dots in one knowledge. Every knowledge taken here is marked P. Your free Heritage Magic dot is listed too and does not use these dots. For a casting school or Battle Aura, each dot gives that rank’s Default Ability and your choice of one of its two techniques.',
+    intro: 'Your Mental column decides how many dots you spend on Magical Knowledges (casting schools, Battle Aura, and Circle Magic): 7 for Affinity, 5 for Standard, or 3 for Aversion, up to 5 dots in one knowledge. Every knowledge taken here is marked P. Your Heritage Magic starts with its free dot from Step 4, and you can raise it with these dots too. For a casting school or Battle Aura, each dot gives that rank’s Default Ability and your choice of one of its two techniques.',
     link: '../rulebook/ch13.html#learning-the-casting-schools',
     counter: function () { var l = knowLeft(); return [['Knowledge dots', l === null ? '-' : l]]; },
     render: function (p) {
       build.knows = build.knows || {};
       selectAllBar(p, ['know'], 'spell, technique, and combination spell');
       var h = heritage();
-      if (h) p.appendChild(el('p', { class: 'note-box' }, [el('strong', { text: 'Heritage Magic (free): ' }), (h.name === 'Demon' && build.heritage.magic ? build.heritage.magic : h.heritage_magic) + ' 1 (P). ', bookLink(h.link, 'Rules')]));
+      if (h) {
+        var hv = hmVal();
+        p.appendChild(el('h2', { class: 'sub-title px', text: 'Heritage Magic' }));
+        var hcard = el('div', { class: 'sk-card picked' });
+        hcard.appendChild(el('div', { class: 'sk-head' }, [
+          el('div', { class: 'sk-name' }, [bookLink(h.link, hmName()), el('span', { class: 'pmark px', text: ' P' }),
+            el('span', { class: 'hint sk-meta', text: h.name + ' Heritage Magic. The first dot is free from Step 4; each dot above it uses one knowledge dot.' })]),
+          dotRow(hmName(), hv, stMode() ? 10 : 7, 1, function (nv) { build.hm_dots = Math.max(1, nv); refresh(true); },
+            knowLeft() === null ? 1 : hv + Math.max(0, knowLeft()))
+        ]));
+        p.appendChild(hcard);
+      }
       if (skBudget('Mental') === null) p.appendChild(el('p', { class: 'note-box', text: 'Give your Mental column a designation in Step 5 first. It sets how many knowledge dots you get.' }));
       var left = knowLeft();
       D.knowledges.forEach(function (k, ki) {
@@ -1281,6 +1295,7 @@
     },
     check: function () {
       var w = [], l = knowLeft();
+      if (heritage()) w = w.concat(goldenRule(hmName(), hmVal()));
       if (l === null) w.push({ key: 'kn.nocol', text: 'Give your Mental column a designation in Step 5 first.' });
       else if (l > 0) w.push({ key: 'kn.left.' + l, text: l + ' knowledge dot' + (l === 1 ? '' : 's') + ' left to place.' });
       else if (l < 0) w.push({ key: 'kn.over.' + l, text: 'You are ' + (-l) + ' knowledge dot' + (l === -1 ? '' : 's') + ' over.' });
@@ -1447,7 +1462,7 @@
     GROUPS.forEach(function (g) { D.abilities[g].forEach(function (x) { ab += abTotal(x.name); }); });
     D.styles.forEach(function (x) { st += styleTotal(x.name); });
     D.knowledges.forEach(function (x) { kn += knowTotal(x.name); });
-    var her = heritage() ? 1 : 0;
+    var her = hmVal();
     return [['Attributes', a], ['Mana', manaTotal()], ['Abilities', ab], ['Combat Styles', st], ['Magical Knowledges', kn], ['Heritage Magic', her]];
   }
   function level() { return levelParts().reduce(function (s, x) { return s + x[1]; }, 0); }
