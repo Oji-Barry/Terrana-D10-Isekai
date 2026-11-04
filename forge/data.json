@@ -966,20 +966,6 @@
    "link": "../rulebook/ch8.html#part-1-common-heritages-reptilian-bug"
   },
   {
-   "name": "Shifters",
-   "rare": false,
-   "innate_attribute": "Charisma or Dexterity",
-   "innate_flaw": "Unstable Form",
-   "attribute_flaw": "Mental",
-   "heritage_merits": [
-    "Faceswap",
-    "Adaptive"
-   ],
-   "heritage_magic": "Transformation",
-   "creation_allowed": true,
-   "link": "../rulebook/ch8.html#part-1-common-heritages-shifters"
-  },
-  {
    "name": "Corporeal Undead",
    "rare": true,
    "innate_attribute": "Intelligence or Composure",
@@ -1109,6 +1095,20 @@
    "link": "../rulebook/ch8.html#part-2-rare-heritages-storyteller-approval-required-migurd"
   },
   {
+   "name": "Shifters",
+   "rare": true,
+   "innate_attribute": "Charisma or Dexterity",
+   "innate_flaw": "Unstable Form",
+   "attribute_flaw": "Mental",
+   "heritage_merits": [
+    "Faceswap",
+    "Adaptive"
+   ],
+   "heritage_magic": "Transformation",
+   "creation_allowed": true,
+   "link": "../rulebook/ch8.html#part-2-rare-heritages-storyteller-approval-required-shifters"
+  },
+  {
    "name": "Skyfolk",
    "rare": true,
    "innate_attribute": "Perception or Dexterity",
@@ -1121,6 +1121,20 @@
    "heritage_magic": "Heaven's Wing",
    "creation_allowed": true,
    "link": "../rulebook/ch8.html#part-2-rare-heritages-storyteller-approval-required-skyfolk"
+  },
+  {
+   "name": "Slime",
+   "rare": true,
+   "innate_attribute": "Fortitude or Wisdom",
+   "innate_flaw": "Bound to Mana",
+   "attribute_flaw": "Social",
+   "heritage_merits": [
+    "Elastic",
+    "Hidden Pocket"
+   ],
+   "heritage_magic": "Morph",
+   "creation_allowed": true,
+   "link": "../rulebook/ch8.html#part-2-rare-heritages-storyteller-approval-required-slime"
   },
   {
    "name": "Superd",
