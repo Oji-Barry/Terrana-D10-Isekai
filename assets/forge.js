@@ -633,7 +633,7 @@
           });
           box.appendChild(el('div', { class: 'trait' }, [
             el('span', { class: 'trait-name', title: a.used_for, text: a.name }),
-            dotRow(a.name, v, dotMax(7), 0, function (nv) { build.abilities[a.name] = nv; refresh(true); },
+            dotRow(a.name, v, dotMax(5), 0, function (nv) { build.abilities[a.name] = nv; refresh(true); },
               stMode() || groupLeft(g) === null ? null : v + Math.max(0, groupLeft(g))),
             el('label', { class: 'pl-check', for: plId }, [pl, ' PL'])
           ]));
