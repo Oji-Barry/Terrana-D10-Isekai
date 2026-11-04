@@ -18,8 +18,8 @@ import pdfplumber
 HERE = os.path.dirname(os.path.abspath(__file__))
 SRC = '/mnt/user-data/uploads/James New Game Modes/D10 Isekai/Books/second draft'
 NEWEST = '/mnt/user-data/outputs/book'          # tonight's edited chapters win over SRC
-OLD_BOOK = '/mnt/user-data/uploads/James New Game Modes/D10 Isekai/Books/Jimothy D10 - Core Rulebook (Second Draft).pdf'
-OLD_LULU = '/mnt/user-data/uploads/James New Game Modes/D10 Isekai/Books/Jimothy D10 - Core Rulebook Interior Lulu Edit.pdf'
+OLD_BOOK = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'base', 'Jimothy D10 - Core Rulebook (Second Draft).pdf')
+OLD_LULU = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'base', 'Jimothy D10 - Core Rulebook Interior Lulu Edit.pdf')
 WORK = os.path.join(HERE, 'work')
 OUT = os.path.join(HERE, 'out')
 os.makedirs(WORK, exist_ok=True); os.makedirs(OUT, exist_ok=True)
@@ -45,7 +45,7 @@ CHAPTERS = [
 ]
 OFFSET = 3            # physical page = book page + 3 (cover, inside cover, title page)
 FIRST_CHAPTER = 5     # Chapter 1 starts on book page 5
-OLD_BACK_START = 304  # back matter started on book page 304 in the old book
+OLD_BACK_START = 316  # back matter starts on book page 316 in the base book (bk/base)
 
 
 def src_docx(name):
