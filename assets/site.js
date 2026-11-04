@@ -51,6 +51,8 @@
     return '<a href="' + root + n[2] + '"' + cur + '>' + n[1] + '</a>';
   }).join('') + '<a class="login" href="' + root + 'account/index.html">Log In</a>';
 
+  var homeHtml = '<a class="menu-item home-item" href="' + root + 'index.html"' +
+    (page === 'home' ? ' aria-current="page"' : '') + '><span class="num"></span><span>Home</span></a>';
   var menuHtml = chapters.map(function (c) {
     var cur = page === c[0] ? ' aria-current="page"' : '';
     return '<a class="menu-item" data-slug="' + c[0] + '" href="' + root + 'rulebook/' + c[0] + '.html"' + cur + '>' +
@@ -85,7 +87,7 @@
       '</div>' +
       '<div class="search-results" id="search-results" aria-live="polite"></div>' +
       '<div class="menu-label px">CHAPTERS</div>' +
-      '<nav class="chapters-nav" aria-label="Chapters">' + menuHtml + '</nav>';
+      '<nav class="chapters-nav" aria-label="Chapters">' + homeHtml + menuHtml + '</nav>';
 
     var rail = document.createElement('div');
     rail.className = 'rail win';
@@ -226,7 +228,56 @@
         .then(function (d) { toc = d; return d; });
     }
 
+    // Build a chapter's drop-down from rulebook/toc.json. Entries that hold
+    // more entries (ranks, heritages, spells...) open on the first tap and
+    // go to their spot on the second.
+    function nodeLink(n, slug) {
+      if (!n.id) return null;
+      return slug === page ? '#' + n.id : root + 'rulebook/' + slug + '.html#' + n.id;
+    }
+
+    function renderNodes(list, slug, depth) {
+      var box = document.createDocumentFragment();
+      list.forEach(function (n) {
+        var kids = n.c && n.c.length ? n.c : null;
+        var a = document.createElement('a');
+        a.className = 'menu-node depth-' + depth + (kids ? ' has-kids' : '');
+        a.textContent = n.s;
+        var href = nodeLink(n, slug);
+        if (href) a.href = href;
+        else { a.setAttribute('role', 'button'); a.tabIndex = 0; }
+        if (n.id) a.setAttribute('data-id', n.id);
+        box.appendChild(a);
+        if (kids) {
+          a.setAttribute('aria-expanded', 'false');
+          var holder = document.createElement('div');
+          holder.className = 'menu-kids';
+          holder.hidden = true;
+          holder.appendChild(renderNodes(kids, slug, depth + 1));
+          box.appendChild(holder);
+        }
+      });
+      return box;
+    }
+
     var spyLinks = [];
+    function startSpy(sub) {
+      var secs = document.querySelectorAll('.content section[id]:not(#top)');
+      if (!secs.length || !('IntersectionObserver' in window)) return;
+      spyLinks = [];
+      Array.prototype.forEach.call(secs, function (sec) {
+        var a = sub.querySelector('.menu-node.depth-0[data-id="' + sec.id + '"]');
+        if (a) spyLinks.push([sec, a]);
+      });
+      var obs = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          if (!e.isIntersecting) return;
+          spyLinks.forEach(function (l) { l[1].classList.toggle('here', l[0] === e.target); });
+        });
+      }, { rootMargin: '-20% 0px -70% 0px' });
+      spyLinks.forEach(function (l) { obs.observe(l[0]); });
+    }
+
     function buildSub(item) {
       var slug = item.getAttribute('data-slug');
       var sub = document.createElement('div');
@@ -234,47 +285,52 @@
       sub.id = 'sub-' + slug;
       item.setAttribute('aria-controls', sub.id);
       item.parentNode.insertBefore(sub, item.nextSibling);
-
-      var secs = document.querySelectorAll('.content section[id]:not(#top)');
-      if (slug === page && secs.length) {
-        spyLinks = [];
-        Array.prototype.forEach.call(secs, function (sec) {
-          var h = sec.querySelector('h2');
-          if (!h) return;
-          var a = document.createElement('a');
-          a.href = '#' + sec.id;
-          a.textContent = h.textContent;
-          sub.appendChild(a);
-          spyLinks.push([sec, a]);
-        });
-        if ('IntersectionObserver' in window) {
-          var obs = new IntersectionObserver(function (entries) {
-            entries.forEach(function (e) {
-              if (!e.isIntersecting) return;
-              spyLinks.forEach(function (l) { l[1].classList.toggle('here', l[0] === e.target); });
-            });
-          }, { rootMargin: '-20% 0px -70% 0px' });
-          spyLinks.forEach(function (l) { obs.observe(l[0]); });
-        }
-      } else {
-        sub.innerHTML = '<span class="menu-sub-note">Loading...</span>';
-        loadToc().then(function (d) {
-          var list = d[slug] || [];
-          sub.textContent = '';
-          list.forEach(function (x) {
-            var a = document.createElement('a');
-            a.href = root + 'rulebook/' + slug + '.html#' + x.id;
-            a.textContent = x.s;
-            sub.appendChild(a);
-          });
-        }).catch(function () {
-          sub.innerHTML = '<span class="menu-sub-note">Could not load this list. Tap the chapter again to open it.</span>';
-        });
-      }
+      sub.innerHTML = '<span class="menu-sub-note">Loading...</span>';
+      loadToc().then(function (d) {
+        sub.textContent = '';
+        sub.appendChild(renderNodes(d[slug] || [], slug, 0));
+        if (slug === page) startSpy(sub);
+      }).catch(function () {
+        sub.innerHTML = '<span class="menu-sub-note">Could not load this list. Tap the chapter again to open it.</span>';
+      });
       return sub;
     }
 
-    var items = side.querySelectorAll('.chapters-nav .menu-item');
+    // Taps inside a drop-down
+    side.addEventListener('click', function (ev) {
+      var a = ev.target.closest('.menu-sub .menu-node');
+      if (!a) return;
+      if (a.classList.contains('has-kids') && a.getAttribute('aria-expanded') !== 'true') {
+        ev.preventDefault();
+        // close any open neighbours at the same level, then open this one
+        var parentBox = a.parentNode;
+        Array.prototype.forEach.call(parentBox.children, function (el) {
+          if (el.classList && el.classList.contains('has-kids') && el !== a) {
+            el.setAttribute('aria-expanded', 'false');
+            if (el.nextElementSibling) el.nextElementSibling.hidden = true;
+          }
+        });
+        a.setAttribute('aria-expanded', 'true');
+        a.nextElementSibling.hidden = false;
+        return;
+      }
+      if (!a.getAttribute('href')) {
+        // a group with no page spot of its own (like a Bestiary rank): just fold it
+        ev.preventDefault();
+        if (a.classList.contains('has-kids')) {
+          a.setAttribute('aria-expanded', 'false');
+          a.nextElementSibling.hidden = true;
+        }
+        return;
+      }
+      if (isPhone()) setHidden(true, false);
+    });
+    side.addEventListener('keydown', function (ev) {
+      var a = ev.target.closest && ev.target.closest('.menu-sub .menu-node[role="button"]');
+      if (a && (ev.key === 'Enter' || ev.key === ' ')) { ev.preventDefault(); a.click(); }
+    });
+
+    var items = side.querySelectorAll('.chapters-nav .menu-item[data-slug]');
     function openItem(item) {
       Array.prototype.forEach.call(items, function (it) {
         var open = it === item;
@@ -303,11 +359,8 @@
       });
     });
 
-    side.addEventListener('click', function (ev) {
-      if (ev.target.closest('.menu-sub a') && isPhone()) setHidden(true, false);
-    });
 
-    var curItem = side.querySelector('.chapters-nav .menu-item[aria-current="page"]');
+    var curItem = side.querySelector('.chapters-nav .menu-item[data-slug][aria-current="page"]');
     if (curItem) openItem(curItem);
   }
 
