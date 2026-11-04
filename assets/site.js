@@ -376,4 +376,25 @@
         '<a href="https://openfontlicense.org">SIL Open Font License</a>.' +
       '</footer>';
   }
+
+  // Pages that don't load the account scripts themselves still show who is
+  // logged in: load them after the page, and auth.js swaps "Log In" for the
+  // player's name.
+  function loadScript(src) {
+    return new Promise(function (ok, bad) {
+      var s = document.createElement('script');
+      s.src = src; s.onload = ok; s.onerror = bad;
+      document.body.appendChild(s);
+    });
+  }
+  function hasScript(part) {
+    return Array.prototype.some.call(document.scripts, function (s) { return (s.getAttribute('src') || '').indexOf(part) >= 0; });
+  }
+  if (document.querySelector('.site-nav a.login') && !hasScript('assets/auth.js')) {
+    window.addEventListener('load', function () {
+      (hasScript('vendor/supabase-') ? Promise.resolve() : loadScript(root + 'vendor/supabase-2.118.0.js'))
+        .then(function () { return loadScript(root + 'assets/auth.js'); })
+        .catch(function () {});
+    });
+  }
 })();
