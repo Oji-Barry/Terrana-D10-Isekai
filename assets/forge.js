@@ -22,7 +22,7 @@
   var forge = {};    // progress: { step, done: [], ok: [] }
   var step = 1;
   var XPS = { log: [], buys: [] }; // experience after creation: sheet.xp
-  var EXTRA = { gear: {}, money: {} }; // sheet.gear and sheet.money (the character page)
+  var EXTRA = { gear: {}, money: null, attuned: {}, tracks: {} }; // sheet.gear, money, attuned, tracks (the character page)
 
   // ---------- small helpers ----------
   function el(tag, attrs, kids) {
@@ -1746,6 +1746,9 @@
 
   // Money on hand (Chapter 14 coins)
   var COINS = [['sc', 'Small Copper', 0.1], ['lc', 'Large Copper', 1], ['ss', 'Small Silver', 10], ['ls', 'Large Silver', 100], ['sg', 'Small Gold', 1000], ['lg', 'Large Gold', 10000], ['kg', 'King\u2019s Gold', 100000]];
+  // Chapter 14 Starting Funds by Resources dots
+  var START_FUNDS = { 0: { lc: 5 }, 1: { ls: 3 }, 2: { sg: 1 }, 3: { sg: 2 }, 4: { sg: 3 }, 5: { lg: 2 }, 6: { lg: 3 }, 7: { kg: 1 } };
+  function startMoney() { return Object.assign({}, START_FUNDS[Math.min(7, bgVal('Resources'))] || {}); }
   function moneyText(m) {
     return COINS.filter(function (c) { return (m[c[0]] || 0) > 0; }).map(function (c) { return m[c[0]] + ' ' + c[1]; }).join(', ');
   }
@@ -1853,9 +1856,10 @@
     // Willpower, Fate, Sanity, Mana, Virtues and Vices
     v['willpower.dots'] = statVal('Willpower'); v['fate.dots'] = statVal('Fate'); v['sanity.dots'] = statVal('Sanity');
     v['mana.dots'] = manaTotal();
-    // Mana pool = (Magic + Circle Magic) x Mana; Max Mana per Turn = Fortitude + Mana
-    v['mana.pool.max'] = v['mana.pool.current'] = String((abTotal('Magic') + abTotal('Circle Magic')) * manaTotal());
-    v['mana.per_turn.max'] = v['mana.per_turn.current'] = String(attrTotal('Fortitude') + manaTotal());
+    var cmv = characterModel();
+    v['mana.pool.max'] = v['mana.pool.current'] = String(cmv.mana.pool);
+    v['mana.per_turn.max'] = v['mana.per_turn.current'] = String(cmv.mana.mt);
+    if (cmv.mana.held) v['mana.committed'] = String(cmv.mana.held);
     var POS = { virtue2: 1, virtue1: 2, central: 3, vice1: 4, vice2: 5 };
     D.scales.forEach(function (sc) { v['vv.' + k(sc.name)] = POS[(build.scales || {})[slug(sc.name)] || 'central']; });
     // Companions
@@ -1866,11 +1870,15 @@
     if (build.pl_occupation || build.pl_job) v['profile.past_life'] = build.pl_occupation || build.pl_job;
     // Equipment, belt, money, and notes from the character page
     var gw = (EXTRA.gear || {}).worn || {};
-    ['headgear', 'torso', 'left_arm', 'right_arm', 'legs', 'footwear', 'main_weapon', 'side_arm', 'alt_weapons'].forEach(function (x) { if (gw[x]) v['equip.' + x] = gw[x]; });
+    ['headgear', 'torso', 'left_arm', 'right_arm', 'legs', 'footwear', 'main_weapon', 'side_arm', 'alt_weapons'].forEach(function (x) {
+      var it = gw[x]; if (!it) return;
+      if (typeof it === 'string') { v['equip.' + x] = it; return; }
+      if (it.name) v['equip.' + x] = it.name + (Number(it.bonus) ? ' (' + (it.bonus > 0 ? '+' : '') + it.bonus + ' ' + (it.which || it.cat || '') + ')' : '');
+    });
     var carried = ((EXTRA.gear || {}).carried || []).map(function (i) { return (i.qty > 1 ? i.qty + ' ' : '') + i.name; }).filter(Boolean);
     if (carried.length) v['equip.stowed'] = carried.join(', ');
-    ((EXTRA.gear || {}).belt || []).forEach(function (b2, i) { if (b2 && i < 7) v['belt.' + (i + 1)] = b2; });
-    var mn = moneyText(EXTRA.money || {});
+    ((EXTRA.gear || {}).belt || []).forEach(function (b2, i) { if (b2 && i < 7) v['belt.' + (i + 1)] = typeof b2 === 'string' ? b2 : (b2.name || b2.type || ''); });
+    var mn = moneyText(EXTRA.money || startMoney());
     if (mn) v['resources.funds'] = mn;
     var nt = (EXTRA.gear || {}).notes || {};
     ['quests', 'npcs', 'locations', 'lore', 'leads', 'general'].forEach(function (x) { if (nt[x]) v['notes.' + x] = nt[x]; });
@@ -2093,6 +2101,71 @@
     XPS.log = after;
   }
 
+  // Mana Pool = (all magic: Magic + Circle Magic + every Magical Knowledge dot) x Mana
+  function allMagicDots() {
+    var n = abTotal('Magic') + abTotal('Circle Magic');
+    D.knowledges.forEach(function (x) { n += knowTotal(x.name); });
+    n += hmVal();
+    extraPowers().forEach(function (p) { n += xpDots('vp', p); });
+    return n;
+  }
+  function wornList() {
+    var w = (EXTRA.gear || {}).worn || {};
+    return Object.keys(w).map(function (k) { var v = w[k]; return typeof v === 'string' ? { slot: k, name: v } : Object.assign({ slot: k }, v || {}); }).filter(function (x) { return x.name; });
+  }
+  // Every attuned spell the character knows, with its held mana and what it does
+  function attunables() {
+    var out = [];
+    function scan(item, dots, store, school, kind) {
+      if (!item || !item.ranks) return;
+      var mine = (build[store] || {})[item.name] || {};
+      for (var r = 1; r <= Math.min(dots, item.ranks.length); r++) picksAt(mine[r]).forEach(function (v) {
+        var sp = item.ranks[r - 1].spells[+v];
+        if (sp && /attuned/i.test((sp.cost || '') + ' ' + (sp.type || ''))) out.push({ id: sp.id, name: sp.name, school: school, rank: r, mana: firstInt(sp.cost), dots: dots, effect: sp.effect || sp.text || '', kind: kind });
+      });
+    }
+    D.knowledges.forEach(function (k) { scan(k, knowTotal(k.name), 'know_picks', k.name, 'know'); });
+    var hi = hmItem(); if (hi) scan(hi, hmVal(), 'hm_picks', hi.name, 'hm');
+    extraPowers().forEach(function (p) { scan(vpItem(p), xpDots('vp', p), 'hm_picks', p, 'hm'); });
+    return out;
+  }
+  // Modifiers from worn gear and from attuned spells that are switched on
+  function modifiers() {
+    var m = { attr: {}, ab: {}, dots: {}, bdt: 0, init: 0, move: 0, pool: 0, mt: 0, attack: 0, damage: 0, defense: 0, doubleBdt: false, moveX2: false, notes: [], held: 0, active: [] };
+    function add(map, k, v) { map[k] = (map[k] || 0) + v; }
+    wornList().forEach(function (it) {
+      var b = Number(it.bonus) || 0; if (!b) return;
+      var c = it.cat || '', w = it.which || '';
+      if (c === 'Attribute' && w) add(m.attr, w, b);
+      else if (c === 'Ability' && w) add(m.ab, w, b);
+      else if ((c === 'Combat Style' || c === 'Magic') && w) add(m.dots, w, b);
+      else if (c === 'Armor') m.bdt += b;
+      else if (c === 'Initiative') m.init += b;
+      else if (c === 'Movement') m.move += b;
+      else if (c === 'Mana Pool') m.pool += b;
+      else if (c === 'Max Mana per Turn') m.mt += b;
+      else if (c === 'Attack') m.attack += b;
+      else if (c === 'Damage') m.damage += b;
+      else if (c === 'Defense') m.defense += b;
+    });
+    var on = EXTRA.attuned || {};
+    attunables().forEach(function (a) {
+      if (!on[a.id]) return;
+      var d = a.dots, half = Math.ceil(d / 2), e = a.effect, fx = [];
+      m.held += a.mana;
+      if (/move one extra zone/i.test(e)) { m.move += 1; fx.push('+1 Movement' + (/flying/i.test(e) ? ' while flying' : '')); }
+      if (/gain Armor equal to half your Heritage dots/i.test(e) || /add half your Heritage dots, rounded up, to your BDT/i.test(e)) { m.bdt += half; fx.push('+' + half + ' BDT'); }
+      else if (/gain Armor equal to your Heritage dots/i.test(e) || /add your Heritage dots to your BDT/i.test(e)) { m.bdt += d; fx.push('+' + d + ' BDT'); }
+      if (/Move is reduced by 1/i.test(e)) { m.move -= 1; fx.push('-1 Movement'); }
+      var ad = e.match(/add (\d) to (Strength|Dexterity|Fortitude)( and (Strength|Dexterity|Fortitude))?/i);
+      if (ad && !/your choice of/i.test(e)) { add(m.attr, ad[2], +ad[1]); if (ad[4]) add(m.attr, ad[4], +ad[1]); fx.push('+' + ad[1] + ' ' + ad[2] + (ad[4] ? ' and ' + ad[4] : '')); }
+      if (/double your BDT|BDT doubles/i.test(e)) { m.doubleBdt = true; fx.push('BDT doubled'); }
+      if (/double your normal movement/i.test(e)) { m.moveX2 = true; fx.push('flying at double movement'); }
+      m.active.push({ id: a.id, name: a.name, school: a.school, mana: a.mana, effects: fx, effect: e });
+    });
+    return m;
+  }
+
   // ---------- Character model for the website character page ----------
   function moveZones(d) { return d >= 7 ? 3 : d >= 5 ? 2 : 1; }
   function characterModel() {
@@ -2111,9 +2184,10 @@
         attribute_flaw: h.name === 'Demon' ? build.heritage.attribute_flaw : h.attribute_flaw, merit: build.heritage.merit || '',
         merit_text: ((h.merit_text || {})[build.heritage.merit] || ''), vpower: build.heritage.vpower || '', adapt: build.heritage.adapt || '' } : null,
       stats: ['Willpower', 'Fate', 'Sanity'].map(function (n) { var x = byName(D.stats, n) || {}; return { name: n, dots: statVal(n), used: x.used_for || '' }; }),
-      mana: { dots: manaTotal(), pool: (abTotal('Magic') + abTotal('Circle Magic')) * manaTotal(), mt: attrTotal('Fortitude') + manaTotal() },
-      combat: { initiative: attrTotal('Dexterity') + attrTotal('Perception'), move: moveZones(attrTotal('Dexterity')), bdt: attrTotal('Fortitude') + Number((build.merits || {}).Resilience || 0) },
+      mana: null, combat: null,
       attrs: COLS.map(function (c) { return { col: c, num: colNumber(c), des: (build.attr_cols || {})[c] || '', list: D.attributes[c].map(function (a) { return { name: a, dots: attrTotal(a), innate: a === innateAttr() }; }) }; }),
+      lists: { attrs: [].concat.apply([], COLS.map(function (c) { return D.attributes[c]; })), abilities: [].concat.apply([], GROUPS.map(function (g) { return D.abilities[g].map(function (a) { return a.name; }); })),
+        styles: D.styles.map(function (x) { return x.name; }), magics: D.knowledges.map(function (x) { return x.name; }).concat(hmOn() ? [hmName()] : []) },
       abilities: GROUPS.map(function (g) {
         return { group: g, num: (build.ab_groups || {})[g] || null, list: D.abilities[g].map(function (a) {
           var sp = specList(a.name).map(function (x, i) { return x === OTHER ? ((build.spec_other || {})[a.name + '|' + i] || '') : x; }).filter(function (x) { return x && x.trim(); });
@@ -2130,6 +2204,25 @@
       gear: EXTRA.gear || {}, money: EXTRA.money || {}
     };
     m.xp.unspent = m.xp.earned - m.xp.spent;
+    var md = modifiers();
+    function A(n) { return attrTotal(n) + (md.attr[n] || 0); }
+    var arcane = Number((build.merits || {})['Arcane Enhancements']) || 0;
+    var mtBase = A('Fortitude') + manaTotal() + md.mt - arcane;
+    var allDots = allMagicDots() + (md.ab.Magic || 0) + (md.ab['Circle Magic'] || 0);
+    m.mana = { dots: manaTotal(), magicDots: allDots, pool: allDots * manaTotal() + md.pool, mtFull: mtBase, mt: Math.max(0, mtBase - md.held), held: md.held, attuned: md.active, arcane: arcane };
+    var bdt = A('Fortitude') + Number((build.merits || {}).Resilience || 0) + md.bdt;
+    if (md.doubleBdt) bdt *= 2;
+    var mv = moveZones(A('Dexterity')) + md.move;
+    m.combat = { initiative: A('Dexterity') + A('Perception') + md.init, move: md.moveX2 ? mv * 2 : mv, bdt: bdt, attack: md.attack, damage: md.damage, defense: md.defense };
+    m.mods = md;
+    m.attunables = attunables();
+    m.attunedOn = Object.assign({}, EXTRA.attuned || {});
+    m.money = EXTRA.money || startMoney();
+    m.moneyStart = !EXTRA.money;
+    m.tracks = EXTRA.tracks || {};
+    var mer = build.merits || {};
+    function boxN(v) { var s2 = String(v || ''); return /2|n1/.test(s2) ? 2 : v ? 1 : 0; }
+    m.boxes = { b: 7, l: 5 + boxN(mer['Bonus Lethal Health']), a: 3 + boxN(mer['Bonus Aggravated Health']) };
     D.styles.forEach(function (st) {
       var t = styleTotal(st.name); if (!t) return;
       var mine = (build.style_picks || {})[st.name] || {};
@@ -2143,7 +2236,7 @@
       var mine = (build[store] || {})[item.name] || {};
       return Object.assign({ name: name, dots: dots, tier: tier, link: item.link, ranks: (item.ranks || []).slice(0, dots).map(function (rk) {
         var have = picksAt(mine[rk.rank]);
-        return { rank: rk.rank, title: rk.title, id: rk.id, def: rk.default, picks: rk.spells.map(function (sp, i) { return have.indexOf(String(i)) >= 0 ? Object.assign({}, sp, { opt: sp.opt ? 'Option ' + sp.opt : '' }) : null; }).filter(Boolean),
+        return { rank: rk.rank, title: rk.title, id: rk.id, def: rk.default, picks: rk.spells.map(function (sp, i) { return have.indexOf(String(i)) >= 0 ? Object.assign({}, sp, { opt: sp.opt ? 'Option ' + sp.opt : '', attunable: /attuned/i.test((sp.cost || '') + ' ' + (sp.type || '')) }) : null; }).filter(Boolean),
           combos: have.filter(function (v) { return v.indexOf('c:') === 0; }).map(function (v) { return comboById(v.slice(2)); }).filter(Boolean) };
       }), page: page }, extra || {});
     }
@@ -2157,10 +2250,16 @@
       if (h && h.name === 'Hyuman' && !build.heritage.adapt) he.needsAdapt = true;
       m.knowledges.push(he);
     }
-    extraPowers().forEach(function (p) {
-      var vi = vpItem(p);
-      m.knowledges.push(knowEntry(p, vi, xpDots('vp', p), 'Vampiric Power', 'hm_picks', 'ch8', { heritage: true, extraPower: true }));
-    });
+    if (h && h.name === 'Vampire') {
+      m.vpowers = VPOWERS.map(function (p) {
+        var main = p === build.heritage.vpower, d3 = main ? hmVal() : xpDots('vp', p), vi = vpItem(p);
+        var e = d3 && vi ? knowEntry(p, vi, d3, main ? 'Primary' : 'Bought with XP', 'hm_picks', 'ch8', {}) : { name: p, dots: 0, ranks: [], link: vi ? vi.link : '' };
+        e.main = main; return e;
+      });
+      // the chosen power is shown inside the Vampiric Powers group, not on its own
+      m.knowledges = m.knowledges.filter(function (k) { return !(k.heritage && build.heritage.vpower && k.name === build.heritage.vpower); });
+      if (build.heritage.vpower) m.knowledges.unshift({ name: 'Vampiric Powers', vampire: true, heritage: true, dots: 0, ranks: [], link: (hmData() && '../rulebook/ch8.html#' + ((D.heritage_magic || {})['Vampiric Powers'] || {}).id) || '' });
+    }
     D.knowledges.forEach(function (k) {
       var t = knowTotal(k.name); if (!t) return;
       var tier = knowVal(k.name) + knowFree(k.name) ? 'Primary' : 'Secondary';
@@ -2242,10 +2341,17 @@
     k.defenses.unshift({ name: 'Dodge', pool: 'Dexterity + Dodge' });
     k.defenses.push({ name: 'Resist (body)', pool: 'Fortitude + Endurance' }, { name: 'Resist (mind)', pool: 'Composure + Presence' }, { name: 'Notice', pool: 'Perception + Awareness' });
     var mana = manaTotal();
-    k.mana = { dots: mana, pool: (abTotal('Magic') + abTotal('Circle Magic')) * mana, mt: attrTotal('Fortitude') + mana, regen: manaRegen(mana) };
-    k.initiative = attrTotal('Dexterity') + attrTotal('Perception');
-    k.move = moveZones(attrTotal('Dexterity'));
-    k.bdt = attrTotal('Fortitude') + Number((build.merits || {}).Resilience || 0);
+    var cm = characterModel();
+    var md = cm.mods;
+    Object.keys(md.attr).forEach(function (a) { k.attrs[a] = (k.attrs[a] || 0) + md.attr[a]; });
+    Object.keys(md.ab).forEach(function (a) { k.abilities[a] = (k.abilities[a] || 0) + md.ab[a]; });
+    Object.keys(md.dots).forEach(function (a) { k.dots[a] = (k.dots[a] || 0) + md.dots[a]; });
+    k.mana = { dots: mana, pool: cm.mana.pool, mt: cm.mana.mt, regen: manaRegen(mana) };
+    k.initiative = cm.combat.initiative;
+    k.move = cm.combat.move;
+    k.bdt = cm.combat.bdt;
+    k.bonus = { attack: md.attack, damage: md.damage, defense: md.defense };
+    k.boxes = cm.boxes;
     k.willpower = statVal('Willpower');
     return k;
   }
@@ -2257,7 +2363,8 @@
     build = (row.sheet && row.sheet.build) || {};
     forge = (row.sheet && row.sheet.forge) || { step: 1, done: [], ok: [] };
     XPS = (row.sheet && row.sheet.xp) || { log: [], buys: [] };
-    EXTRA = { gear: (row.sheet && row.sheet.gear) || {}, money: (row.sheet && row.sheet.money) || {} };
+    var sh = row.sheet || {};
+    EXTRA = { gear: sh.gear || {}, money: sh.money || null, attuned: sh.attuned || {}, tracks: sh.tracks || {} };
   }
   window.TerranaForgeView = function (data, row, player) { headlessLoad(data, row, player); return sheetView(); };
   // The website character page: a model to draw, plus XP actions that change build and xp.
@@ -2270,8 +2377,8 @@
     buy: function (offer, extra) { xpBuy(offer, extra); return characterModel(); },
     undo: function (id) { xpUndo(id); return characterModel(); },
     combosFor: function (school, r) { return combosFor(school, r); },
-    sheet: function () { return { build: build, xp: XPS, view: sheetView(), gear: EXTRA.gear, money: EXTRA.money }; },
-    setExtras: function (gear, money) { EXTRA = { gear: gear || {}, money: money || {} }; return characterModel(); },
+    sheet: function () { return { build: build, xp: XPS, view: sheetView(), gear: EXTRA.gear, money: EXTRA.money || startMoney(), attuned: EXTRA.attuned, tracks: EXTRA.tracks }; },
+    setExtras: function (x) { Object.keys(x || {}).forEach(function (k) { EXTRA[k] = x[k]; }); return characterModel(); },
     combatKit: combatKit
   };
   if (window.FORGE_HEADLESS) return;

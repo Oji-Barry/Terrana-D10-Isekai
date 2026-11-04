@@ -86,3 +86,60 @@ details.cv-more > summary { cursor: pointer; color: var(--sky); font-weight: 700
 .cv-savebar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin: 0 0 12px; }
 .cv-mf { border-bottom: 1px solid rgba(233, 237, 248, 0.1); }
 .cv-mf .cv-row { border-bottom: 0; }
+
+/* Autosave toast */
+.cv-toast { position: fixed; left: 50%; bottom: 24px; transform: translate(-50%, 20px); opacity: 0; pointer-events: none; z-index: 50; padding: 8px 18px; border-radius: 6px; font-weight: 800; color: #0b1347; background: var(--gold); box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5); transition: opacity 0.2s, transform 0.2s; }
+.cv-toast.show { opacity: 1; transform: translate(-50%, 0); }
+.cv-toast.err { background: #ff9a9a; }
+@media (prefers-reduced-motion: reduce) { .cv-toast { transition: none; } }
+
+/* Willpower, Fate, Sanity and health boxes */
+.cv-tri { display: inline-flex; flex-wrap: wrap; gap: 3px; margin: 4px 0; }
+.cv-tb { width: 26px; height: 26px; padding: 0; border: 2px solid rgba(233, 237, 248, 0.6); border-radius: 4px; background: rgba(0, 0, 0, 0.3); color: var(--text); font-weight: 900; font-size: 15px; line-height: 1; cursor: pointer; }
+.cv-tb.chk { background: var(--sky); border-color: var(--sky); color: #0b1347; }
+.cv-tb.x { background: rgba(255, 120, 120, 0.25); border-color: #ff8a8a; color: #ffb3b3; }
+.cv-tb.hb.b.x { background: rgba(143, 209, 143, 0.3); border-color: #8fd18f; color: #d6ffd6; }
+.cv-tb.hb.a.x { background: rgba(192, 107, 255, 0.3); border-color: #c06bff; color: #ead4ff; }
+.cv-tb[disabled] { cursor: default; }
+.cv-tb:focus-visible { outline: 2px solid #fff; outline-offset: 1px; }
+
+/* Styles and Magic: centered name, powers as cards */
+.cv-group-head { text-align: center; margin: 26px 0 10px; }
+.cv-group-head:first-child, .cv-msg:empty + .cv-group-head { margin-top: 4px; }
+.cv-group-head h2 { margin: 0 0 4px; }
+.cv-group-sub { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 6px 10px; }
+.cv-cards { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-bottom: 8px; }
+@media (max-width: 1100px) { .cv-cards { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (max-width: 820px) { .cv-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 480px) { .cv-cards { grid-template-columns: minmax(0, 1fr); } }
+.cv-pc { display: flex; flex-direction: column; gap: 4px; border: 1px solid var(--line); border-radius: 6px; padding: 10px 12px; background: rgba(0, 0, 0, 0.2); min-width: 0; }
+.cv-pc.on { border-color: var(--gold); box-shadow: 0 0 0 1px var(--gold) inset; }
+.cv-pc-top { display: flex; justify-content: space-between; align-items: center; gap: 6px; }
+.cv-pc-rank { font-size: 12px; color: var(--gold); font-weight: 700; text-transform: uppercase; letter-spacing: 0.03em; }
+.cv-pc-name { font-weight: 800; font-size: 16px; }
+.cv-pc-meta { font-size: 13px; color: var(--sky); }
+.cv-pc-text { margin: 0; font-size: 14px; color: var(--text-soft); flex: 1; }
+.cv-pc-link { font-size: 13px; }
+.cv-pc .act.small { align-self: flex-start; min-height: 32px; padding: 0 10px; }
+.cv-vp-off { text-align: center; padding: 8px; margin: 6px auto; max-width: 720px; border: 1px dashed var(--line); border-radius: 6px; }
+
+/* Worn and wielded */
+.cv-worn { display: grid; gap: 6px; }
+.cv-worn-h, .cv-worn-r { display: grid; grid-template-columns: 110px minmax(0, 2fr) 70px minmax(0, 1.3fr) minmax(0, 1.3fr) minmax(0, 2fr); gap: 6px; align-items: center; }
+.cv-worn-h span { font-size: 12px; color: var(--gold); font-weight: 700; text-transform: uppercase; }
+.cv-worn-slot { font-weight: 700; font-size: 14px; }
+.cv-worn input, .cv-worn select, .cv-belt input, .cv-belt select { width: 100%; min-height: 34px; padding: 4px 6px; border: 1px solid var(--line); border-radius: 4px; background: rgba(0, 0, 0, 0.35); color: var(--text); font: inherit; font-size: 14px; }
+.cv-worn input[disabled], .cv-worn select[disabled] { opacity: 0.55; }
+@media (max-width: 820px) {
+  .cv-worn-h { display: none; }
+  .cv-worn-r { grid-template-columns: repeat(2, minmax(0, 1fr)); padding: 8px 0; border-bottom: 1px solid rgba(233, 237, 248, 0.12); }
+  .cv-worn-slot { grid-column: 1 / -1; color: var(--gold); }
+}
+.cv-belt { display: grid; gap: 8px; }
+.cv-belt-r { display: grid; grid-template-columns: 150px minmax(0, 1.2fr) minmax(0, 1.4fr); gap: 4px 8px; align-items: center; }
+.cv-belt-r label { font-weight: 700; font-size: 14px; }
+.cv-belt-info { grid-column: 2 / -1; font-size: 13px; }
+.cv-belt-info:empty { display: none; }
+.cv-belt-r.extra label { color: var(--text-muted); }
+.cv-belt-r.extra select { border-style: dashed; }
+@media (max-width: 620px) { .cv-belt-r { grid-template-columns: minmax(0, 1fr); } .cv-belt-info { grid-column: auto; } }
