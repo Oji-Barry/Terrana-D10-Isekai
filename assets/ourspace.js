@@ -43,6 +43,39 @@
     return el('div', { class: 'os-pic blank', role: 'img', 'aria-label': alt || 'No picture' }, ['No picture']);
   }
 
+  // ---------- picture uploads (Supabase Storage bucket "ourspace") ----------
+  // Pictures are shrunk in the browser first so they load fast and fit the free storage.
+  // Animated GIFs are kept as they are.
+  var MAX_BYTES = 3 * 1024 * 1024;
+  function shrink(file, maxSide) {
+    return new Promise(function (resolve, reject) {
+      if (file.type === 'image/gif') { resolve({ blob: file, type: 'image/gif', ext: 'gif' }); return; }
+      var img = new Image(), url = URL.createObjectURL(file);
+      img.onload = function () {
+        var k = Math.min(1, maxSide / Math.max(img.naturalWidth, img.naturalHeight));
+        var c = document.createElement('canvas');
+        c.width = Math.max(1, Math.round(img.naturalWidth * k));
+        c.height = Math.max(1, Math.round(img.naturalHeight * k));
+        var g = c.getContext('2d');
+        g.fillStyle = '#ffffff'; g.fillRect(0, 0, c.width, c.height);
+        g.drawImage(img, 0, 0, c.width, c.height);
+        URL.revokeObjectURL(url);
+        c.toBlob(function (b) { b ? resolve({ blob: b, type: 'image/jpeg', ext: 'jpg' }) : reject(new Error('Could not read that picture.')); }, 'image/jpeg', 0.86);
+      };
+      img.onerror = function () { URL.revokeObjectURL(url); reject(new Error('That file is not a picture this browser can open.')); };
+      img.src = url;
+    });
+  }
+  async function uploadPic(file, kind, maxSide) {
+    if (!file || !/^image\//.test(file.type)) throw new Error('Choose a picture file (JPG, PNG, WebP, or GIF).');
+    var out = await shrink(file, maxSide || 1200);
+    if (out.blob.size > MAX_BYTES) throw new Error('That picture is over 3 MB. Try a smaller one.');
+    var path = me.id + '/' + kind + '-' + Date.now() + '-' + Math.random().toString(36).slice(2, 8) + '.' + out.ext;
+    var r = await db.storage.from('ourspace').upload(path, out.blob, { contentType: out.type, upsert: false });
+    if (r.error) throw r.error;
+    return db.storage.from('ourspace').getPublicUrl(path).data.publicUrl;
+  }
+
   // ---------- page colors ----------
   var THEMES = {
     classic: { label: 'Classic', bg: '#e5e5e5', text: '#222222', link: '#003399', head: '#6699cc', headText: '#ffffff', box: '#ffffff', box2: '#d5e8fb', accent: '#ff9933', accent2: '#ffcc99' },
@@ -183,6 +216,7 @@
       var f = el('form', { class: 'os-form', id: 'post-form' }, [
         el('div', {}, [el('label', { for: 'post-title', text: 'New blog entry' }), el('input', { id: 'post-title', maxlength: '120', placeholder: 'Title', required: true })]),
         el('div', {}, [el('label', { for: 'post-body', class: 'visually-hidden', text: 'Entry' }), el('textarea', { id: 'post-body', maxlength: '10000', placeholder: 'What happened today?', required: true })]),
+        el('div', {}, [el('label', { for: 'post-pics', text: 'Add pictures (up to 4)' }), el('input', { id: 'post-pics', type: 'file', accept: 'image/*', multiple: true }), el('div', { class: 'os-thumbs', id: 'post-thumbs' })]),
         el('div', { class: 'row' }, [
           el('div', {}, [el('label', { for: 'post-vis', text: 'Who can read it' }), el('select', { id: 'post-vis' }, [
             el('option', { value: 'public', text: 'Everyone' }), el('option', { value: 'friends', text: 'Friends only' }), el('option', { value: 'private', text: 'Only me' })])]),
@@ -190,14 +224,26 @@
         ]),
         el('p', { class: 'os-msg', id: 'post-msg', role: 'alert' })
       ]);
+      f.querySelector('#post-pics').addEventListener('change', function (ev) {
+        var th = $('post-thumbs'); th.textContent = '';
+        var files = Array.prototype.slice.call(ev.target.files || [], 0, 4);
+        if ((ev.target.files || []).length > 4) say('post-msg', 'Only the first 4 pictures will be added.', true); else say('post-msg', '');
+        files.forEach(function (fl) { th.appendChild(el('img', { src: URL.createObjectURL(fl), alt: fl.name })); });
+      });
       f.addEventListener('submit', async function (ev) {
         ev.preventDefault();
         var t = $('post-title').value.trim(), b = $('post-body').value.trim();
         if (!t || !b) { say('post-msg', 'Give your entry a title and some words.', true); return; }
+        var btn = f.querySelector('button[type=submit]');
+        btn.disabled = true;
         try {
-          await must(db.from('posts').insert({ author: me.id, character_id: characterId || null, title: t, body: b, visibility: $('post-vis').value }));
+          var files = Array.prototype.slice.call($('post-pics').files || [], 0, 4), imgs = [];
+          for (var i = 0; i < files.length; i++) { say('post-msg', 'Uploading picture ' + (i + 1) + ' of ' + files.length + '...'); imgs.push(await uploadPic(files[i], 'post', 1400)); }
+          var row = { author: me.id, character_id: characterId || null, title: t, body: b, visibility: $('post-vis').value };
+          if (imgs.length) row.images = imgs;
+          await must(db.from('posts').insert(row));
           location.reload();
-        } catch (e) { say('post-msg', oops(e), true); }
+        } catch (e) { btn.disabled = false; say('post-msg', oops(e), true); }
       });
       inner.push(f);
     }
@@ -207,7 +253,8 @@
       var row = el('article', { class: 'os-post' }, [
         el('h4', { text: p.title }),
         el('div', { class: 'when', text: when(p.created_at) + (mine ? VIS[p.visibility] || '' : '') }),
-        el('div', { class: 'body', text: p.body })
+        el('div', { class: 'body', text: p.body }),
+        postPics(p)
       ]);
       if (mine) row.appendChild(el('button', { class: 'os-btn danger', type: 'button', text: 'Delete', onclick: async function () {
         if (!confirm('Delete "' + p.title + '"?')) return;
@@ -218,6 +265,13 @@
     return box(title, inner, 'orange');
   }
 
+  function postPics(p) {
+    var list = (p.images || []).filter(function (u) { return typeof u === 'string' && /^https:\/\//.test(u); }).slice(0, 4);
+    if (!list.length) return null;
+    return el('div', { class: 'os-post-pics' }, list.map(function (u) {
+      return el('a', { href: u, target: '_blank', rel: 'noopener' }, [el('img', { src: u, alt: 'Picture from ' + p.title, referrerpolicy: 'no-referrer', loading: 'lazy' })]);
+    }));
+  }
   function friendButtons(targetId, rel, msgHref) {
     var wrap = el('div', {});
     if (!me) { wrap.appendChild(el('a', { class: 'os-btn', href: '../account/index.html?next=ourspace/index.html', text: 'Log in to add friends' })); return wrap; }
@@ -302,13 +356,13 @@
     right.appendChild(await top8Box('Cool New People', newest.map(function (p) { return { t: 'p', id: p.id }; }), 'Nobody here yet.'));
     var chars = await must(db.from('character_pages').select('id').order('updated_at', { ascending: false }).limit(8));
     right.appendChild(await top8Box('Recently Updated Characters', chars.map(function (c) { return { t: 'c', id: c.id }; }), 'No characters yet.'));
-    var posts = await must(db.from('posts').select('id, author, character_id, title, body, created_at').order('created_at', { ascending: false }).limit(10));
+    var posts = await must(db.from('posts').select('*').order('created_at', { ascending: false }).limit(10));
     var who = await profilesById(posts.map(function (p) { return p.author; })), cps = await charPages(posts.map(function (p) { return p.character_id; }));
     var pl = [];
     posts.forEach(function (p) {
       var by = p.character_id && cps[p.character_id] ? el('a', { href: cLink(p.character_id), text: cps[p.character_id].name }) : who[p.author] ? el('a', { href: uLink(who[p.author].username), text: who[p.author].username }) : 'someone';
       pl.push(el('article', { class: 'os-post' }, [el('h4', { text: p.title }), el('div', { class: 'when' }, ['by ', by, ', ' + when(p.created_at)]),
-        el('div', { class: 'body', text: p.body.length > 400 ? p.body.slice(0, 400) + '...' : p.body })]));
+        el('div', { class: 'body', text: p.body.length > 400 ? p.body.slice(0, 400) + '...' : p.body }), postPics(p)]));
     });
     right.appendChild(box('Latest Blog Entries', pl.length ? pl : [el('p', { class: 'os-hint', text: 'No blog entries yet.' })], 'orange'));
   }
@@ -431,12 +485,35 @@
       isChar ? field('f-display', 'Name shown on the page', d.display_name, { max: 60, ph: row.name }) : field('f-display', 'Display name', row.display_name, { max: 60, ph: me.username }),
       field('f-tagline', 'Tagline', row.tagline, { max: 120 }),
       el('div', { class: 'row' }, [field('f-mood', 'Mood', row.mood, { max: 40 }), field('f-status', 'Status', row.status, { max: 140 })]),
-      field('f-pic', 'Picture web address (starts with https://)', row.pic_url, { max: 500, type: 'url', ph: 'https://' }),
-      el('p', { class: 'os-hint', text: 'Use a picture you made or have the right to share. Pictures are shown from where they are hosted.' }),
+      el('div', { class: 'os-picedit' }, [
+        el('div', { id: 'pic-preview' }, [pic(row.pic_url, 'Current picture')]),
+        el('div', {}, [
+          el('label', { for: 'f-upload', text: 'Upload a picture' }),
+          el('input', { id: 'f-upload', type: 'file', accept: 'image/*' }),
+          el('p', { class: 'os-hint', text: 'JPG, PNG, WebP, or GIF. Big pictures are shrunk to fit. Animated GIFs stay animated (3 MB max).' }),
+          field('f-pic', 'Or paste a picture web address (starts with https://)', row.pic_url, { max: 500, type: 'url', ph: 'https://' }),
+          el('button', { class: 'os-btn', type: 'button', id: 'pic-clear', text: 'Remove Picture' })
+        ])
+      ]),
+      el('p', { class: 'os-hint', text: 'Use a picture you made or have the right to share.' }),
       field('f-about', isChar ? 'About this character' : 'About me', row.about, { long: true }),
       field('f-meet', 'Who I’d like to meet', isChar ? d.who_to_meet : row.who_to_meet, { long: true, max: 2000 })
     ];
     form.appendChild(el('fieldset', {}, basics));
+    function showPic(u) { var pv = $('pic-preview'); pv.textContent = ''; pv.appendChild(pic(u, 'Current picture')); }
+    form.querySelector('#f-upload').addEventListener('change', async function (ev) {
+      var fl = ev.target.files && ev.target.files[0];
+      if (!fl) return;
+      say('edit-msg', 'Uploading your picture...');
+      try {
+        var u = await uploadPic(fl, isChar ? 'char-' + cid : 'me', 800);
+        $('f-pic').value = u; showPic(u);
+        say('edit-msg', 'Picture uploaded. Press Save Page to keep it.');
+      } catch (e) { say('edit-msg', oops(e), true); }
+      ev.target.value = '';
+    });
+    form.querySelector('#f-pic').addEventListener('change', function () { showPic(val('f-pic')); });
+    form.querySelector('#pic-clear').addEventListener('click', function () { $('f-pic').value = ''; showPic(''); });
     if (isChar) {
       var DET = [['heritage', 'Heritage'], ['past_life', 'Past Life'], ['party', 'Party'], ['rank', 'Rank'], ['location', 'Location'], ['age', 'Age'], ['birthday', 'Birthday'], ['star_sign', 'Star Sign'],
         ['height', 'Height'], ['hair', 'Hair'], ['eyes', 'Eyes'], ['relationship', 'Relationship'], ['likes', 'Likes'], ['dislikes', 'Dislikes'], ['fav_food', 'Favorite Food'], ['fear', 'Fear']];
