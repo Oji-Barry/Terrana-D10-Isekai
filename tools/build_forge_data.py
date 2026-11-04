@@ -103,6 +103,8 @@ def quick_reference(path):
         if isinstance(b, Table):
             if started and heading:
                 rows = table_rows(b)
+                if rows and rows[0] and rows[0][0].startswith(('Past Life Occupations', 'Specialty Ideas')):
+                    continue  # reference lists for players; the Forge has its own copies
                 out.setdefault(heading, [])
                 # tables split across pages repeat their header row
                 body = [r for r in rows[1:] if r != rows[0]]
