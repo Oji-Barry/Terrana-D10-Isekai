@@ -1,0 +1,136 @@
+/* OurSpace: ourspace.blogspot.ccn. Its own late-90s profile-page look,
+   separate from the FF-style windows on the rest of the site. Each page's
+   owner can recolor it; the colors arrive as the --os-* variables. */
+
+:root {
+  --os-bg: #e5e5e5;
+  --os-text: #222222;
+  --os-link: #003399;
+  --os-head: #6699cc;
+  --os-head-text: #ffffff;
+  --os-box: #ffffff;
+  --os-box2: #d5e8fb;
+  --os-accent: #ff9933;
+  --os-accent2: #ffcc99;
+  --os-font: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+* { box-sizing: border-box; }
+html { background: var(--os-bg); }
+body {
+  margin: 0;
+  background: var(--os-bg);
+  color: var(--os-text);
+  font-family: var(--os-font);
+  font-size: 13px;
+  line-height: 1.45;
+}
+body.pattern-stars { background-image: radial-gradient(rgba(255, 255, 255, 0.55) 1px, transparent 1.5px), radial-gradient(rgba(255, 255, 255, 0.3) 1px, transparent 1.5px); background-size: 38px 38px, 23px 23px; background-position: 0 0, 11px 17px; }
+body.pattern-checker { background-image: linear-gradient(45deg, rgba(0, 0, 0, 0.06) 25%, transparent 25%, transparent 75%, rgba(0, 0, 0, 0.06) 75%), linear-gradient(45deg, rgba(0, 0, 0, 0.06) 25%, transparent 25%, transparent 75%, rgba(0, 0, 0, 0.06) 75%); background-size: 24px 24px; background-position: 0 0, 12px 12px; }
+body.pattern-hearts { background-image: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.35) 3px, transparent 4px), radial-gradient(circle at 70% 30%, rgba(255, 255, 255, 0.35) 3px, transparent 4px); background-size: 30px 30px; }
+
+a { color: var(--os-link); }
+a:hover { text-decoration: none; }
+img { max-width: 100%; }
+
+.os-address {
+  max-width: 980px; margin: 8px auto 0; padding: 4px 10px;
+  font-family: "Courier New", monospace; font-size: 12px;
+  background: #ffffff; color: #444444; border: 2px inset #c0c0c0;
+}
+.os-top {
+  max-width: 980px; margin: 0 auto; background: #003399; color: #ffffff;
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px;
+  padding: 8px 12px; border-bottom: 4px solid #6699cc;
+}
+.os-logo { font-family: Arial, Helvetica, sans-serif; font-weight: bold; font-size: 24px; letter-spacing: -1px; color: #ffffff; text-decoration: none; }
+.os-logo span { color: #ffcc00; }
+.os-logo small { display: block; font-size: 11px; font-weight: normal; letter-spacing: 0; color: #c7d7ff; }
+.os-links { display: flex; flex-wrap: wrap; gap: 4px 12px; font-family: Arial, Helvetica, sans-serif; font-size: 13px; }
+.os-links a { color: #ffffff; font-weight: bold; }
+.os-links a[aria-current="page"] { color: #ffcc00; }
+.os-badge { display: inline-block; min-width: 18px; padding: 0 5px; border-radius: 9px; background: #ff3300; color: #ffffff; font-size: 11px; text-align: center; }
+
+.os-main { max-width: 980px; margin: 0 auto 24px; padding: 12px; background: rgba(255, 255, 255, 0.35); }
+.os-cols { display: grid; grid-template-columns: minmax(0, 300px) minmax(0, 1fr); gap: 12px; align-items: start; }
+.os-col { display: grid; gap: 12px; min-width: 0; }
+@media (max-width: 760px) { .os-cols { grid-template-columns: minmax(0, 1fr); } }
+
+.os-box { background: var(--os-box); border: 1px solid var(--os-head); min-width: 0; }
+.os-box > h2, .os-box > h3 {
+  margin: 0; padding: 3px 8px; font-size: 13px; font-weight: bold;
+  background: var(--os-head); color: var(--os-head-text);
+}
+.os-box.orange { border-color: var(--os-accent); }
+.os-box.orange > h2, .os-box.orange > h3 { background: var(--os-accent2); color: #cc3300; }
+.os-box .in { padding: 8px; overflow-wrap: anywhere; }
+.os-box.soft .in { background: var(--os-box2); }
+
+.os-name { font-family: Arial, Helvetica, sans-serif; font-size: 22px; font-weight: bold; margin: 0 0 6px; overflow-wrap: anywhere; }
+.os-profile { display: grid; grid-template-columns: 140px minmax(0, 1fr); gap: 10px; }
+@media (max-width: 420px) { .os-profile { grid-template-columns: 100px minmax(0, 1fr); } }
+.os-pic { width: 100%; aspect-ratio: 1; object-fit: cover; background: #cccccc; border: 1px solid #999999; display: block; }
+.os-pic.blank { display: flex; align-items: center; justify-content: center; color: #777777; font-size: 11px; text-align: center; }
+.os-tag { font-style: italic; margin: 0 0 6px; }
+.os-meta { margin: 0; font-size: 12px; }
+.os-online { color: #009900; font-weight: bold; }
+
+.os-table { width: 100%; border-collapse: collapse; }
+.os-table th, .os-table td { text-align: left; vertical-align: top; padding: 4px 6px; border-bottom: 1px solid rgba(0, 0, 0, 0.08); }
+.os-table th { width: 38%; color: var(--os-link); background: var(--os-box2); font-weight: bold; }
+
+.os-top8 { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+@media (max-width: 420px) { .os-top8 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.os-friend { text-align: center; font-size: 12px; min-width: 0; }
+.os-friend a { display: block; text-decoration: none; }
+.os-friend .os-pic { margin-bottom: 3px; }
+.os-friend span { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-decoration: underline; }
+.os-friend small { display: block; color: #666666; }
+
+.os-post { border-bottom: 1px dashed #999999; padding: 8px 0; }
+.os-post:last-child { border-bottom: 0; }
+.os-post h4 { margin: 0 0 2px; font-size: 14px; color: var(--os-link); }
+.os-post .when { font-size: 11px; color: #666666; margin-bottom: 4px; }
+.os-post .body { white-space: pre-wrap; }
+
+.os-btn, button.os-btn {
+  display: inline-block; font-family: Arial, Helvetica, sans-serif; font-size: 12px; font-weight: bold;
+  color: #000000; background: linear-gradient(#ffffff, #d4d0c8); border: 2px outset #d4d0c8;
+  padding: 3px 10px; text-decoration: none; cursor: pointer; margin: 2px 2px 2px 0;
+}
+.os-btn:active { border-style: inset; }
+.os-btn.go { background: linear-gradient(#ffe8a8, #ffbb33); }
+.os-btn.danger { color: #990000; }
+.os-btn[disabled] { opacity: 0.5; cursor: default; }
+
+.os-form { display: grid; gap: 8px; }
+.os-form label { font-weight: bold; display: block; margin-bottom: 2px; }
+.os-form input[type=text], .os-form input[type=url], .os-form input:not([type]), .os-form textarea, .os-form select {
+  width: 100%; font: inherit; padding: 3px 4px; border: 2px inset #d4d0c8; background: #ffffff; color: #000000;
+}
+.os-form textarea { min-height: 90px; resize: vertical; }
+.os-form .row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+@media (max-width: 520px) { .os-form .row { grid-template-columns: minmax(0, 1fr); } }
+.os-form .colors { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 6px 10px; }
+.os-form .colors label { font-weight: normal; display: flex; align-items: center; gap: 6px; }
+.os-form .colors input[type=color] { width: 36px; height: 24px; padding: 0; border: 1px solid #666666; }
+.os-form fieldset { border: 1px solid var(--os-head); padding: 8px; margin: 0; min-width: 0; }
+.os-form legend { font-weight: bold; color: var(--os-link); padding: 0 4px; }
+.os-checks { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 4px 10px; }
+.os-checks label { font-weight: normal; display: flex; gap: 6px; align-items: center; }
+
+.os-msg { padding: 6px 8px; margin: 0 0 10px; background: #ffffcc; border: 1px solid #cccc66; }
+.os-msg.err { background: #ffe0e0; border-color: #cc6666; }
+.os-msg:empty { display: none; }
+.os-hint { color: #666666; font-size: 11px; }
+.os-list { list-style: none; margin: 0; padding: 0; }
+.os-list li { padding: 5px 0; border-bottom: 1px solid rgba(0, 0, 0, 0.08); display: flex; flex-wrap: wrap; gap: 6px; align-items: center; justify-content: space-between; }
+.os-list li:last-child { border-bottom: 0; }
+.os-mail { width: 100%; border-collapse: collapse; }
+.os-mail td, .os-mail th { padding: 5px 6px; border-bottom: 1px solid rgba(0, 0, 0, 0.1); text-align: left; vertical-align: top; }
+.os-mail tr.unread td { font-weight: bold; background: #fff6d5; }
+.os-mail .open { cursor: pointer; }
+.os-letter { white-space: pre-wrap; padding: 8px; background: #ffffff; border: 1px solid #cccccc; margin-top: 6px; }
+.os-foot { max-width: 980px; margin: 0 auto 20px; text-align: center; font-size: 11px; color: #666666; }
+.os-foot a { color: inherit; }
+.visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }

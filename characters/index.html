@@ -148,6 +148,12 @@
         sheetBtn.setAttribute('aria-label', 'View Sheet: ' + c.name);
         btns.appendChild(sheetBtn);
       }
+      var osBtn = document.createElement('a');
+      osBtn.className = 'act small';
+      osBtn.href = '../ourspace/c.html?id=' + encodeURIComponent(c.id);
+      osBtn.textContent = 'OurSpace';
+      osBtn.setAttribute('aria-label', 'OurSpace page: ' + c.name);
+      btns.appendChild(osBtn);
       [['Rename', 'rename'], ['Download', 'download'], ['Delete', 'delete']].forEach(function (b) {
         var btn = document.createElement('button');
         btn.type = 'button';
