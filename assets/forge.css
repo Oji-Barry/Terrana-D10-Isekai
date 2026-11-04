@@ -148,3 +148,8 @@
   .scale-row > legend { grid-template-columns: 1fr 1fr; }
   .scale-row > legend .scale-q { grid-column: 1 / -1; grid-row: 2; }
 }
+
+/* Section titles: centered and close to the step title in size */
+.choice-group legend { display: block; width: 100%; text-align: center; font-size: 26px; margin: 10px 0 10px; }
+.heritage-details legend { font-size: 24px; padding: 0 10px; margin: 0 auto; }
+@media (max-width: 760px) { .choice-group legend { font-size: 22px; } }
