@@ -169,6 +169,12 @@
   var rowNotes = [];
   // Bashing, Lethal, Aggravated: the last three boxes of each column are -1, -2, -4
   function penFor(n, i) { return i >= n - 3 ? [1, 2, 4][i - (n - 3)] : 0; }
+  function adjBox(k, d) {
+    var t2 = tracks(); t2.boxAdj = Object.assign({}, t2.boxAdj || {}); t2.boxAdj[k] = (t2.boxAdj[k] || 0) + d;
+    if (M.boxes[k] + d < 1) return;
+    rowNotes.push({ b: 'Bashing', l: 'Lethal', a: 'Aggravated' }[k] + ' boxes ' + (d > 0 ? '+1' : '-1') + ' by hand, now ' + (M.boxes[k] + d));
+    queue({ tracks: t2 }); drawHead(); drawBody();
+  }
   function healthCard() {
     var tr = tracks(), hp = tr.health || {}, total = 0;
     var cols = el('div', { class: 'cv-health' });
@@ -184,9 +190,15 @@
             onclick: function () { var t2 = tracks(); t2.health = t2.health || {}; var a2 = (t2.health[k[0]] || []).slice(); a2[i] = !a2[i]; t2.health[k[0]] = a2; queue({ tracks: t2 }); drawBody(); } }),
           el('span', { class: 'cv-hpen' + (pen ? '' : ' none'), text: pen ? '-' + pen : '' })]));
       })(i);
+      var srcs = (M.boxSources || {})[k[0]] || [];
+      col.appendChild(el('div', { class: 'cv-hcount', text: n + ' boxes' }));
+      if (srcs.length) col.appendChild(el('div', { class: 'cv-hsrc', text: srcs.join(', ') }));
+      if (mine) col.appendChild(el('div', { class: 'cv-hadj' }, [
+        el('button', { type: 'button', text: '-', 'aria-label': 'One less ' + k[1] + ' box', onclick: function () { adjBox(k[0], -1); } }),
+        el('button', { type: 'button', text: '+', 'aria-label': 'One more ' + k[1] + ' box', onclick: function () { adjBox(k[0], 1); } })]));
       cols.appendChild(col);
     });
-    return card('Health', [cols, el('p', { class: 'cv-muted', style: 'margin:8px 0 0', text: 'Wound penalty: ' + (total ? '-' + total + ' dice' : 'none') + '. Only the last three boxes of each column carry a penalty, and penalties from different columns add together. BDT ' + M.combat.bdt + ', LDT ' + M.combat.bdt * 2 + ', ADT ' + M.combat.bdt * 3 + '. Click a box to mark it with an X.' })], '../rulebook/terms.html');
+    return card('Health', [cols, el('p', { class: 'cv-muted', style: 'margin:8px 0 0', text: 'Wound penalty: ' + (total ? '-' + total + ' dice' : 'none') + '. Only the last three boxes of each column carry a penalty, and penalties from different columns add together. BDT ' + M.combat.bdt + ', LDT ' + M.combat.bdt * 2 + ', ADT ' + M.combat.bdt * 3 + '. Click a box to mark it with an X. Merits, worn items (Improves: Bashing, Lethal, or Aggravated boxes), and attuned spells add boxes on their own; use + and - for anything else, like a heritage ability or a story reward.' })], '../rulebook/terms.html');
   }
 
   // ---------- tabs ----------
@@ -442,7 +454,7 @@
   // ---------- equipment and notes ----------
   var SLOTS = [['headgear', 'Headgear'], ['torso', 'Torso'], ['left_arm', 'Left Arm'], ['right_arm', 'Right Arm'], ['legs', 'Legs'], ['footwear', 'Footwear'], ['main_weapon', 'Main Weapon'], ['side_arm', 'Side Arm'], ['alt_weapons', 'Alt Weapons']];
   var NOTES = [['quests', 'Quests'], ['npcs', 'People'], ['locations', 'Places'], ['lore', 'Lore'], ['leads', 'Leads'], ['general', 'Other Notes']];
-  var CATS = ['', 'Armor', 'Attack', 'Damage', 'Defense', 'Initiative', 'Movement', 'Mana Pool', 'Max Mana per Turn', 'Attribute', 'Ability', 'Combat Style', 'Magic', 'Other'];
+  var CATS = ['', 'Armor', 'Attack', 'Damage', 'Defense', 'Initiative', 'Movement', 'Mana Pool', 'Max Mana per Turn', 'Bashing boxes', 'Lethal boxes', 'Aggravated boxes', 'Attribute', 'Ability', 'Combat Style', 'Magic', 'Other'];
   // Belt items from Chapter 14 (Potions and Mana Crystals), plus the other things that ride on a belt
   var BELT = [
     ['', 'Empty', ''], ['Minor healing potion', 'Potion', 'PHP 3, Basic healing. Rating 1.'], ['Healing potion', 'Potion', 'PHP 3, Advanced healing. Rating 3.'], ['Greater healing potion', 'Potion', 'PHP 3, Expert healing. Rating 5.'],
