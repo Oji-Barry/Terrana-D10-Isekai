@@ -31,7 +31,7 @@
         <label for="new-name">New character's name</label>
         <div class="inline-row">
           <input id="new-name" maxlength="60" autocomplete="off" required>
-          <button class="act primary" type="submit">Make Character</button>
+          <button class="act primary" type="submit">Make Character in the Forge</button>
         </div>
         <p class="form-msg" id="new-msg" role="alert"></p>
       </form>
@@ -119,6 +119,13 @@
 
       var btns = document.createElement('div');
       btns.className = 'char-actions';
+      var f = (c.sheet && c.sheet.forge) || null;
+      var forgeBtn = document.createElement('a');
+      forgeBtn.className = 'act small primary';
+      forgeBtn.href = '../forge/index.html?id=' + encodeURIComponent(c.id);
+      forgeBtn.textContent = f ? 'Continue in Forge' : 'Start in Forge';
+      forgeBtn.setAttribute('aria-label', forgeBtn.textContent + ': ' + c.name);
+      btns.appendChild(forgeBtn);
       [['Rename', 'rename'], ['Download', 'download'], ['Delete', 'delete']].forEach(function (b) {
         var btn = document.createElement('button');
         btn.type = 'button';
@@ -194,8 +201,7 @@
     btn.disabled = false;
     if (res.error) { say('new-msg', A.friendly(res.error)); return; }
     $('new-name').value = '';
-    chars.push(res.data);
-    render();
+    location.href = '../forge/index.html?id=' + encodeURIComponent(res.data.id);
   });
 
   $('form-rename').addEventListener('submit', async function (e) {
