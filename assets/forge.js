@@ -1108,6 +1108,42 @@
     var what = c.pick === OTHER ? (c.what || '').trim() : (c.pick || '');
     return [c.name, what].filter(function (x) { return x && x.trim(); }).join(', ');
   }
+  // Storyteller Mode: check every option the current dots reach
+  function selectAll(kinds) {
+    if (kinds.indexOf('style') >= 0) {
+      build.style_picks = build.style_picks || {};
+      D.styles.forEach(function (st) {
+        var t = styleTotal(st.name); if (!t) return;
+        var mine = build.style_picks[st.name] = build.style_picks[st.name] || {};
+        for (var r = 1; r <= Math.min(t, st.ranks.length); r++) mine[r] = ['a', 'b'];
+      });
+    }
+    if (kinds.indexOf('know') >= 0) {
+      build.know_picks = build.know_picks || {};
+      D.knowledges.forEach(function (k) {
+        var t = knowTotal(k.name); if (!t || !k.ranks) return;
+        var mine = build.know_picks[k.name] = build.know_picks[k.name] || {};
+        for (var r = 1; r <= Math.min(t, k.ranks.length); r++) {
+          var keep = picksAt(mine[r]).filter(function (v) { return v.indexOf('c:') === 0; });
+          mine[r] = ['0', '1'].concat(keep);
+        }
+      });
+      (D.combos || []).forEach(function (c) {
+        if (!comboMet(c) || comboTakenElsewhere(c, null, null)) return;
+        var school = c.schools[0], r = c.dots;
+        var mine = build.know_picks[school] = build.know_picks[school] || {};
+        mine[r] = picksAt(mine[r]).concat(['c:' + c.id]);
+      });
+    }
+    refresh(true);
+  }
+  function selectAllBar(p, kinds, what) {
+    if (!stMode()) return;
+    p.appendChild(el('div', { class: 'st-all' }, [
+      el('button', { type: 'button', class: 'act small', text: 'Select All', onclick: function () { selectAll(kinds); } }),
+      el('span', { class: 'hint', text: 'Storyteller Mode: checks every ' + what + ' your dots reach.' })
+    ]));
+  }
   function rankLabel(r) { return 'Rank ' + r.rank + ': ' + r.title; }
 
   // Choices for each new rank of a style (Option A or B) or a school (one of two spells)
@@ -1182,6 +1218,7 @@
     counter: function () { var l = styleLeft(); return [['Style dots', l === null ? '-' : l]]; },
     render: function (p) {
       build.styles = build.styles || {};
+      selectAllBar(p, ['style'], 'Option A and B');
       if (skBudget('Physical') === null) p.appendChild(el('p', { class: 'note-box', text: 'Give your Physical column a designation in Step 5 first. It sets how many style dots you get.' }));
       var left = styleLeft();
       D.styles.forEach(function (s) {
@@ -1218,6 +1255,7 @@
     counter: function () { var l = knowLeft(); return [['Knowledge dots', l === null ? '-' : l]]; },
     render: function (p) {
       build.knows = build.knows || {};
+      selectAllBar(p, ['know'], 'spell, technique, and combination spell');
       var h = heritage();
       if (h) p.appendChild(el('p', { class: 'note-box' }, [el('strong', { text: 'Heritage Magic (free): ' }), (h.name === 'Demon' && build.heritage.magic ? build.heritage.magic : h.heritage_magic) + ' 1 (P). ', bookLink(h.link, 'Rules')]));
       if (skBudget('Mental') === null) p.appendChild(el('p', { class: 'note-box', text: 'Give your Mental column a designation in Step 5 first. It sets how many knowledge dots you get.' }));
@@ -1315,6 +1353,7 @@
     counter: function () { return [['Freebie points', fbLeft()]]; },
     render: function (p) {
       var f = fb();
+      selectAllBar(p, ['style', 'know'], 'option and spell');
       var presetSel = el('select', { id: 'fb-preset' });
       D.freebie_presets.forEach(function (x) {
         var o = el('option', { value: x.name, text: x.name + ' (' + x.points + ' points)' });
