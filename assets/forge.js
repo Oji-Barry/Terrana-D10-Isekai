@@ -13,7 +13,7 @@
     'Determine your Backgrounds', 'Set Willpower, Fate, and Sanity', 'Choose your Combat Styles',
     'Choose your Magical Knowledges', 'Spend your Freebie Points', 'Calculate your Level'
   ];
-  var BUILT = 4; // steps that are built so far
+  var BUILT = 9; // steps that are built so far
 
   var D = null;      // forge/data.json
   var me = null;     // logged in player
@@ -340,6 +340,476 @@
     }
   };
 
+  // ---------- Storyteller Mode and dot helpers ----------
+  function stMode() { return !!(forge.st && me && me.is_admin); }
+  function dotMax(normal) { return stMode() ? 10 : normal; }
+
+  // A row of clickable dots. base = dots that come free (drawn locked).
+  function dotRow(label, value, max, base, onSet) {
+    base = base || 0;
+    var row = el('div', { class: 'dots', role: 'group', 'aria-label': label });
+    for (var i = 1; i <= max; i++) {
+      (function (n) {
+        var on = n <= value;
+        var locked = n <= base;
+        var b = el('button', {
+          type: 'button',
+          class: 'dot' + (on ? ' on' : '') + (locked ? ' locked' : '') + (n > 5 ? ' over5' : ''),
+          'aria-label': label + ': ' + n + (n === 1 ? ' dot' : ' dots'),
+          'aria-pressed': on ? 'true' : 'false',
+          disabled: locked ? 'disabled' : null
+        });
+        b.addEventListener('click', function () {
+          var v = (n === value) ? Math.max(base, n - 1) : n;
+          onSet(v);
+        });
+        row.appendChild(b);
+      })(i);
+    }
+    row.appendChild(el('span', { class: 'dot-n px', text: String(value) }));
+    return row;
+  }
+
+  function goldenRule(name, v) {
+    return v > 5 ? [{ key: 'golden.' + slug(name) + '.' + v, text: name + ' has ' + v + ' dots. The Golden Rule says nothing goes above 5 at creation.' }] : [];
+  }
+
+  // ---------- Step 5: Attributes ----------
+  var COLS = ['Physical', 'Social', 'Mental'];
+  var COLNUM = { Affinity: 6, Standard: 5, Aversion: 4 };
+  function hyumanAdapt() {
+    return build.heritage && build.heritage.name === 'Hyuman' && build.heritage.merit === 'Hyuman Adaptability';
+  }
+  function innateAttr() { return build.heritage && build.heritage.innate; }
+  function attrBase(a) { return a === innateAttr() ? 2 : 1; }
+  function attrVal(a) { var v = (build.attrs || {})[a]; return v === undefined ? attrBase(a) : v; }
+  function colNumber(col) {
+    if (hyumanAdapt()) return 5;
+    var d = (build.attr_cols || {})[col];
+    return d ? COLNUM[d] : null;
+  }
+  function colLeft(col) {
+    var n = colNumber(col);
+    if (n === null) return null;
+    var spent = 0;
+    D.attributes[col].forEach(function (a) { spent += attrVal(a) - attrBase(a); });
+    return n - spent;
+  }
+  function attributeFlawCol() {
+    var h = heritage();
+    if (!h) return null;
+    var f = h.name === 'Demon' ? (build.heritage.attribute_flaw || '') : h.attribute_flaw;
+    return COLS.indexOf(f) >= 0 ? f : null;
+  }
+  S[5] = {
+    intro: 'Every attribute starts at 1 dot (your Innate Attribute starts at 2). Give each column one designation: Affinity (6), Standard (5), or Aversion (4). That number is the column’s cap and the number of dots you spend across its three attributes. Your Attribute Flaw column can never be your Affinity. No attribute can be filled above 5 at creation.',
+    link: '../rulebook/ch6.html#attributes',
+    counter: function () {
+      return COLS.map(function (c) { var l = colLeft(c); return [c, l === null ? '-' : l]; });
+    },
+    render: function (p) {
+      build.attr_cols = build.attr_cols || {};
+      build.attrs = build.attrs || {};
+      if (hyumanAdapt()) {
+        p.appendChild(el('p', { class: 'note-box', text: 'Hyuman Adaptability: all three columns are 5 instead of Affinity, Standard, and Aversion.' }));
+      }
+      var flaw = attributeFlawCol();
+      var grid = el('div', { class: 'attr-cols' });
+      COLS.forEach(function (col) {
+        var box = el('fieldset', { class: 'attr-col' }, [el('legend', { class: 'px', text: col })]);
+        if (!hyumanAdapt()) {
+          var id = 'col-' + col;
+          var sel = el('select', { id: id }, [el('option', { value: '', text: 'Designation...' })]);
+          ['Affinity', 'Standard', 'Aversion'].forEach(function (dname) {
+            var o = el('option', { value: dname, text: dname + ' (' + COLNUM[dname] + ')' });
+            if (build.attr_cols[col] === dname) o.selected = true;
+            sel.appendChild(o);
+          });
+          sel.addEventListener('change', function () { build.attr_cols[col] = sel.value; refresh(true); });
+          box.appendChild(el('div', { class: 'field' }, [el('label', { for: id, text: 'Designation' }), sel]));
+          if (flaw === col) box.appendChild(el('p', { class: 'hint', text: 'Attribute Flaw: this column cannot be your Affinity.' }));
+        }
+        D.attributes[col].forEach(function (a) {
+          var base = attrBase(a);
+          box.appendChild(el('div', { class: 'trait' }, [
+            el('span', { class: 'trait-name', text: a + (a === innateAttr() ? ' (Innate)' : '') }),
+            dotRow(a, attrVal(a), dotMax(a === innateAttr() ? 7 : 6), base, function (v) { build.attrs[a] = v; refresh(true); })
+          ]));
+        });
+        grid.appendChild(box);
+      });
+      p.appendChild(grid);
+    },
+    check: function () {
+      var w = [];
+      if (!hyumanAdapt()) {
+        var used = {};
+        COLS.forEach(function (c) {
+          var d = (build.attr_cols || {})[c];
+          if (!d) w.push({ key: 'cols.unset.' + c, text: 'Give the ' + c + ' column a designation.' });
+          else if (used[d]) w.push({ key: 'cols.dup.' + d, text: 'Affinity, Standard, and Aversion should each be used once. ' + d + ' is used twice.' });
+          used[d] = true;
+        });
+        var flaw = attributeFlawCol();
+        if (flaw && (build.attr_cols || {})[flaw] === 'Affinity') w.push({ key: 'cols.flaw.' + flaw, text: 'Your Attribute Flaw is ' + flaw + ', so it cannot be your Affinity column.' });
+      }
+      COLS.forEach(function (c) {
+        var l = colLeft(c);
+        if (l !== null && l > 0) w.push({ key: 'attr.left.' + c + '.' + l, text: c + ' has ' + l + ' dot' + (l === 1 ? '' : 's') + ' left to place.' });
+        if (l !== null && l < 0) w.push({ key: 'attr.over.' + c + '.' + l, text: c + ' is ' + (-l) + ' dot' + (l === -1 ? '' : 's') + ' over its number.' });
+        var cap = colNumber(c);
+        D.attributes[c].forEach(function (a) {
+          var v = attrVal(a), limit = cap === null ? 99 : cap + (a === innateAttr() ? 1 : 0);
+          if (v > limit) w.push({ key: 'attr.cap.' + a + '.' + v, text: a + ' is above its column cap of ' + limit + '.' });
+          w = w.concat(goldenRule(a, v));
+        });
+      });
+      return w;
+    },
+    summary: function () {
+      if (!build.attrs && !build.attr_cols) return [];
+      return COLS.map(function (c) {
+        return [c + (colNumber(c) ? ' (' + colNumber(c) + ')' : ''), D.attributes[c].map(function (a) { return a.slice(0, 3) + ' ' + attrVal(a); }).join(', ')];
+      });
+    }
+  };
+
+  // ---------- Step 6: Abilities ----------
+  var GROUPS = ['Warrior', 'Rogue', 'Troubadour', 'Noble', 'Mage', 'Sage'];
+  function abVal(a) { return (build.abilities || {})[a] || 0; }
+  function groupLeft(g) {
+    var n = (build.ab_groups || {})[g];
+    if (!n) return null;
+    var s = 0;
+    D.abilities[g].forEach(function (a) { s += abVal(a.name); });
+    return n - s;
+  }
+  S[6] = {
+    intro: 'Abilities start at 0 dots. Give each of the six groups a different number from 2 to 7. That number is how many dots you spend in that group, and no ability can be filled above 5 at creation. Any ability with 4 or more dots gets one free specialty. Then name your Past Life Occupation and mark PL on the abilities tied to it.',
+    link: '../rulebook/ch6.html#abilities',
+    counter: function () {
+      return GROUPS.map(function (g) { var l = groupLeft(g); return [g, l === null ? '-' : l]; });
+    },
+    render: function (p) {
+      build.ab_groups = build.ab_groups || {};
+      build.abilities = build.abilities || {};
+      build.specialties = build.specialties || {};
+      build.pl = build.pl || {};
+      var occId = 'pl-occ';
+      var occ = el('input', { id: occId, maxlength: '60', value: build.pl_occupation || '', placeholder: 'For example: nurse, line cook, skateboarder' });
+      occ.addEventListener('input', function () { build.pl_occupation = occ.value; refresh(); });
+      p.appendChild(el('div', { class: 'field' }, [el('label', { for: occId, text: 'Past Life Occupation' }), occ]));
+
+      var grid = el('div', { class: 'ab-groups' });
+      GROUPS.forEach(function (g) {
+        var box = el('fieldset', { class: 'ab-group' }, [el('legend', { class: 'px', text: g })]);
+        var id = 'grp-' + g;
+        var sel = el('select', { id: id }, [el('option', { value: '', text: 'Dots...' })]);
+        for (var n = 2; n <= 7; n++) {
+          var o = el('option', { value: String(n), text: String(n) });
+          if (build.ab_groups[g] === n) o.selected = true;
+          sel.appendChild(o);
+        }
+        sel.addEventListener('change', function () { build.ab_groups[g] = sel.value ? Number(sel.value) : undefined; refresh(true); });
+        box.appendChild(el('div', { class: 'field inline' }, [el('label', { for: id, text: g + ' dots' }), sel]));
+        D.abilities[g].forEach(function (a) {
+          var v = abVal(a.name);
+          var plId = 'pl-' + slug(a.name);
+          var pl = el('input', { type: 'checkbox', id: plId });
+          if (build.pl[a.name]) pl.checked = true;
+          pl.addEventListener('change', function () { build.pl[a.name] = pl.checked; if (!pl.checked) delete build.pl[a.name]; refresh(); });
+          var trait = el('div', { class: 'trait' }, [
+            el('span', { class: 'trait-name', title: a.used_for, text: a.name }),
+            dotRow(a.name, v, dotMax(7), 0, function (nv) { build.abilities[a.name] = nv; refresh(true); }),
+            el('label', { class: 'pl-check', for: plId }, [pl, ' PL'])
+          ]);
+          box.appendChild(trait);
+          if (v >= 4) {
+            var spId = 'sp-' + slug(a.name);
+            var sp = el('input', { id: spId, maxlength: '40', value: build.specialties[a.name] || '', placeholder: 'Free specialty, e.g. ' + a.name + ': Scent' });
+            sp.addEventListener('input', function () { build.specialties[a.name] = sp.value; refresh(); });
+            box.appendChild(el('div', { class: 'field specialty' }, [el('label', { for: spId, text: a.name + ' specialty' }), sp]));
+          }
+        });
+        grid.appendChild(box);
+      });
+      p.appendChild(grid);
+    },
+    check: function () {
+      var w = [], seen = {};
+      GROUPS.forEach(function (g) {
+        var n = (build.ab_groups || {})[g];
+        if (!n) { w.push({ key: 'grp.unset.' + g, text: 'Give the ' + g + ' group a number from 2 to 7.' }); return; }
+        if (seen[n]) w.push({ key: 'grp.dup.' + n, text: 'Each group should get a different number. ' + n + ' is used more than once.' });
+        seen[n] = true;
+        var l = groupLeft(g);
+        if (l > 0) w.push({ key: 'grp.left.' + g + '.' + l, text: g + ' has ' + l + ' dot' + (l === 1 ? '' : 's') + ' left to place.' });
+        if (l < 0) w.push({ key: 'grp.over.' + g + '.' + l, text: g + ' is ' + (-l) + ' dot' + (l === -1 ? '' : 's') + ' over its number.' });
+        D.abilities[g].forEach(function (a) {
+          var v = abVal(a.name);
+          w = w.concat(goldenRule(a.name, v));
+          if (v >= 4 && !(build.specialties || {})[a.name]) w.push({ key: 'spec.' + a.name, text: a.name + ' has 4 or more dots. Write in its free specialty.' });
+        });
+      });
+      if (!build.pl_occupation) w.push({ key: 'pl.none', text: 'Name your Past Life Occupation.' });
+      return w;
+    },
+    summary: function () {
+      var out = [];
+      if (build.pl_occupation) out.push(['Past Life', build.pl_occupation]);
+      var top = [];
+      GROUPS.forEach(function (g) { D.abilities[g].forEach(function (a) { var v = abVal(a.name); if (v) top.push(a.name + ' ' + v + ((build.pl || {})[a.name] ? ' (PL)' : '')); }); });
+      if (top.length) out.push(['Abilities', top.join(', ')]);
+      return out;
+    }
+  };
+
+  // ---------- Step 7: Merits and Flaws ----------
+  function costOptions(c, isFlaw) {
+    var o = [], unit = c.unit || 'dot';
+    var word = isFlaw ? 'back' : '';
+    function lbl(t, pts) { return t + ' (' + pts + ' pt' + (pts === 1 ? '' : 's') + (word ? ' ' + word : '') + ')'; }
+    if (c.kind === 'per_dot') {
+      var max = stMode() ? Math.max(c.max, 10) : c.max;
+      for (var n = 1; n <= max; n++) o.push({ v: String(n), pts: n * c.per, label: lbl(n + ' ' + unit + (n === 1 ? '' : 's'), n * c.per) });
+    } else if (c.kind === 'fixed') {
+      o.push({ v: 'take', pts: c.cost, label: lbl('Take it', c.cost) });
+    } else if (c.kind === 'levels') {
+      c.levels.forEach(function (pts, i) { o.push({ v: String(i + 1), pts: pts, label: lbl((i + 1) + ' ' + unit + (i ? 's' : ''), pts) }); });
+    } else if (c.kind === 'choice') {
+      c.options.forEach(function (pts, i) { o.push({ v: 'c' + i, pts: pts, label: lbl('Option ' + (i + 1), pts) }); });
+    } else if (c.kind === 'range') {
+      for (var p2 = c.min; p2 <= c.max; p2++) o.push({ v: 'r' + p2, pts: p2, label: lbl('Set with your Storyteller', p2) });
+    }
+    return o;
+  }
+  function picksTotal(kind) {
+    var list = kind === 'flaws' ? D.flaws : D.merits, picks = build[kind] || {}, t = 0;
+    Object.keys(picks).forEach(function (name) {
+      var item = byName(list, name);
+      if (!item) return;
+      var opt = costOptions(kind === 'flaws' ? item.points : item.cost, kind === 'flaws').filter(function (o) { return o.v === picks[name]; })[0];
+      if (opt) t += opt.pts;
+    });
+    return t;
+  }
+  function meritBudget() { return 7 + Math.min(picksTotal('flaws'), 7); }
+  function meritLeft() { return meritBudget() - picksTotal('merits'); }
+
+  function pickList(p, kind) {
+    var list = kind === 'flaws' ? D.flaws : D.merits;
+    build[kind] = build[kind] || {};
+    var groups = {};
+    list.forEach(function (m) { (groups[m.group] = groups[m.group] || []).push(m); });
+    Object.keys(groups).forEach(function (g, gi) {
+      var det = el('details', { class: 'pick-group' });
+      var count = groups[g].filter(function (m) { return build[kind][m.name]; }).length;
+      if (count) det.open = true;
+      det.appendChild(el('summary', {}, [el('span', { class: 'px', text: g + (kind === 'flaws' ? ' Flaws' : (/Merits|Eyes|Powers|Enhancements/.test(g) ? '' : ' Merits')) }), count ? el('span', { class: 'pick-count', text: count + ' picked' }) : null]));
+      groups[g].forEach(function (m) {
+        var id = kind + '-' + slug(m.name);
+        var c = kind === 'flaws' ? m.points : m.cost;
+        var sel = el('select', { id: id }, [el('option', { value: '', text: 'None' })]);
+        costOptions(c, kind === 'flaws').forEach(function (o) {
+          var op = el('option', { value: o.v, text: o.label });
+          if (build[kind][m.name] === o.v) op.selected = true;
+          sel.appendChild(op);
+        });
+        sel.addEventListener('change', function () {
+          if (sel.value) build[kind][m.name] = sel.value; else delete build[kind][m.name];
+          refresh();
+        });
+        det.appendChild(el('div', { class: 'pick-row' }, [
+          el('label', { for: id, class: 'pick-name', text: m.name }),
+          el('span', { class: 'pick-cost', text: c.text }),
+          sel,
+          bookLink(m.link, 'Rules')
+        ]));
+      });
+      p.appendChild(det);
+    });
+  }
+  S[7] = {
+    intro: 'You have 7 points to spend on Merits. Each Flaw point you take gives you 1 more point, up to 7 more, for a maximum of 14. Your Heritage Merit is free and already recorded. Points you do not spend carry over to Backgrounds in Step 8.',
+    link: '../rulebook/ch9.html#overview',
+    counter: function () {
+      return [['Merit points', meritLeft()], ['Flaw points', Math.min(picksTotal('flaws'), 7) + ' / 7']];
+    },
+    render: function (p) {
+      if (build.heritage && build.heritage.merit) {
+        p.appendChild(el('p', { class: 'note-box' }, [el('strong', { text: 'Heritage Merit (free): ' }), build.heritage.merit]));
+      }
+      p.appendChild(el('h2', { class: 'sub-title px', text: 'Merits' }));
+      pickList(p, 'merits');
+      p.appendChild(el('h2', { class: 'sub-title px', text: 'Flaws' }));
+      pickList(p, 'flaws');
+    },
+    check: function () {
+      var w = [], left = meritLeft(), fl = picksTotal('flaws');
+      if (left < 0) w.push({ key: 'merit.over.' + left, text: 'Your Merits cost ' + (-left) + ' more point' + (left === -1 ? '' : 's') + ' than you have.' });
+      if (fl > 7) w.push({ key: 'flaw.over.' + fl, text: 'Your Flaws add up to ' + fl + ' points. Only 7 of them count toward Merits.' });
+      ['merits', 'flaws'].forEach(function (kind) {
+        Object.keys(build[kind] || {}).forEach(function (name) {
+          var item = byName(kind === 'flaws' ? D.flaws : D.merits, name);
+          var c = item && (kind === 'flaws' ? item.points : item.cost);
+          if (c && c.kind === 'range') w.push({ key: 'st.' + slug(name), text: name + ' is set with your Storyteller. Agree on the points together.' });
+          if (c && c.kind === 'per_dot' && Number(build[kind][name]) > c.max) w.push({ key: 'max.' + slug(name), text: name + ' is above its usual max of ' + c.max + '.' });
+        });
+      });
+      return w;
+    },
+    summary: function () {
+      var out = [];
+      var ms = Object.keys(build.merits || {}), fs = Object.keys(build.flaws || {});
+      if (ms.length) out.push(['Merits', ms.join(', ')]);
+      if (fs.length) out.push(['Flaws', fs.join(', ')]);
+      return out;
+    }
+  };
+
+  // ---------- Step 8: Backgrounds ----------
+  function bgVal(n) {
+    var v = (build.backgrounds || {})[n];
+    if (v === undefined) return n === 'Resources' ? 1 : 0;
+    return v;
+  }
+  function bgSpent() {
+    var s = 0;
+    D.backgrounds.forEach(function (b) { s += bgVal(b.name) - (b.name === 'Resources' ? 1 : 0); });
+    (build.guilds || []).forEach(function (g) { s += g.dots || 0; });
+    return s;
+  }
+  function bgBudget() { return 7 + Math.max(meritLeft(), 0); }
+  S[8] = {
+    intro: 'You have 7 points to spend on Backgrounds, plus any points left over from Step 7. Every character starts with 1 free dot of Resources. No Background can be filled above 5 at creation. Guild Standing also uses these points; in most games the limit is 3 dots in any one guild.',
+    link: '../rulebook/ch10.html#background-list',
+    counter: function () { return [['Points', bgBudget() - bgSpent()]]; },
+    render: function (p) {
+      build.backgrounds = build.backgrounds || {};
+      build.guilds = build.guilds || [];
+      var box = el('div', { class: 'bg-list' });
+      D.backgrounds.forEach(function (b) {
+        var base = b.name === 'Resources' ? 1 : 0;
+        box.appendChild(el('div', { class: 'trait bg' }, [
+          el('span', { class: 'trait-name' }, [b.name, el('span', { class: 'trait-what', text: b.what })]),
+          dotRow(b.name, bgVal(b.name), dotMax(7), base, function (v) { build.backgrounds[b.name] = v; refresh(true); }),
+          bookLink(b.link, 'Rules')
+        ]));
+      });
+      p.appendChild(box);
+      p.appendChild(el('h2', { class: 'sub-title px', text: 'Guild Standing' }));
+      var gl = el('div', { class: 'guilds' });
+      for (var i = 0; i < 3; i++) {
+        (function (i) {
+          var g = build.guilds[i] || { name: '', dots: 0 };
+          var id = 'guild-' + i;
+          var name = el('input', { id: id, maxlength: '50', value: g.name || '', placeholder: 'Guild name' });
+          name.addEventListener('input', function () { build.guilds[i] = Object.assign(build.guilds[i] || { dots: 0 }, { name: name.value }); refresh(); });
+          gl.appendChild(el('div', { class: 'trait guild' }, [
+            el('label', { for: id, class: 'visually-hidden', text: 'Guild ' + (i + 1) }),
+            name,
+            dotRow('Guild ' + (i + 1) + ' standing', g.dots || 0, dotMax(7), 0, function (v) { build.guilds[i] = Object.assign(build.guilds[i] || { name: '' }, { dots: v }); refresh(true); })
+          ]));
+        })(i);
+      }
+      p.appendChild(gl);
+      p.appendChild(el('p', {}, [bookLink('../rulebook/ch10.html#guild-standing', 'Guild Standing rules')]));
+    },
+    check: function () {
+      var w = [], left = bgBudget() - bgSpent();
+      if (left > 0) w.push({ key: 'bg.left.' + left, text: left + ' Background point' + (left === 1 ? '' : 's') + ' left to spend.' });
+      if (left < 0) w.push({ key: 'bg.over.' + left, text: 'You are ' + (-left) + ' Background point' + (left === -1 ? '' : 's') + ' over.' });
+      D.backgrounds.forEach(function (b) { w = w.concat(goldenRule(b.name, bgVal(b.name))); });
+      (build.guilds || []).forEach(function (g, i) {
+        if (g && g.dots > 3) w.push({ key: 'guild.over.' + i + '.' + g.dots, text: (g.name || 'A guild') + ' has ' + g.dots + ' dots. Most games limit Guild Standing to 3 at creation.' });
+        if (g && g.dots && !g.name) w.push({ key: 'guild.noname.' + i, text: 'Name the guild for your Guild Standing.' });
+      });
+      return w;
+    },
+    summary: function () {
+      var items = D.backgrounds.filter(function (b) { return bgVal(b.name) > 0; }).map(function (b) { return b.name + ' ' + bgVal(b.name); });
+      (build.guilds || []).forEach(function (g) { if (g && g.dots) items.push((g.name || 'Guild') + ' ' + g.dots); });
+      return items.length ? [['Backgrounds', items.join(', ')]] : [];
+    }
+  };
+
+  // ---------- Step 9: Willpower, Fate, Sanity ----------
+  function highsBySide() {
+    var v = 0, x = 0;
+    Object.keys(build.scales || {}).forEach(function (k) {
+      if (build.scales[k] === 'virtue2') v++;
+      if (build.scales[k] === 'vice2') x++;
+    });
+    return { virtue: v, vice: x };
+  }
+  function startWillpower() {
+    var h = highsBySide();
+    if (h.vice >= 2) return 4;
+    if (h.virtue >= 2) return 6;
+    return 5;
+  }
+  function statVal(n) {
+    var s = (build.stats || {})[n];
+    if (s !== undefined) return s;
+    return n === 'Willpower' ? startWillpower() : 5;
+  }
+  function statStart(n) { return n === 'Willpower' ? startWillpower() : 5; }
+  S[9] = {
+    intro: 'Fill in 5 dots of each. If both of your highs are Vices, Willpower is 4. If both are Virtues, it is 6. One of each leaves it at 5. Fate and Sanity can only be changed at creation by Merits and Flaws.',
+    link: '../rulebook/ch11.html',
+    render: function (p) {
+      build.stats = build.stats || {};
+      var h = highsBySide();
+      p.appendChild(el('p', { class: 'note-box', text: 'Your highs: ' + h.virtue + ' Virtue, ' + h.vice + ' Vice. Starting Willpower: ' + startWillpower() + '.' }));
+      ['Willpower', 'Fate', 'Sanity'].forEach(function (n) {
+        p.appendChild(el('div', { class: 'trait stat' }, [
+          el('span', { class: 'trait-name', text: n }),
+          dotRow(n, statVal(n), 10, 0, function (v) { build.stats[n] = v; refresh(true); }),
+          statVal(n) !== statStart(n) ? el('button', { type: 'button', class: 'act small', text: 'Reset to ' + statStart(n), onclick: function () { delete build.stats[n]; refresh(true); } }) : null
+        ]));
+      });
+      p.appendChild(el('p', { class: 'hint', text: 'Only change these if a Merit or Flaw you took says so.' }));
+      if (stMode()) storytellerExtras(p);
+    },
+    check: function () {
+      var w = [];
+      ['Willpower', 'Fate', 'Sanity'].forEach(function (n) {
+        if (statVal(n) !== statStart(n)) w.push({ key: 'stat.' + n + '.' + statVal(n), text: n + ' is ' + statVal(n) + ' instead of ' + statStart(n) + '. Make sure a Merit or Flaw allows it.' });
+      });
+      return w;
+    },
+    summary: function () {
+      return [['Willpower / Fate / Sanity', statVal('Willpower') + ' / ' + statVal('Fate') + ' / ' + statVal('Sanity')]];
+    }
+  };
+
+  // Storyteller-only extras: big Mana and custom Health boxes
+  function storytellerExtras(p) {
+    build.st_extra = build.st_extra || {};
+    var x = build.st_extra;
+    var box = el('fieldset', { class: 'st-extras' }, [el('legend', { class: 'px', text: 'Storyteller Extras' })]);
+    box.appendChild(el('div', { class: 'trait' }, [
+      el('span', { class: 'trait-name', text: 'Mana' }),
+      dotRow('Mana', x.mana || 1, 20, 0, function (v) { x.mana = v; refresh(true); })
+    ]));
+    [['bashing', 'Bashing boxes'], ['lethal', 'Lethal boxes'], ['aggravated', 'Aggravated boxes']].forEach(function (h) {
+      var id = 'hb-' + h[0];
+      var sel = el('select', { id: id }, [el('option', { value: '', text: 'Book standard' })]);
+      for (var n = 1; n <= 20; n++) {
+        var o = el('option', { value: String(n), text: String(n) });
+        if ((x.health || {})[h[0]] === n) o.selected = true;
+        sel.appendChild(o);
+      }
+      sel.addEventListener('change', function () {
+        x.health = x.health || {};
+        if (sel.value) x.health[h[0]] = Number(sel.value); else delete x.health[h[0]];
+        refresh();
+      });
+      box.appendChild(el('div', { class: 'field inline' }, [el('label', { for: id, text: h[1] }), sel]));
+    });
+    p.appendChild(box);
+  }
+
   // ---------- drawing ----------
   function drawSteps() {
     var ol = $('step-list');
@@ -397,6 +867,16 @@
     var p = $('step-panel');
     p.textContent = '';
     var s = S[step];
+    if (me && me.is_admin) {
+      var stId = 'st-mode';
+      var stBox = el('input', { type: 'checkbox', id: stId });
+      if (forge.st) stBox.checked = true;
+      stBox.addEventListener('change', function () { forge.st = stBox.checked; refresh(true); });
+      p.appendChild(el('div', { class: 'st-switch' + (forge.st ? ' on' : '') }, [
+        el('label', { for: stId }, [stBox, el('span', { class: 'px', text: ' Storyteller Mode' })]),
+        el('span', { class: 'hint', text: forge.st ? 'Up to 10 dots, Mana to 20, custom Health boxes, no rule warnings.' : 'Only you can see this.' })
+      ]));
+    }
     p.appendChild(el('div', { class: 'kicker', text: 'Step ' + step + ' of 13' }));
     p.appendChild(el('h1', { text: STEPS[step - 1] }));
     p.appendChild(el('p', { class: 'step-intro' }, [s.intro + ' ', bookLink(s.link, 'Full rules')]));
@@ -442,7 +922,7 @@
   }
 
   function openSave() {
-    var warn = S[step].check().filter(function (w) { return (forge.ok || []).indexOf(w.key) < 0; });
+    var warn = stMode() ? [] : S[step].check().filter(function (w) { return (forge.ok || []).indexOf(w.key) < 0; });
     var box = $('save-warnings');
     box.textContent = '';
     if (warn.length) {
@@ -474,7 +954,7 @@
       dlg.close();
       if (step === BUILT) {
         drawSteps();
-        showToast('Saved. Steps 5 to 13 are coming soon.');
+        showToast('Saved. Steps 10 to 13 are coming soon.');
       } else {
         go(next);
       }
