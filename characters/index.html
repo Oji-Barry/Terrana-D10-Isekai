@@ -116,10 +116,18 @@
       meta.textContent = 'Last changed ' + when(c.updated_at);
       info.appendChild(name);
       info.appendChild(meta);
+      var f = (c.sheet && c.sheet.forge) || null;
+      var todo = (f && f.unfinished) || [];
+      if (todo.length) {
+        var un = document.createElement('span');
+        un.className = 'char-unfinished';
+        un.textContent = 'Unfinished: Step' + (todo.length > 1 ? 's ' : ' ') +
+          (todo.length > 1 ? todo.slice(0, -1).join(', ') + ' and ' + todo[todo.length - 1] : todo[0]);
+        info.appendChild(un);
+      }
 
       var btns = document.createElement('div');
       btns.className = 'char-actions';
-      var f = (c.sheet && c.sheet.forge) || null;
       var forgeBtn = document.createElement('a');
       forgeBtn.className = 'act small primary';
       forgeBtn.href = '../forge/index.html?id=' + encodeURIComponent(c.id);

@@ -165,6 +165,827 @@
    }
   ]
  },
+ "specialties": {
+  "Athletics": [
+   "Climbing",
+   "Running",
+   "Swimming",
+   "Jumping",
+   "Flying",
+   "Lifting"
+  ],
+  "Endurance": [
+   "Long Hours",
+   "Pain",
+   "Poison",
+   "Heat and Cold",
+   "Hunger and Thirst",
+   "Sickness"
+  ],
+  "Martial Arts": [
+   "Boxing",
+   "Kicks",
+   "Grappling",
+   "Disarms",
+   "Pressure Points",
+   "Brawling"
+  ],
+  "Melee": [
+   "Swords",
+   "Axes",
+   "Polearms",
+   "Shields",
+   "Knives",
+   "Hammers and Maces"
+  ],
+  "Ranged": [
+   "Bows",
+   "Guns",
+   "Thrown Weapons",
+   "Moving Targets",
+   "Long Range",
+   "Trick Shots"
+  ],
+  "Acrobatics": [
+   "Balance",
+   "Tumbling",
+   "Breaking Falls",
+   "Parkour",
+   "Contortion",
+   "Aerial Tricks"
+  ],
+  "Chicanery": [
+   "Disguises",
+   "Cons",
+   "Cheating at Games",
+   "Dirty Tricks",
+   "Forgery",
+   "Smuggling"
+  ],
+  "Dodge": [
+   "Projectiles",
+   "Melee Attacks",
+   "Spells",
+   "Traps",
+   "Explosions",
+   "Grabs"
+  ],
+  "Sleight of Hand": [
+   "Pickpocketing",
+   "Palming",
+   "Card Tricks",
+   "Lockpicking",
+   "Disarming Traps",
+   "Quick Draw"
+  ],
+  "Stealth": [
+   "Shadows",
+   "Crowds",
+   "Silent Movement",
+   "Tailing",
+   "Wilderness",
+   "Breaking In"
+  ],
+  "Expression": [
+   "Writing",
+   "Painting",
+   "Songwriting",
+   "Speeches",
+   "Storytelling",
+   "Teaching"
+  ],
+  "Performance": [
+   "Singing",
+   "Instruments",
+   "Acting",
+   "Dance",
+   "Comedy",
+   "Stage Magic"
+  ],
+  "Presence": [
+   "Commanding",
+   "Intimidation",
+   "Inspiring",
+   "First Impressions",
+   "Calming Others",
+   "Standing Firm"
+  ],
+  "Persuasion": [
+   "Debate",
+   "Sales Pitch",
+   "Charm",
+   "Pleading",
+   "Rallying a Crowd",
+   "Recruiting"
+  ],
+  "Subterfuge": [
+   "Lying",
+   "Poker Face",
+   "Keeping Secrets",
+   "Misdirection",
+   "Spin",
+   "Interrogation"
+  ],
+  "Commerce": [
+   "Haggling",
+   "Appraisal",
+   "Bookkeeping",
+   "Trade Routes",
+   "Customer Service",
+   "Black Markets"
+  ],
+  "Diplomacy": [
+   "Peace Talks",
+   "Alliances",
+   "Hostage Talks",
+   "Court Politics",
+   "Guild Politics",
+   "Legal Disputes"
+  ],
+  "Etiquette": [
+   "High Society",
+   "Bedside Manner",
+   "Hospitality",
+   "Religious Rites",
+   "Military Protocol",
+   "Foreign Customs"
+  ],
+  "Pilot": [
+   "Ships",
+   "Wagons and Carts",
+   "Airships",
+   "Long Hauls",
+   "Rough Terrain",
+   "Chases"
+  ],
+  "Ride": [
+   "Horses",
+   "Flying Mounts",
+   "Beasts of Burden",
+   "Mounted Combat",
+   "Long Rides",
+   "Training Mounts"
+  ],
+  "Alchemy": [
+   "Healing Potions",
+   "Antidotes",
+   "Poisons",
+   "Herbalism",
+   "Elements",
+   "Explosives"
+  ],
+  "Attunement": [
+   "Holy Relics",
+   "Weapons",
+   "Armor",
+   "Jewelry",
+   "Quick Bonding",
+   "Multiple Items"
+  ],
+  "Circle Magic": [
+   "Scrolls",
+   "Wards",
+   "Contracts",
+   "Summoning",
+   "Group Rituals",
+   "Implements"
+  ],
+  "Implements": [
+   "Wands and Staves",
+   "Magitech",
+   "Invention",
+   "Lab Equipment",
+   "Enchanted Tools",
+   "Coding"
+  ],
+  "Magic": [
+   "Quick Casting",
+   "Precision",
+   "Raw Power",
+   "Defensive Spells",
+   "Sustained Spells",
+   "Countering Spells"
+  ],
+  "Artifacts": [
+   "Identification",
+   "Ancient Relics",
+   "Repair",
+   "Machines",
+   "Curses",
+   "Dungeon Loot"
+  ],
+  "Awareness": [
+   "Sight",
+   "Hearing",
+   "Scent",
+   "Taste",
+   "Danger",
+   "Searching"
+  ],
+  "Crafts": [
+   "Cooking",
+   "Smithing",
+   "Woodworking",
+   "Tailoring",
+   "Mechanics",
+   "Jewelcrafting"
+  ],
+  "Insight": [
+   "Lies",
+   "Motives",
+   "Emotions",
+   "Symptoms",
+   "Crowd Mood",
+   "Hidden Loyalties"
+  ],
+  "Survival": [
+   "Tracking",
+   "Foraging",
+   "Shelter",
+   "Navigation",
+   "Weather",
+   "Trapping"
+  ]
+ },
+ "occupations": [
+  {
+   "name": "Chef or Cook",
+   "pl": [
+    {
+     "ability": "Crafts",
+     "specialty": "Cooking"
+    },
+    {
+     "ability": "Alchemy",
+     "specialty": "Herbalism"
+    },
+    {
+     "ability": "Endurance",
+     "specialty": "Long Hours"
+    },
+    {
+     "ability": "Awareness",
+     "specialty": "Taste"
+    }
+   ]
+  },
+  {
+   "name": "Nurse or Paramedic",
+   "pl": [
+    {
+     "ability": "Alchemy",
+     "specialty": "Healing Potions"
+    },
+    {
+     "ability": "Insight",
+     "specialty": "Symptoms"
+    },
+    {
+     "ability": "Endurance",
+     "specialty": "Long Hours"
+    },
+    {
+     "ability": "Awareness",
+     "specialty": "Sight"
+    }
+   ]
+  },
+  {
+   "name": "Doctor",
+   "pl": [
+    {
+     "ability": "Alchemy",
+     "specialty": "Antidotes"
+    },
+    {
+     "ability": "Insight",
+     "specialty": "Symptoms"
+    },
+    {
+     "ability": "Awareness",
+     "specialty": "Searching"
+    },
+    {
+     "ability": "Etiquette",
+     "specialty": "Bedside Manner"
+    }
+   ]
+  },
+  {
+   "name": "Police Officer",
+   "pl": [
+    {
+     "ability": "Awareness",
+     "specialty": "Danger"
+    },
+    {
+     "ability": "Insight",
+     "specialty": "Lies"
+    },
+    {
+     "ability": "Martial Arts",
+     "specialty": "Grappling"
+    },
+    {
+     "ability": "Ranged",
+     "specialty": "Guns"
+    },
+    {
+     "ability": "Presence",
+     "specialty": "Commanding"
+    }
+   ]
+  },
+  {
+   "name": "Soldier",
+   "pl": [
+    {
+     "ability": "Ranged",
+     "specialty": "Guns"
+    },
+    {
+     "ability": "Melee",
+     "specialty": "Knives"
+    },
+    {
+     "ability": "Endurance",
+     "specialty": "Pain"
+    },
+    {
+     "ability": "Athletics",
+     "specialty": "Running"
+    },
+    {
+     "ability": "Etiquette",
+     "specialty": "Military Protocol"
+    }
+   ]
+  },
+  {
+   "name": "Firefighter",
+   "pl": [
+    {
+     "ability": "Athletics",
+     "specialty": "Climbing"
+    },
+    {
+     "ability": "Endurance",
+     "specialty": "Heat and Cold"
+    },
+    {
+     "ability": "Awareness",
+     "specialty": "Danger"
+    }
+   ]
+  },
+  {
+   "name": "Pro Athlete",
+   "pl": [
+    {
+     "ability": "Athletics",
+     "specialty": "Running"
+    },
+    {
+     "ability": "Endurance",
+     "specialty": "Pain"
+    },
+    {
+     "ability": "Acrobatics",
+     "specialty": "Balance"
+    }
+   ]
+  },
+  {
+   "name": "Martial Arts Instructor",
+   "pl": [
+    {
+     "ability": "Martial Arts",
+     "specialty": "Kicks"
+    },
+    {
+     "ability": "Dodge",
+     "specialty": "Melee Attacks"
+    },
+    {
+     "ability": "Acrobatics",
+     "specialty": "Breaking Falls"
+    },
+    {
+     "ability": "Expression",
+     "specialty": "Teaching"
+    }
+   ]
+  },
+  {
+   "name": "Dancer",
+   "pl": [
+    {
+     "ability": "Performance",
+     "specialty": "Dance"
+    },
+    {
+     "ability": "Acrobatics",
+     "specialty": "Tumbling"
+    },
+    {
+     "ability": "Athletics",
+     "specialty": "Jumping"
+    }
+   ]
+  },
+  {
+   "name": "Musician",
+   "pl": [
+    {
+     "ability": "Performance",
+     "specialty": "Instruments"
+    },
+    {
+     "ability": "Expression",
+     "specialty": "Songwriting"
+    },
+    {
+     "ability": "Presence",
+     "specialty": "First Impressions"
+    }
+   ]
+  },
+  {
+   "name": "Actor",
+   "pl": [
+    {
+     "ability": "Performance",
+     "specialty": "Acting"
+    },
+    {
+     "ability": "Subterfuge",
+     "specialty": "Poker Face"
+    },
+    {
+     "ability": "Expression",
+     "specialty": "Storytelling"
+    },
+    {
+     "ability": "Presence",
+     "specialty": "First Impressions"
+    }
+   ]
+  },
+  {
+   "name": "Stage Magician",
+   "pl": [
+    {
+     "ability": "Performance",
+     "specialty": "Stage Magic"
+    },
+    {
+     "ability": "Sleight of Hand",
+     "specialty": "Card Tricks"
+    },
+    {
+     "ability": "Subterfuge",
+     "specialty": "Misdirection"
+    }
+   ]
+  },
+  {
+   "name": "Writer or Journalist",
+   "pl": [
+    {
+     "ability": "Expression",
+     "specialty": "Writing"
+    },
+    {
+     "ability": "Insight",
+     "specialty": "Motives"
+    },
+    {
+     "ability": "Awareness",
+     "specialty": "Searching"
+    },
+    {
+     "ability": "Persuasion",
+     "specialty": "Debate"
+    }
+   ]
+  },
+  {
+   "name": "Artist or Designer",
+   "pl": [
+    {
+     "ability": "Expression",
+     "specialty": "Painting"
+    },
+    {
+     "ability": "Crafts",
+     "specialty": "Tailoring"
+    },
+    {
+     "ability": "Awareness",
+     "specialty": "Sight"
+    }
+   ]
+  },
+  {
+   "name": "Teacher",
+   "pl": [
+    {
+     "ability": "Expression",
+     "specialty": "Teaching"
+    },
+    {
+     "ability": "Presence",
+     "specialty": "Calming Others"
+    },
+    {
+     "ability": "Insight",
+     "specialty": "Emotions"
+    }
+   ]
+  },
+  {
+   "name": "Salesperson",
+   "pl": [
+    {
+     "ability": "Persuasion",
+     "specialty": "Sales Pitch"
+    },
+    {
+     "ability": "Commerce",
+     "specialty": "Customer Service"
+    },
+    {
+     "ability": "Chicanery",
+     "specialty": "Cons"
+    },
+    {
+     "ability": "Insight",
+     "specialty": "Motives"
+    }
+   ]
+  },
+  {
+   "name": "Business Owner",
+   "pl": [
+    {
+     "ability": "Commerce",
+     "specialty": "Bookkeeping"
+    },
+    {
+     "ability": "Diplomacy",
+     "specialty": "Alliances"
+    },
+    {
+     "ability": "Persuasion",
+     "specialty": "Recruiting"
+    },
+    {
+     "ability": "Presence",
+     "specialty": "Commanding"
+    }
+   ]
+  },
+  {
+   "name": "Bartender or Server",
+   "pl": [
+    {
+     "ability": "Etiquette",
+     "specialty": "Hospitality"
+    },
+    {
+     "ability": "Insight",
+     "specialty": "Emotions"
+    },
+    {
+     "ability": "Commerce",
+     "specialty": "Customer Service"
+    },
+    {
+     "ability": "Persuasion",
+     "specialty": "Charm"
+    }
+   ]
+  },
+  {
+   "name": "Lawyer",
+   "pl": [
+    {
+     "ability": "Diplomacy",
+     "specialty": "Legal Disputes"
+    },
+    {
+     "ability": "Persuasion",
+     "specialty": "Debate"
+    },
+    {
+     "ability": "Insight",
+     "specialty": "Lies"
+    },
+    {
+     "ability": "Subterfuge",
+     "specialty": "Spin"
+    }
+   ]
+  },
+  {
+   "name": "Politician",
+   "pl": [
+    {
+     "ability": "Diplomacy",
+     "specialty": "Court Politics"
+    },
+    {
+     "ability": "Persuasion",
+     "specialty": "Rallying a Crowd"
+    },
+    {
+     "ability": "Presence",
+     "specialty": "Inspiring"
+    },
+    {
+     "ability": "Etiquette",
+     "specialty": "High Society"
+    },
+    {
+     "ability": "Subterfuge",
+     "specialty": "Spin"
+    }
+   ]
+  },
+  {
+   "name": "Priest or Clergy",
+   "pl": [
+    {
+     "ability": "Attunement",
+     "specialty": "Holy Relics"
+    },
+    {
+     "ability": "Etiquette",
+     "specialty": "Religious Rites"
+    },
+    {
+     "ability": "Presence",
+     "specialty": "Calming Others"
+    },
+    {
+     "ability": "Insight",
+     "specialty": "Emotions"
+    }
+   ]
+  },
+  {
+   "name": "Scientist",
+   "pl": [
+    {
+     "ability": "Alchemy",
+     "specialty": "Elements"
+    },
+    {
+     "ability": "Implements",
+     "specialty": "Lab Equipment"
+    },
+    {
+     "ability": "Artifacts",
+     "specialty": "Identification"
+    },
+    {
+     "ability": "Awareness",
+     "specialty": "Searching"
+    }
+   ]
+  },
+  {
+   "name": "Engineer or Mechanic",
+   "pl": [
+    {
+     "ability": "Crafts",
+     "specialty": "Mechanics"
+    },
+    {
+     "ability": "Implements",
+     "specialty": "Invention"
+    },
+    {
+     "ability": "Artifacts",
+     "specialty": "Machines"
+    }
+   ]
+  },
+  {
+   "name": "Programmer",
+   "pl": [
+    {
+     "ability": "Implements",
+     "specialty": "Coding"
+    },
+    {
+     "ability": "Artifacts",
+     "specialty": "Machines"
+    },
+    {
+     "ability": "Awareness",
+     "specialty": "Searching"
+    }
+   ]
+  },
+  {
+   "name": "Truck or Delivery Driver",
+   "pl": [
+    {
+     "ability": "Pilot",
+     "specialty": "Long Hauls"
+    },
+    {
+     "ability": "Endurance",
+     "specialty": "Long Hours"
+    },
+    {
+     "ability": "Awareness",
+     "specialty": "Danger"
+    }
+   ]
+  },
+  {
+   "name": "Farmer or Rancher",
+   "pl": [
+    {
+     "ability": "Ride",
+     "specialty": "Beasts of Burden"
+    },
+    {
+     "ability": "Survival",
+     "specialty": "Weather"
+    },
+    {
+     "ability": "Endurance",
+     "specialty": "Long Hours"
+    },
+    {
+     "ability": "Crafts",
+     "specialty": "Woodworking"
+    }
+   ]
+  },
+  {
+   "name": "Hunter or Outdoorsman",
+   "pl": [
+    {
+     "ability": "Ranged",
+     "specialty": "Moving Targets"
+    },
+    {
+     "ability": "Survival",
+     "specialty": "Tracking"
+    },
+    {
+     "ability": "Stealth",
+     "specialty": "Wilderness"
+    },
+    {
+     "ability": "Awareness",
+     "specialty": "Sight"
+    }
+   ]
+  },
+  {
+   "name": "Gamer",
+   "pl": [
+    {
+     "ability": "Awareness",
+     "specialty": "Searching"
+    },
+    {
+     "ability": "Insight",
+     "specialty": "Motives"
+    },
+    {
+     "ability": "Chicanery",
+     "specialty": "Cheating at Games"
+    }
+   ]
+  },
+  {
+   "name": "Thief or Con Artist",
+   "pl": [
+    {
+     "ability": "Sleight of Hand",
+     "specialty": "Pickpocketing"
+    },
+    {
+     "ability": "Stealth",
+     "specialty": "Shadows"
+    },
+    {
+     "ability": "Chicanery",
+     "specialty": "Disguises"
+    },
+    {
+     "ability": "Subterfuge",
+     "specialty": "Lying"
+    }
+   ]
+  }
+ ],
  "tropes": [
   {
    "name": "Genki",

@@ -484,9 +484,84 @@
     D.abilities[g].forEach(function (a) { s += abVal(a.name); });
     return n - s;
   }
+  // Past Life Occupation and specialties
+  var OTHER = '__other';
+  function job() { return build.pl_job && build.pl_job !== 'Other' ? byName(D.occupations, build.pl_job) : null; }
+  function plCount() { return Object.keys(build.pl || {}).filter(function (k) { return build.pl[k]; }).length; }
+  function plMax() { var j = job(); return j ? j.pl.length : 3; }
+  function specSlots(a) { return ((build.pl || {})[a] ? 1 : 0) + (abVal(a) >= 4 ? 1 : 0); }
+  function specList(a) {
+    var s = (build.specialties || {})[a];
+    if (typeof s === 'string') s = s ? [s] : [];
+    return (s || []).slice();
+  }
+  function setJob(name) {
+    var j = name && name !== 'Other' ? byName(D.occupations, name) : null;
+    build.pl_job = name || undefined;
+    build.pl = {};
+    if (j) {
+      build.pl_occupation = j.name;
+      j.pl.forEach(function (x) {
+        build.pl[x.ability] = true;
+        var s = specList(x.ability);
+        if (s[0] && s[0] !== x.specialty && abVal(x.ability) >= 4) s = [x.specialty, s[0]];
+        else s[0] = x.specialty;
+        build.specialties[x.ability] = s;
+        delete build.spec_other[x.ability + '|0'];
+      });
+    } else if (name === 'Other') {
+      if (byName(D.occupations, build.pl_occupation || '')) build.pl_occupation = '';
+    } else {
+      build.pl_occupation = '';
+    }
+  }
+
+  function specialtyBoxes(box, a) {
+    var slots = specSlots(a.name);
+    if (!slots) return;
+    var s = specList(a.name);
+    var opts = D.specialties[a.name] || [];
+    for (var i = 0; i < slots; i++) (function (i) {
+      var k = a.name + '|' + i;
+      var cur = s[i] || '';
+      var other = !!build.spec_other[k] || (cur && opts.indexOf(cur) < 0);
+      var label = slots === 2 ? (i === 0 ? 'PL specialty' : '4-dot specialty') : ((build.pl || {})[a.name] ? 'PL specialty' : 'Free specialty');
+      var id = 'sp-' + slug(a.name) + '-' + i;
+      var sel = el('select', { id: id }, [el('option', { value: '', text: 'Choose...' })]);
+      opts.forEach(function (o) {
+        var op = el('option', { value: o, text: o });
+        if (!other && cur === o) op.selected = true;
+        sel.appendChild(op);
+      });
+      var ot = el('option', { value: OTHER, text: 'Other...' });
+      if (other) ot.selected = true;
+      sel.appendChild(ot);
+      sel.addEventListener('change', function () {
+        var list = specList(a.name);
+        if (sel.value === OTHER) { build.spec_other[k] = true; if (opts.indexOf(list[i]) >= 0) list[i] = ''; }
+        else { delete build.spec_other[k]; list[i] = sel.value; }
+        build.specialties[a.name] = list;
+        refresh(true);
+      });
+      var kids = [el('label', { for: id, text: a.name + ': ' + label }), sel];
+      if (other) {
+        var tid = id + '-other';
+        var tx = el('input', { id: tid, maxlength: '40', value: cur, placeholder: 'Write your own', 'aria-label': a.name + ' ' + label + ', your own' });
+        tx.addEventListener('input', function () {
+          var list = specList(a.name);
+          list[i] = tx.value;
+          build.specialties[a.name] = list;
+          refresh();
+        });
+        kids.push(tx);
+      }
+      box.appendChild(el('div', { class: 'field specialty' }, kids));
+    })(i);
+  }
+
   S[6] = {
-    intro: 'Abilities start at 0 dots. Give each of the six groups a different number from 2 to 7. That number is how many dots you spend in that group, and no ability can be filled above 5 at creation. Any ability with 4 or more dots gets one free specialty. Then name your Past Life Occupation and mark PL on the abilities tied to it.',
-    link: '../rulebook/ch6.html#abilities',
+    intro: 'Abilities start at 0 dots. Give each of the six groups a different number from 2 to 7. That number is how many dots you spend in that group, and no ability can be filled above 5 at creation. Then choose your Past Life Occupation: it marks PL on 3 to 5 abilities. Every PL ability and every ability with 4 or more dots gets a free specialty, and an ability with both gets two.',
+    link: '../rulebook/ch6.html#abilities-past-life-occupation',
     counter: function () {
       return GROUPS.map(function (g) { var l = groupLeft(g); return [g, l === null ? '-' : l]; });
     },
@@ -494,11 +569,35 @@
       build.ab_groups = build.ab_groups || {};
       build.abilities = build.abilities || {};
       build.specialties = build.specialties || {};
+      build.spec_other = build.spec_other || {};
       build.pl = build.pl || {};
-      var occId = 'pl-occ';
-      var occ = el('input', { id: occId, maxlength: '60', value: build.pl_occupation || '', placeholder: 'For example: nurse, line cook, skateboarder' });
-      occ.addEventListener('input', function () { build.pl_occupation = occ.value; refresh(); });
-      p.appendChild(el('div', { class: 'field' }, [el('label', { for: occId, text: 'Past Life Occupation' }), occ]));
+      if (build.pl_occupation && !build.pl_job) build.pl_job = byName(D.occupations, build.pl_occupation) ? build.pl_occupation : 'Other';
+
+      // Past Life Occupation
+      var occBox = el('fieldset', { class: 'pl-box' }, [el('legend', { class: 'px', text: 'Past Life Occupation' })]);
+      var jobSel = el('select', { id: 'pl-job' }, [el('option', { value: '', text: 'Choose...' })]);
+      D.occupations.forEach(function (o) {
+        var op = el('option', { value: o.name, text: o.name });
+        if (build.pl_job === o.name) op.selected = true;
+        jobSel.appendChild(op);
+      });
+      var oth = el('option', { value: 'Other', text: 'Other...' });
+      if (build.pl_job === 'Other') oth.selected = true;
+      jobSel.appendChild(oth);
+      jobSel.addEventListener('change', function () { setJob(jobSel.value); refresh(true); });
+      occBox.appendChild(el('div', { class: 'field' }, [el('label', { for: 'pl-job', text: 'What did you do before Terrana?' }), jobSel]));
+      if (build.pl_job === 'Other') {
+        var occ = el('input', { id: 'pl-occ', maxlength: '60', value: build.pl_occupation || '', placeholder: 'For example: skateboarder, librarian' });
+        occ.addEventListener('input', function () { build.pl_occupation = occ.value; refresh(); });
+        occBox.appendChild(el('div', { class: 'field' }, [el('label', { for: 'pl-occ', text: 'Your occupation' }), occ]));
+      }
+      var j = job();
+      var hint = j ? 'Marks PL on ' + j.pl.map(function (x) { return x.ability; }).join(', ') + ', and picks a specialty for each. You can change them below.'
+        : build.pl_job === 'Other' ? 'Check PL on the 3 abilities that fit your occupation, then pick their specialties.'
+        : 'Pick a job to mark its PL abilities, or choose Other to write your own.';
+      occBox.appendChild(el('p', { class: 'hint', text: hint }));
+      if (build.pl_job) occBox.appendChild(el('p', { class: 'pl-count px', text: 'PL marks: ' + plCount() + ' of ' + plMax() + (plMax() < 5 ? ' (up to 5 with your Storyteller)' : '') }));
+      p.appendChild(occBox);
 
       var grid = el('div', { class: 'ab-groups' });
       GROUPS.forEach(function (g) {
@@ -517,19 +616,21 @@
           var plId = 'pl-' + slug(a.name);
           var pl = el('input', { type: 'checkbox', id: plId });
           if (build.pl[a.name]) pl.checked = true;
-          pl.addEventListener('change', function () { build.pl[a.name] = pl.checked; if (!pl.checked) delete build.pl[a.name]; refresh(); });
-          var trait = el('div', { class: 'trait' }, [
+          pl.addEventListener('change', function () {
+            if (pl.checked && plCount() >= 5 && !stMode()) {
+              pl.checked = false;
+              showToast('5 PL marks is the most a character can have.');
+              return;
+            }
+            if (pl.checked) build.pl[a.name] = true; else delete build.pl[a.name];
+            refresh(true);
+          });
+          box.appendChild(el('div', { class: 'trait' }, [
             el('span', { class: 'trait-name', title: a.used_for, text: a.name }),
             dotRow(a.name, v, dotMax(7), 0, function (nv) { build.abilities[a.name] = nv; refresh(true); }),
             el('label', { class: 'pl-check', for: plId }, [pl, ' PL'])
-          ]);
-          box.appendChild(trait);
-          if (v >= 4) {
-            var spId = 'sp-' + slug(a.name);
-            var sp = el('input', { id: spId, maxlength: '40', value: build.specialties[a.name] || '', placeholder: 'Free specialty, e.g. ' + a.name + ': Scent' });
-            sp.addEventListener('input', function () { build.specialties[a.name] = sp.value; refresh(); });
-            box.appendChild(el('div', { class: 'field specialty' }, [el('label', { for: spId, text: a.name + ' specialty' }), sp]));
-          }
+          ]));
+          specialtyBoxes(box, a);
         });
         grid.appendChild(box);
       });
@@ -545,21 +646,38 @@
         var l = groupLeft(g);
         if (l > 0) w.push({ key: 'grp.left.' + g + '.' + l, text: g + ' has ' + l + ' dot' + (l === 1 ? '' : 's') + ' left to place.' });
         if (l < 0) w.push({ key: 'grp.over.' + g + '.' + l, text: g + ' is ' + (-l) + ' dot' + (l === -1 ? '' : 's') + ' over its number.' });
+      });
+      GROUPS.forEach(function (g) {
         D.abilities[g].forEach(function (a) {
-          var v = abVal(a.name);
-          w = w.concat(goldenRule(a.name, v));
-          if (v >= 4 && !(build.specialties || {})[a.name]) w.push({ key: 'spec.' + a.name, text: a.name + ' has 4 or more dots. Write in its free specialty.' });
+          w = w.concat(goldenRule(a.name, abVal(a.name)));
+          var s = specList(a.name).slice(0, specSlots(a.name));
+          for (var i = 0; i < specSlots(a.name); i++) {
+            if (!(s[i] || '').trim()) w.push({ key: 'spec.' + a.name + '.' + i, text: 'Pick ' + (i ? 'a second' : 'a') + ' specialty for ' + a.name + '.' });
+          }
+          if (s.length === 2 && s[0] && s[0].trim().toLowerCase() === (s[1] || '').trim().toLowerCase()) w.push({ key: 'spec.dup.' + a.name, text: a.name + ' has the same specialty twice. Pick two different ones.' });
         });
       });
-      if (!build.pl_occupation) w.push({ key: 'pl.none', text: 'Name your Past Life Occupation.' });
+      if (!build.pl_job) w.push({ key: 'pl.none', text: 'Choose your Past Life Occupation.' });
+      else if (build.pl_job === 'Other' && !(build.pl_occupation || '').trim()) w.push({ key: 'pl.name', text: 'Write in your Past Life Occupation.' });
+      var c = plCount();
+      if (build.pl_job && c < 3) w.push({ key: 'pl.few.' + c, text: 'Mark PL on at least 3 abilities. You have ' + c + '.' });
+      if (c > plMax()) w.push({ key: 'pl.more.' + c, text: 'You have ' + c + ' PL marks. ' + (job() ? job().name : 'Other') + ' gets ' + plMax() + '. Up to 5 is fine if it makes sense to your Storyteller.' });
       return w;
     },
     summary: function () {
       var out = [];
       if (build.pl_occupation) out.push(['Past Life', build.pl_occupation]);
-      var top = [];
-      GROUPS.forEach(function (g) { D.abilities[g].forEach(function (a) { var v = abVal(a.name); if (v) top.push(a.name + ' ' + v + ((build.pl || {})[a.name] ? ' (PL)' : '')); }); });
+      var top = [], sp = [];
+      GROUPS.forEach(function (g) {
+        D.abilities[g].forEach(function (a) {
+          var v = abVal(a.name);
+          if (v || (build.pl || {})[a.name]) top.push(a.name + ' ' + v + ((build.pl || {})[a.name] ? ' (PL)' : ''));
+          var s = specList(a.name).slice(0, specSlots(a.name)).filter(function (x) { return x && x.trim(); });
+          if (s.length) sp.push(a.name + ': ' + s.join(', '));
+        });
+      });
       if (top.length) out.push(['Abilities', top.join(', ')]);
+      if (sp.length) out.push(['Specialties', sp.join('; ')]);
       return out;
     }
   };
@@ -810,6 +928,16 @@
     p.appendChild(box);
   }
 
+  // ---------- unfinished steps ----------
+  // Warnings that mean "not done yet" rather than "check with your Storyteller".
+  // Saving with these is fine, but the step stays marked and you are reminded again.
+  var TODO_RE = /^(trope\.none|drive\.|role\.(position|style)|her\.(none|demon\.blank|innate|merit)$|cols\.unset|attr\.left|grp\.(unset|left)|spec\.[A-Z]|pl\.(none|name|few)|bg\.left|guild\.noname)/;
+  function isTodo(w) { return TODO_RE.test(w.key); }
+  function todos(n) { return stMode() ? [] : S[n].check().filter(isTodo); }
+  function unfinished() {
+    return (forge.done || []).filter(function (n) { return n <= BUILT && todos(n).length; }).sort(function (a, b) { return a - b; });
+  }
+
   // ---------- drawing ----------
   function drawSteps() {
     var ol = $('step-list');
@@ -818,11 +946,12 @@
       var n = i + 1;
       var done = (forge.done || []).indexOf(n) >= 0;
       var ready = n <= BUILT;
+      var todo = done && ready && todos(n).length > 0;
       var b = el('button', {
-        type: 'button', class: 'step-btn' + (n === step ? ' current' : '') + (done ? ' done' : ''),
+        type: 'button', class: 'step-btn' + (n === step ? ' current' : '') + (todo ? ' todo' : done ? ' done' : ''),
         'aria-current': n === step ? 'step' : null, disabled: ready ? null : 'disabled',
-        title: ready ? name : name + ' (coming soon)'
-      }, [el('span', { class: 'step-n', text: String(n) }), el('span', { class: 'step-name', text: name })]);
+        title: ready ? name + (todo ? ' (unfinished)' : '') : name + ' (coming soon)'
+      }, [el('span', { class: 'step-n', text: String(n) + (todo ? '!' : '') }), el('span', { class: 'step-name', text: name })]);
       if (ready) b.addEventListener('click', function () { go(n); });
       ol.appendChild(el('li', {}, [b]));
     });
@@ -914,6 +1043,7 @@
     forge.step = nextStep;
     forge.done = forge.done || [];
     if (forge.done.indexOf(step) < 0) forge.done.push(step);
+    forge.unfinished = unfinished();
     sheet.build = build;
     sheet.forge = forge;
     var res = await db.from('characters').update({ sheet: sheet }).eq('id', ch.id).select('sheet, updated_at').single();
@@ -922,16 +1052,26 @@
   }
 
   function openSave() {
-    var warn = stMode() ? [] : S[step].check().filter(function (w) { return (forge.ok || []).indexOf(w.key) < 0; });
+    var all = stMode() ? [] : S[step].check();
+    var todo = all.filter(isTodo);
+    var warn = all.filter(function (w) { return !isTodo(w) && (forge.ok || []).indexOf(w.key) < 0; });
     var box = $('save-warnings');
     box.textContent = '';
+    if (todo.length) {
+      box.appendChild(el('p', { class: 'ff-warn-head', text: 'Not finished yet:' }));
+      var tl = el('ul', { class: 'ff-warn' });
+      todo.forEach(function (w) { tl.appendChild(el('li', { text: w.text })); });
+      box.appendChild(tl);
+      box.appendChild(el('p', { class: 'ff-note', text: 'You can save now and come back. This step gets a ! in the tracker, and you will get one last reminder before you finish.' }));
+    }
     if (warn.length) {
       box.appendChild(el('p', { class: 'ff-warn-head', text: 'Something is amiss:' }));
       var ul = el('ul', { class: 'ff-warn' });
       warn.forEach(function (w) { ul.appendChild(el('li', { text: w.text })); });
       box.appendChild(ul);
       box.appendChild(el('p', { class: 'ff-note', text: 'Ask your Storyteller and verify with them you’re all good. Choosing Yes saves anyway and will not ask about these again.' }));
-    } else {
+    }
+    if (!todo.length && !warn.length) {
       box.appendChild(el('p', { class: 'ff-ok', text: 'Everything checks out for this step.' }));
     }
     var dlg = $('dlg-save');
@@ -954,7 +1094,8 @@
       dlg.close();
       if (step === BUILT) {
         drawSteps();
-        showToast('Saved. Steps 10 to 13 are coming soon.');
+        if (unfinished().length) openLastCheck();
+        else showToast('Saved. Steps 10 to 13 are coming soon.');
       } else {
         go(next);
       }
@@ -970,6 +1111,31 @@
     if (['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].indexOf(e.key) < 0) return;
     e.preventDefault();
     ($(document.activeElement && document.activeElement.id === 'save-yes' ? 'save-no' : 'save-yes')).focus();
+  });
+
+  // One last reminder of every unfinished step before finishing
+  function openLastCheck() {
+    var box = $('last-list');
+    box.textContent = '';
+    var dlg = $('dlg-last');
+    unfinished().forEach(function (n) {
+      var ul = el('ul', { class: 'ff-warn' });
+      todos(n).forEach(function (w) { ul.appendChild(el('li', { text: w.text })); });
+      box.appendChild(el('div', { class: 'last-step' }, [
+        el('div', { class: 'last-head' }, [
+          el('span', { class: 'ff-warn-head', text: 'Step ' + n + ': ' + STEPS[n - 1] }),
+          el('button', { type: 'button', class: 'act small', text: 'Go There', onclick: function () { dlg.close(); go(n); } })
+        ]),
+        ul
+      ]));
+    });
+    dlg.showModal();
+    $('last-back').focus();
+  }
+  $('last-back').addEventListener('click', function () { $('dlg-last').close(); });
+  $('last-finish').addEventListener('click', function () {
+    $('dlg-last').close();
+    showToast('Saved. Steps 10 to 13 are coming soon.');
   });
 
   function showToast(text) {
