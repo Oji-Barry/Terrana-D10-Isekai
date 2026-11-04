@@ -158,10 +158,23 @@ class Pictures:
         return found
 
 
-def table_html(t, section_titles, here):
+def table_html(t, section_titles, here, row_id=None):
     rows = []
     cols = len(t.columns)
+    # Which column names each row (skip '#' and dice columns like d100)
+    key_col = None
+    if row_id is not None and 2 <= len(t.rows) <= 31:
+        heads = [c.text.strip() for c in t.rows[0].cells]
+        for ci, h in enumerate(heads):
+            if not re.match(r'^(#|d\d+.*|dots?|rank)$', h, re.I):
+                key_col = ci
+                break
     for i, r in enumerate(t.rows):
+        rid = ''
+        if key_col is not None and i > 0 and key_col < len(r.cells):
+            name = r.cells[key_col].text.strip()
+            if name and len(name) <= 50:
+                rid = ' id="' + row_id(name) + '"'
         cells, seen = [], None
         for c in r.cells:
             if c._tc is seen:
@@ -174,7 +187,7 @@ def table_html(t, section_titles, here):
             if i > 0 and key in section_titles:
                 inner = '<a href="#' + section_titles[key] + '">' + inner + '</a>'
             cells.append('<%s>%s</%s>' % (tag, inner, tag))
-        rows.append('<tr>' + ''.join(cells) + '</tr>')
+        rows.append('<tr' + rid + '>' + ''.join(cells) + '</tr>')
     width = min(140 * cols, 720)
     return ('<div class="table-wrap"><table style="min-width: %dpx"><thead>' % width + rows[0] +
             '</thead><tbody>' + ''.join(rows[1:]) + '</tbody></table></div>')
@@ -240,6 +253,31 @@ class Renderer:
             return cid
 
         self.chunk(section['id'], section['title'])
+        # Menu tree for this section: headings, ranks, and the entries under them
+        section['tree'] = []
+        parent = [None, None]   # [heading or rank, smaller rank heading inside it]
+        last_card = [None]      # the entry card being filled in (Bestiary ranks)
+
+        def node(cid, title, top=False):
+            n = {'id': cid, 's': title}
+            if top:
+                section['tree'].append(n)
+                parent[0], parent[1] = n, None
+                return n
+            holder = parent[1] or parent[0]
+            if holder is None:
+                section['tree'].append(n)
+            else:
+                holder.setdefault('c', []).append(n)
+            return n
+
+        def minor_rank(cid, title):
+            n = {'id': cid, 's': title}
+            if parent[0] is None:
+                section['tree'].append(n)
+            else:
+                parent[0].setdefault('c', []).append(n)
+            parent[1] = n
 
         k = 0
         # Ch. 12 style header line: a short bold line straight after the section title
@@ -257,7 +295,11 @@ class Renderer:
                     flush_card()
                     parts.append('<div class="box"><h3>' + esc(title) + '</h3>' + body + '</div>')
                 else:
-                    add(table_html(b, section_titles, self.slug))
+                    def row_id(name):
+                        rid = new_id(name)
+                        node(rid, name)
+                        return rid
+                    add(table_html(b, section_titles, self.slug, row_id))
                 continue
 
             text = b.text.strip()
@@ -270,7 +312,9 @@ class Renderer:
                 level = {'Heading 3': 3, 'Heading 4': 4, 'Heading 5': 5}[sn]
                 if level == 3 and re.match(r'^Rank \d+:', text):
                     num, name = text.split(':', 1)
-                    parts.append('<h3 class="rank"><span class="rank-num">' + esc(num) +
+                    rid = new_id(text)
+                    node(rid, num.strip() + ': ' + name.strip(), top=True)
+                    parts.append('<h3 class="rank" id="' + rid + '"><span class="rank-num">' + esc(num) +
                                  '</span> ' + esc(name.strip()) + '</h3>')
                     continue
                 hid = new_id(text)
@@ -278,6 +322,8 @@ class Renderer:
                 self.sub_titles.setdefault(re.sub(r'\s*\(.*\)$', '', text).lower(), hid)
                 parts.append('<h%d id="%s">%s</h%d>' % (level, hid, esc(text), level))
                 self.chunk(hid, text)
+                if level == 3:
+                    node(hid, text, top=True)
                 continue
 
             if sn == 'List Paragraph':
@@ -291,7 +337,9 @@ class Renderer:
             m = ABILITY.match(text)
             if m:
                 kind, name, use, rest = m.groups()
-                add('<div class="ability"><div class="ability-head">'
+                aid = new_id(name)
+                node(aid, name)
+                add('<div class="ability" id="' + aid + '"><div class="ability-head">'
                     '<span class="ability-kind">' + esc(kind) + '</span>'
                     '<span class="ability-name">' + esc(name) + '</span>'
                     '<span class="use">' + esc(use) + '</span></div>'
@@ -310,6 +358,8 @@ class Renderer:
                 hid = new_id(text)
                 self.sub_titles.setdefault(text.lower(), hid)
                 parts.append('<h4 class="minor" id="' + hid + '">' + esc(text) + '</h4>')
+                if re.match(r'^Rank \d', text):
+                    minor_rank(hid, re.sub(r'\s*\(choose one\)\s*$', '', text, flags=re.I))
                 self.chunk(hid, text)
                 continue
 
@@ -320,11 +370,17 @@ class Renderer:
                 self.sub_titles.setdefault(text.lower(), cid)
                 self.sub_titles.setdefault(re.sub(r'\s*\(.*\)$', '', text).lower(), cid)
                 card = ['<div class="entry-name" id="' + cid + '">' + esc(text) + '</div>']
+                last_card[0] = None
+                if text not in ('Monster Faction',):
+                    last_card[0] = node(cid, text)
                 self.chunk(cid, text)
                 continue
 
             if '  |  ' in text and not fully_bold(b):
                 cls = 'stats tags' if fully_italic(b) else 'stats'
+                rm = re.match(r'^Rank\s+([A-Z]+[+-]?)(?![A-Za-z])', text)
+                if rm and last_card[0] is not None and 'r' not in last_card[0]:
+                    last_card[0]['r'] = rm.group(1)
                 cells = runs_html(b, self.slug).split('  |  ')
                 if len(cells) == 1:
                     cells = [c.strip() for c in text.split('|')]
@@ -471,7 +527,36 @@ def build(path, slug, prev_slug, next_slug, pics):
     page = PAGE.format(
         title=esc(heading), slug=slug, kicker=esc(kicker), heading=esc(heading), cover=cover_html,
         toc=''.join(toc_html), sections='\n\n'.join(out_sections), pager=pager)
-    toc = [{'id': x['id'], 's': x['title']} for x in sections]
+    toc = []
+    if slug == 'ch15':
+        # Bestiary menu: the rules sections, then every creature grouped by rank
+        order = ['F', 'E', 'D', 'C', 'B', 'A', 'S', 'SS', 'SSS']
+        by_rank = {}
+        for x in sections:
+            for n in x.get('tree') or []:
+                if n.get('r'):
+                    by_rank.setdefault(n['r'], []).append({'id': n['id'], 's': n['s']})
+        ranked_sections = {x['id'] for x in sections
+                           if any(n.get('r') for n in (x.get('tree') or []))}
+        for x in sections:
+            if x['id'] in ranked_sections:
+                continue
+            entry = {'id': x['id'], 's': x['title']}
+            if x.get('tree'):
+                entry['c'] = x['tree']
+            toc.append(entry)
+        keys = sorted(by_rank, key=lambda r: (order.index(r) if r in order else 99, r))
+        for r in keys:
+            toc.append({'s': 'Rank ' + r, 'c': sorted(by_rank[r], key=lambda n: n['s'].lower())})
+        sections_for_menu = []
+    else:
+        sections_for_menu = sections
+    for x in sections_for_menu:
+        entry = {'id': x['id'], 's': x['title']}
+        kids = x.get('tree') or []
+        if kids:
+            entry['c'] = kids
+        toc.append(entry)
     return page, search, toc
 
 
