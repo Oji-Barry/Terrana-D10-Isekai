@@ -1047,6 +1047,21 @@
   function evenSpreadSafe() { return hyumanAdapt(); }
   function styleLeft() { var b = skBudget('Physical'); if (b === null) return null; var s = 0; D.styles.forEach(function (x) { s += styleVal(x.name); }); return b - s; }
   function knowLeft() { var b = skBudget('Mental'); if (b === null) return null; var s = 0; D.knowledges.forEach(function (x) { s += knowVal(x.name); }); return b - s; }
+  // Combination spells: open to a casting school's rank once every school in
+  // the combination has enough dots (2 each for two schools, 3 each for three)
+  function comboById(id) { for (var i = 0; i < D.combos.length; i++) if (D.combos[i].id === id) return D.combos[i]; return null; }
+  function comboMet(c) { return c.schools.every(function (sc) { return knowTotal(sc) >= c.dots; }); }
+  function comboTakenElsewhere(c, school, r) {
+    var kp = build.know_picks || {};
+    return Object.keys(kp).some(function (sc) {
+      return Object.keys(kp[sc] || {}).some(function (rr) { return kp[sc][rr] === 'c:' + c.id && !(sc === school && String(rr) === String(r)); });
+    });
+  }
+  function combosFor(school, r) {
+    return (D.combos || []).filter(function (c) {
+      return c.schools.indexOf(school) >= 0 && c.dots <= r && comboMet(c) && !comboTakenElsewhere(c, school, r);
+    });
+  }
   function rankLabel(r) { return 'Rank ' + r.rank + ': ' + r.title; }
 
   // Choices for each new rank of a style (Option A or B) or a school (one of two spells)
@@ -1069,11 +1084,14 @@
         ]));
       }
       var opts = kind === 'style' ? [['a', 'Option A', rk.a], ['b', 'Option B', rk.b]] : rk.spells.map(function (s, i) { return [String(i), 'Spell', s]; });
-      opts.forEach(function (o) {
+      var combos = kind === 'know' && item.kind === 'Casting school' ? combosFor(item.name, r) : [];
+      opts = opts.concat(combos.map(function (c) { return ['c:' + c.id, 'Combination', { name: c.name + ' (' + c.schools.join(' + ') + ')', id: c.id, cost: c.cost, text: c.text }, true]; }));
+      opts.forEach(function (o, oi) {
+        if (o[3] && !(opts[oi - 1] || [])[3]) fs.appendChild(el('p', { class: 'combo-head px', text: 'Or a combination spell instead:' }));
         var id = 'rk-' + kind + '-' + slug(item.name) + '-' + r + '-' + o[0];
         var input = el('input', { type: 'radio', name: 'rk-' + kind + '-' + slug(item.name) + '-' + r, id: id, value: o[0] });
         if (String(mine[r]) === o[0]) input.checked = true;
-        input.addEventListener('change', function () { mine[r] = o[0]; refresh(); });
+        input.addEventListener('change', function () { mine[r] = o[0]; refresh(kind === 'know'); });
         fs.appendChild(el('div', { class: 'rank-opt' }, [
           input,
           el('label', { for: id }, [el('strong', { text: o[2].name }), kind === 'style' ? ' (' + o[1] + (o[2].use ? ', ' + o[2].use : '') + ')' : (o[2].cost ? ' (' + o[2].cost + ' mana)' : ''),
@@ -1088,6 +1106,12 @@
     var mine = ((build[kind === 'style' ? 'style_picks' : 'know_picks'] || {})[item.name]) || {};
     if (!item.ranks) return;
     for (var r = 1; r <= upTo; r++) {
+      var cpick = String(mine[r] || '');
+      if (cpick.indexOf('c:') === 0) {
+        var cb = comboById(cpick.slice(2));
+        if (!cb || !comboMet(cb)) w.push({ key: 'pick.know.' + slug(item.name) + '.' + r, text: item.name + ' Rank ' + r + ': ' + (cb ? cb.name + ' needs ' + cb.dots + ' dots in ' + cb.schools.join(', ') : 'that combination spell') + '. Pick again.' });
+        continue;
+      }
       if (mine[r] === undefined) w.push({ key: 'pick.' + kind + '.' + slug(item.name) + '.' + r, text: item.name + ' Rank ' + r + ': choose ' + (kind === 'style' ? 'Option A or B.' : item.name === 'Battle Aura' ? 'one of the two techniques.' : 'one of the two spells.') });
     }
   }
@@ -1140,7 +1164,10 @@
       if (skBudget('Mental') === null) p.appendChild(el('p', { class: 'note-box', text: 'Give your Mental column a designation in Step 5 first. It sets how many knowledge dots you get.' }));
       var left = knowLeft();
       D.knowledges.forEach(function (k, ki) {
-        if (k.circle && !(D.knowledges[ki - 1] || {}).circle) p.appendChild(el('h2', { class: 'sub-title px', text: 'Circle Magic' }));
+        var head = k.circle ? 'Circle Magic' : k.kind === 'Casting school' ? 'Casting Magic' : k.name;
+        var prev = D.knowledges[ki - 1];
+        var prevHead = prev ? (prev.circle ? 'Circle Magic' : prev.kind === 'Casting school' ? 'Casting Magic' : prev.name) : null;
+        if (head !== prevHead) p.appendChild(el('h2', { class: 'sub-title px', text: head }));
         var v = knowVal(k.name);
         var card = el('div', { class: 'sk-card' + (v ? ' picked' : '') });
         card.appendChild(el('div', { class: 'sk-head' }, [
@@ -1164,7 +1191,14 @@
     },
     summary: function () {
       var a = D.knowledges.filter(function (k) { return knowVal(k.name); }).map(function (k) { return k.name + ' ' + knowVal(k.name) + ' (P)'; });
-      return a.length ? [['Magical Knowledges', a.join(', ')]] : [];
+      var out = a.length ? [['Magical Knowledges', a.join(', ')]] : [];
+      var cs = [];
+      Object.keys(build.know_picks || {}).forEach(function (sc) { Object.keys(build.know_picks[sc]).forEach(function (r) {
+        var v = String(build.know_picks[sc][r]);
+        if (v.indexOf('c:') === 0 && comboById(v.slice(2))) cs.push(comboById(v.slice(2)).name);
+      }); });
+      if (cs.length) out.push(['Combination Spells', cs.join(', ')]);
+      return out;
     }
   };
 

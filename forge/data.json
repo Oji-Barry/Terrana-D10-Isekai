@@ -7044,5 +7044,658 @@
    "used_for": "Powers all magic. Pool = (Magic + Circle Magic) x Mana. M/T = Fortitude + Mana.",
    "gained": "Freebies (7 per dot) or XP (new dot x7). Pool recovers each Upkeep and quickly between fights."
   }
+ ],
+ "combos": [
+  {
+   "name": "Crushing Vine",
+   "schools": [
+    "Water",
+    "Nature"
+   ],
+   "dots": 2,
+   "id": "two-school-combinations-crushing-vine-water-nature",
+   "cost": "4",
+   "text": "Living vines fed by flowing water seize the target and squeeze."
+  },
+  {
+   "name": "Cursed Ground",
+   "schools": [
+    "Earth",
+    "Shade"
+   ],
+   "dots": 2,
+   "id": "two-school-combinations-cursed-ground-earth-shade",
+   "cost": "4",
+   "text": "Dark energy seeps up through the earth, corrupting the ground itself."
+  },
+  {
+   "name": "Decay",
+   "schools": [
+    "Nature",
+    "Shade"
+   ],
+   "dots": 2,
+   "id": "two-school-combinations-decay-nature-shade",
+   "cost": "4",
+   "text": "Dark organic energy unravels the structure of an incoming spell before it can take effect."
+  },
+  {
+   "name": "Disruption",
+   "schools": [
+    "Bright",
+    "Shade"
+   ],
+   "dots": 2,
+   "id": "two-school-combinations-disruption-bright-shade",
+   "cost": "4",
+   "text": "Bright and Shade collide inside a spell as it forms. The result is collapse. The opposing forces tear the cast apart from the inside."
+  },
+  {
+   "name": "Dust Storm",
+   "schools": [
+    "Air",
+    "Earth"
+   ],
+   "dots": 2,
+   "id": "two-school-combinations-dust-storm-air-earth",
+   "cost": "4",
+   "text": "Wind-driven stone and grit scour the air, cutting visibility to near zero."
+  },
+  {
+   "name": "Flame Whip",
+   "schools": [
+    "Fire",
+    "Nature"
+   ],
+   "dots": 2,
+   "id": "two-school-combinations-flame-whip-fire-nature",
+   "cost": "4",
+   "text": "A crackling tendril of flaming plant matter snaps across the distance and drags."
+  },
+  {
+   "name": "Hallowed Ground",
+   "schools": [
+    "Earth",
+    "Bright"
+   ],
+   "dots": 2,
+   "id": "two-school-combinations-hallowed-ground-earth-bright",
+   "cost": "4",
+   "text": "The ground itself glows faintly with radiant force."
+  },
+  {
+   "name": "Magma",
+   "schools": [
+    "Fire",
+    "Earth"
+   ],
+   "dots": 2,
+   "id": "two-school-combinations-magma-fire-earth",
+   "cost": "4",
+   "text": "The earth opens and bleeds molten rock across the zone."
+  },
+  {
+   "name": "Mending Bloom",
+   "schools": [
+    "Nature",
+    "Bright"
+   ],
+   "dots": 2,
+   "id": "two-school-combinations-mending-bloom-nature-bright",
+   "cost": "4",
+   "text": "Soft glowing blossoms spread across the zone, breathing light into those who rest within it."
+  },
+  {
+   "name": "Miasma",
+   "schools": [
+    "Air",
+    "Shade"
+   ],
+   "dots": 2,
+   "id": "two-school-combinations-miasma-air-shade",
+   "cost": "4",
+   "text": "A creeping dark fog that saps the will and precision of anyone breathing it in."
+  },
+  {
+   "name": "Mist",
+   "schools": [
+    "Fire",
+    "Water"
+   ],
+   "dots": 2,
+   "id": "two-school-combinations-mist-fire-water",
+   "cost": "4",
+   "text": "Heat meets water and produces a rolling cloud of dense steam."
+  },
+  {
+   "name": "Overgrowth",
+   "schools": [
+    "Earth",
+    "Nature"
+   ],
+   "dots": 2,
+   "id": "two-school-combinations-overgrowth-earth-nature",
+   "cost": "4",
+   "text": "The earth erupts with a wall of thick tangled growth impossible to move through quickly."
+  },
+  {
+   "name": "Plasma",
+   "schools": [
+    "Fire",
+    "Air"
+   ],
+   "dots": 2,
+   "id": "two-school-combinations-plasma-fire-air",
+   "cost": "4",
+   "text": "Superheated plasma that burns through armor as readily as flesh."
+  },
+  {
+   "name": "Quagmire",
+   "schools": [
+    "Water",
+    "Earth"
+   ],
+   "dots": 2,
+   "id": "two-school-combinations-quagmire-water-earth",
+   "cost": "4",
+   "text": "The earth drinks water until it becomes a sucking trap."
+  },
+  {
+   "name": "Radiant Flame",
+   "schools": [
+    "Fire",
+    "Bright"
+   ],
+   "dots": 2,
+   "id": "two-school-combinations-radiant-flame-fire-bright",
+   "cost": "4",
+   "text": "Fire touched by radiant energy. In attack form it burns twice as bright against the dead. In utility form it simply burns, clean and permanent."
+  },
+  {
+   "name": "Radiant Wind",
+   "schools": [
+    "Air",
+    "Bright"
+   ],
+   "dots": 2,
+   "id": "two-school-combinations-radiant-wind-air-bright",
+   "cost": "4",
+   "text": "Glowing wind that lofts projectiles and steadies aim."
+  },
+  {
+   "name": "Sanctified Water",
+   "schools": [
+    "Water",
+    "Bright"
+   ],
+   "dots": 2,
+   "id": "two-school-combinations-sanctified-water-water-bright",
+   "cost": "4",
+   "text": "Water infused with radiant energy, purifying to the living and lethal to the dead."
+  },
+  {
+   "name": "Shadowflame",
+   "schools": [
+    "Fire",
+    "Shade"
+   ],
+   "dots": 2,
+   "id": "two-school-combinations-shadowflame-fire-shade",
+   "cost": "4",
+   "text": "Fire that burns dark. In attack form it simply destroys. In condition form it feeds."
+  },
+  {
+   "name": "Spore Cloud",
+   "schools": [
+    "Air",
+    "Nature"
+   ],
+   "dots": 2,
+   "id": "two-school-combinations-spore-cloud-air-nature",
+   "cost": "4",
+   "text": "A thick organic cloud that gets into everything and makes every movement a struggle."
+  },
+  {
+   "name": "Tempest",
+   "schools": [
+    "Water",
+    "Air"
+   ],
+   "dots": 2,
+   "id": "two-school-combinations-tempest-water-air",
+   "cost": "4",
+   "text": "A concentrated storm that bucks and tosses everything caught inside it."
+  },
+  {
+   "name": "Venom",
+   "schools": [
+    "Water",
+    "Shade"
+   ],
+   "dots": 2,
+   "id": "two-school-combinations-venom-water-shade",
+   "cost": "4",
+   "text": "Dark fluid that poisons the living and paradoxically purges conditions from the dead."
+  },
+  {
+   "name": "Ashfall",
+   "schools": [
+    "Fire",
+    "Air",
+    "Shade"
+   ],
+   "dots": 3,
+   "id": "three-school-combinations-ashfall-fire-air-shade",
+   "cost": "9",
+   "text": "Burning debris falls continuously, choking the zone with heat, ash, and dark energy."
+  },
+  {
+   "name": "Balance",
+   "schools": [
+    "Nature",
+    "Bright",
+    "Shade"
+   ],
+   "dots": 3,
+   "id": "three-school-combinations-balance-nature-bright-shade",
+   "cost": "9",
+   "text": "Life energy drawn from both light and dark holds a target in perfect, fragile equilibrium."
+  },
+  {
+   "name": "Black Fog",
+   "schools": [
+    "Fire",
+    "Water",
+    "Shade"
+   ],
+   "dots": 3,
+   "id": "three-school-combinations-black-fog-fire-water-shade",
+   "cost": "9",
+   "text": "Hot poisonous fog that clogs lungs, drains energy, and aids the dead."
+  },
+  {
+   "name": "Choking Ash",
+   "schools": [
+    "Air",
+    "Earth",
+    "Shade"
+   ],
+   "dots": 3,
+   "id": "three-school-combinations-choking-ash-air-earth-shade",
+   "cost": "9",
+   "text": "Grit and dark energy combine into an airborne assault that chokes and drains."
+  },
+  {
+   "name": "Cinders",
+   "schools": [
+    "Fire",
+    "Earth",
+    "Shade"
+   ],
+   "dots": 3,
+   "id": "three-school-combinations-cinders-fire-earth-shade",
+   "cost": "9",
+   "text": "The ground itself smolders with dark fire, burning mana and flesh together."
+  },
+  {
+   "name": "Cleansing Gale",
+   "schools": [
+    "Water",
+    "Air",
+    "Bright"
+   ],
+   "dots": 3,
+   "id": "three-school-combinations-cleansing-gale-water-air-bright",
+   "cost": "9",
+   "text": "A wind that strips away ailments from the living and punishes the dead for breathing."
+  },
+  {
+   "name": "Convergent Flame",
+   "schools": [
+    "Fire",
+    "Bright",
+    "Shade"
+   ],
+   "dots": 3,
+   "id": "three-school-combinations-convergent-flame-fire-bright-shade",
+   "cost": "9",
+   "text": "A fire that burns everything equally, indifferent to what it touches."
+  },
+  {
+   "name": "Cursed Bog",
+   "schools": [
+    "Water",
+    "Earth",
+    "Shade"
+   ],
+   "dots": 3,
+   "id": "three-school-combinations-cursed-bog-water-earth-shade",
+   "cost": "9",
+   "text": "A bog of dark water that saps living strength and sustains the dead."
+  },
+  {
+   "name": "Cursed Roots",
+   "schools": [
+    "Earth",
+    "Nature",
+    "Shade"
+   ],
+   "dots": 3,
+   "id": "three-school-combinations-cursed-roots-earth-nature-shade",
+   "cost": "9",
+   "text": "Dark roots that hold on and feed on whatever they catch."
+  },
+  {
+   "name": "Decrease Weight",
+   "schools": [
+    "Air",
+    "Bright",
+    "Shade"
+   ],
+   "dots": 3,
+   "id": "three-school-combinations-decrease-weight-air-bright-shade",
+   "cost": "9",
+   "text": "Air carries the target. Bright and Shade open a gap in the way weight applies to them. They are not floating. They are simply much less here than they were."
+  },
+  {
+   "name": "Forge Light",
+   "schools": [
+    "Fire",
+    "Earth",
+    "Bright"
+   ],
+   "dots": 3,
+   "id": "three-school-combinations-forge-light-fire-earth-bright",
+   "cost": "9",
+   "text": "A weapon of blazing radiant metal that exists only because it was willed into existence."
+  },
+  {
+   "name": "Glass Shards",
+   "schools": [
+    "Fire",
+    "Air",
+    "Earth"
+   ],
+   "dots": 3,
+   "id": "three-school-combinations-glass-shards-fire-air-earth",
+   "cost": "9",
+   "text": "Sand fused into glass in mid-air and launched as a spray of cutting shards."
+  },
+  {
+   "name": "Hallowed Mire",
+   "schools": [
+    "Water",
+    "Earth",
+    "Bright"
+   ],
+   "dots": 3,
+   "id": "three-school-combinations-hallowed-mire-water-earth-bright",
+   "cost": "9",
+   "text": "Holy water pressed into the ground, nourishing the living and weakening the dead."
+  },
+  {
+   "name": "Healing Grove",
+   "schools": [
+    "Water",
+    "Nature",
+    "Bright"
+   ],
+   "dots": 3,
+   "id": "three-school-combinations-healing-grove-water-nature-bright",
+   "cost": "9",
+   "text": "A grove of radiant living plants that mends allies and punishes the dead."
+  },
+  {
+   "name": "Hot Sap Spitting Plant",
+   "schools": [
+    "Fire",
+    "Water",
+    "Nature"
+   ],
+   "dots": 3,
+   "id": "three-school-combinations-hot-sap-spitting-plant-fire-water-nature",
+   "cost": "9",
+   "text": "A tough organic entity that spits scalding sap on command."
+  },
+  {
+   "name": "Increase Weight",
+   "schools": [
+    "Earth",
+    "Bright",
+    "Shade"
+   ],
+   "dots": 3,
+   "id": "three-school-combinations-increase-weight-earth-bright-shade",
+   "cost": "9",
+   "text": "Earth locks into the target. Bright and Shade balance the effect into a sustained field. Everything the target does takes more effort than it should."
+  },
+  {
+   "name": "Lava",
+   "schools": [
+    "Fire",
+    "Earth",
+    "Nature"
+   ],
+   "dots": 3,
+   "id": "three-school-combinations-lava-fire-earth-nature",
+   "cost": "9",
+   "text": "Root channels crack open under the heat of molten earth."
+  },
+  {
+   "name": "Living Rain",
+   "schools": [
+    "Water",
+    "Air",
+    "Nature"
+   ],
+   "dots": 3,
+   "id": "three-school-combinations-living-rain-water-air-nature",
+   "cost": "9",
+   "text": "A rain that carries seeds and spores. By the second turn, the ground is already growing."
+  },
+  {
+   "name": "Miasma Bloom",
+   "schools": [
+    "Air",
+    "Nature",
+    "Shade"
+   ],
+   "dots": 3,
+   "id": "three-school-combinations-miasma-bloom-air-nature-shade",
+   "cost": "9",
+   "text": "Spores that rot from the inside out, poisoning and draining in the same breath."
+  },
+  {
+   "name": "Phoenix Bloom",
+   "schools": [
+    "Fire",
+    "Nature",
+    "Bright"
+   ],
+   "dots": 3,
+   "id": "three-school-combinations-phoenix-bloom-fire-nature-bright",
+   "cost": "9",
+   "text": "A creature of living fire and radiant energy that exists to fight or mend."
+  },
+  {
+   "name": "Plague Marsh",
+   "schools": [
+    "Water",
+    "Nature",
+    "Shade"
+   ],
+   "dots": 3,
+   "id": "three-school-combinations-plague-marsh-water-nature-shade",
+   "cost": "9",
+   "text": "Stagnant corrupt water choked with diseased growth."
+  },
+  {
+   "name": "Poison Fog",
+   "schools": [
+    "Water",
+    "Air",
+    "Shade"
+   ],
+   "dots": 3,
+   "id": "three-school-combinations-poison-fog-water-air-shade",
+   "cost": "9",
+   "text": "Cold poisonous mist. Kills slowly. Feeds the dead."
+  },
+  {
+   "name": "Quagmire Storm",
+   "schools": [
+    "Water",
+    "Air",
+    "Earth"
+   ],
+   "dots": 3,
+   "id": "three-school-combinations-quagmire-storm-water-air-earth",
+   "cost": "9",
+   "text": "A concentrated burst of wet earth launched with enough force to displace and disorient."
+  },
+  {
+   "name": "Radiant Dust",
+   "schools": [
+    "Air",
+    "Earth",
+    "Bright"
+   ],
+   "dots": 3,
+   "id": "three-school-combinations-radiant-dust-air-earth-bright",
+   "cost": "9",
+   "text": "Sparkling mineral dust that blinds enemies while guiding allies."
+  },
+  {
+   "name": "Sacred Grove",
+   "schools": [
+    "Earth",
+    "Nature",
+    "Bright"
+   ],
+   "dots": 3,
+   "id": "three-school-combinations-sacred-grove-earth-nature-bright",
+   "cost": "9",
+   "text": "A space where living things are strengthened by the earth and light together."
+  },
+  {
+   "name": "Sacred Steam",
+   "schools": [
+    "Fire",
+    "Water",
+    "Bright"
+   ],
+   "dots": 3,
+   "id": "three-school-combinations-sacred-steam-fire-water-bright",
+   "cost": "9",
+   "text": "Radiant steam that burns conditions away from allies and forces undead out."
+  },
+  {
+   "name": "Solar Flare",
+   "schools": [
+    "Fire",
+    "Air",
+    "Bright"
+   ],
+   "dots": 3,
+   "id": "three-school-combinations-solar-flare-fire-air-bright",
+   "cost": "9",
+   "text": "A blast of pure radiant fire that blinds everyone and burns undead twice over."
+  },
+  {
+   "name": "Spore Blast",
+   "schools": [
+    "Fire",
+    "Air",
+    "Nature"
+   ],
+   "dots": 3,
+   "id": "three-school-combinations-spore-blast-fire-air-nature",
+   "cost": "9",
+   "text": "Dandelion-like spores that drift to their destination before detonating."
+  },
+  {
+   "name": "Spore Light",
+   "schools": [
+    "Air",
+    "Nature",
+    "Bright"
+   ],
+   "dots": 3,
+   "id": "three-school-combinations-spore-light-air-nature-bright",
+   "cost": "9",
+   "text": "Glowing spores that mend allies and disorient everyone else."
+  },
+  {
+   "name": "Swamp",
+   "schools": [
+    "Water",
+    "Earth",
+    "Nature"
+   ],
+   "dots": 3,
+   "id": "three-school-combinations-swamp-water-earth-nature",
+   "cost": "9",
+   "text": "A zone made nearly impassable by water and growth working together."
+  },
+  {
+   "name": "Tempest Inferno",
+   "schools": [
+    "Fire",
+    "Water",
+    "Air"
+   ],
+   "dots": 3,
+   "id": "three-school-combinations-tempest-inferno-fire-water-air",
+   "cost": "9",
+   "text": "A superheated storm that scalds, blinds, and scatters."
+  },
+  {
+   "name": "Tidal Convergence",
+   "schools": [
+    "Water",
+    "Bright",
+    "Shade"
+   ],
+   "dots": 3,
+   "id": "three-school-combinations-tidal-convergence-water-bright-shade",
+   "cost": "9",
+   "text": "A tidal force drawn from opposing energies that moves everything in its path."
+  },
+  {
+   "name": "Vines of Rotfire",
+   "schools": [
+    "Fire",
+    "Nature",
+    "Shade"
+   ],
+   "dots": 3,
+   "id": "three-school-combinations-vines-of-rotfire-fire-nature-shade",
+   "cost": "9",
+   "text": "Burning dark vines that hold on and feed off the living, but free the dead."
+  },
+  {
+   "name": "Volcanic Spring",
+   "schools": [
+    "Fire",
+    "Water",
+    "Earth"
+   ],
+   "dots": 3,
+   "id": "three-school-combinations-volcanic-spring-fire-water-earth",
+   "cost": "9",
+   "text": "The ground beneath the zone cracks open with scalding eruptions."
+  },
+  {
+   "name": "Wooden Wall",
+   "schools": [
+    "Air",
+    "Earth",
+    "Nature"
+   ],
+   "dots": 3,
+   "id": "three-school-combinations-wooden-wall-air-earth-nature",
+   "cost": "9",
+   "text": "Dense timber that did not grow here but exists regardless."
+  }
  ]
 }

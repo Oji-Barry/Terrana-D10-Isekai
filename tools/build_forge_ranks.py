@@ -62,6 +62,22 @@ def main():
             continue
         k['ranks'] = sc[key]
         assert len(k['ranks']) == 7, k['name']
+    # Two- and three-school combination spells (taken in place of a rank's option)
+    combos = []
+    for sec, n in (('two-school-combinations', 2), ('three-school-combinations', 3)):
+        i0 = p13.find('id="%s"' % sec)
+        i1 = p13.find('<section', i0)
+        for m in re.finditer(r'<div class="entry"><div class="entry-name" id="([^"]+)">([^<]+)</div>(.*?)</div>', p13[i0:i1], re.S):
+            nm = clean(m.group(2))
+            mm = re.match(r'^(.+?) \((.+)\)$', nm)
+            parts = [x.strip() for x in mm.group(2).split('+')]
+            assert len(parts) == n, nm
+            tag = re.search(r'<p class="tagline">(.*?)</p>', m.group(3), re.S)
+            combos.append({'name': mm.group(1), 'schools': parts, 'dots': n, 'id': m.group(1),
+                           'cost': str(n * n), 'text': clean(tag.group(1)) if tag else ''})
+    assert len([c for c in combos if c['dots'] == 2]) == 21 and len([c for c in combos if c['dots'] == 3]) == 35, len(combos)
+    data['combos'] = combos
+
     # Circle Magic is ten disciplines, each its own knowledge (no spell list)
     toc = json.load(open('rulebook/toc.json', encoding='utf-8'))
     disc = [n for n in toc['ch13'] if n['s'] == 'The Disciplines of Circle Magic'][0]['c']
