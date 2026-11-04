@@ -352,6 +352,7 @@
     base = base || 0;
     if (limit === undefined || limit === null) limit = max;
     if (!noCap && !stMode()) limit = Math.min(limit, 5);
+    if (stMode()) limit = max;   // Storyteller Mode: every dot is open
     if (readOnly) limit = value;
     var row = el('div', { class: 'dots', role: 'group', 'aria-label': label });
     for (var i = 1; i <= max; i++) {
