@@ -1139,7 +1139,8 @@
       if (h) p.appendChild(el('p', { class: 'note-box' }, [el('strong', { text: 'Heritage Magic (free): ' }), (h.name === 'Demon' && build.heritage.magic ? build.heritage.magic : h.heritage_magic) + ' 1 (P). ', bookLink(h.link, 'Rules')]));
       if (skBudget('Mental') === null) p.appendChild(el('p', { class: 'note-box', text: 'Give your Mental column a designation in Step 5 first. It sets how many knowledge dots you get.' }));
       var left = knowLeft();
-      D.knowledges.forEach(function (k) {
+      D.knowledges.forEach(function (k, ki) {
+        if (k.circle && !(D.knowledges[ki - 1] || {}).circle) p.appendChild(el('h2', { class: 'sub-title px', text: 'Circle Magic' }));
         var v = knowVal(k.name);
         var card = el('div', { class: 'sk-card' + (v ? ' picked' : '') });
         card.appendChild(el('div', { class: 'sk-head' }, [
@@ -1149,7 +1150,7 @@
             left === null ? 0 : v + Math.max(0, left))
         ]));
         if (v && k.ranks) rankPicks(card, k, 'know', 1, v);
-        if (v && !k.ranks) card.appendChild(el('p', { class: 'hint' }, ['Circle Magic has no spell list. Each discipline has its own rules by dots. ', bookLink('../rulebook/ch13.html#the-disciplines-of-circle-magic', 'The disciplines')]));
+        if (v && !k.ranks) card.appendChild(el('p', { class: 'hint' }, ['Circle Magic disciplines have no spell list. What you can do at each dot is in its entry. ', bookLink(k.link, k.name + ' rules')]));
         p.appendChild(card);
       });
     },
