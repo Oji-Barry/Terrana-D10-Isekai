@@ -767,7 +767,7 @@
         });
         sel.addEventListener('change', function () {
           if (sel.value) build[kind][m.name] = sel.value; else delete build[kind][m.name];
-          refresh(!!m.options);
+          refresh(!!m.options || m.name === 'Familiar Bond');
         });
         det.appendChild(el('div', { class: 'pick-row' }, [
           el('label', { for: id, class: 'pick-name', text: m.name }),
@@ -775,6 +775,7 @@
           sel,
           bookLink(m.link, 'Rules')
         ]));
+        if (kind === 'merits' && m.name === 'Familiar Bond' && build.merits[m.name]) companionBox(det, 'familiar', 'Your Familiar', 'Familiar Bond at creation gives you one Rank 1 (F) familiar, chosen with your Storyteller. Add your Familiar Bond dots to its Attack and Defense pools.');
         // the chosen curse or bargain, or a box to describe your own
         var v = build[kind][m.name] || '';
         if (m.options && v.charAt(0) === 'n') {
@@ -827,6 +828,8 @@
       var out = [];
       var ms = Object.keys(build.merits || {}), fs = Object.keys(build.flaws || {});
       if (ms.length) out.push(['Merits', ms.join(', ')]);
+      var fm = build.familiar || {};
+      if ((build.merits || {})['Familiar Bond'] && (fm.name || fm.what)) out.push(['Familiar', [fm.name, fm.what].filter(Boolean).join(', ')]);
       if (fs.length) out.push(['Flaws', fs.map(function (n) {
         var f = byName(D.flaws, n), v = String(build.flaws[n]);
         if (f && f.options && v.charAt(0) === 'n') return n + ' (' + f.options[Number(v.slice(1))].name + ')';
@@ -1062,6 +1065,22 @@
       return c.schools.indexOf(school) >= 0 && c.dots <= r && comboMet(c) && !comboTakenElsewhere(c, school, r);
     });
   }
+  // A small "name it and describe it" box, for a starter SumMonz or a familiar
+  function companionBox(box, key, title, hint) {
+    build[key] = build[key] || {};
+    var c = build[key];
+    var nid = 'cmp-' + key + '-name', wid = 'cmp-' + key + '-what';
+    var nm = el('input', { id: nid, maxlength: '60', value: c.name || '', placeholder: 'Name' });
+    var wh = el('input', { id: wid, maxlength: '200', value: c.what || '', placeholder: 'What it is, such as an Ember Fox fiend (Fire)' });
+    nm.addEventListener('input', function () { c.name = nm.value; refresh(); });
+    wh.addEventListener('input', function () { c.what = wh.value; refresh(); });
+    box.appendChild(el('fieldset', { class: 'companion' }, [
+      el('legend', { class: 'px', text: title }),
+      el('p', { class: 'hint', text: hint }),
+      el('div', { class: 'field' }, [el('label', { for: nid, text: 'Name' }), nm]),
+      el('div', { class: 'field' }, [el('label', { for: wid, text: 'Creature' }), wh])
+    ]));
+  }
   function rankLabel(r) { return 'Rank ' + r.rank + ': ' + r.title; }
 
   // Choices for each new rank of a style (Option A or B) or a school (one of two spells)
@@ -1178,6 +1197,7 @@
         ]));
         if (v && k.ranks) rankPicks(card, k, 'know', 1, v);
         if (v && !k.ranks) card.appendChild(el('p', { class: 'hint' }, ['Circle Magic disciplines have no spell list. What you can do at each dot is in its entry. ', bookLink(k.link, k.name + ' rules')]));
+        if (k.name === 'Summoning Magic' && knowTotal(k.name) > 0) companionBox(card, 'starter_summon', 'Your First SumMonz', 'Summoning Magic at creation gives you one Rank 1 (F) SumMonz on its own card. Choose it with your Storyteller.');
         p.appendChild(card);
       });
     },
@@ -1198,6 +1218,8 @@
         if (v.indexOf('c:') === 0 && comboById(v.slice(2))) cs.push(comboById(v.slice(2)).name);
       }); });
       if (cs.length) out.push(['Combination Spells', cs.join(', ')]);
+      var ss = build.starter_summon || {};
+      if (knowTotal('Summoning Magic') && (ss.name || ss.what)) out.push(['First SumMonz', [ss.name, ss.what].filter(Boolean).join(', ')]);
       return out;
     }
   };
