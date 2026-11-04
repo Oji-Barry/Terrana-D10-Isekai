@@ -14,6 +14,20 @@ def clean(s):
     return html.unescape(re.sub(r'<[^>]+>', '', s)).strip()
 
 
+def fields(body):
+    """The labelled lines of a spell entry: Speed, Type, Range, Dice Pool, Defense, Effect..."""
+    out = {}
+    for m in re.finditer(r'<strong>([A-Za-z ]+): </strong>(.*?)(?=</p>|</span>)', body, re.S):
+        k = m.group(1).strip().lower().replace(' ', '_')
+        if k not in out:
+            out[k] = clean(m.group(2))
+    eff = out.get('effect', '')
+    d = re.search(r'Defend: ([^.]+)\.', eff)
+    if d and 'defense' not in out:
+        out['defense'] = d.group(1).strip()
+    return {k: out[k] for k in ('speed', 'type', 'range', 'dice_pool', 'defense', 'effect', 'upkeep', 'use') if k in out}
+
+
 def styles(page):
     out = {}
     # each style section: <section ... id="quickcut-style"> ... ranks
@@ -36,8 +50,10 @@ def schools(page):
         for sm in re.finditer(r'<div class="entry"><div class="entry-name" id="([^"]+)">([^<]+)</div>(.*?)</div>', body, re.S):
             tag = re.search(r'<p class="tagline">(.*?)</p>', sm.group(3), re.S)
             cost = re.search(r'<strong>Mana Cost: </strong>([^<]+)', sm.group(3))
-            spells.append({'name': clean(sm.group(2)), 'id': sm.group(1), 'cost': cost.group(1).strip() if cost else '',
-                           'text': clean(tag.group(1)) if tag else ''})
+            sp = {'name': clean(sm.group(2)), 'id': sm.group(1), 'cost': cost.group(1).strip() if cost else '',
+                  'text': clean(tag.group(1)) if tag else ''}
+            sp.update(fields(sm.group(3)))
+            spells.append(sp)
         assert len(spells) == 2, (base, rank, len(spells))
         out.setdefault(base, []).append({'rank': rank, 'title': rname, 'id': '%s-rank-%d-%s' % (base, rank, rid),
                                          'default': {'name': clean(d.group(1)), 'note': clean(d.group(2) or '').strip('() '), 'text': clean(d.group(3))} if d else None,
@@ -62,12 +78,17 @@ def heritage_magic(page):
             for sm in re.finditer(r'<div class="entry"><div class="entry-name" id="([^"]+)">([AB])\. ([^<]+)</div>(.*?)</div>\s*(?=<div class="entry"|<h4|</section>|$)', m.group(3), re.S):
                 cost = re.search(r'<strong>Mana Cost: </strong>([^<]+)', sm.group(4))
                 eff = re.search(r'<strong>Effect: </strong>(.*?)</p>', sm.group(4), re.S)
-                spells.append({'name': clean(sm.group(3)), 'opt': sm.group(2), 'id': sm.group(1),
-                               'cost': cost.group(1).strip() if cost else '', 'text': clean(eff.group(1)) if eff else ''})
+                sp = {'name': clean(sm.group(3)), 'opt': sm.group(2), 'id': sm.group(1),
+                      'cost': cost.group(1).strip() if cost else '', 'text': clean(eff.group(1)) if eff else ''}
+                sp.update(fields(sm.group(4)))
+                spells.append(sp)
             assert len(spells) == 2, (name, m.group(1), len(spells))
             ranks.append({'rank': int(m.group(1)), 'title': m.group(2), 'id': h.group(1), 'default': None, 'spells': spells})
         assert len(ranks) in (0, 7), (name, len(ranks))
-        out[name] = {'id': h.group(1), 'ranks': ranks or None}
+        em = re.search(r'<strong>Extra mana: </strong>([^<]*)', body)
+        extra = clean(em.group(1)) if em else ''
+        out[name] = {'id': h.group(1), 'ranks': ranks or None, 'extra_mana': extra,
+                     'mana_to': 'attack' if extra.startswith('Attack only') else 'damage' if extra.startswith('Damage only') else 'either'}
     return out
 
 
@@ -100,8 +121,10 @@ def main():
             parts = [x.strip() for x in mm.group(2).split('+')]
             assert len(parts) == n, nm
             tag = re.search(r'<p class="tagline">(.*?)</p>', m.group(3), re.S)
-            combos.append({'name': mm.group(1), 'schools': parts, 'dots': n, 'id': m.group(1),
-                           'cost': str(n * n), 'text': clean(tag.group(1)) if tag else ''})
+            cb = {'name': mm.group(1), 'schools': parts, 'dots': n, 'id': m.group(1),
+                  'cost': str(n * n), 'text': clean(tag.group(1)) if tag else ''}
+            cb.update(fields(m.group(3)))
+            combos.append(cb)
     counts = [len([c for c in combos if c['dots'] == n]) for n in (2, 3, 4, 5, 6)]
     assert counts == [21, 35, 35, 21, 7], counts
     if 'id="creation-magic"' in p13:

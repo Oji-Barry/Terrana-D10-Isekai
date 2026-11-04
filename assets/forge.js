@@ -2145,6 +2145,65 @@
     return m;
   }
 
+  // ---------- Combat snapshot: what a character brings into an encounter ----------
+  function manaRegen(d) { return d >= 10 ? 5 : d >= 9 ? 4 : d >= 7 ? 3 : d >= 4 ? 2 : 1; }
+  function firstInt(s) { var m = String(s || '').match(/\d+/); return m ? Number(m[0]) : 0; }
+  function combatKit() {
+    var k = { attrs: {}, abilities: {}, dots: {}, spells: [], maneuvers: [], defenses: [] };
+    COLS.forEach(function (c) { D.attributes[c].forEach(function (a) { k.attrs[a] = attrTotal(a); }); });
+    GROUPS.forEach(function (g) { D.abilities[g].forEach(function (a) { k.abilities[a.name] = abTotal(a.name); }); });
+    D.knowledges.forEach(function (x) { var t = knowTotal(x.name); if (t) k.dots[x.name] = t; });
+    D.styles.forEach(function (x) { var t = styleTotal(x.name); if (t) k.dots[x.name] = t; });
+    if (hmOn()) { k.dots[hmName()] = hmVal(); k.dots.Heritage = hmVal(); k.heritage_magic = hmName(); }
+    var MT = { Damage: 'damage', Attack: 'attack', 'Attack or damage': 'either' };
+    function addSpell(sp, school, kind, rank, extra) {
+      if (!sp) return;
+      k.spells.push(Object.assign({ name: sp.name, school: school, kind: kind, rank: rank, cost: firstInt(sp.cost), costText: sp.cost || '', pool: sp.dice_pool || '', type: sp.type || '',
+        range: sp.range || '', defense: sp.defense || '', effect: sp.effect || sp.text || '', speed: sp.speed || '', id: sp.id || '' }, extra || {}));
+    }
+    D.knowledges.forEach(function (x) {
+      var t = knowTotal(x.name); if (!t || !x.ranks) return;
+      var mine = (build.know_picks || {})[x.name] || {};
+      for (var r = 1; r <= Math.min(t, x.ranks.length); r++) {
+        picksAt(mine[r]).forEach(function (v) {
+          if (v.indexOf('c:') === 0) {
+            var c = comboById(v.slice(2));
+            if (c) addSpell({ name: c.name, cost: c.cost, dice_pool: c.dice_pool, type: c.type, range: c.range, defense: c.defense, effect: c.effect || c.text, speed: c.speed, id: c.id },
+              c.schools.join(' + '), 'combo', c.dots, { schools: c.schools, mana_to: 'either', page: 'ch13' });
+          } else addSpell(x.ranks[r - 1].spells[+v], x.name, 'know', r, { mana_to: MT[x.extra_mana_dice] || 'either', page: 'ch13' });
+        });
+      }
+    });
+    var hi = hmItem(), hd = hmData();
+    if (hi) {
+      var hp = (build.hm_picks || {})[hi.name] || {};
+      for (var r2 = 1; r2 <= Math.min(hmVal(), hi.ranks.length); r2++) picksAt(hp[r2]).forEach(function (v) { addSpell(hi.ranks[r2 - 1].spells[+v], hi.name, 'hm', r2, { mana_to: (hd && hd.mana_to) || 'either', page: 'ch8' }); });
+    }
+    D.styles.forEach(function (st) {
+      var t = styleTotal(st.name); if (!t) return;
+      k.maneuvers.push({ name: 'Attack', style: st.name, rank: 0, use: 'Combat', text: 'A standard attack with this Style.', pool: st.primary + ' + ' + st.name, page: 'ch12', id: '' });
+      var mine = (build.style_picks || {})[st.name] || {};
+      for (var r = 1; r <= Math.min(t, st.ranks.length); r++) {
+        var rk = st.ranks[r - 1], list = [['Default', rk.default]];
+        picksAt(mine[r]).forEach(function (o) { list.push([o === 'a' ? 'Option A' : 'Option B', rk[o]]); });
+        list.forEach(function (x) {
+          if (!x[1] || /^Outside combat/i.test(x[1].use || '')) return;
+          k.maneuvers.push({ name: x[1].name, style: st.name, rank: r, slot: x[0], use: x[1].use || '', text: x[1].text || '', pool: st.primary + ' + ' + st.name, page: 'ch12', id: x[1].id || '' });
+        });
+      }
+      k.defenses.push({ name: st.name + ' defense', pool: st.secondary + ' + ' + st.name });
+    });
+    k.defenses.unshift({ name: 'Dodge', pool: 'Dexterity + Dodge' });
+    k.defenses.push({ name: 'Resist (body)', pool: 'Fortitude + Endurance' }, { name: 'Resist (mind)', pool: 'Composure + Presence' }, { name: 'Notice', pool: 'Perception + Awareness' });
+    var mana = manaTotal();
+    k.mana = { dots: mana, pool: (abTotal('Magic') + abTotal('Circle Magic')) * mana, mt: attrTotal('Fortitude') + mana, regen: manaRegen(mana) };
+    k.initiative = attrTotal('Dexterity') + attrTotal('Perception');
+    k.move = moveZones(attrTotal('Dexterity'));
+    k.bdt = attrTotal('Fortitude') + Number((build.merits || {}).Resilience || 0);
+    k.willpower = statVal('Willpower');
+    return k;
+  }
+
   // Headless use by the Character Sheet page: fill a sheet from a saved build
   // without drawing the Forge.
   function headlessLoad(data, row, player) {
@@ -2164,7 +2223,8 @@
     buy: function (offer, extra) { xpBuy(offer, extra); return characterModel(); },
     undo: function (id) { xpUndo(id); return characterModel(); },
     combosFor: function (school, r) { return combosFor(school, r); },
-    sheet: function () { return { build: build, xp: XPS, view: sheetView() }; }
+    sheet: function () { return { build: build, xp: XPS, view: sheetView() }; },
+    combatKit: combatKit
   };
   if (window.FORGE_HEADLESS) return;
 

@@ -11,6 +11,7 @@
   var nav = [
     ['rulebook', 'Rulebook', 'rulebook/index.html'],
     ['forge', 'Character Forge', 'forge/index.html'],
+    ['combat', 'Combat', 'combat/index.html'],
     ['downloads', 'Downloads', 'downloads/index.html'],
     ['ourspace', 'OurSpace', 'ourspace/index.html']
   ];
