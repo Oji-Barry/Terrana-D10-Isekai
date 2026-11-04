@@ -7916,6 +7916,876 @@
    "id": "three-school-combinations-wooden-wall-air-earth-nature",
    "cost": "9",
    "text": "Dense timber that did not grow here but exists regardless."
+  },
+  {
+   "name": "Ashen Waste",
+   "schools": [
+    "Fire",
+    "Earth",
+    "Nature",
+    "Shade"
+   ],
+   "dots": 4,
+   "id": "four-school-combinations-ashen-waste-fire-earth-nature-shade",
+   "cost": "16",
+   "text": "Nothing grows here now, and the dead like it that way."
+  },
+  {
+   "name": "Black Blizzard",
+   "schools": [
+    "Fire",
+    "Water",
+    "Air",
+    "Shade"
+   ],
+   "dots": 4,
+   "id": "four-school-combinations-black-blizzard-fire-water-air-shade",
+   "cost": "16",
+   "text": "A winter that eats warmth and mana alike."
+  },
+  {
+   "name": "Black Lightning",
+   "schools": [
+    "Fire",
+    "Air",
+    "Nature",
+    "Shade"
+   ],
+   "dots": 4,
+   "id": "four-school-combinations-black-lightning-fire-air-nature-shade",
+   "cost": "16",
+   "text": "Lightning that strikes the body and the soul's reserves at once."
+  },
+  {
+   "name": "Blessed Downpour",
+   "schools": [
+    "Water",
+    "Air",
+    "Nature",
+    "Bright"
+   ],
+   "dots": 4,
+   "id": "four-school-combinations-blessed-downpour-water-air-nature-bright",
+   "cost": "16",
+   "text": "Rain that carries life to everyone it touches."
+  },
+  {
+   "name": "Bog Revenant",
+   "schools": [
+    "Water",
+    "Earth",
+    "Nature",
+    "Shade"
+   ],
+   "dots": 4,
+   "id": "four-school-combinations-bog-revenant-water-earth-nature-shade",
+   "cost": "16",
+   "text": "The bog gives back what it took, and none of it is friendly."
+  },
+  {
+   "name": "Caustic Bloom",
+   "schools": [
+    "Fire",
+    "Water",
+    "Nature",
+    "Shade"
+   ],
+   "dots": 4,
+   "id": "four-school-combinations-caustic-bloom-fire-water-nature-shade",
+   "cost": "16",
+   "text": "Lye and rot, flung hard enough to stick."
+  },
+  {
+   "name": "Chain of Heaven",
+   "schools": [
+    "Fire",
+    "Air",
+    "Nature",
+    "Bright"
+   ],
+   "dots": 4,
+   "id": "four-school-combinations-chain-of-heaven-fire-air-nature-bright",
+   "cost": "16",
+   "text": "It knows exactly who it is looking for."
+  },
+  {
+   "name": "Crucible Bind",
+   "schools": [
+    "Fire",
+    "Earth",
+    "Bright",
+    "Shade"
+   ],
+   "dots": 4,
+   "id": "four-school-combinations-crucible-bind-fire-earth-bright-shade",
+   "cost": "16",
+   "text": "Heat to soften, weight to hold, and two opposite forces to seal it shut."
+  },
+  {
+   "name": "Crystal Sanctuary",
+   "schools": [
+    "Water",
+    "Air",
+    "Earth",
+    "Bright"
+   ],
+   "dots": 4,
+   "id": "four-school-combinations-crystal-sanctuary-water-air-earth-bright",
+   "cost": "16",
+   "text": "A shelter that light passes through and very little else."
+  },
+  {
+   "name": "Drowning Mire",
+   "schools": [
+    "Water",
+    "Air",
+    "Earth",
+    "Shade"
+   ],
+   "dots": 4,
+   "id": "four-school-combinations-drowning-mire-water-air-earth-shade",
+   "cost": "16",
+   "text": "It pulls you down, and it does not let go."
+  },
+  {
+   "name": "Ember Rain",
+   "schools": [
+    "Fire",
+    "Water",
+    "Nature",
+    "Bright"
+   ],
+   "dots": 4,
+   "id": "four-school-combinations-ember-rain-fire-water-nature-bright",
+   "cost": "16",
+   "text": "Rain that feels like a hearth after a long night."
+  },
+  {
+   "name": "Fulgurite Strike",
+   "schools": [
+    "Fire",
+    "Air",
+    "Earth",
+    "Nature"
+   ],
+   "dots": 4,
+   "id": "four-school-combinations-fulgurite-strike-fire-air-earth-nature",
+   "cost": "16",
+   "text": "Where the lightning ran, the ground turned to glass."
+  },
+  {
+   "name": "Full Gravity",
+   "schools": [
+    "Air",
+    "Earth",
+    "Bright",
+    "Shade"
+   ],
+   "dots": 4,
+   "id": "four-school-combinations-full-gravity-air-earth-bright-shade",
+   "cost": "16",
+   "text": "Bright and Shade together can regulate fundamental forces when guided by Earth and Air. What they can do to weight in either direction is a matter of how many successes the caster can bring to it."
+  },
+  {
+   "name": "Hearthroot",
+   "schools": [
+    "Fire",
+    "Earth",
+    "Nature",
+    "Bright"
+   ],
+   "dots": 4,
+   "id": "four-school-combinations-hearthroot-fire-earth-nature-bright",
+   "cost": "16",
+   "text": "Sit by this fire and the worst of it mends."
+  },
+  {
+   "name": "Kiln Storm",
+   "schools": [
+    "Fire",
+    "Water",
+    "Air",
+    "Earth"
+   ],
+   "dots": 4,
+   "id": "four-school-combinations-kiln-storm-fire-water-air-earth",
+   "cost": "16",
+   "text": "Four elements melt, fire, and shatter into a single scouring storm."
+  },
+  {
+   "name": "Kilnborn Guardian",
+   "schools": [
+    "Fire",
+    "Water",
+    "Earth",
+    "Nature"
+   ],
+   "dots": 4,
+   "id": "four-school-combinations-kilnborn-guardian-fire-water-earth-nature",
+   "cost": "16",
+   "text": "Clay fired in the moment, held together by roots that refuse to let go."
+  },
+  {
+   "name": "Mirror Mist",
+   "schools": [
+    "Water",
+    "Air",
+    "Bright",
+    "Shade"
+   ],
+   "dots": 4,
+   "id": "four-school-combinations-mirror-mist-water-air-bright-shade",
+   "cost": "16",
+   "text": "You see them. You see them again. You see them everywhere."
+  },
+  {
+   "name": "Monsoon",
+   "schools": [
+    "Water",
+    "Air",
+    "Earth",
+    "Nature"
+   ],
+   "dots": 4,
+   "id": "four-school-combinations-monsoon-water-air-earth-nature",
+   "cost": "16",
+   "text": "The rains come, and the land answers by growing."
+  },
+  {
+   "name": "Obsidian Storm",
+   "schools": [
+    "Fire",
+    "Air",
+    "Earth",
+    "Shade"
+   ],
+   "dots": 4,
+   "id": "four-school-combinations-obsidian-storm-fire-air-earth-shade",
+   "cost": "16",
+   "text": "Black glass that cuts and keeps cutting."
+  },
+  {
+   "name": "Petrify",
+   "schools": [
+    "Earth",
+    "Nature",
+    "Bright",
+    "Shade"
+   ],
+   "dots": 4,
+   "id": "four-school-combinations-petrify-earth-nature-bright-shade",
+   "cost": "16",
+   "text": "Life held still, neither living nor dead, until it is let go."
+  },
+  {
+   "name": "Plague Fog",
+   "schools": [
+    "Water",
+    "Air",
+    "Nature",
+    "Shade"
+   ],
+   "dots": 4,
+   "id": "four-school-combinations-plague-fog-water-air-nature-shade",
+   "cost": "16",
+   "text": "A sickness with somewhere to be."
+  },
+  {
+   "name": "Pressure of the Deep",
+   "schools": [
+    "Water",
+    "Earth",
+    "Bright",
+    "Shade"
+   ],
+   "dots": 4,
+   "id": "four-school-combinations-pressure-of-the-deep-water-earth-bright-shade",
+   "cost": "16",
+   "text": "The whole sea, pressing on one person."
+  },
+  {
+   "name": "Prism Storm",
+   "schools": [
+    "Fire",
+    "Water",
+    "Air",
+    "Bright"
+   ],
+   "dots": 4,
+   "id": "four-school-combinations-prism-storm-fire-water-air-bright",
+   "cost": "16",
+   "text": "Ice that catches the light and turns it into a weapon against the dead."
+  },
+  {
+   "name": "Pyre of Balance",
+   "schools": [
+    "Fire",
+    "Nature",
+    "Bright",
+    "Shade"
+   ],
+   "dots": 4,
+   "id": "four-school-combinations-pyre-of-balance-fire-nature-bright-shade",
+   "cost": "16",
+   "text": "What burns away feeds what remains."
+  },
+  {
+   "name": "Sacred Canopy",
+   "schools": [
+    "Air",
+    "Earth",
+    "Nature",
+    "Bright"
+   ],
+   "dots": 4,
+   "id": "four-school-combinations-sacred-canopy-air-earth-nature-bright",
+   "cost": "16",
+   "text": "Shade, but the kind made by light."
+  },
+  {
+   "name": "Sap Siphon",
+   "schools": [
+    "Water",
+    "Nature",
+    "Bright",
+    "Shade"
+   ],
+   "dots": 4,
+   "id": "four-school-combinations-sap-siphon-water-nature-bright-shade",
+   "cost": "16",
+   "text": "Taken from one, given to another."
+  },
+  {
+   "name": "Sunforged Armor",
+   "schools": [
+    "Fire",
+    "Water",
+    "Earth",
+    "Bright"
+   ],
+   "dots": 4,
+   "id": "four-school-combinations-sunforged-armor-fire-water-earth-bright",
+   "cost": "16",
+   "text": "Armor fired in holy light and cooled in an instant."
+  },
+  {
+   "name": "Sunglass Lens",
+   "schools": [
+    "Fire",
+    "Air",
+    "Earth",
+    "Bright"
+   ],
+   "dots": 4,
+   "id": "four-school-combinations-sunglass-lens-fire-air-earth-bright",
+   "cost": "16",
+   "text": "A single point of sunlight, made unbearable."
+  },
+  {
+   "name": "Tar Pit",
+   "schools": [
+    "Fire",
+    "Water",
+    "Earth",
+    "Shade"
+   ],
+   "dots": 4,
+   "id": "four-school-combinations-tar-pit-fire-water-earth-shade",
+   "cost": "16",
+   "text": "Hot, black, and patient."
+  },
+  {
+   "name": "Teleportation",
+   "schools": [
+    "Air",
+    "Nature",
+    "Bright",
+    "Shade"
+   ],
+   "dots": 4,
+   "id": "four-school-combinations-teleportation-air-nature-bright-shade",
+   "cost": "16",
+   "text": "One step here, the next step somewhere else entirely."
+  },
+  {
+   "name": "Thornwood Maze",
+   "schools": [
+    "Air",
+    "Earth",
+    "Nature",
+    "Shade"
+   ],
+   "dots": 4,
+   "id": "four-school-combinations-thornwood-maze-air-earth-nature-shade",
+   "cost": "16",
+   "text": "Every way out is a way through thorns."
+  },
+  {
+   "name": "Thunderstorm",
+   "schools": [
+    "Fire",
+    "Water",
+    "Air",
+    "Nature"
+   ],
+   "dots": 4,
+   "id": "four-school-combinations-thunderstorm-fire-water-air-nature",
+   "cost": "16",
+   "text": "Rain to carry it, heat to spark it, air to throw it, and something living to call it down."
+  },
+  {
+   "name": "Twilight Steam",
+   "schools": [
+    "Fire",
+    "Water",
+    "Bright",
+    "Shade"
+   ],
+   "dots": 4,
+   "id": "four-school-combinations-twilight-steam-fire-water-bright-shade",
+   "cost": "16",
+   "text": "In the haze between light and dark, spells forget how they were made."
+  },
+  {
+   "name": "Twin Corona",
+   "schools": [
+    "Fire",
+    "Air",
+    "Bright",
+    "Shade"
+   ],
+   "dots": 4,
+   "id": "four-school-combinations-twin-corona-fire-air-bright-shade",
+   "cost": "16",
+   "text": "Two fires, opposite in every way, agreeing on one thing: keep away."
+  },
+  {
+   "name": "Wellspring",
+   "schools": [
+    "Water",
+    "Earth",
+    "Nature",
+    "Bright"
+   ],
+   "dots": 4,
+   "id": "four-school-combinations-wellspring-water-earth-nature-bright",
+   "cost": "16",
+   "text": "The kind of water people walk for days to find."
+  },
+  {
+   "name": "Renewal",
+   "schools": [
+    "Fire",
+    "Water",
+    "Air",
+    "Nature",
+    "Bright"
+   ],
+   "dots": 5,
+   "id": "five-school-combinations-renewal-fire-water-air-nature-bright",
+   "cost": "25",
+   "text": "What was lost grows back as though it had never been gone."
+  },
+  {
+   "name": "Black Meteor",
+   "schools": [
+    "Fire",
+    "Water",
+    "Air",
+    "Earth",
+    "Shade"
+   ],
+   "dots": 5,
+   "id": "five-school-combinations-black-meteor-fire-water-air-earth-shade",
+   "cost": "25",
+   "text": "The sky goes dark before it lands."
+  },
+  {
+   "name": "Blackfire Wildwood",
+   "schools": [
+    "Fire",
+    "Air",
+    "Earth",
+    "Nature",
+    "Shade"
+   ],
+   "dots": 5,
+   "id": "five-school-combinations-blackfire-wildwood-fire-air-earth-nature-shade",
+   "cost": "25",
+   "text": "A forest that burns and keeps growing anyway."
+  },
+  {
+   "name": "Drowned World",
+   "schools": [
+    "Water",
+    "Air",
+    "Earth",
+    "Nature",
+    "Shade"
+   ],
+   "dots": 5,
+   "id": "five-school-combinations-drowned-world-water-air-earth-nature-shade",
+   "cost": "25",
+   "text": "The water rises, and it brings the bottom of the lake with it."
+  },
+  {
+   "name": "Gravity Tide",
+   "schools": [
+    "Water",
+    "Air",
+    "Earth",
+    "Bright",
+    "Shade"
+   ],
+   "dots": 5,
+   "id": "five-school-combinations-gravity-tide-water-air-earth-bright-shade",
+   "cost": "25",
+   "text": "Gravity, rearranged like furniture."
+  },
+  {
+   "name": "Gravity Well",
+   "schools": [
+    "Fire",
+    "Air",
+    "Earth",
+    "Bright",
+    "Shade"
+   ],
+   "dots": 5,
+   "id": "five-school-combinations-gravity-well-fire-air-earth-bright-shade",
+   "cost": "25",
+   "text": "Everything falls toward the fire."
+  },
+  {
+   "name": "Lifeforge",
+   "schools": [
+    "Fire",
+    "Water",
+    "Earth",
+    "Nature",
+    "Bright"
+   ],
+   "dots": 5,
+   "id": "five-school-combinations-lifeforge-fire-water-earth-nature-bright",
+   "cost": "25",
+   "text": "The forge where bodies are made whole again."
+  },
+  {
+   "name": "Phoenix Form",
+   "schools": [
+    "Fire",
+    "Water",
+    "Nature",
+    "Bright",
+    "Shade"
+   ],
+   "dots": 5,
+   "id": "five-school-combinations-phoenix-form-fire-water-nature-bright-shade",
+   "cost": "25",
+   "text": "Wings of fire that burn your enemies and warm your friends."
+  },
+  {
+   "name": "Plague Storm",
+   "schools": [
+    "Fire",
+    "Water",
+    "Air",
+    "Nature",
+    "Shade"
+   ],
+   "dots": 5,
+   "id": "five-school-combinations-plague-storm-fire-water-air-nature-shade",
+   "cost": "25",
+   "text": "A storm that does not pass. It lingers and it spreads."
+  },
+  {
+   "name": "Primordial Storm",
+   "schools": [
+    "Fire",
+    "Water",
+    "Air",
+    "Earth",
+    "Nature"
+   ],
+   "dots": 5,
+   "id": "five-school-combinations-primordial-storm-fire-water-air-earth-nature",
+   "cost": "25",
+   "text": "Fire, flood, wind, stone, and root, all arriving together."
+  },
+  {
+   "name": "Reshape the Land",
+   "schools": [
+    "Fire",
+    "Earth",
+    "Nature",
+    "Bright",
+    "Shade"
+   ],
+   "dots": 5,
+   "id": "five-school-combinations-reshape-the-land-fire-earth-nature-bright-shade",
+   "cost": "25",
+   "text": "The map is now a suggestion."
+  },
+  {
+   "name": "Rotting Caldera",
+   "schools": [
+    "Fire",
+    "Water",
+    "Earth",
+    "Nature",
+    "Shade"
+   ],
+   "dots": 5,
+   "id": "five-school-combinations-rotting-caldera-fire-water-earth-nature-shade",
+   "cost": "25",
+   "text": "Fire, rot, and steam rising from a wound in the world."
+  },
+  {
+   "name": "Sky Citadel",
+   "schools": [
+    "Air",
+    "Earth",
+    "Nature",
+    "Bright",
+    "Shade"
+   ],
+   "dots": 5,
+   "id": "five-school-combinations-sky-citadel-air-earth-nature-bright-shade",
+   "cost": "25",
+   "text": "A hill that decided it would rather be a cloud."
+  },
+  {
+   "name": "Soul Lightning",
+   "schools": [
+    "Fire",
+    "Air",
+    "Nature",
+    "Bright",
+    "Shade"
+   ],
+   "dots": 5,
+   "id": "five-school-combinations-soul-lightning-fire-air-nature-bright-shade",
+   "cost": "25",
+   "text": "It takes what they had and hands it to someone better."
+  },
+  {
+   "name": "Starforged Titan",
+   "schools": [
+    "Fire",
+    "Water",
+    "Earth",
+    "Bright",
+    "Shade"
+   ],
+   "dots": 5,
+   "id": "five-school-combinations-starforged-titan-fire-water-earth-bright-shade",
+   "cost": "25",
+   "text": "A guardian built from everything the forge can give."
+  },
+  {
+   "name": "Stormbreaker",
+   "schools": [
+    "Fire",
+    "Water",
+    "Air",
+    "Bright",
+    "Shade"
+   ],
+   "dots": 5,
+   "id": "five-school-combinations-stormbreaker-fire-water-air-bright-shade",
+   "cost": "25",
+   "text": "Where it passes, the magic of others simply comes undone."
+  },
+  {
+   "name": "Sunfall",
+   "schools": [
+    "Fire",
+    "Water",
+    "Air",
+    "Earth",
+    "Bright"
+   ],
+   "dots": 5,
+   "id": "five-school-combinations-sunfall-fire-water-air-earth-bright",
+   "cost": "25",
+   "text": "A piece of the sun, dropped with intent."
+  },
+  {
+   "name": "Veil Rain",
+   "schools": [
+    "Water",
+    "Air",
+    "Nature",
+    "Bright",
+    "Shade"
+   ],
+   "dots": 5,
+   "id": "five-school-combinations-veil-rain-water-air-nature-bright-shade",
+   "cost": "25",
+   "text": "Some are hidden in it. Some cannot hide from it."
+  },
+  {
+   "name": "Verdant Sanctuary",
+   "schools": [
+    "Water",
+    "Air",
+    "Earth",
+    "Nature",
+    "Bright"
+   ],
+   "dots": 5,
+   "id": "five-school-combinations-verdant-sanctuary-water-air-earth-nature-bright",
+   "cost": "25",
+   "text": "A place the dead cannot reach and the living do not want to leave."
+  },
+  {
+   "name": "Worldroot",
+   "schools": [
+    "Water",
+    "Earth",
+    "Nature",
+    "Bright",
+    "Shade"
+   ],
+   "dots": 5,
+   "id": "five-school-combinations-worldroot-water-earth-nature-bright-shade",
+   "cost": "25",
+   "text": "The ground itself takes a side."
+  },
+  {
+   "name": "Wrath of the Sun",
+   "schools": [
+    "Fire",
+    "Air",
+    "Earth",
+    "Nature",
+    "Bright"
+   ],
+   "dots": 5,
+   "id": "five-school-combinations-wrath-of-the-sun-fire-air-earth-nature-bright",
+   "cost": "25",
+   "text": "A line drawn across the world in light."
+  },
+  {
+   "name": "Grand Restoration",
+   "schools": [
+    "Water",
+    "Air",
+    "Earth",
+    "Nature",
+    "Bright",
+    "Shade"
+   ],
+   "dots": 6,
+   "id": "six-school-combinations-grand-restoration-water-air-earth-nature-bright-shade",
+   "cost": "36",
+   "text": "As though none of it had ever happened."
+  },
+  {
+   "name": "Heartfire Bond",
+   "schools": [
+    "Fire",
+    "Air",
+    "Earth",
+    "Nature",
+    "Bright",
+    "Shade"
+   ],
+   "dots": 6,
+   "id": "six-school-combinations-heartfire-bond-fire-air-earth-nature-bright-shade",
+   "cost": "36",
+   "text": "Many fires, one flame."
+  },
+  {
+   "name": "Resurrection",
+   "schools": [
+    "Fire",
+    "Water",
+    "Air",
+    "Nature",
+    "Bright",
+    "Shade"
+   ],
+   "dots": 6,
+   "id": "six-school-combinations-resurrection-fire-water-air-nature-bright-shade",
+   "cost": "36",
+   "text": "Light and shadow together pull a soul back across the threshold."
+  },
+  {
+   "name": "Nightfall",
+   "schools": [
+    "Fire",
+    "Water",
+    "Air",
+    "Earth",
+    "Nature",
+    "Shade"
+   ],
+   "dots": 6,
+   "id": "six-school-combinations-nightfall-fire-water-air-earth-nature-shade",
+   "cost": "36",
+   "text": "The sun goes out, and it is not coming back for a while."
+  },
+  {
+   "name": "Starfall",
+   "schools": [
+    "Fire",
+    "Water",
+    "Air",
+    "Earth",
+    "Bright",
+    "Shade"
+   ],
+   "dots": 6,
+   "id": "six-school-combinations-starfall-fire-water-air-earth-bright-shade",
+   "cost": "36",
+   "text": "The sky falls, one star at a time, all at once."
+  },
+  {
+   "name": "Sunrise",
+   "schools": [
+    "Fire",
+    "Water",
+    "Air",
+    "Earth",
+    "Nature",
+    "Bright"
+   ],
+   "dots": 6,
+   "id": "six-school-combinations-sunrise-fire-water-air-earth-nature-bright",
+   "cost": "36",
+   "text": "The night ends early, and everyone can feel it."
+  },
+  {
+   "name": "Titan Awakening",
+   "schools": [
+    "Fire",
+    "Water",
+    "Earth",
+    "Nature",
+    "Bright",
+    "Shade"
+   ],
+   "dots": 6,
+   "id": "six-school-combinations-titan-awakening-fire-water-earth-nature-bright-shade",
+   "cost": "36",
+   "text": "The mountain stood up."
+  },
+  {
+   "name": "Creation Magic",
+   "schools": [
+    "Fire",
+    "Water",
+    "Air",
+    "Earth",
+    "Nature",
+    "Bright",
+    "Shade"
+   ],
+   "dots": 7,
+   "id": "creation-magic",
+   "cost": "49",
+   "text": "The single combination of all seven schools: the only magic that brings new life into the world."
   }
  ]
 }

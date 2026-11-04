@@ -64,7 +64,8 @@ def main():
         assert len(k['ranks']) == 7, k['name']
     # Two- and three-school combination spells (taken in place of a rank's option)
     combos = []
-    for sec, n in (('two-school-combinations', 2), ('three-school-combinations', 3)):
+    for sec, n in (('two-school-combinations', 2), ('three-school-combinations', 3), ('four-school-combinations', 4),
+                   ('five-school-combinations', 5), ('six-school-combinations', 6)):
         i0 = p13.find('id="%s"' % sec)
         i1 = p13.find('<section', i0)
         for m in re.finditer(r'<div class="entry"><div class="entry-name" id="([^"]+)">([^<]+)</div>(.*?)</div>', p13[i0:i1], re.S):
@@ -75,7 +76,12 @@ def main():
             tag = re.search(r'<p class="tagline">(.*?)</p>', m.group(3), re.S)
             combos.append({'name': mm.group(1), 'schools': parts, 'dots': n, 'id': m.group(1),
                            'cost': str(n * n), 'text': clean(tag.group(1)) if tag else ''})
-    assert len([c for c in combos if c['dots'] == 2]) == 21 and len([c for c in combos if c['dots'] == 3]) == 35, len(combos)
+    counts = [len([c for c in combos if c['dots'] == n]) for n in (2, 3, 4, 5, 6)]
+    assert counts == [21, 35, 35, 21, 7], counts
+    if 'id="creation-magic"' in p13:
+        combos.append({'name': 'Creation Magic', 'schools': ['Fire', 'Water', 'Air', 'Earth', 'Nature', 'Bright', 'Shade'],
+                       'dots': 7, 'id': 'creation-magic', 'cost': '49',
+                       'text': 'The single combination of all seven schools: the only magic that brings new life into the world.'})
     data['combos'] = combos
 
     # Circle Magic is ten disciplines, each its own knowledge (no spell list)
