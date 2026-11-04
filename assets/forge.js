@@ -383,14 +383,11 @@
   function hyumanAdapt() {
     return build.heritage && build.heritage.name === 'Hyuman' && build.heritage.merit === 'Hyuman Adaptability';
   }
-  // Hyumans and Vampires may take Standard (5) in all three columns instead
-  function canEven() { return !!build.heritage && (build.heritage.name === 'Hyuman' || build.heritage.name === 'Vampire'); }
-  function evenSpread() { return hyumanAdapt() || (canEven() && build.attr_spread === 'even'); }
   function innateAttr() { return build.heritage && build.heritage.innate; }
   function attrBase(a) { return a === innateAttr() ? 2 : 1; }
   function attrVal(a) { var v = (build.attrs || {})[a]; return v === undefined ? attrBase(a) : v; }
   function colNumber(col) {
-    if (evenSpread()) return 5;
+    if (hyumanAdapt()) return 5;
     var d = (build.attr_cols || {})[col];
     return d ? COLNUM[d] : null;
   }
@@ -418,7 +415,7 @@
     return COLS.indexOf(f) >= 0 ? f : null;
   }
   S[5] = {
-    intro: 'Every attribute starts at 1 dot (your Innate Attribute starts at 2). Give each column one designation: Affinity (6), Standard (5), or Aversion (4). That number is the column’s cap and the number of dots you spend across its three attributes. Your Attribute Flaw column is always your Aversion. Hyumans and Vampires may instead take Standard (5) in all three. No attribute can be filled above 5 at creation.',
+    intro: 'Every attribute starts at 1 dot (your Innate Attribute starts at 2). Give each column one designation: Affinity (6), Standard (5), or Aversion (4). That number is the column’s cap and the number of dots you spend across its three attributes. Your Attribute Flaw column can never be your Affinity. No attribute can be filled above 5 at creation.',
     link: '../rulebook/ch6.html#attributes',
     counter: function () {
       return COLS.map(function (c) { var l = colLeft(c); return [c, l === null ? '-' : l]; });
@@ -428,25 +425,12 @@
       build.attrs = build.attrs || {};
       if (hyumanAdapt()) {
         p.appendChild(el('p', { class: 'note-box', text: 'Hyuman Adaptability: all three columns are 5 instead of Affinity, Standard, and Aversion.' }));
-      } else if (canEven()) {
-        var spread = el('select', { id: 'attr-spread' }, [
-          el('option', { value: '', text: 'Affinity, Standard, and Aversion (6, 5, 4)' }),
-          el('option', { value: 'even', text: 'Standard in all three (5, 5, 5)' })
-        ]);
-        if (build.attr_spread === 'even') spread.value = 'even';
-        spread.addEventListener('change', function () { build.attr_spread = spread.value || undefined; refresh(true); });
-        p.appendChild(el('div', { class: 'field' }, [el('label', { for: 'attr-spread', text: build.heritage.name + ' attribute spread' }), spread]));
       }
       var flaw = attributeFlawCol();
-      // The Attribute Flaw column is always Aversion (Storyteller Mode can change it)
-      if (flaw && !stMode() && !evenSpread() && build.attr_cols[flaw] !== 'Aversion') {
-        COLS.forEach(function (c) { if (build.attr_cols[c] === 'Aversion') delete build.attr_cols[c]; });
-        build.attr_cols[flaw] = 'Aversion';
-      }
       var grid = el('div', { class: 'attr-cols' });
       COLS.forEach(function (col) {
         var box = el('fieldset', { class: 'attr-col' }, [el('legend', { class: 'px', text: col })]);
-        if (!evenSpread()) {
+        if (!hyumanAdapt()) {
           var id = 'col-' + col;
           var sel = el('select', { id: id }, [el('option', { value: '', text: 'Designation...' })]);
           ['Affinity', 'Standard', 'Aversion'].forEach(function (dname) {
@@ -458,10 +442,9 @@
             if (build.attr_cols[col] === dname) o.selected = true;
             sel.appendChild(o);
           });
-          if (flaw === col && !stMode()) sel.disabled = true;
           sel.addEventListener('change', function () { build.attr_cols[col] = sel.value; refresh(true); });
           box.appendChild(el('div', { class: 'field' }, [el('label', { for: id, text: 'Designation' }), sel]));
-          if (flaw === col) box.appendChild(el('p', { class: 'hint', text: 'Attribute Flaw: this column is always your Aversion.' }));
+          if (flaw === col) box.appendChild(el('p', { class: 'hint', text: 'Attribute Flaw: this column cannot be your Affinity.' }));
         }
         D.attributes[col].forEach(function (a) {
           var base = attrBase(a);
@@ -477,7 +460,7 @@
     },
     check: function () {
       var w = [];
-      if (!evenSpread()) {
+      if (!hyumanAdapt()) {
         var used = {};
         COLS.forEach(function (c) {
           var d = (build.attr_cols || {})[c];
@@ -486,7 +469,7 @@
           used[d] = true;
         });
         var flaw = attributeFlawCol();
-        if (flaw && (build.attr_cols || {})[flaw] !== 'Aversion') w.push({ key: 'cols.flaw.' + flaw, text: 'Your Attribute Flaw is ' + flaw + ', so it should be your Aversion column.' });
+        if (flaw && (build.attr_cols || {})[flaw] === 'Affinity') w.push({ key: 'cols.flaw.' + flaw, text: 'Your Attribute Flaw is ' + flaw + ', so it cannot be your Affinity column.' });
       }
       COLS.forEach(function (c) {
         var l = colLeft(c);
