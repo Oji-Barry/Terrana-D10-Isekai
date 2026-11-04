@@ -1174,12 +1174,29 @@
       }
       fs.appendChild(el('p', { class: 'hint', text: 'Rank F: ' + D.starters.stats + '.' }));
     }
+    if (isSummon) {
+      // one name box per form its Summoning dots unlock: 2nd at 3, 3rd at 5, 4th at 7
+      var dots = knowTotal('Summoning Magic');
+      var forms = [['First Form', 1], ['Second Form', 3], ['Third Form', 5], ['Fourth Form', 7]].filter(function (f) { return dots >= f[1]; });
+      c.forms = c.forms || {};
+      var ff = el('div', { class: 'form-names' });
+      forms.forEach(function (f, i) {
+        var fid = 'cmp-' + key + '-form-' + (i + 1);
+        var fi = el('input', { id: fid, maxlength: '60', value: c.forms[i + 1] || '', placeholder: i ? 'Name of its evolved form' : 'Usually its own name' });
+        fi.addEventListener('input', function () { c.forms[i + 1] = fi.value; if (!fi.value.trim()) delete c.forms[i + 1]; refresh(); });
+        ff.appendChild(el('div', { class: 'field' }, [el('label', { for: fid, text: f[0] + (i ? ' (' + f[1] + ' dots)' : '') }), fi]));
+      });
+      fs.appendChild(el('p', { class: 'hint', text: 'Name each form your Summoning dots unlock. The same names go on your Summoner\u2019s Sheet.' }));
+      fs.appendChild(ff);
+    }
     box.appendChild(fs);
   }
   function companionText(c) {
     if (!c) return '';
     var what = c.pick === OTHER ? (c.what || '').trim() : (c.pick || '');
-    return [c.name, what].filter(function (x) { return x && x.trim(); }).join(', ');
+    var out = [c.name, what].filter(function (x) { return x && x.trim(); }).join(', ');
+    var fn = Object.keys(c.forms || {}).sort().filter(function (k) { return +k > 1 && c.forms[k].trim(); }).map(function (k) { return c.forms[k].trim(); });
+    return out + (fn.length ? ' (evolves into ' + fn.join(', then ') + ')' : '');
   }
   // Storyteller Mode: check every option the current dots reach
   function selectAll(kinds) {
