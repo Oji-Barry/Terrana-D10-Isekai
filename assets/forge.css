@@ -274,3 +274,6 @@
 .bg-names { margin: 0 0 8px; padding: 0 0 8px; border-bottom: 1px solid rgba(233, 237, 248, 0.12); }
 .bg-names input { width: 100%; }
 .combo-head { color: var(--gold); font-size: 15px; margin: 8px 0 2px; }
+.companion { margin: 10px 0 4px; padding: 8px 14px 4px; border: 1px dashed var(--gold); border-radius: 6px; }
+.companion legend { font-size: 16px; padding: 0 6px; }
+.companion input { width: 100%; }
