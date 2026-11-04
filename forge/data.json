@@ -7136,92 +7136,92 @@
   {
    "name": "Scroll Magic",
    "kind": "Circle Magic discipline",
-   "extra_mana_dice": "",
-   "focus": "Scroll Magic is the foundational discipline of Circle Magic and the one most practitioners learn first.",
+   "extra_mana_dice": "None in combat",
+   "focus": "Spells stored in scrolls to release later.",
    "link": "../rulebook/ch13.html#the-disciplines-of-circle-magic-scroll-magic",
-   "ranks": null,
-   "circle": true
+   "circle": true,
+   "ranks": null
   },
   {
    "name": "Divination",
    "kind": "Circle Magic discipline",
-   "extra_mana_dice": "",
-   "focus": "Divination uses Circle Magic to read information from time, place, and connection rather than imposing effects on the world.",
+   "extra_mana_dice": "None in combat",
+   "focus": "Reading information from time, place, and connection.",
    "link": "../rulebook/ch13.html#the-disciplines-of-circle-magic-divination",
-   "ranks": null,
-   "circle": true
+   "circle": true,
+   "ranks": null
   },
   {
    "name": "Summoning Magic",
    "kind": "Circle Magic discipline",
-   "extra_mana_dice": "",
-   "focus": "Summoning Magic brings entities from other planes or states of being into the physical world.",
+   "extra_mana_dice": "None in combat",
+   "focus": "SumMonz, familiars, and calling items through circles.",
    "link": "../rulebook/ch13.html#the-disciplines-of-circle-magic-summoning-magic",
-   "ranks": null,
-   "circle": true
+   "circle": true,
+   "ranks": null
   },
   {
    "name": "Teleportation",
    "kind": "Circle Magic discipline",
-   "extra_mana_dice": "",
-   "focus": "Teleportation Magic uses circles drawn at both origin and destination to create an instantaneous passage between two prepared points.",
+   "extra_mana_dice": "None in combat",
+   "focus": "Instant passage between two prepared circles.",
    "link": "../rulebook/ch13.html#the-disciplines-of-circle-magic-teleportation",
-   "ranks": null,
-   "circle": true
+   "circle": true,
+   "ranks": null
   },
   {
    "name": "Contract Magic",
    "kind": "Circle Magic discipline",
-   "extra_mana_dice": "",
-   "focus": "Contract Magic makes binding agreements - magical compacts with real teeth.",
+   "extra_mana_dice": "None in combat",
+   "focus": "Binding agreements with real teeth.",
    "link": "../rulebook/ch13.html#the-disciplines-of-circle-magic-contract-magic",
-   "ranks": null,
-   "circle": true
+   "circle": true,
+   "ranks": null
   },
   {
    "name": "Binding Rituals",
    "kind": "Circle Magic discipline",
-   "extra_mana_dice": "",
-   "focus": "Binding Rituals use Circle Magic to affix magical effects, spirits, or entities to objects, locations, or thresholds.",
+   "extra_mana_dice": "None in combat",
+   "focus": "Fixing effects, spirits, or entities to objects or places.",
    "link": "../rulebook/ch13.html#the-disciplines-of-circle-magic-binding-rituals",
-   "ranks": null,
-   "circle": true
+   "circle": true,
+   "ranks": null
   },
   {
    "name": "Ward Magic",
    "kind": "Circle Magic discipline",
-   "extra_mana_dice": "",
-   "focus": "Wards are protective or alerting circles placed on zones, objects, or thresholds.",
+   "extra_mana_dice": "None in combat",
+   "focus": "Protective or alerting circles on zones, objects, or thresholds.",
    "link": "../rulebook/ch13.html#the-disciplines-of-circle-magic-ward-magic",
-   "ranks": null,
-   "circle": true
+   "circle": true,
+   "ranks": null
   },
   {
    "name": "Augmentation",
    "kind": "Circle Magic discipline",
-   "extra_mana_dice": "",
-   "focus": "Augmentation is the circle magic of building magic into weapons so that their attacks can carry it.",
+   "extra_mana_dice": "None in combat",
+   "focus": "Building magic into weapons and gear.",
    "link": "../rulebook/ch13.html#the-disciplines-of-circle-magic-augmentation",
-   "ranks": null,
-   "circle": true
+   "circle": true,
+   "ranks": null
   },
   {
    "name": "Spatial Magic",
    "kind": "Circle Magic discipline",
-   "extra_mana_dice": "",
-   "focus": "Spatial Magic folds space so that a container holds far more than its outside size should allow.",
+   "extra_mana_dice": "None in combat",
+   "focus": "Folding space so containers hold far more.",
    "link": "../rulebook/ch13.html#the-disciplines-of-circle-magic-spatial-magic",
-   "ranks": null,
-   "circle": true
+   "circle": true,
+   "ranks": null
   },
   {
    "name": "Time Magic",
    "kind": "Circle Magic discipline",
-   "extra_mana_dice": "",
-   "focus": "Time Magic is the deepest and most demanding branch of Circle Magic.",
+   "extra_mana_dice": "None in combat",
+   "focus": "Slowing, speeding, or stopping time in a small area.",
    "link": "../rulebook/ch13.html#the-disciplines-of-circle-magic-time-magic",
-   "ranks": null,
-   "circle": true
+   "circle": true,
+   "ranks": null
   }
  ],
  "freebies": {

@@ -58,7 +58,7 @@ def main():
     sc = schools(p13)
     for k in data['knowledges']:
         key = 'battle-aura' if k['name'] == 'Battle Aura' else (k['name'].lower() + '-magic')
-        if k['name'] == 'Circle Magic':
+        if k['name'] == 'Circle Magic' or k['kind'] == 'Circle Magic discipline':
             continue
         k['ranks'] = sc[key]
         assert len(k['ranks']) == 7, k['name']
@@ -81,14 +81,26 @@ def main():
     # Circle Magic is ten disciplines, each its own knowledge (no spell list)
     toc = json.load(open('rulebook/toc.json', encoding='utf-8'))
     disc = [n for n in toc['ch13'] if n['s'] == 'The Disciplines of Circle Magic'][0]['c']
-    i = [k['name'] for k in data['knowledges']].index('Circle Magic')
+    names = [k['name'] for k in data['knowledges']]
+    if 'Circle Magic' not in names:
+        # Chapter 6 already lists each discipline as its own row
+        by_name = {n['s']: n for n in disc}
+        for k in data['knowledges']:
+            if k['kind'] == 'Circle Magic discipline':
+                k['circle'] = True
+                k['ranks'] = None
+                k['link'] = '../rulebook/ch13.html#' + by_name[k['name']]['id']
+        assert sum(1 for k in data['knowledges'] if k.get('circle')) == len(disc)
+        disc = []
+    i = names.index('Circle Magic') if 'Circle Magic' in names else len(names)
     out = []
     for n in disc:
         m = re.search(r'id="%s">.*?</h3>\s*<p>(.*?)</p>' % re.escape(n['id']), p13, re.S)
         first = re.split(r'(?<=\.)\s', clean(m.group(1)))[0] if m else ''
         out.append({'name': n['s'], 'kind': 'Circle Magic discipline', 'extra_mana_dice': '', 'focus': first,
                     'link': '../rulebook/ch13.html#' + n['id'], 'ranks': None, 'circle': True})
-    data['knowledges'][i:i + 1] = out
+    if out:
+        data['knowledges'][i:i + 1] = out
     with open('forge/data.json', 'w', encoding='utf-8') as fh:
         json.dump(data, fh, ensure_ascii=False, indent=1)
     print('ranks added: %d styles, %d knowledges' % (len(data['styles']), sum(1 for k in data['knowledges'] if k.get('ranks'))))
