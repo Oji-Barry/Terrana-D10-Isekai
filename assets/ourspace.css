@@ -134,3 +134,14 @@ img { max-width: 100%; }
 .os-foot { max-width: 980px; margin: 0 auto 20px; text-align: center; font-size: 11px; color: #666666; }
 .os-foot a { color: inherit; }
 .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* Pictures */
+.os-picedit { display: grid; grid-template-columns: 140px minmax(0, 1fr); gap: 10px; align-items: start; }
+@media (max-width: 420px) { .os-picedit { grid-template-columns: minmax(0, 1fr); } .os-picedit #pic-preview { max-width: 160px; } }
+.os-form input[type=file] { font: inherit; max-width: 100%; }
+.os-thumbs { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+.os-thumbs img { width: 72px; height: 72px; object-fit: cover; border: 1px solid #999999; }
+.os-post-pics { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 6px; margin: 8px 0 4px; }
+.os-post-pics img { width: 100%; max-height: 360px; object-fit: cover; border: 1px solid #999999; display: block; }
+.os-post-pics a:only-child { grid-column: 1 / -1; }
+.os-post-pics a:only-child img { width: auto; max-width: 100%; object-fit: contain; }
