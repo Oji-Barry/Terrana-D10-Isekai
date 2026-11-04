@@ -340,6 +340,24 @@ def main(src):
     data['merits'] = [m for m in merits if m['name'] != 'Magic Eye']  # the eyes are listed one by one
     data['flaws'] = flaws
 
+    # Guilds for Guild Standing, from the Chapter 10 table, plus the space-era Mercenaries Guild
+    doc10 = docx.Document(os.path.join(src, 'Jimothy D10 - Chapter 10 - Backgrounds.docx'))
+    guilds = []
+    for t in doc10.tables:
+        rows = table_rows(t)
+        if rows and rows[0][:1] == ['Guild']:
+            for r in rows[1:]:
+                nm = r[0]
+                if nm == 'Hero Rangers Corps':
+                    guilds.append({'name': 'Hero Rangers Corps (HRC)', 'what': r[1]})
+                elif nm.endswith('(unofficial)'):
+                    guilds.append({'name': 'Thieves Guild (unofficial)', 'what': r[1]})
+                else:
+                    guilds.append({'name': nm + ' Guild', 'what': r[1]})
+    assert len(guilds) == 12, guilds
+    guilds.append({'name': 'Mercenaries Guild (space era)', 'what': 'What the Adventurers Guild is on Terrana, the Mercenaries Guild is in space (Chapter 16).'})
+    data['guilds'] = guilds
+
     data['backgrounds'] = [{'name': r[0], 'what': r[1], 'link': link(links, 'ch10', r[0])}
                            for r in qr.get('Backgrounds', [])]
 

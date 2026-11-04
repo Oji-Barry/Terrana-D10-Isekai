@@ -3498,6 +3498,60 @@
    ]
   }
  ],
+ "guilds": [
+  {
+   "name": "Adventurers Guild",
+   "what": "Delvers, monster hunters, and explorers. Runs job boards, outposts, and bounties throughout the world."
+  },
+  {
+   "name": "Arts Guild",
+   "what": "Performers, artists, writers, and entertainers, from street musicians to CCN stars."
+  },
+  {
+   "name": "Farmers Guild",
+   "what": "Growers, ranchers, and food producers who feed Monsera and its trade partners."
+  },
+  {
+   "name": "Hero Rangers Corps (HRC)",
+   "what": "Monsera's military corps against the Rift and its Kaiju, with outposts in every nation. Standing is your Corps rank."
+  },
+  {
+   "name": "Healers Guild",
+   "what": "Doctors, clinics, and healing mages, including curse removal and advanced care."
+  },
+  {
+   "name": "Laborers Guild",
+   "what": "Builders, haulers, miners, and the workers who keep the city running."
+  },
+  {
+   "name": "Mages Guild",
+   "what": "Spellcasters, enchanters, and magical researchers. Keepers of the heptagram."
+  },
+  {
+   "name": "Makers Guild",
+   "what": "Smiths, engineers, and crafters of implements, machines, and gear."
+  },
+  {
+   "name": "Merchants Guild",
+   "what": "Traders, shopkeepers, bankers, and the moneyed interests of Monsera."
+  },
+  {
+   "name": "Navigators Guild",
+   "what": "Sailors, pilots, guides, and anyone who moves people and goods across land, sea, and sky."
+  },
+  {
+   "name": "Scholars Guild",
+   "what": "Researchers, archivists, teachers, and translators."
+  },
+  {
+   "name": "Thieves Guild (unofficial)",
+   "what": "Extralegal and unrepresented, with no cabinet seat. Speaks its own secure dialect, Thieves' Cant. Its members do not advertise their standing."
+  },
+  {
+   "name": "Mercenaries Guild (space era)",
+   "what": "What the Adventurers Guild is on Terrana, the Mercenaries Guild is in space (Chapter 16)."
+  }
+ ],
  "backgrounds": [
   {
    "name": "Allies",
