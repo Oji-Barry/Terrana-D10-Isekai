@@ -63,13 +63,27 @@ FILL = r"""
   if (!id) { say('No character picked. Open a sheet from My Characters.'); return; }
   document.getElementById('bar-forge').href = '../forge/index.html?id=' + encodeURIComponent(id);
   var A = window.Terrana && window.Terrana.auth;
-  A.client.from('characters').select('id, name, sheet').eq('id', id).maybeSingle().then(function (res) {
+  function loadScript(src) {
+    return new Promise(function (ok, bad) { var s = document.createElement('script'); s.src = src; s.onload = ok; s.onerror = bad; document.body.appendChild(s); });
+  }
+  // Fill from the character's Forge choices with the current rules; fall back
+  // to the snapshot the Forge saved if that can't load.
+  async function liveView(c) {
+    window.FORGE_HEADLESS = true;
+    await loadScript('../assets/forge.js');
+    var data = await fetch('../forge/data.json').then(function (r) { return r.json(); });
+    var owner = await A.client.from('profiles').select('username').eq('id', c.owner).maybeSingle();
+    return window.TerranaForgeView(data, c, { username: owner.data ? owner.data.username : '' });
+  }
+  A.client.from('characters').select('id, name, owner, sheet').eq('id', id).maybeSingle().then(async function (res) {
     if (res.error) { say(A.friendly(res.error)); return; }
     if (!res.data) { say('This sheet is private, or the character does not exist. Log in to see your own characters.'); return; }
     var c = res.data;
     document.title = c.name + ' | Character Sheet | Jimothy’s D10 Isekai JRPG';
-    var view = (c.sheet && c.sheet.view) || null;
-    if (!view) { say('This character was made before sheets existed. Open it in the Forge and press Next once to make its sheet.'); return; }
+    var view = null;
+    if (c.sheet && c.sheet.build) { try { view = await liveView(c); } catch (e) { console.warn('sheet', e); } }
+    view = view || (c.sheet && c.sheet.view) || null;
+    if (!view) { say('Nothing to show yet. Make this character in the Forge first.'); return; }
     apply(view);
     say('Filled from the Forge. You can type on the sheet before printing, but changes here are not saved.');
   }).catch(function () { say('Could not reach the server. Try refreshing the page.'); });

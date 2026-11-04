@@ -1901,6 +1901,16 @@
     $('save-yes').focus();
   }
 
+  // Headless use by the Character Sheet page: fill a sheet from a saved build
+  // without drawing the Forge.
+  window.TerranaForgeView = function (data, row, player) {
+    D = data; ch = row; me = player || null;
+    build = (row.sheet && row.sheet.build) || {};
+    forge = (row.sheet && row.sheet.forge) || { step: 1, done: [], ok: [] };
+    return sheetView();
+  };
+  if (window.FORGE_HEADLESS) return;
+
   $('save-no').addEventListener('click', function () { $('dlg-save').close(); });
   $('save-yes').addEventListener('click', async function () {
     var dlg = $('dlg-save');
@@ -2017,6 +2027,7 @@
     $('forge-main').hidden = false;
     drawStep();
   }
+
 
   start().catch(function (err) {
     $('forge-loading').innerHTML = '';
