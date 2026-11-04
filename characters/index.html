@@ -118,6 +118,12 @@
       info.appendChild(meta);
       var f = (c.sheet && c.sheet.forge) || null;
       var todo = (f && f.unfinished) || [];
+      if (f && f.complete) {
+        var done = document.createElement('span');
+        done.className = 'char-complete';
+        done.textContent = 'Complete';
+        info.appendChild(done);
+      }
       if (todo.length) {
         var un = document.createElement('span');
         un.className = 'char-unfinished';

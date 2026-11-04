@@ -13,7 +13,7 @@
     'Determine your Backgrounds', 'Set Willpower, Fate, and Sanity', 'Choose your Combat Styles',
     'Choose your Magical Knowledges', 'Spend your Freebie Points', 'Calculate your Level'
   ];
-  var BUILT = 9; // steps that are built so far
+  var BUILT = 13; // steps that are built so far
 
   var D = null;      // forge/data.json
   var me = null;     // logged in player
@@ -511,7 +511,7 @@
   function job() { return build.pl_job && build.pl_job !== 'Other' ? byName(D.occupations, build.pl_job) : null; }
   function plCount() { return Object.keys(build.pl || {}).filter(function (k) { return build.pl[k]; }).length; }
   function plMax() { var j = job(); return j ? j.pl.length : 3; }
-  function specSlots(a) { return ((build.pl || {})[a] ? 1 : 0) + (abVal(a) >= 4 ? 1 : 0); }
+  function specSlots(a) { return ((build.pl || {})[a] ? 1 : 0) + (abVal(a) + fbOf('abilities', a) >= 4 ? 1 : 0); }
   function specList(a) {
     var s = (build.specialties || {})[a];
     if (typeof s === 'string') s = s ? [s] : [];
@@ -1010,12 +1010,326 @@
     p.appendChild(box);
   }
 
+  // ---------- shared: totals with Freebie Points ----------
+  var SK_DOTS = { Affinity: 7, Standard: 5, Aversion: 3 };
+  function fb() {
+    build.fb = build.fb || {};
+    ['attrs', 'abilities', 'styles', 'knows', 'backgrounds'].forEach(function (k) { build.fb[k] = build.fb[k] || {}; });
+    build.fb.mana = build.fb.mana || 0;
+    return build.fb;
+  }
+  function fbOf(kind, n) { return ((build.fb || {})[kind] || {})[n] || 0; }
+  function attrTotal(a) { return attrVal(a) + fbOf('attrs', a); }
+  function abTotal(a) { return abVal(a) + fbOf('abilities', a); }
+  function styleVal(n) { return (build.styles || {})[n] || 0; }
+  function knowVal(n) { return (build.knows || {})[n] || 0; }
+  function styleTotal(n) { return styleVal(n) + fbOf('styles', n); }
+  function knowTotal(n) { return knowVal(n) + fbOf('knows', n); }
+  function manaTotal() { return 1 + ((build.fb || {}).mana || 0); }
+  // dots for Steps 10 and 11 come from the Physical or Mental column
+  function skBudget(col) {
+    if (evenSpreadSafe()) return 5;
+    var d = (build.attr_cols || {})[col];
+    return d ? SK_DOTS[d] : null;
+  }
+  function evenSpreadSafe() { return hyumanAdapt(); }
+  function styleLeft() { var b = skBudget('Physical'); if (b === null) return null; var s = 0; D.styles.forEach(function (x) { s += styleVal(x.name); }); return b - s; }
+  function knowLeft() { var b = skBudget('Mental'); if (b === null) return null; var s = 0; D.knowledges.forEach(function (x) { s += knowVal(x.name); }); return b - s; }
+  function rankLabel(r) { return 'Rank ' + r.rank + ': ' + r.title; }
+
+  // Choices for each new rank of a style (Option A or B) or a school (one of two spells)
+  function rankPicks(box, item, kind, from, to) {
+    var page = kind === 'style' ? 'ch12' : 'ch13';
+    var store = kind === 'style' ? 'style_picks' : 'know_picks';
+    build[store] = build[store] || {};
+    var mine = build[store][item.name] = build[store][item.name] || {};
+    for (var r = from; r <= to; r++) (function (r) {
+      var rk = item.ranks[r - 1];
+      if (!rk) return;
+      var fs = el('fieldset', { class: 'rank-pick' }, [
+        el('legend', {}, [bookLink('../rulebook/' + page + '.html#' + rk.id, rankLabel(rk))])
+      ]);
+      if (rk.default) {
+        fs.appendChild(el('p', { class: 'rank-default' }, [
+          el('strong', { text: 'Default: ' }),
+          kind === 'style' ? bookLink('../rulebook/ch12.html#' + rk.default.id, rk.default.name) : el('span', { text: rk.default.name }),
+          el('span', { class: 'hint', text: ' ' + (rk.default.note ? '(' + rk.default.note + ') ' : '') + rk.default.text })
+        ]));
+      }
+      var opts = kind === 'style' ? [['a', 'Option A', rk.a], ['b', 'Option B', rk.b]] : rk.spells.map(function (s, i) { return [String(i), 'Spell', s]; });
+      opts.forEach(function (o) {
+        var id = 'rk-' + kind + '-' + slug(item.name) + '-' + r + '-' + o[0];
+        var input = el('input', { type: 'radio', name: 'rk-' + kind + '-' + slug(item.name) + '-' + r, id: id, value: o[0] });
+        if (String(mine[r]) === o[0]) input.checked = true;
+        input.addEventListener('change', function () { mine[r] = o[0]; refresh(); });
+        fs.appendChild(el('div', { class: 'rank-opt' }, [
+          input,
+          el('label', { for: id }, [el('strong', { text: o[2].name }), kind === 'style' ? ' (' + o[1] + (o[2].use ? ', ' + o[2].use : '') + ')' : (o[2].cost ? ' (' + o[2].cost + ' mana)' : ''),
+            el('span', { class: 'hint rank-text', text: o[2].text })]),
+          bookLink('../rulebook/' + page + '.html#' + o[2].id, 'Rules')
+        ]));
+      });
+      box.appendChild(fs);
+    })(r);
+  }
+  function missingPicks(item, kind, upTo, w) {
+    var mine = ((build[kind === 'style' ? 'style_picks' : 'know_picks'] || {})[item.name]) || {};
+    if (!item.ranks) return;
+    for (var r = 1; r <= upTo; r++) {
+      if (mine[r] === undefined) w.push({ key: 'pick.' + kind + '.' + slug(item.name) + '.' + r, text: item.name + ' Rank ' + r + ': choose ' + (kind === 'style' ? 'Option A or B.' : item.name === 'Battle Aura' ? 'one of the two techniques.' : 'one of the two spells.') });
+    }
+  }
+
+  // ---------- Step 10: Combat Styles ----------
+  S[10] = {
+    intro: 'Your Physical column decides how many dots you spend on Combat Styles: 7 for Affinity, 5 for Standard, or 3 for Aversion. Spread them across any styles you like, up to 5 dots in one style. Every style taken here is marked P for Primary. Each dot unlocks that rank’s Default Ability, plus your choice of its Option A or Option B.',
+    link: '../rulebook/ch12.html#how-styles-work',
+    counter: function () { var l = styleLeft(); return [['Style dots', l === null ? '-' : l]]; },
+    render: function (p) {
+      build.styles = build.styles || {};
+      if (skBudget('Physical') === null) p.appendChild(el('p', { class: 'note-box', text: 'Give your Physical column a designation in Step 5 first. It sets how many style dots you get.' }));
+      var left = styleLeft();
+      D.styles.forEach(function (s) {
+        var v = styleVal(s.name);
+        var card = el('div', { class: 'sk-card' + (v ? ' picked' : '') });
+        card.appendChild(el('div', { class: 'sk-head' }, [
+          el('div', { class: 'sk-name' }, [bookLink(s.link, s.name), v ? el('span', { class: 'pmark px', text: ' P' }) : null,
+            el('span', { class: 'hint sk-meta', text: (s.weapons + '. Primary: ' + s.primary + '. Secondary: ' + s.secondary).replace(/\.*$/, '.') })]),
+          dotRow(s.name, v, stMode() ? 10 : 7, 0, function (nv) { build.styles[s.name] = nv; if (!nv) delete build.styles[s.name]; refresh(true); },
+            left === null ? 0 : v + Math.max(0, left))
+        ]));
+        if (v) rankPicks(card, s, 'style', 1, v);
+        p.appendChild(card);
+      });
+    },
+    check: function () {
+      var w = [], l = styleLeft();
+      if (l === null) w.push({ key: 'sty.nocol', text: 'Give your Physical column a designation in Step 5 first.' });
+      else if (l > 0) w.push({ key: 'sty.left.' + l, text: l + ' style dot' + (l === 1 ? '' : 's') + ' left to place.' });
+      else if (l < 0) w.push({ key: 'sty.over.' + l, text: 'You are ' + (-l) + ' style dot' + (l === -1 ? '' : 's') + ' over.' });
+      D.styles.forEach(function (s) { var v = styleVal(s.name); w = w.concat(goldenRule(s.name, v)); missingPicks(s, 'style', v, w); });
+      return w;
+    },
+    summary: function () {
+      var a = D.styles.filter(function (s) { return styleVal(s.name); }).map(function (s) { return s.name.replace(/ Style$/, '') + ' ' + styleVal(s.name) + ' (P)'; });
+      return a.length ? [['Combat Styles', a.join(', ')]] : [];
+    }
+  };
+
+  // ---------- Step 11: Magical Knowledges ----------
+  S[11] = {
+    intro: 'Your Mental column decides how many dots you spend on Magical Knowledges (casting schools, Battle Aura, and Circle Magic): 7 for Affinity, 5 for Standard, or 3 for Aversion, up to 5 dots in one knowledge. Every knowledge taken here is marked P. Your free Heritage Magic dot is listed too and does not use these dots. For a casting school or Battle Aura, each dot gives that rank’s Default Ability and your choice of one of its two techniques.',
+    link: '../rulebook/ch13.html#learning-the-casting-schools',
+    counter: function () { var l = knowLeft(); return [['Knowledge dots', l === null ? '-' : l]]; },
+    render: function (p) {
+      build.knows = build.knows || {};
+      var h = heritage();
+      if (h) p.appendChild(el('p', { class: 'note-box' }, [el('strong', { text: 'Heritage Magic (free): ' }), (h.name === 'Demon' && build.heritage.magic ? build.heritage.magic : h.heritage_magic) + ' 1 (P). ', bookLink(h.link, 'Rules')]));
+      if (skBudget('Mental') === null) p.appendChild(el('p', { class: 'note-box', text: 'Give your Mental column a designation in Step 5 first. It sets how many knowledge dots you get.' }));
+      var left = knowLeft();
+      D.knowledges.forEach(function (k) {
+        var v = knowVal(k.name);
+        var card = el('div', { class: 'sk-card' + (v ? ' picked' : '') });
+        card.appendChild(el('div', { class: 'sk-head' }, [
+          el('div', { class: 'sk-name' }, [bookLink(k.link, k.name), v ? el('span', { class: 'pmark px', text: ' P' }) : null,
+            el('span', { class: 'hint sk-meta', text: (k.kind + (k.focus ? '. ' + k.focus : '')).replace(/\.*$/, '.') })]),
+          dotRow(k.name, v, stMode() ? 10 : 7, 0, function (nv) { build.knows[k.name] = nv; if (!nv) delete build.knows[k.name]; refresh(true); },
+            left === null ? 0 : v + Math.max(0, left))
+        ]));
+        if (v && k.ranks) rankPicks(card, k, 'know', 1, v);
+        if (v && !k.ranks) card.appendChild(el('p', { class: 'hint' }, ['Circle Magic has no spell list. Each discipline has its own rules by dots. ', bookLink('../rulebook/ch13.html#the-disciplines-of-circle-magic', 'The disciplines')]));
+        p.appendChild(card);
+      });
+    },
+    check: function () {
+      var w = [], l = knowLeft();
+      if (l === null) w.push({ key: 'kn.nocol', text: 'Give your Mental column a designation in Step 5 first.' });
+      else if (l > 0) w.push({ key: 'kn.left.' + l, text: l + ' knowledge dot' + (l === 1 ? '' : 's') + ' left to place.' });
+      else if (l < 0) w.push({ key: 'kn.over.' + l, text: 'You are ' + (-l) + ' knowledge dot' + (l === -1 ? '' : 's') + ' over.' });
+      D.knowledges.forEach(function (k) { var v = knowVal(k.name); w = w.concat(goldenRule(k.name, v)); missingPicks(k, 'know', v, w); });
+      return w;
+    },
+    summary: function () {
+      var a = D.knowledges.filter(function (k) { return knowVal(k.name); }).map(function (k) { return k.name + ' ' + knowVal(k.name) + ' (P)'; });
+      return a.length ? [['Magical Knowledges', a.join(', ')]] : [];
+    }
+  };
+
+  // ---------- Step 12: Freebie Points ----------
+  var fbOpen = {}; // which Step 12 groups are open, kept while you click dots
+  var FB_COST = { attrs: 3, abilities: 2, styles: 4, knows: 4, backgrounds: 1, mana: 7 };
+  function fbPoints() {
+    var f = build.fb || {};
+    if (f.preset === 'Custom') return Number(f.custom) || 0;
+    var pr = D.freebie_presets.filter(function (x) { return x.name === (f.preset || 'Newb'); })[0];
+    return pr ? pr.points : 7;
+  }
+  function fbSpent() {
+    var f = build.fb || {}, s = 0;
+    ['attrs', 'abilities', 'styles', 'knows', 'backgrounds'].forEach(function (k) {
+      Object.keys(f[k] || {}).forEach(function (n) { s += (f[k][n] || 0) * FB_COST[k]; });
+    });
+    return s + (f.mana || 0) * FB_COST.mana;
+  }
+  function fbLeft() { return fbPoints() - fbSpent(); }
+
+  // A dot row where earlier dots are locked gold and freebie dots are blue
+  function fbRow(label, base, kind, name, cap) {
+    var f = fb();
+    var extra = kind === 'mana' ? f.mana : (f[kind][name] || 0);
+    var max = stMode() ? 10 : 7;
+    var limit = stMode() ? 10 : Math.min(cap, base + extra + Math.max(0, Math.floor(fbLeft() / FB_COST[kind])));
+    var row = el('div', { class: 'dots', role: 'group', 'aria-label': label });
+    for (var i = 1; i <= max; i++) (function (n) {
+      var earned = n <= base, bought = n > base && n <= base + extra, out = !earned && !bought && n > limit;
+      var b = el('button', {
+        type: 'button',
+        class: 'dot' + (earned ? ' on earned' : '') + (bought ? ' on fb' : '') + (out ? ' out' : '') + (n > 5 ? ' over5' : ''),
+        'aria-label': label + ': ' + n + (n === 1 ? ' dot' : ' dots') + (earned ? ' (from earlier steps)' : bought ? ' (freebie)' : ''),
+        'aria-pressed': earned || bought ? 'true' : 'false',
+        disabled: earned || out ? 'disabled' : null
+      });
+      b.addEventListener('click', function () {
+        var nx = (n === base + extra) ? extra - 1 : n - base;
+        if (kind === 'mana') f.mana = nx; else if (nx > 0) f[kind][name] = nx; else delete f[kind][name];
+        refresh(true);
+      });
+      row.appendChild(b);
+    })(i);
+    row.appendChild(el('span', { class: 'dot-n px', text: String(base + extra) }));
+    return row;
+  }
+
+  S[12] = {
+    intro: 'Spend your Freebie Points. Each dot costs: Attribute 3, Ability 2, Combat Style or Magical Knowledge 4, Background 1, Mana 7. This is the only time Mana can be raised during creation. A new style or knowledge bought here is marked S for Secondary. Freebies cannot be spent on Merits, Flaws, Willpower, Fate, Sanity, or Heritage traits, and nothing goes above 5. Gold dots are from earlier steps; blue dots are freebies.',
+    link: '../rulebook/ch6.html#the-creation-process',
+    counter: function () { return [['Freebie points', fbLeft()]]; },
+    render: function (p) {
+      var f = fb();
+      var presetSel = el('select', { id: 'fb-preset' });
+      D.freebie_presets.forEach(function (x) {
+        var o = el('option', { value: x.name, text: x.name + ' (' + x.points + ' points)' });
+        if ((f.preset || 'Newb') === x.name) o.selected = true;
+        presetSel.appendChild(o);
+      });
+      if (stMode() || f.preset === 'Custom') {
+        var co = el('option', { value: 'Custom', text: 'Custom (Storyteller)' });
+        if (f.preset === 'Custom') co.selected = true;
+        presetSel.appendChild(co);
+      }
+      presetSel.addEventListener('change', function () { f.preset = presetSel.value; refresh(true); });
+      var pr = D.freebie_presets.filter(function (x) { return x.name === (f.preset || 'Newb'); })[0];
+      var top = el('div', { class: 'field' }, [el('label', { for: 'fb-preset', text: 'How many Freebie Points? Your Storyteller decides.' }), presetSel]);
+      if (pr) top.appendChild(el('p', { class: 'hint', text: pr.note }));
+      if (f.preset === 'Custom') {
+        var cu = el('input', { id: 'fb-custom', type: 'number', min: '0', max: '200', value: String(f.custom || 0), disabled: stMode() ? null : 'disabled' });
+        cu.addEventListener('input', function () { f.custom = Number(cu.value) || 0; refresh(); });
+        top.appendChild(el('div', { class: 'field inline' }, [el('label', { for: 'fb-custom', text: 'Points' }), cu]));
+      }
+      p.appendChild(top);
+
+      function group(title, open, fill) {
+        var det = el('details', { class: 'pick-group' });
+        if (fbOpen[title] !== undefined ? fbOpen[title] : open) det.open = true;
+        det.addEventListener('toggle', function () { fbOpen[title] = det.open; });
+        det.appendChild(el('summary', {}, [el('span', { class: 'px', text: title })]));
+        fill(det);
+        p.appendChild(det);
+      }
+      function line(box, name, row, extra) {
+        box.appendChild(el('div', { class: 'trait fb-line' }, [el('span', { class: 'trait-name', text: name }), row]));
+        if (extra) extra(box);
+      }
+      var anyIn = function (k) { return Object.keys(f[k]).length > 0; };
+      group('Attributes (3 each)', anyIn('attrs'), function (box) {
+        COLS.forEach(function (col) {
+          D.attributes[col].forEach(function (a) {
+            var cap = Math.min(5, (colNumber(col) === null ? 5 : colNumber(col) + (a === innateAttr() ? 1 : 0)));
+            line(box, a, fbRow(a, attrVal(a), 'attrs', a, cap));
+          });
+        });
+      });
+      group('Abilities (2 each)', anyIn('abilities'), function (box) {
+        GROUPS.forEach(function (g) { D.abilities[g].forEach(function (a) { line(box, a.name + ((build.pl || {})[a.name] ? ' (PL)' : ''), fbRow(a.name, abVal(a.name), 'abilities', a.name, 5)); }); });
+        box.appendChild(el('p', { class: 'hint', text: 'An ability that reaches 4 dots gets its free specialty. Pick it in Step 6.' }));
+      });
+      group('Combat Styles (4 each)', anyIn('styles'), function (box) {
+        D.styles.forEach(function (s) {
+          var base = styleVal(s.name), x = fbOf('styles', s.name);
+          line(box, s.name + (base ? ' (P)' : x ? ' (S)' : ''), fbRow(s.name, base, 'styles', s.name, 5), function (b) { if (x) rankPicks(b, s, 'style', base + 1, base + x); });
+        });
+      });
+      group('Magical Knowledges (4 each)', anyIn('knows'), function (box) {
+        D.knowledges.forEach(function (k) {
+          var base = knowVal(k.name), x = fbOf('knows', k.name);
+          line(box, k.name + (base ? ' (P)' : x ? ' (S)' : ''), fbRow(k.name, base, 'knows', k.name, 5), function (b) { if (x && k.ranks) rankPicks(b, k, 'know', base + 1, base + x); });
+        });
+      });
+      group('Backgrounds (1 each)', anyIn('backgrounds'), function (box) {
+        D.backgrounds.forEach(function (b) { line(box, b.name, fbRow(b.name, bgVal(b.name), 'backgrounds', b.name, 5)); });
+      });
+      group('Mana (7 each)', f.mana > 0, function (box) {
+        line(box, 'Mana', fbRow('Mana', 1, 'mana', 'Mana', 5));
+      });
+    },
+    check: function () {
+      var w = [], l = fbLeft();
+      if (l > 0) w.push({ key: 'fb.left.' + l, text: l + ' Freebie Point' + (l === 1 ? '' : 's') + ' left to spend.' });
+      if (l < 0) w.push({ key: 'fb.over.' + l, text: 'You are ' + (-l) + ' Freebie Point' + (l === -1 ? '' : 's') + ' over.' });
+      if ((build.fb || {}).preset && build.fb.preset !== 'Newb') w.push({ key: 'fb.preset.' + build.fb.preset, text: build.fb.preset + ' gives more than the standard 7 points. Check with your Storyteller.' });
+      D.styles.forEach(function (s) { if (fbOf('styles', s.name)) missingPicks(s, 'style', styleTotal(s.name), w); });
+      D.knowledges.forEach(function (k) { if (fbOf('knows', k.name)) missingPicks(k, 'know', knowTotal(k.name), w); });
+      return w;
+    },
+    summary: function () {
+      var f = build.fb || {}, out = [];
+      if (fbSpent()) out.push(['Freebies', fbSpent() + ' of ' + fbPoints() + ' spent']);
+      var s = D.styles.filter(function (x) { return fbOf('styles', x.name) && !styleVal(x.name); }).map(function (x) { return x.name.replace(/ Style$/, '') + ' ' + fbOf('styles', x.name) + ' (S)'; })
+        .concat(D.knowledges.filter(function (x) { return fbOf('knows', x.name) && !knowVal(x.name); }).map(function (x) { return x.name + ' ' + fbOf('knows', x.name) + ' (S)'; }));
+      if (s.length) out.push(['Secondary', s.join(', ')]);
+      out.push(['Mana', String(manaTotal())]);
+      return out;
+    }
+  };
+
+  // ---------- Step 13: Level ----------
+  function levelParts() {
+    var a = 0, ab = 0, st = 0, kn = 0;
+    COLS.forEach(function (c) { D.attributes[c].forEach(function (x) { a += attrTotal(x); }); });
+    GROUPS.forEach(function (g) { D.abilities[g].forEach(function (x) { ab += abTotal(x.name); }); });
+    D.styles.forEach(function (x) { st += styleTotal(x.name); });
+    D.knowledges.forEach(function (x) { kn += knowTotal(x.name); });
+    var her = heritage() ? 1 : 0;
+    return [['Attributes', a], ['Mana', manaTotal()], ['Abilities', ab], ['Combat Styles', st], ['Magical Knowledges', kn], ['Heritage Magic', her]];
+  }
+  function level() { return levelParts().reduce(function (s, x) { return s + x[1]; }, 0); }
+  S[13] = {
+    intro: 'Your Level is the total of your dots in Attributes (including Mana), Abilities, Combat Styles, and Magical Knowledges (including Heritage Magic). Merits, Flaws, Backgrounds, Willpower, Fate, Sanity, and Virtues and Vices do not count. The Forge adds it up for you.',
+    link: '../rulebook/ch6.html#the-creation-process',
+    render: function (p) {
+      var tbl = el('div', { class: 'level-box' });
+      levelParts().forEach(function (x) { tbl.appendChild(el('div', { class: 'level-row' }, [el('span', { text: x[0] }), el('span', { class: 'px', text: String(x[1]) })])); });
+      tbl.appendChild(el('div', { class: 'level-row total' }, [el('span', { class: 'px', text: 'Level' }), el('span', { class: 'px', text: String(level()) })]));
+      p.appendChild(tbl);
+      var todo = stillToDo();
+      p.appendChild(el('p', { class: 'hint center', text: todo.length ? 'Some steps are unfinished. Finish shows you what is left.' : 'Everything is filled in. Press Finish to complete your character.' }));
+    },
+    check: function () { return []; },
+    summary: function () { return [['Level', String(level())]]; }
+  };
+
   // ---------- unfinished steps ----------
   // Warnings that mean "not done yet" rather than "check with your Storyteller".
   // Saving with these is fine, but the step stays marked and you are reminded again.
-  var TODO_RE = /^(trope\.none|drive\.|role\.(position|style)|her\.(none|demon\.blank|innate|merit)$|cols\.unset|attr\.left|grp\.(unset|left)|spec\.[A-Z]|pl\.(none|name|few)|bg\.left|guild\.noname|note\.)/;
+  var TODO_RE = /^(trope\.none|drive\.|role\.(position|style)|her\.(none|demon\.blank|innate|merit)$|cols\.unset|attr\.left|grp\.(unset|left)|spec\.[A-Z]|pl\.(none|name|few)|bg\.left|guild\.noname|note\.|sty\.(nocol|left)|kn\.(nocol|left)|pick\.|fb\.left)/;
   function isTodo(w) { return TODO_RE.test(w.key); }
   function todos(n) { return stMode() ? [] : S[n].check().filter(isTodo); }
+  // every step with something left, saved or not (for the Last Check)
+  function stillToDo() {
+    var out = [];
+    for (var n = 1; n <= BUILT; n++) if (todos(n).length) out.push(n);
+    return out;
+  }
   function unfinished() {
     return (forge.done || []).filter(function (n) { return n <= BUILT && todos(n).length; }).sort(function (a, b) { return a - b; });
   }
@@ -1093,7 +1407,7 @@
     p.appendChild(el('p', { class: 'step-intro' }, [s.intro + ' ', bookLink(s.link, 'Full rules')]));
     s.render(p);
     $('btn-back').disabled = step === 1;
-    $('btn-next').textContent = step === BUILT ? 'Save' : 'Next';
+    $('btn-next').textContent = step === BUILT ? 'Finish' : 'Next';
     drawSteps();
     drawCounter();
     drawSoFar();
@@ -1125,7 +1439,7 @@
     forge.step = nextStep;
     forge.done = forge.done || [];
     if (forge.done.indexOf(step) < 0) forge.done.push(step);
-    forge.unfinished = unfinished();
+    forge.unfinished = forge.complete ? stillToDo() : unfinished();
     sheet.build = build;
     sheet.forge = forge;
     var res = await db.from('characters').update({ sheet: sheet }).eq('id', ch.id).select('sheet, updated_at').single();
@@ -1176,8 +1490,8 @@
       dlg.close();
       if (step === BUILT) {
         drawSteps();
-        if (unfinished().length) openLastCheck();
-        else showToast('Saved. Steps 10 to 13 are coming soon.');
+        if (stillToDo().length) openLastCheck();
+        else await finishChar();
       } else {
         go(next);
       }
@@ -1200,7 +1514,7 @@
     var box = $('last-list');
     box.textContent = '';
     var dlg = $('dlg-last');
-    unfinished().forEach(function (n) {
+    stillToDo().forEach(function (n) {
       var ul = el('ul', { class: 'ff-warn' });
       todos(n).forEach(function (w) { ul.appendChild(el('li', { text: w.text })); });
       box.appendChild(el('div', { class: 'last-step' }, [
@@ -1215,10 +1529,22 @@
     $('last-back').focus();
   }
   $('last-back').addEventListener('click', function () { $('dlg-last').close(); });
-  $('last-finish').addEventListener('click', function () {
+  $('last-finish').addEventListener('click', async function () {
     $('dlg-last').close();
-    showToast('Saved. Steps 10 to 13 are coming soon.');
+    await finishChar();
   });
+  // mark the character complete
+  async function finishChar() {
+    try {
+      forge.complete = true;
+      await save(step);
+      drawSteps();
+      showToast(ch.name + ' is complete!');
+    } catch (err) {
+      forge.complete = false;
+      showToast('Could not save: ' + A.friendly(err));
+    }
+  }
 
   function showToast(text) {
     var t = el('div', { class: 'ff-toast px', role: 'status', text: text });
