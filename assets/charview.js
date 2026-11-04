@@ -48,6 +48,21 @@
   function abLink(a) { return '../rulebook/ch6.html#quick-reference-' + slug(a); }
   function plus(n) { return n ? (n > 0 ? ' +' + n : ' ' + n) : ''; }
 
+  // In-page questions (a browser can be set to block confirm boxes, which made buttons look dead)
+  function ask(title, text, okLabel, withInput) {
+    return new Promise(function (done) {
+      var d = el('dialog', { class: 'win dialog cv-ask', 'aria-labelledby': 'ask-t' });
+      var inp = withInput ? el('input', { maxlength: '60', placeholder: withInput.placeholder || '', 'aria-label': title }) : null;
+      function close(v) { d.close(); d.remove(); done(v); }
+      var f = el('form', { class: 'form' }, [el('h2', { id: 'ask-t', class: 'px', text: title }), text ? el('p', { text: text }) : null, inp,
+        el('div', { class: 'button-row' }, [el('button', { class: 'act', type: 'button', text: 'Cancel', onclick: function () { close(null); } }),
+          el('button', { class: 'act primary', type: 'submit', text: okLabel || 'OK' })])]);
+      f.addEventListener('submit', function (ev) { ev.preventDefault(); if (inp && !inp.value.trim()) { inp.focus(); return; } close(inp ? inp.value.trim() : true); });
+      d.addEventListener('cancel', function (ev) { ev.preventDefault(); close(null); });
+      d.appendChild(f); document.body.appendChild(d); d.showModal(); (inp || d.querySelector('.primary')).focus();
+    });
+  }
+
   // ---------- saving: a moment after the last change, then a quick "Saved" ----------
   var pending = null, timer = null, saving = false, again = false;
   function toast(text, bad) {
@@ -72,6 +87,7 @@
     var notes = [];
     if (patch.money) { var a = moneyLine(before.money || M.money), b = moneyLine(patch.money); if (a !== b) notes.push('Money on hand: ' + b + ' (was ' + a + ')'); }
     if (patch.gear) notes = notes.concat(gearChanges(before.gear || {}, patch.gear));
+    notes = notes.concat(rowNotes.splice(0));
     if (patch.attuned) Object.keys(Object.assign({}, before.attuned || {}, patch.attuned)).forEach(function (k) {
       var was = !!(before.attuned || {})[k], now = !!patch.attuned[k];
       if (was !== now) { var sp = (M.attunables || []).filter(function (x) { return x.id === k; })[0]; if (sp) notes.push(sp.name + (now ? ' attuned (' + sp.mana + ' mana held)' : ' released')); }
@@ -130,7 +146,7 @@
   function tracks() { return JSON.parse(JSON.stringify(M.tracks || {})); }
   function triRow(key, label) {
     var tr = tracks(), arr = (tr[key] || []).slice();
-    var wrap = el('div', { class: 'cv-tri', role: 'group', 'aria-label': label + ' boxes' });
+    var wrap = el('div', { class: 'cv-tri cv-tri10', role: 'group', 'aria-label': label + ' boxes' });
     for (var i = 0; i < 10; i++) (function (i) {
       var v = arr[i] || 0;
       wrap.appendChild(el('button', { type: 'button', class: 'cv-tb' + (v === 1 ? ' chk' : v === 2 ? ' x' : ''), disabled: !mine, 'aria-label': label + ' box ' + (i + 1) + ': ' + ['empty', 'checked', 'X'][v],
@@ -138,26 +154,39 @@
           var t2 = tracks(); var a2 = (t2[key] || []).slice(); a2[i] = ((a2[i] || 0) + 1) % 3; t2[key] = a2; queue({ tracks: t2 }); drawBody();
         } }));
     })(i);
-    return wrap;
+    var full = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map(function (i) { return arr[i] || 0; });
+    var allChk = full.every(function (v) { return v === 1; }), allX = full.every(function (v) { return v === 2; });
+    if (!mine || !(allChk || allX)) return wrap;
+    var stat = M.stats.filter(function (x) { return x.name === label; })[0] || { dots: 0 };
+    var can = allChk ? stat.dots < 10 : stat.dots > 0;
+    return el('div', {}, [wrap, el('button', { type: 'button', class: 'act small primary cv-rowfull', disabled: !can,
+      text: allChk ? 'Row full of checks: gain 1 ' + label + ' dot' : 'Row full of X’s: lose 1 ' + label + ' dot', onclick: function () {
+        var t2 = tracks(); t2.adj = Object.assign({}, t2.adj || {}); t2.adj[label] = (t2.adj[label] || 0) + (allChk ? 1 : -1); t2[key] = [];
+        rowNotes.push(label + (allChk ? ' +1 dot (full row of checks), now ' + (stat.dots + 1) : ' -1 dot (full row of X’s), now ' + (stat.dots - 1)));
+        queue({ tracks: t2 }); drawHead(); drawBody();
+      } })]);
   }
-  var PEN = { b: [0, 0, 0, 0, 1, 2, 4], l: [0, 0, 1, 2, 4, 4, 4], a: [1, 2, 4, 4, 4] };
+  var rowNotes = [];
+  // Bashing, Lethal, Aggravated: the last three boxes of each column are -1, -2, -4
+  function penFor(n, i) { return i >= n - 3 ? [1, 2, 4][i - (n - 3)] : 0; }
   function healthCard() {
-    var tr = tracks(), hp = tr.health || {}, kids = [];
-    var total = 0;
+    var tr = tracks(), hp = tr.health || {}, total = 0;
+    var cols = el('div', { class: 'cv-health' });
     [['b', 'Bashing'], ['l', 'Lethal'], ['a', 'Aggravated']].forEach(function (k) {
-      var n = M.boxes[k[0]], arr = (hp[k[0]] || []).slice(), boxes = el('span', { class: 'cv-tri', role: 'group', 'aria-label': k[1] + ' damage' });
+      var n = M.boxes[k[0]], arr = (hp[k[0]] || []).slice(0, n);
       var filled = arr.filter(Boolean).length;
-      if (filled) total += PEN[k[0]][Math.min(filled, PEN[k[0]].length) - 1] || 4;
+      if (filled) total += penFor(n, filled - 1);
+      var col = el('div', { class: 'cv-hcol', role: 'group', 'aria-label': k[1] + ' damage' }, [el('div', { class: 'cv-hhead', text: k[1] })]);
       for (var i = 0; i < n; i++) (function (i) {
-        boxes.appendChild(el('button', { type: 'button', class: 'cv-tb hb ' + k[0] + (arr[i] ? ' x' : ''), disabled: !mine, 'aria-label': k[1] + ' box ' + (i + 1) + (arr[i] ? ': damaged' : ''), text: arr[i] ? '✕' : '',
-          title: PEN[k[0]][i] ? '-' + PEN[k[0]][i] + ' when filled' : null, onclick: function () {
-            var t2 = tracks(); t2.health = t2.health || {}; var a2 = (t2.health[k[0]] || []).slice(); a2[i] = !a2[i]; t2.health[k[0]] = a2; queue({ tracks: t2 }); drawBody();
-          } }));
+        var pen = penFor(n, i);
+        col.appendChild(el('div', { class: 'cv-hrow' }, [
+          el('button', { type: 'button', class: 'cv-tb hb ' + k[0] + (arr[i] ? ' x' : ''), disabled: !mine, 'aria-label': k[1] + ' box ' + (i + 1) + (pen ? ' (-' + pen + ')' : '') + (arr[i] ? ': damaged' : ''), text: arr[i] ? '✕' : '',
+            onclick: function () { var t2 = tracks(); t2.health = t2.health || {}; var a2 = (t2.health[k[0]] || []).slice(); a2[i] = !a2[i]; t2.health[k[0]] = a2; queue({ tracks: t2 }); drawBody(); } }),
+          el('span', { class: 'cv-hpen' + (pen ? '' : ' none'), text: pen ? '-' + pen : '' })]));
       })(i);
-      kids.push(el('div', { class: 'cv-row' }, [el('span', { class: 'nm', text: k[1] }), boxes]));
+      cols.appendChild(col);
     });
-    kids.push(el('p', { class: 'cv-muted', style: 'margin:6px 0 0', text: 'Wound penalty: ' + (total ? '-' + total + ' dice' : 'none') + '. BDT ' + M.combat.bdt + ', LDT ' + M.combat.bdt * 2 + ', ADT ' + M.combat.bdt * 3 + '. Click a box to mark it with an X.' }));
-    return card('Health', kids, '../rulebook/terms.html');
+    return card('Health', [cols, el('p', { class: 'cv-muted', style: 'margin:8px 0 0', text: 'Wound penalty: ' + (total ? '-' + total + ' dice' : 'none') + '. Only the last three boxes of each column carry a penalty, and penalties from different columns add together. BDT ' + M.combat.bdt + ', LDT ' + M.combat.bdt * 2 + ', ADT ' + M.combat.bdt * 3 + '. Click a box to mark it with an X.' })], '../rulebook/terms.html');
   }
 
   // ---------- tabs ----------
@@ -181,13 +210,13 @@
     });
     g.appendChild(card('Virtues and Vices', sc, '../rulebook/ch7.html'));
     g.appendChild(card('Willpower, Fate, Sanity', M.stats.map(function (s) {
-      return el('div', { class: 'cv-row', style: 'display:block' }, [el('div', { style: 'display:flex;justify-content:space-between;gap:8px;align-items:center' }, [link('../rulebook/ch11.html#' + slug(s.name), s.name), dots(s.dots, 10)]),
+      return el('div', { class: 'cv-row cv-wfs' }, [el('div', { class: 'cv-wfs-top' }, [link('../rulebook/ch11.html#' + slug(s.name), s.name), dots(s.dots, 10)]),
         triRow(s.name.toLowerCase(), s.name), el('small', { class: 'cv-muted', text: s.used })]);
-    }).concat([el('p', { class: 'cv-muted', style: 'margin:6px 0 0', text: 'Click a box once for a check, twice for an X, a third time to clear it. A full row of checks adds a dot; a full row of X’s takes one away.' })]), '../rulebook/ch11.html'));
+    }).concat([el('p', { class: 'cv-muted', style: 'margin:6px 0 0', text: 'Click a box once for a check, twice for an X, a third time to clear it. Checks (gains) fill from the left and X’s (losses) from the right. When all 10 are checks you gain a dot, and when all 10 are X’s you lose one: a button appears to do it and clear the row.' })]), '../rulebook/ch11.html'));
     g.appendChild(healthCard());
     var att = M.mana.attuned.map(function (a) { return row2(a.name + ' (' + a.school + ')', (a.effects.length ? a.effects.join(', ') : brief(a.effect)), el('span', { class: 'px', text: a.mana + ' held' })); });
     g.appendChild(card('Mana', [
-      row2('Mana', 'Powers all magic', dots(M.mana.dots, 10)),
+      row2('Mana', 'Powers all magic', buyDots(M.mana.dots, 10, 'mana', '')),
       row2('Mana Pool', 'All magic (' + M.mana.magicDots + ': Magic, Circle Magic, and every Magical Knowledge dot) x Mana', el('span', { class: 'px', text: String(M.mana.pool) })),
       row2('Max Mana per Turn', 'Fortitude + Mana' + (M.mana.arcane ? ', minus Arcane Enhancements' : '') + (M.mana.held ? ', minus ' + M.mana.held + ' attuned (' + M.mana.mtFull + ' without)' : ''), el('span', { class: 'px', text: String(M.mana.mt) }))
     ].concat(att.length ? [el('h4', { text: 'Attuned now' })].concat(att) : [el('p', { class: 'cv-muted', style: 'margin:6px 0 0', text: M.attunables.length ? 'Nothing attuned. Switch attuned spells on in the Magic tab.' : '' })]), '../rulebook/ch11.html'));
@@ -209,7 +238,7 @@
     M.attrs.forEach(function (c) {
       g.appendChild(card(c.col + (c.num ? ' (' + c.num + ')' : ''), [c.des ? el('p', { class: 'cv-muted', text: c.des }) : null].concat(c.list.map(function (a) {
         var bon = M.mods.attr[a.name] || 0;
-        return row2(link(attrLink(a.name), a.name), [a.innate ? 'Innate Attribute' : '', bon ? plus(bon).trim() + ' from gear or magic' : ''].filter(Boolean).join('. ') || null, dots(a.dots));
+        return row2(link(attrLink(a.name), a.name), [a.innate ? 'Innate Attribute' : '', bon ? plus(bon).trim() + ' from gear or magic' : ''].filter(Boolean).join('. ') || null, buyDots(a.dots, 7, 'attr', a.name));
       })), '../rulebook/ch6.html#attributes'));
     });
     b.appendChild(g);
@@ -221,54 +250,114 @@
       g2.appendChild(card(gr.group + (gr.num ? ' (' + gr.num + ')' : ''), gr.list.map(function (a) {
         var name = el('span', {}, [link(abLink(a.name), a.name), a.pl ? el('span', { class: 'cv-tag', text: 'PL' }) : null]);
         var bon = M.mods.ab[a.name] || 0;
-        return row2(name, [a.specs.length ? 'Specialties: ' + a.specs.join(', ') : '', bon ? plus(bon).trim() + ' from gear' : ''].filter(Boolean).join('. ') || null, dots(a.dots));
+        return row2(name, [a.specs.length ? 'Specialties: ' + a.specs.join(', ') : '', bon ? plus(bon).trim() + ' from gear' : ''].filter(Boolean).join('. ') || null, buyDots(a.dots, 7, 'ab', a.name));
       }), '../rulebook/ch6.html#abilities-' + slug(gr.group)));
     });
     b.appendChild(g2);
   };
-  // One power as a card: rank, slot, name, cost, text, rules, and an attune switch
-  function powerCard(rank, title, slot, x, page) {
+  // ---------- power cards: everything you need to use a spell or technique ----------
+  function traitDots() {
+    var t = {};
+    M.attrs.forEach(function (c) { c.list.forEach(function (a) { t[a.name.toLowerCase()] = a.dots + (M.mods.attr[a.name] || 0); }); });
+    M.abilities.forEach(function (g) { g.list.forEach(function (a) { t[a.name.toLowerCase()] = a.dots + (M.mods.ab[a.name] || 0); }); });
+    M.styles.forEach(function (x) { t[x.name.toLowerCase()] = x.dots; });
+    M.knowledges.concat(M.vpowers || []).forEach(function (x) { if (x.dots) t[x.name.toLowerCase()] = x.dots; });
+    t.mana = M.mana.dots;
+    return t;
+  }
+  // "Dexterity + Magic + Fire dots" -> "Dexterity + Magic + Fire dots (3 + 1 + 2 = 6 dice)"
+  function poolText(pool, ownDots) {
+    if (!pool) return '';
+    var T = traitDots(), parts = String(pool).split('+').map(function (x) { return x.trim(); }), vals = [];
+    for (var i = 0; i < parts.length; i++) {
+      var w = parts[i].toLowerCase().replace(/^your /, '').replace(/ dots?$/, '').replace(/ magic$/, '').trim(), v = null;
+      if (w in T) v = T[w];
+      else Object.keys(T).forEach(function (k) { if (v === null && (k.indexOf(w) === 0 || w.indexOf(k) === 0) && k.length > 2) v = T[k]; });
+      if (v === null && /dots?$/i.test(parts[i])) v = ownDots;
+      if (v === null) return pool;
+      vals.push(v);
+    }
+    return pool + ' (' + vals.join(' + ') + ' = ' + vals.reduce(function (s2, v) { return s2 + v; }, 0) + ' dice)';
+  }
+  function techInfo(x, n) {
+    var t = x.text || '', rows = [], m;
+    var half = Math.ceil(n / 2);
+    m = t.match(/Spend (\d+) (AP|mana|Willpower)/i);
+    rows.push(['Cost', m ? m[1] + ' ' + m[2] : 'No mana or AP listed']);
+    m = t.match(/Once per (round|turn|scene|combat|fight|day|session|chapter|target|enemy)/i);
+    if (m) rows.push(['Limit', 'Once per ' + m[1].toLowerCase()]);
+    if (/^While /.test(t)) rows.push(['When', 'Always on ' + t.split(',')[0].toLowerCase()]);
+    else if ((m = t.match(/^(On an? [^,]+|When [^,]+|After [^,]+|If [^,]+)/))) rows.push(['When', m[1]]);
+    else if (/^(One attack|A called shot|One thrown|Attack with)/i.test(t)) rows.push(['When', 'On one attack you choose']);
+    else if (/outside combat/i.test(x.use || '')) rows.push(['When', 'Outside combat, whenever it fits the scene']);
+    m = t.match(/(until [^.]+|for (?:\d+|one|two|three) (?:rounds?|turns?|scenes?))/i);
+    if (m) rows.push(['Lasts', m[1]]);
+    var nums = [];
+    if (/half your dots/i.test(t)) nums.push('half your dots = ' + half);
+    if (/your dots/i.test(t.replace(/half your dots/ig, ''))) nums.push('your dots = ' + n);
+    if (nums.length) rows.push(['Your numbers', nums.join(', ')]);
+    return rows;
+  }
+  function spellInfo(x, n) {
+    var rows = [], cost = String(x.cost || '');
+    if (cost) {
+      var att = /attuned/i.test(cost + ' ' + (x.type || ''));
+      rows.push(['Mana', cost.replace(/^(\d+)(?!\s*mana)/, '$1 mana') + (att && !/attuned/i.test(cost) ? ', attuned' : '')]);
+      if (att) rows.push(['Attuned', 'Holds ' + (parseInt(cost, 10) || 'its') + ' of your M/T for as long as it is on. Switch it on and off below.']);
+    }
+    [['Speed', x.speed], ['Type', x.type], ['Range', x.range], ['Use', x.use], ['Upkeep', x.upkeep], ['Duration', x.duration]].forEach(function (r) { if (r[1]) rows.push(r); });
+    if (x.dice_pool) rows.push(['Roll', poolText(x.dice_pool, n)]);
+    if (x.defense) rows.push(['Defense', x.defense]);
+    if (x.note) rows.push(['Note', x.note]);
+    return rows;
+  }
+  function powerCard(rank, title, slot, x, page, n, style) {
     if (!x) return null;
+    var isSpell = !!(x.speed || x.dice_pool || x.cost);
+    var rows = isSpell ? spellInfo(x, n) : style ? [['Use', x.use || 'Both']].concat(techInfo(x, n)) : [x.use ? ['Use', x.use] : null, x.note ? ['Note', x.note] : null].filter(Boolean);
     var kids = [el('div', { class: 'cv-pc-top' }, [el('span', { class: 'cv-pc-rank', text: 'Rank ' + rank + (title ? ': ' + title : '') }), slot ? el('span', { class: 'cv-tag', text: slot }) : null]),
       el('div', { class: 'cv-pc-name', text: x.name }),
-      x.use || x.cost || x.note ? el('div', { class: 'cv-pc-meta', text: [x.use, x.cost ? String(x.cost).replace(/^(\d+)/, '$1 mana') : '', x.note, x.type, x.range].filter(Boolean).join('. ') }) : null,
-      el('p', { class: 'cv-pc-text', text: x.effect || x.text || '' })];
+      rows.length ? el('dl', { class: 'cv-pc-info' }, [].concat.apply([], rows.map(function (r) { return [el('dt', { text: r[0] }), el('dd', { text: r[1] })]; }))) : null,
+      el('p', { class: 'cv-pc-text', text: x.effect || x.text || '' }),
+      x.effect && x.text && x.text !== x.effect ? el('p', { class: 'cv-pc-flavor', text: x.text }) : null];
+    if (slot === 'Default') kids.splice(2, 0, el('div', { class: 'cv-pc-meta', text: 'Default: you always have this at Rank ' + rank + '.' }));
     if (x.attunable && mine) {
       var on = !!M.attunedOn[x.id];
       kids.push(el('button', { type: 'button', class: 'act small' + (on ? ' primary' : ''), 'aria-pressed': String(on), text: on ? 'Attuned (on)' : 'Attune (off)', onclick: function () {
         var a = Object.assign({}, M.attunedOn); if (on) delete a[x.id]; else a[x.id] = true; queue({ attuned: a }); drawBody();
       } }));
     } else if (x.attunable && M.attunedOn[x.id]) kids.push(el('span', { class: 'cv-tag gold', text: 'Attuned' }));
-    if (x.id) kids.push(el('a', { href: '../rulebook/' + page + '.html#' + x.id, target: '_blank', rel: 'noopener', class: 'cv-pc-link', text: 'Full rules' }));
+    if (x.id) kids.push(el('a', { href: '../rulebook/' + page + '.html#' + x.id, target: '_blank', rel: 'noopener', class: 'cv-pc-link', text: 'Read it in the book' }));
     return el('article', { class: 'cv-pc' + (x.attunable && M.attunedOn[x.id] ? ' on' : '') }, kids);
   }
-  function groupHead(name, sub, dotsN, href, tag) {
-    return el('div', { class: 'cv-group-head' }, [el('h2', { class: 'px', text: name }), el('div', { class: 'cv-group-sub' }, [dotsN !== null ? dots(dotsN) : null, tag ? el('span', { class: 'cv-tag gold', text: tag }) : null,
+  function groupHead(name, sub, dotsN, href, tag, kind, oname) {
+    return el('div', { class: 'cv-group-head' }, [el('h2', { class: 'px', text: name }), el('div', { class: 'cv-group-sub' }, [dotsN !== null ? (kind ? buyDots(dotsN, 7, kind, oname) : dots(dotsN)) : null, tag ? el('span', { class: 'cv-tag gold', text: tag }) : null,
       sub ? el('span', { class: 'cv-muted', text: sub }) : null, href ? link(href, 'Read it in the book') : null])]);
   }
   DRAW.styles = function (b) {
     if (!M.styles.length) { b.appendChild(el('p', { class: 'center cv-muted', text: 'No Combat Styles yet.' })); return; }
     M.styles.forEach(function (s) {
-      b.appendChild(groupHead(s.name, s.weapons + '. Primary: ' + s.primary + '. Secondary: ' + s.secondary + '.', s.dots, s.link, s.tier));
+      b.appendChild(groupHead(s.name, s.weapons + '. Primary: ' + s.primary + '. Secondary: ' + s.secondary + '.', s.dots, s.link, s.tier, 'style', s.name));
+      b.appendChild(el('p', { class: 'cv-muted center', text: 'Attack roll: ' + poolText(s.primary + ' + ' + s.name + ' dots', s.dots) + '. Support roll: ' + poolText(s.secondary, s.dots) + '. Techniques use no mana. "Your dots" means your ' + s.dots + ' dots in this Style; a BDT bonus is half, rounded up.' }));
       var grid = el('div', { class: 'cv-cards' });
       s.ranks.forEach(function (r) {
-        grid.appendChild(powerCard(r.rank, r.title, 'Default', r.def, 'ch12'));
-        r.picks.forEach(function (p) { grid.appendChild(powerCard(r.rank, r.title, p.opt, p, 'ch12')); });
+        grid.appendChild(powerCard(r.rank, r.title, 'Default', r.def, 'ch12', s.dots, true));
+        r.picks.forEach(function (p) { grid.appendChild(powerCard(r.rank, r.title, p.opt, p, 'ch12', s.dots, true)); });
       });
       b.appendChild(grid);
     });
   };
   function knowledgeBlock(b, k) {
-    b.appendChild(groupHead(k.name, k.circle ? (k.focus || 'Circle Magic discipline') : (k.kind || (k.heritage ? 'Heritage magic' : '')), k.dots, k.link, k.tier));
+    b.appendChild(groupHead(k.name, k.circle ? (k.focus || 'Circle Magic discipline') : (k.kind || (k.heritage ? 'Heritage magic' : '')), k.dots, k.link, k.tier, k.circle ? null : k.heritage ? (k.main ? 'hm' : (M.vpowers ? 'vp' : 'hm')) : 'know', k.heritage ? k.name : k.name));
     if (k.circle) { b.appendChild(el('p', { class: 'cv-muted center', text: 'Circle Magic grows with every dot instead of picking spells. What you can do at ' + k.dots + ' dot' + (k.dots === 1 ? '' : 's') + ' is in its entry.' })); return; }
     if (k.single) b.appendChild(el('p', { class: 'cv-muted center', text: 'A single spell with no Option A or B. Each rank improves what it can do.' }));
     if (k.needsAdapt) b.appendChild(el('p', { class: 'cv-msg err', text: 'Hyuman Adaptation: choose where your free dot goes in the Forge (Step 4).' }));
     if (k.tribal) b.appendChild(el('div', { class: 'cv-cards' }, k.tribal.map(function (t) { return powerCard(t.rank, '', 'Tribal', { name: t.name, text: 'Written with the Storyteller.' }, 'ch8'); })));
     var grid = el('div', { class: 'cv-cards' });
     (k.ranks || []).forEach(function (r) {
-      if (r.def) grid.appendChild(powerCard(r.rank, r.title, 'Default', r.def, k.page));
-      r.picks.forEach(function (p) { grid.appendChild(powerCard(r.rank, r.title, p.opt || 'Spell', p, k.page)); });
-      (r.combos || []).forEach(function (c) { grid.appendChild(powerCard(r.rank, r.title, 'Combination', { name: c.name + ' (' + c.schools.join(' + ') + ')', cost: c.cost, text: c.text, id: c.id }, 'ch13')); });
+      if (r.def) grid.appendChild(powerCard(r.rank, r.title, 'Default', r.def, k.page, k.dots));
+      r.picks.forEach(function (p) { grid.appendChild(powerCard(r.rank, r.title, p.opt || 'Spell', p, k.page, k.dots, k.page === 'ch8' && !(p.cost || p.speed))); });
+      (r.combos || []).forEach(function (c) { grid.appendChild(powerCard(r.rank, r.title, 'Combination', Object.assign({}, c, { name: c.name + ' (' + c.schools.join(' + ') + ')' }), 'ch13', k.dots)); });
     });
     if (grid.children.length) b.appendChild(grid);
     else if (k.dots && !k.tribal) b.appendChild(el('p', { class: 'cv-muted center' }, ['No spells picked for these dots yet. ', mine ? el('a', { href: '../forge/index.html?id=' + encodeURIComponent(id), text: 'Pick them in the Forge' }) : null]));
@@ -282,7 +371,7 @@
         if (k.needsPower) b.appendChild(el('p', { class: 'cv-msg err' }, ['No Vampiric Power picked yet. ', mine ? el('a', { href: '../forge/index.html?id=' + encodeURIComponent(id), text: 'Pick it in the Forge (Step 4)' }) : null, '.']));
         (M.vpowers || []).forEach(function (vp) {
           if (!vp.dots) {
-            b.appendChild(el('div', { class: 'cv-vp-off' }, [el('strong', { text: vp.name }), el('span', { class: 'cv-muted', text: ' Not learned yet. Buy it on the Experience tab (new dot x5).' }), ' ', link(vp.link, 'Rules')]));
+            b.appendChild(el('div', { class: 'cv-vp-off' }, [el('strong', { text: vp.name }), el('span', { class: 'cv-muted', text: ' Not learned yet.' }), ' ', mine && offerFor('vp', vp.name) ? el('button', { type: 'button', class: 'act small', text: 'Buy it (' + offerFor('vp', vp.name).cost + ' XP)', onclick: function () { buy(offerFor('vp', vp.name)); } }) : null, ' ', link(vp.link, 'Rules')]));
             return;
           }
           var sub = Object.assign({}, vp, { kind: vp.main ? 'Your free Vampiric Power' : 'Bought with XP' });
@@ -294,24 +383,25 @@
     });
   };
   DRAW.merits = function (b) {
-    var g = el('div', { class: 'cv-grid' });
+    var g;
     function mf(x) {
       var sub = [x.option ? x.option.name : '', x.note].filter(Boolean).join('. ');
       var n = Number(x.value);
       return el('div', { class: 'cv-mf' }, [row2(link(x.link, x.name), sub || null, isFinite(n) && n > 0 && n <= 10 ? dots(n, Math.max(n, 3)) : null),
         el('p', { class: 'cv-muted', style: 'font-size:14px;margin:2px 0 6px', text: brief((x.option && x.option.text) || x.text || '') })]);
     }
-    g.appendChild(card('Merits', M.merits.length ? M.merits.map(mf) : [el('p', { class: 'cv-muted', text: 'No Merits.' })], '../rulebook/ch9.html'));
-    g.appendChild(card('Flaws', M.flaws.length ? M.flaws.map(mf) : [el('p', { class: 'cv-muted', text: 'No Flaws.' })], '../rulebook/ch9.html'));
+    var none = function (t) { return [el('p', { class: 'cv-muted', text: t })]; };
+    var mfKids = [el('h4', { text: 'Merits' })].concat(M.merits.length ? M.merits.map(mf) : none('No Merits.'))
+      .concat([el('h4', { text: 'Flaws' })]).concat(M.flaws.length ? M.flaws.map(mf) : none('No Flaws.'));
+    var left = card('Merits and Flaws', mfKids, '../rulebook/ch9.html');
     var bgs = M.backgrounds.slice().sort(function (a, b2) { return (a.name === 'Resources' ? -1 : 0) - (b2.name === 'Resources' ? -1 : 0); });
     if (!bgs.some(function (x) { return x.name === 'Resources'; })) bgs.unshift({ name: 'Resources', dots: 0, link: '../rulebook/ch10.html', what: 'Your lifestyle and income.' });
-    var bgKids = [];
-    bgs.forEach(function (x) {
-      bgKids.push(row2(link(x.link, x.name), x.who ? x.who : x.what, dots(x.dots)));
-      if (x.name === 'Resources') bgKids.push(moneyBox());
-    });
-    g.appendChild(card('Backgrounds', bgKids, '../rulebook/ch10.html'));
-    g.appendChild(card('Guilds', M.guilds.length ? M.guilds.map(function (x) { return row2(x.name, null, dots(x.dots || 0)); }) : [el('p', { class: 'cv-muted', text: 'No guilds.' })], '../rulebook/ch10.html#guild-standing'));
+    var res = bgs.shift();
+    var bgList = el('div', { class: 'cv-bg2' }, bgs.map(function (x) { return row2(link(x.link, x.name), x.who ? x.who : x.what, dots(x.dots)); }));
+    var right = card('Backgrounds', [row2(link(res.link, res.name), res.what || null, dots(res.dots)), moneyBox(), el('h4', { text: 'Other Backgrounds' }), bgs.length ? bgList : none('No other Backgrounds.'),
+      el('h4', { text: 'Guilds' })].concat(M.guilds.length ? [el('div', { class: 'cv-bg2' }, M.guilds.map(function (x) { return row2(x.name, null, dots(x.dots || 0)); }))] : none('No guilds.')), '../rulebook/ch10.html');
+    right.classList.add('cv-span2');
+    g = el('div', { class: 'cv-grid3' }, [left, right]);
     b.appendChild(g);
   };
   DRAW.companions = function (b) {
@@ -407,7 +497,7 @@
     gear = gearCopy();
     b.appendChild(el('p', { class: 'cv-muted center', text: mine ? 'Everything here saves on its own a moment after you stop typing.' : '' }));
     // Worn and wielded: item, bonus, what it improves, which one, notes
-    var wt = el('div', { class: 'cv-worn' }, [el('div', { class: 'cv-worn-h' }, ['Slot', 'Item', 'Bonus', 'Improves', 'Which', 'Notes'].map(function (t) { return el('span', { text: t }); }))]);
+    var wt = el('div', { class: 'cv-worn' }, [el('div', { class: 'cv-worn-h' }, ['Slot', 'Item', 'Bonus', 'Improves', 'Which one', 'Notes'].map(function (t) { return el('span', { text: t }); }))]);
     SLOTS.forEach(function (s2) {
       var it = gear.worn[s2[0]] = gear.worn[s2[0]] || {};
       var nm = el('input', { value: it.name || '', maxlength: '80', placeholder: 'Nothing', disabled: !mine, 'aria-label': s2[1] + ' item' });
@@ -433,7 +523,7 @@
       note.addEventListener('input', function () { it.notes = note.value; changed(); });
       wt.appendChild(el('div', { class: 'cv-worn-r' }, [el('span', { class: 'cv-worn-slot', text: s2[1] }), nm, bonus, cat, whichWrap, note]));
     });
-    b.appendChild(card('Worn and Wielded', [el('p', { class: 'cv-muted', text: 'Gloves, bracers, and rings go on the arm they are worn on. Carry at most 3 weapons and wield 2. Armor bonuses add to your BDT; attribute, ability, initiative, movement, and mana bonuses show up on the other tabs.' }), wt], '../rulebook/ch14.html'));
+    b.appendChild(card('Worn and Wielded', [el('p', { class: 'cv-muted', text: 'Gloves, bracers, and rings go on the arm they are worn on. Carry at most 3 weapons and wield 2. Bonus is the number, Improves is what kind of thing it raises, and Which one names the exact trait when that kind has more than one (a +1 Attribute item needs to know it is Intelligence, say). Armor, Attack, Damage, Defense, Initiative, Movement, and the Mana choices need no Which one. Bonuses show up on the other tabs, and Armor adds to your BDT.' }), wt], '../rulebook/ch14.html'));
     // Belt
     var belt = el('div', { class: 'cv-belt' });
     for (var i = 0; i < 7; i++) (function (i) {
@@ -480,9 +570,9 @@
     var other = ((row.sheet && row.sheet.history) || []).slice().reverse();
     var all = [];
     buys.forEach(function (x, i) { all.push({ d: x.d, li: el('li', {}, [el('span', { text: when(x.d) + ': spent ' + x.cost + ' XP on ' + x.label }),
-      mine && i === 0 ? el('button', { class: 'act small', type: 'button', text: 'Undo', onclick: function () { if (confirm('Undo this purchase and get ' + x.cost + ' XP back?')) act(function () { return window.TerranaCharacter.undo(x.id); }, 'Purchase undone.'); } }) : null]) }); });
+      mine && i === 0 ? el('button', { class: 'act small', type: 'button', text: 'Undo', onclick: async function () { if (await ask('Undo purchase', 'Undo ' + x.label + ' and get ' + x.cost + ' XP back?', 'Undo It')) act(function () { return window.TerranaCharacter.undo(x.id); }, 'Purchase undone.'); } }) : null]) }); });
     logs.forEach(function (x) { all.push({ d: x.d, li: el('li', {}, [el('span', { text: when(x.d) + ': earned ' + x.amt + ' XP' + (x.note ? ' (' + x.note + ')' : '') }),
-      mine ? el('button', { class: 'act small', type: 'button', text: 'Remove', onclick: function () { if (confirm('Remove this XP entry?')) act(function () { return window.TerranaCharacter.removeAward(x.id); }, 'XP entry removed.'); } }) : null]) }); });
+      mine ? el('button', { class: 'act small', type: 'button', text: 'Remove', onclick: async function () { if (await ask('Remove XP', 'Remove this ' + x.amt + ' XP entry?', 'Remove')) act(function () { return window.TerranaCharacter.removeAward(x.id); }, 'XP entry removed.'); } }) : null]) }); });
     other.forEach(function (x) { all.push({ d: x.d, li: el('li', {}, [el('span', { text: when(x.d) + ': ' + x.text })]) }); });
     all.sort(function (a, b) { return a.d < b.d ? 1 : a.d > b.d ? -1 : 0; }).forEach(function (x) { hist.appendChild(x.li); });
     return card('History', hist.children.length ? [hist] : [el('p', { class: 'cv-muted', text: 'Nothing yet. XP, purchases, money, equipment, and attunement changes show up here.' })]);
@@ -512,22 +602,32 @@
       el('div', { class: 'button-row' }, [el('button', { class: 'act', type: 'button', text: 'Cancel', onclick: function () { d.close(); d.remove(); } }),
         el('button', { class: 'act primary', type: 'button', text: 'Buy It', onclick: function () {
           var c = d.querySelector('input[name=pk]:checked');
-          if (!c) { alert('Choose one first.'); return; }
+          if (!c) { opts.classList.add('cv-need'); return; }
           d.close(); d.remove(); done(c.value);
         } })])]));
     document.body.appendChild(d);
     d.showModal();
   }
-  function buy(o) {
+  async function buy(o) {
     var C = window.TerranaCharacter;
+    if (!o.ok && !M.st) { await ask('Not enough XP', o.label + ' ' + (o.next || '') + ' costs ' + o.cost + ' XP and you have ' + M.xp.unspent + ' unspent. Add XP on the Experience tab first.', 'OK'); return; }
     if (o.needsText) {
-      var t = prompt('Name the new ' + o.name + ' specialty (5 XP). Ideas: ' + (o.suggestions || []).join(', '));
-      if (t === null) return;
+      var t = await ask('New ' + o.name + ' specialty (5 XP)', 'Ideas: ' + (o.suggestions || []).join(', '), 'Buy It', { placeholder: 'Specialty name' });
+      if (!t) return;
       return act(function () { return C.buy(o, { text: t }); }, 'Bought the specialty for 5 XP.');
     }
     if (o.ranks && o.ranks[o.next - 1]) return pickDialog(o, function (pick) { act(function () { return C.buy(o, { pick: pick }); }, 'Bought ' + o.label + ' ' + o.next + ' for ' + o.cost + ' XP.'); });
-    if (!confirm('Spend ' + o.cost + ' XP on ' + o.label + (o.next ? ' (to ' + o.next + ')' : '') + '?')) return;
+    if (!(await ask('Spend XP', 'Spend ' + o.cost + ' XP on ' + o.label + (o.next ? ' (' + o.cur + ' to ' + o.next + ')' : '') + '? You have ' + M.xp.unspent + ' unspent.', 'Buy It'))) return;
     act(function () { return C.buy(o, {}); }, 'Bought ' + o.label + ' for ' + o.cost + ' XP.');
+  }
+  // Click the next empty dot to buy it with XP
+  function offerFor(kind, name) { return (M.offers || []).filter(function (o) { return o.kind === kind && (o.name === name || (kind === 'hm' && o.itemName === name)); })[0]; }
+  function buyDots(n, max, kind, name) {
+    var d = dots(n, max);
+    var o = mine ? offerFor(kind, name) : null;
+    if (!o) return d;
+    var b = el('button', { type: 'button', class: 'cv-dotbuy', title: 'Buy dot ' + o.next + ' for ' + o.cost + ' XP', 'aria-label': 'Buy ' + (o.label || name) + ' dot ' + o.next + ' for ' + o.cost + ' XP', onclick: function () { buy(o); } }, [d]);
+    return b;
   }
   DRAW.xp = function (b) {
     var C = window.TerranaCharacter;
@@ -567,7 +667,7 @@
         list.forEach(function (o) {
           var lab = o.next && o.kind !== 'spec' ? o.label + ': ' + o.cur + ' to ' + o.next + (o.tier === 'S' && o.cur === 0 ? ' (new, Secondary)' : '') : o.label;
           det.appendChild(el('div', { class: 'cv-buy' }, [el('span', { class: 'nm', text: lab }),
-            el('button', { class: 'act small' + (o.ok ? ' primary' : ''), type: 'button', disabled: !o.ok && !M.st ? true : null, text: o.cost + ' XP', onclick: function () { buy(o); } })]));
+            el('button', { class: 'act small' + (o.ok ? ' primary' : ' short'), type: 'button', text: o.cost + ' XP', title: o.ok ? null : 'Needs ' + (o.cost - M.xp.unspent) + ' more XP', onclick: function () { buy(o); } })]));
         });
         spend.push(det);
       });

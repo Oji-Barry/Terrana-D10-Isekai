@@ -972,8 +972,9 @@
   }
   function statVal(n) {
     var s = (build.stats || {})[n];
-    if (s !== undefined) return s;
-    return n === 'Willpower' ? startWillpower() : 5;
+    if (s === undefined) s = n === 'Willpower' ? startWillpower() : 5;
+    var adj = ((EXTRA.tracks || {}).adj || {})[n] || 0; // full rows of checks or X's on the character page
+    return Math.max(0, Math.min(10, s + adj));
   }
   function statStart(n) { return n === 'Willpower' ? startWillpower() : 5; }
   S[9] = {
