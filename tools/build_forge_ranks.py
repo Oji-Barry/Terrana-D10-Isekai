@@ -45,6 +45,32 @@ def schools(page):
     return out
 
 
+def heritage_magic(page):
+    """Each Heritage magic in ch8.html: its heading id and seven ranks of two spells (A and B)."""
+    out = {}
+    heads = list(re.finditer(r'<h4 id="([a-z0-9-]+)">(?:Heritage Magic|Vampiric Power): ([^<]+)</h4>', page))
+    for i, h in enumerate(heads):
+        name = html.unescape(h.group(2)).strip()
+        end = heads[i + 1].start() if i + 1 < len(heads) else len(page)
+        nxt = page.find('<h3', h.end())
+        if 0 <= nxt < end:
+            end = nxt
+        body = page[h.end():end]
+        ranks = []
+        for m in re.finditer(r'<h4 class="minor" id="[^"]+">Rank (\d) ([A-Za-z]+)\s*\(choose one\)</h4>(.*?)(?=<h4|$)', body, re.S):
+            spells = []
+            for sm in re.finditer(r'<div class="entry"><div class="entry-name" id="([^"]+)">([AB])\. ([^<]+)</div>(.*?)</div>\s*(?=<div class="entry"|<h4|</section>|$)', m.group(3), re.S):
+                cost = re.search(r'<strong>Mana Cost: </strong>([^<]+)', sm.group(4))
+                eff = re.search(r'<strong>Effect: </strong>(.*?)</p>', sm.group(4), re.S)
+                spells.append({'name': clean(sm.group(3)), 'opt': sm.group(2), 'id': sm.group(1),
+                               'cost': cost.group(1).strip() if cost else '', 'text': clean(eff.group(1)) if eff else ''})
+            assert len(spells) == 2, (name, m.group(1), len(spells))
+            ranks.append({'rank': int(m.group(1)), 'title': m.group(2), 'id': h.group(1), 'default': None, 'spells': spells})
+        assert len(ranks) in (0, 7), (name, len(ranks))
+        out[name] = {'id': h.group(1), 'ranks': ranks or None}
+    return out
+
+
 def main():
     with open('forge/data.json', encoding='utf-8') as fh:
         data = json.load(fh)
@@ -107,9 +133,13 @@ def main():
                     'link': '../rulebook/ch13.html#' + n['id'], 'ranks': None, 'circle': True})
     if out:
         data['knowledges'][i:i + 1] = out
+    hm = heritage_magic(open('rulebook/ch8.html', encoding='utf-8').read())
+    data['heritage_magic'] = hm
+    for h in data['heritages']:
+        assert h['heritage_magic'] in hm, h['heritage_magic']
     with open('forge/data.json', 'w', encoding='utf-8') as fh:
         json.dump(data, fh, ensure_ascii=False, indent=1)
-    print('ranks added: %d styles, %d knowledges' % (len(data['styles']), sum(1 for k in data['knowledges'] if k.get('ranks'))))
+    print('ranks added: %d styles, %d knowledges, %d heritage magics (%d with ranks)' % (len(data['styles']), sum(1 for k in data['knowledges'] if k.get('ranks')), len(hm), sum(1 for v in hm.values() if v['ranks'])))
 
 
 if __name__ == '__main__':

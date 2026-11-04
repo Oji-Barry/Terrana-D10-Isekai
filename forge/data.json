@@ -8787,5 +8787,4475 @@
    "cost": "49",
    "text": "The single combination of all seven schools: the only magic that brings new life into the world."
   }
- ]
+ ],
+ "heritage_magic": {
+  "Skycall": {
+   "id": "part-1-common-heritages-heritage-magic-skycall",
+   "ranks": [
+    {
+     "rank": 1,
+     "title": "Core",
+     "id": "part-1-common-heritages-heritage-magic-skycall",
+     "default": null,
+     "spells": [
+      {
+       "name": "Tailwind",
+       "opt": "A",
+       "id": "part-1-common-heritages-a-tailwind",
+       "cost": "1, attuned (stays committed)",
+       "text": "While attuned and flying, move one extra zone each turn at no AP cost."
+      },
+      {
+       "name": "Rooftop Call",
+       "opt": "B",
+       "id": "part-1-common-heritages-b-rooftop-call",
+       "cost": "1",
+       "text": "A call heard across a settlement. Birds and avian kin who hear it answer one simple question per success about what they have seen."
+      }
+     ]
+    },
+    {
+     "rank": 2,
+     "title": "Terrestrial",
+     "id": "part-1-common-heritages-heritage-magic-skycall",
+     "default": null,
+     "spells": [
+      {
+       "name": "Dive Strike",
+       "opt": "A",
+       "id": "part-1-common-heritages-a-dive-strike",
+       "cost": "2",
+       "text": "Attack after descending at least one zone this turn. Add your Heritage dots to the damage roll."
+      },
+      {
+       "name": "Feather Flurry",
+       "opt": "B",
+       "id": "part-1-common-heritages-b-feather-flurry",
+       "cost": "2",
+       "text": "The target resists with Perception + Awareness. If you beat them, they suffer -2 dice on sight-based rolls on their next turn."
+      }
+     ]
+    },
+    {
+     "rank": 3,
+     "title": "Aerial",
+     "id": "part-1-common-heritages-heritage-magic-skycall",
+     "default": null,
+     "spells": [
+      {
+       "name": "Updraft",
+       "opt": "A",
+       "id": "part-1-common-heritages-a-updraft",
+       "cost": "3",
+       "text": "Move the ally one zone at no AP cost to them."
+      },
+      {
+       "name": "Screech",
+       "opt": "B",
+       "id": "part-1-common-heritages-b-screech",
+       "cost": "3",
+       "text": "Every enemy in range resists with Composure + Presence. Each one you beat loses their next Reaction."
+      }
+     ]
+    },
+    {
+     "rank": 4,
+     "title": "Lunar",
+     "id": "part-1-common-heritages-heritage-magic-skycall",
+     "default": null,
+     "spells": [
+      {
+       "name": "Wind Rider",
+       "opt": "A",
+       "id": "part-1-common-heritages-a-wind-rider",
+       "cost": "4, attuned (stays committed)",
+       "text": "While attuned and flying, you ignore Difficult Terrain, and melee attackers without reach or flight suffer -2 dice against you."
+      },
+      {
+       "name": "Flock Call",
+       "opt": "B",
+       "id": "part-1-common-heritages-b-flock-call",
+       "cost": "4, upkeep 3 each Upkeep Phase",
+       "text": "A swarm of birds fills the zone. While maintained, enemies there suffer -2 dice on all rolls."
+      }
+     ]
+    },
+    {
+     "rank": 5,
+     "title": "Stellar",
+     "id": "part-1-common-heritages-heritage-magic-skycall",
+     "default": null,
+     "spells": [
+      {
+       "name": "Talon Carry",
+       "opt": "A",
+       "id": "part-1-common-heritages-a-talon-carry",
+       "cost": "5",
+       "text": "The target resists with Strength + Athletics. If you beat them, choose one: carry them up to two zones, fly them up to two zones straight up, or carry them one zone and fly them one zone straight up. Then drop them. They take damage equal to your Heritage dots, plus falling damage if they fall (see Falling Damage)."
+      },
+      {
+       "name": "Harmony Chorus",
+       "opt": "B",
+       "id": "part-1-common-heritages-b-harmony-chorus",
+       "cost": "5, upkeep 4 each Upkeep Phase",
+       "text": "While maintained, allies who can hear you add bonus dice equal to half your Heritage dots, rounded up, to Dodge rolls."
+      }
+     ]
+    },
+    {
+     "rank": 6,
+     "title": "Galactic",
+     "id": "part-1-common-heritages-heritage-magic-skycall",
+     "default": null,
+     "spells": [
+      {
+       "name": "Sky Lance",
+       "opt": "A",
+       "id": "part-1-common-heritages-a-sky-lance",
+       "cost": "6",
+       "text": "Fly along the line, ending in an empty zone. Roll once; each enemy along the line defends separately."
+      },
+      {
+       "name": "Storm Wing",
+       "opt": "B",
+       "id": "part-1-common-heritages-b-storm-wing",
+       "cost": "6, upkeep 5 each Upkeep Phase",
+       "text": "Roll when cast. While maintained, ranged attacks through those zones suffer -3 dice, and flying enemies there must beat your successes with Dexterity + Acrobatics during each Upkeep Phase or fall and take falling damage (see Falling Damage)."
+      }
+     ]
+    },
+    {
+     "rank": 7,
+     "title": "Cosmic",
+     "id": "part-1-common-heritages-heritage-magic-skycall",
+     "default": null,
+     "spells": [
+      {
+       "name": "Endless Sky",
+       "opt": "A",
+       "id": "part-1-common-heritages-a-endless-sky",
+       "cost": "7, upkeep 6 each Upkeep Phase",
+       "text": "While maintained, you and allies in sight move one extra zone each turn at no AP cost, and allies can fly at double their normal movement."
+      },
+      {
+       "name": "Call of a Thousand Wings",
+       "opt": "B",
+       "id": "part-1-common-heritages-b-call-of-a-thousand-wings",
+       "cost": "7, upkeep 6 each Upkeep Phase",
+       "text": "While maintained, enemies in those zones suffer -3 dice on all rolls, and allies there count as fully covered against ranged attacks."
+      }
+     ]
+    }
+   ]
+  },
+  "Howling Magic": {
+   "id": "part-1-common-heritages-heritage-magic-howling-magic",
+   "ranks": [
+    {
+     "rank": 1,
+     "title": "Core",
+     "id": "part-1-common-heritages-heritage-magic-howling-magic",
+     "default": null,
+     "spells": [
+      {
+       "name": "Startling Bark",
+       "opt": "A",
+       "id": "part-1-common-heritages-a-startling-bark",
+       "cost": "1",
+       "text": "The target resists with Composure + Presence. If you beat them, they lose their next Reaction."
+      },
+      {
+       "name": "Hunter's Ear",
+       "opt": "B",
+       "id": "part-1-common-heritages-b-hunters-ear",
+       "cost": "1, attuned (stays committed)",
+       "text": "While attuned, add your Heritage dots to Awareness rolls based on hearing or scent."
+      }
+     ]
+    },
+    {
+     "rank": 2,
+     "title": "Terrestrial",
+     "id": "part-1-common-heritages-heritage-magic-howling-magic",
+     "default": null,
+     "spells": [
+      {
+       "name": "Disorienting Howl",
+       "opt": "A",
+       "id": "part-1-common-heritages-a-disorienting-howl",
+       "cost": "2",
+       "text": "The target resists with Composure + Presence. If you beat them, they suffer penalty dice on their next roll equal to your extra successes, up to your Heritage dots."
+      },
+      {
+       "name": "Pack Call",
+       "opt": "B",
+       "id": "part-1-common-heritages-b-pack-call",
+       "cost": "2",
+       "text": "A howl that carries a long way. Allies who hear it know your direction and whether you are in danger. Anyone else nearby may hear it too."
+      }
+     ]
+    },
+    {
+     "rank": 3,
+     "title": "Aerial",
+     "id": "part-1-common-heritages-heritage-magic-howling-magic",
+     "default": null,
+     "spells": [
+      {
+       "name": "Rattling Roar",
+       "opt": "A",
+       "id": "part-1-common-heritages-a-rattling-roar",
+       "cost": "3",
+       "text": "Every enemy in range resists with Composure + Presence. Each one you beat loses 1 AP on their next turn."
+      },
+      {
+       "name": "Echo Sense",
+       "opt": "B",
+       "id": "part-1-common-heritages-b-echo-sense",
+       "cost": "3, attuned (stays committed)",
+       "text": "While attuned, roll your dice pool whenever a hidden or invisible creature moves within a number of zones equal to your Howling Magic dots. The creature rolls Dexterity + Stealth. If you beat it, you know which zone it is in."
+      }
+     ]
+    },
+    {
+     "rank": 4,
+     "title": "Lunar",
+     "id": "part-1-common-heritages-heritage-magic-howling-magic",
+     "default": null,
+     "spells": [
+      {
+       "name": "Shatterhowl",
+       "opt": "A",
+       "id": "part-1-common-heritages-a-shatterhowl",
+       "cost": "4",
+       "text": "A sonic attack. The target defends with Fortitude + Endurance instead of Dodge."
+      },
+      {
+       "name": "Rallying Howl",
+       "opt": "B",
+       "id": "part-1-common-heritages-b-rallying-howl",
+       "cost": "4",
+       "text": "Each ally ends one fear or panic effect and adds a bonus die to their next attack."
+      }
+     ]
+    },
+    {
+     "rank": 5,
+     "title": "Stellar",
+     "id": "part-1-common-heritages-heritage-magic-howling-magic",
+     "default": null,
+     "spells": [
+      {
+       "name": "Cone of Thunder",
+       "opt": "A",
+       "id": "part-1-common-heritages-a-cone-of-thunder",
+       "cost": "5",
+       "text": "Shatterhowl against every target in the cone. Roll once; each target defends separately with Fortitude + Endurance."
+      },
+      {
+       "name": "Silence the Field",
+       "opt": "B",
+       "id": "part-1-common-heritages-b-silence-the-field",
+       "cost": "5, upkeep 4 each Upkeep Phase",
+       "text": "Roll when cast. While maintained, anyone other than you in range must beat your successes with Composure + Expression to cast spoken spells, Vocal Magic, or Howling Magic."
+      }
+     ]
+    },
+    {
+     "rank": 6,
+     "title": "Galactic",
+     "id": "part-1-common-heritages-heritage-magic-howling-magic",
+     "default": null,
+     "spells": [
+      {
+       "name": "Stunning Bellow",
+       "opt": "A",
+       "id": "part-1-common-heritages-a-stunning-bellow",
+       "cost": "6",
+       "text": "Every enemy in range resists with Composure + Presence. Each one you beat can only move on their next turn."
+      },
+      {
+       "name": "Voice of the Alpha",
+       "opt": "B",
+       "id": "part-1-common-heritages-b-voice-of-the-alpha",
+       "cost": "6",
+       "text": "Each enemy resists with Composure + Presence. Each one you beat moves one zone away from you and cannot approach you on their next turn."
+      }
+     ]
+    },
+    {
+     "rank": 7,
+     "title": "Cosmic",
+     "id": "part-1-common-heritages-heritage-magic-howling-magic",
+     "default": null,
+     "spells": [
+      {
+       "name": "World-Shaking Howl",
+       "opt": "A",
+       "id": "part-1-common-heritages-a-world-shaking-howl",
+       "cost": "7",
+       "text": "Each enemy resists with Composure + Presence. Each one you beat loses their next turn. Each one who beats you still loses 1 AP."
+      },
+      {
+       "name": "Chorus of the Pack",
+       "opt": "B",
+       "id": "part-1-common-heritages-b-chorus-of-the-pack",
+       "cost": "7, upkeep 6 each Upkeep Phase",
+       "text": "While maintained, each ally adds bonus dice equal to half your Heritage dots, rounded up, to one roll each turn."
+      }
+     ]
+    }
+   ]
+  },
+  "Feral Blood": {
+   "id": "part-1-common-heritages-heritage-magic-feral-blood",
+   "ranks": [
+    {
+     "rank": 1,
+     "title": "Core",
+     "id": "part-1-common-heritages-heritage-magic-feral-blood",
+     "default": null,
+     "spells": [
+      {
+       "name": "Natural Weapons",
+       "opt": "A",
+       "id": "part-1-common-heritages-a-natural-weapons",
+       "cost": "1, attuned (stays committed)",
+       "text": "While attuned, your claws, tusks, teeth, or beak count as a weapon with a rating equal to your Heritage dots."
+      },
+      {
+       "name": "Animal Sense",
+       "opt": "B",
+       "id": "part-1-common-heritages-b-animal-sense",
+       "cost": "1, attuned (stays committed)",
+       "text": "While attuned, add your Heritage dots to rolls using your animal type's keenest sense."
+      }
+     ]
+    },
+    {
+     "rank": 2,
+     "title": "Terrestrial",
+     "id": "part-1-common-heritages-heritage-magic-feral-blood",
+     "default": null,
+     "spells": [
+      {
+       "name": "Hide of the Beast",
+       "opt": "A",
+       "id": "part-1-common-heritages-a-hide-of-the-beast",
+       "cost": "2, attuned (stays committed)",
+       "text": "While attuned, gain Armor equal to half your Heritage dots, rounded up."
+      },
+      {
+       "name": "Scent the Trail",
+       "opt": "B",
+       "id": "part-1-common-heritages-b-scent-the-trail",
+       "cost": "2",
+       "text": "On a success you know which way the creature went. In combat, you know which zone it is in for the rest of the scene."
+      }
+     ]
+    },
+    {
+     "rank": 3,
+     "title": "Aerial",
+     "id": "part-1-common-heritages-heritage-magic-feral-blood",
+     "default": null,
+     "spells": [
+      {
+       "name": "Feral Charge",
+       "opt": "A",
+       "id": "part-1-common-heritages-a-feral-charge",
+       "cost": "3",
+       "text": "Move one zone and attack in the same action with no extra AP."
+      },
+      {
+       "name": "Hunker Down",
+       "opt": "B",
+       "id": "part-1-common-heritages-b-hunker-down",
+       "cost": "3",
+       "text": "When you are attacked, roll your dice pool. Each success removes 1 success from the attacker's roll."
+      }
+     ]
+    },
+    {
+     "rank": 4,
+     "title": "Lunar",
+     "id": "part-1-common-heritages-heritage-magic-feral-blood",
+     "default": null,
+     "spells": [
+      {
+       "name": "Blood Frenzy",
+       "opt": "A",
+       "id": "part-1-common-heritages-a-blood-frenzy",
+       "cost": "4, attuned (stays committed)",
+       "text": "While attuned, add your Heritage dots to attack rolls and suffer -2 dice on all other rolls."
+      },
+      {
+       "name": "Locking Jaw",
+       "opt": "B",
+       "id": "part-1-common-heritages-b-locking-jaw",
+       "cost": "4",
+       "text": "On a hit you also hold the target. A held target cannot move away from you and suffers -2 dice until they beat your successes with Strength + Athletics on their turn."
+      }
+     ]
+    },
+    {
+     "rank": 5,
+     "title": "Stellar",
+     "id": "part-1-common-heritages-heritage-magic-feral-blood",
+     "default": null,
+     "spells": [
+      {
+       "name": "Beast Form",
+       "opt": "A",
+       "id": "part-1-common-heritages-a-beast-form",
+       "cost": "5, attuned (stays committed)",
+       "text": "While attuned, add 2 to Strength and Fortitude for all rolls and thresholds."
+      },
+      {
+       "name": "Unstoppable",
+       "opt": "B",
+       "id": "part-1-common-heritages-b-unstoppable",
+       "cost": "5, attuned (stays committed)",
+       "text": "While attuned, you ignore Difficult Terrain and cannot be Rooted, knocked prone, grappled, or moved against your will."
+      }
+     ]
+    },
+    {
+     "rank": 6,
+     "title": "Galactic",
+     "id": "part-1-common-heritages-heritage-magic-feral-blood",
+     "default": null,
+     "spells": [
+      {
+       "name": "Rending Blow",
+       "opt": "A",
+       "id": "part-1-common-heritages-a-rending-blow",
+       "cost": "6",
+       "text": "A hit is treated as meeting the next-higher damage threshold."
+      },
+      {
+       "name": "Primal Endurance",
+       "opt": "B",
+       "id": "part-1-common-heritages-b-primal-endurance",
+       "cost": "6",
+       "text": "Once per scene, when you would become Incapacitated, stay standing and act normally for one more turn."
+      }
+     ]
+    },
+    {
+     "rank": 7,
+     "title": "Cosmic",
+     "id": "part-1-common-heritages-heritage-magic-feral-blood",
+     "default": null,
+     "spells": [
+      {
+       "name": "Apex Predator",
+       "opt": "A",
+       "id": "part-1-common-heritages-a-apex-predator",
+       "cost": "7, upkeep 6 each Upkeep Phase",
+       "text": "While maintained, enemies in range cannot attack anyone but you."
+      },
+      {
+       "name": "Ancestral Beast",
+       "opt": "B",
+       "id": "part-1-common-heritages-b-ancestral-beast",
+       "cost": "7, attuned (stays committed)",
+       "text": "While attuned, you take a giant form of your animal. Add your Heritage dots to attack rolls and double your BDT."
+      }
+     ]
+    }
+   ]
+  },
+  "Titan's Weight": {
+   "id": "part-1-common-heritages-heritage-magic-titans-weight",
+   "ranks": [
+    {
+     "rank": 1,
+     "title": "Core",
+     "id": "part-1-common-heritages-heritage-magic-titans-weight",
+     "default": null,
+     "spells": [
+      {
+       "name": "Heavy Hand",
+       "opt": "A",
+       "id": "part-1-common-heritages-a-heavy-hand",
+       "cost": "1, attuned (stays committed)",
+       "text": "While attuned, add half your Heritage dots, rounded up, to damage rolls on Strength-based attacks."
+      },
+      {
+       "name": "Unbudging",
+       "opt": "B",
+       "id": "part-1-common-heritages-b-unbudging",
+       "cost": "1",
+       "text": "When something would move you, knock you prone, or grapple you, resist with this dice pool instead of your normal roll."
+      }
+     ]
+    },
+    {
+     "rank": 2,
+     "title": "Terrestrial",
+     "id": "part-1-common-heritages-heritage-magic-titans-weight",
+     "default": null,
+     "spells": [
+      {
+       "name": "Shove",
+       "opt": "A",
+       "id": "part-1-common-heritages-a-shove",
+       "cost": "2",
+       "text": "On a hit the target is pushed one zone away instead of taking damage. They also resist with Strength + Athletics; if you beat them, they are knocked prone."
+      },
+      {
+       "name": "Load Bearer",
+       "opt": "B",
+       "id": "part-1-common-heritages-b-load-bearer",
+       "cost": "2, attuned (stays committed)",
+       "text": "While attuned, add your Heritage dots to rolls to lift or carry. Carrying an ally costs no extra AP while moving."
+      }
+     ]
+    },
+    {
+     "rank": 3,
+     "title": "Aerial",
+     "id": "part-1-common-heritages-heritage-magic-titans-weight",
+     "default": null,
+     "spells": [
+      {
+       "name": "Trample",
+       "opt": "A",
+       "id": "part-1-common-heritages-a-trample",
+       "cost": "3",
+       "text": "Charge in a straight line past up to two enemies, ending in an empty zone. Roll once; each enemy you pass defends separately."
+      },
+      {
+       "name": "Thick Skinned",
+       "opt": "B",
+       "id": "part-1-common-heritages-b-thick-skinned",
+       "cost": "3, attuned (stays committed)",
+       "text": "While attuned, gain Armor equal to half your Heritage dots, rounded up."
+      }
+     ]
+    },
+    {
+     "rank": 4,
+     "title": "Lunar",
+     "id": "part-1-common-heritages-heritage-magic-titans-weight",
+     "default": null,
+     "spells": [
+      {
+       "name": "Living Wall",
+       "opt": "A",
+       "id": "part-1-common-heritages-a-living-wall",
+       "cost": "4, upkeep 3 each Upkeep Phase",
+       "text": "Roll when cast. While maintained, enemies must beat your successes with Strength + Athletics to move into or through any zone adjacent to you, and allies in adjacent zones add 2 to their Damage Threshold against ranged attacks."
+      },
+      {
+       "name": "Hurl",
+       "opt": "B",
+       "id": "part-1-common-heritages-b-hurl",
+       "cost": "4",
+       "text": "Throw a heavy object or a grappled creature at the target. The target and a thrown creature both take the damage of the hit."
+      }
+     ]
+    },
+    {
+     "rank": 5,
+     "title": "Stellar",
+     "id": "part-1-common-heritages-heritage-magic-titans-weight",
+     "default": null,
+     "spells": [
+      {
+       "name": "Earthshaker",
+       "opt": "A",
+       "id": "part-1-common-heritages-a-earthshaker",
+       "cost": "5",
+       "text": "Every enemy in range resists with Dexterity + Athletics. Each one you beat is knocked prone. Those zones become Difficult Terrain for the rest of the scene."
+      },
+      {
+       "name": "Momentum",
+       "opt": "B",
+       "id": "part-1-common-heritages-b-momentum",
+       "cost": "5, attuned (stays committed)",
+       "text": "While attuned, attacks you make after moving at least one zone that turn add your Heritage dots to the damage roll."
+      }
+     ]
+    },
+    {
+     "rank": 6,
+     "title": "Galactic",
+     "id": "part-1-common-heritages-heritage-magic-titans-weight",
+     "default": null,
+     "spells": [
+      {
+       "name": "Colossus",
+       "opt": "A",
+       "id": "part-1-common-heritages-a-colossus",
+       "cost": "6, attuned (stays committed)",
+       "text": "While attuned, you grow, and your melee attacks reach targets in adjacent zones."
+      },
+      {
+       "name": "Shrug It Off",
+       "opt": "B",
+       "id": "part-1-common-heritages-b-shrug-it-off",
+       "cost": "6",
+       "text": "Once per turn, treat one hit against you as two damage thresholds lower: Aggravated becomes Bashing, and Lethal or Bashing deals nothing."
+      }
+     ]
+    },
+    {
+     "rank": 7,
+     "title": "Cosmic",
+     "id": "part-1-common-heritages-heritage-magic-titans-weight",
+     "default": null,
+     "spells": [
+      {
+       "name": "Titanfall",
+       "opt": "A",
+       "id": "part-1-common-heritages-a-titanfall",
+       "cost": "7",
+       "text": "Leap to the zone. Roll once; every target in a zone adjacent to where you land defends separately. The landing zone becomes Difficult Terrain."
+      },
+      {
+       "name": "Mountain of Muscle",
+       "opt": "B",
+       "id": "part-1-common-heritages-b-mountain-of-muscle",
+       "cost": "7, attuned (stays committed)",
+       "text": "While attuned, add 3 to Strength and Fortitude for all rolls and thresholds."
+      }
+     ]
+    }
+   ]
+  },
+  "Earthsong": {
+   "id": "part-1-common-heritages-heritage-magic-earthsong",
+   "ranks": [
+    {
+     "rank": 1,
+     "title": "Core",
+     "id": "part-1-common-heritages-heritage-magic-earthsong",
+     "default": null,
+     "spells": [
+      {
+       "name": "Stone Reading",
+       "opt": "A",
+       "id": "part-1-common-heritages-a-stone-reading",
+       "cost": "1",
+       "text": "Touch stone or worked metal. On a success you learn its age, origin, and flaws. Each success also adds a bonus die to your next Crafts roll to repair or appraise it."
+      },
+      {
+       "name": "Steady Footing",
+       "opt": "B",
+       "id": "part-1-common-heritages-b-steady-footing",
+       "cost": "1",
+       "text": "When something would knock you prone or force you out of your zone, resist with this dice pool instead of your normal roll."
+      }
+     ]
+    },
+    {
+     "rank": 2,
+     "title": "Terrestrial",
+     "id": "part-1-common-heritages-heritage-magic-earthsong",
+     "default": null,
+     "spells": [
+      {
+       "name": "Forge Blessing",
+       "opt": "A",
+       "id": "part-1-common-heritages-a-forge-blessing",
+       "cost": "2, attuned (stays committed)",
+       "text": "While attuned, the item's rating is 1 higher. Only one item can carry Forge Blessing at a time."
+      },
+      {
+       "name": "Tremor Sense",
+       "opt": "B",
+       "id": "part-1-common-heritages-b-tremor-sense",
+       "cost": "2, attuned (stays committed)",
+       "text": "While attuned and standing on the ground, add your Heritage dots to Awareness rolls to detect anything moving on the ground within a number of zones equal to your Earthsong dots, including hidden or invisible creatures."
+      }
+     ]
+    },
+    {
+     "rank": 3,
+     "title": "Aerial",
+     "id": "part-1-common-heritages-heritage-magic-earthsong",
+     "default": null,
+     "spells": [
+      {
+       "name": "Ironskin",
+       "opt": "A",
+       "id": "part-1-common-heritages-a-ironskin",
+       "cost": "3, attuned (stays committed)",
+       "text": "While attuned, add half your Heritage dots, rounded up, to your BDT."
+      },
+      {
+       "name": "Shatter Point",
+       "opt": "B",
+       "id": "part-1-common-heritages-b-shatter-point",
+       "cost": "3",
+       "text": "Make a weapon or unarmed attack with this dice pool. It ignores Armor equal to your Heritage dots. Against objects and constructs, the damage value is doubled."
+      }
+     ]
+    },
+    {
+     "rank": 4,
+     "title": "Lunar",
+     "id": "part-1-common-heritages-heritage-magic-earthsong",
+     "default": null,
+     "spells": [
+      {
+       "name": "Mountain's Root",
+       "opt": "A",
+       "id": "part-1-common-heritages-a-mountains-root",
+       "cost": "4",
+       "text": "When the target would be moved, knocked prone, or Rooted, they resist with your dice pool instead of their own."
+      },
+      {
+       "name": "Quake Step",
+       "opt": "B",
+       "id": "part-1-common-heritages-b-quake-step",
+       "cost": "4",
+       "text": "Stomp. Every enemy in range resists with Dexterity + Athletics. Each one you beat is knocked prone."
+      }
+     ]
+    },
+    {
+     "rank": 5,
+     "title": "Stellar",
+     "id": "part-1-common-heritages-heritage-magic-earthsong",
+     "default": null,
+     "spells": [
+      {
+       "name": "Living Forge",
+       "opt": "A",
+       "id": "part-1-common-heritages-a-living-forge",
+       "cost": "5, attuned (stays committed)",
+       "text": "While attuned, weapons and armor carried by you and allies in adjacent zones count as 1 rating higher."
+      },
+      {
+       "name": "Stonewall",
+       "opt": "B",
+       "id": "part-1-common-heritages-b-stonewall",
+       "cost": "5, upkeep 4 each Upkeep Phase",
+       "text": "Raise a stone wall. It blocks movement and line of sight. An attack against the wall breaks it only if the attacker rolls more successes than you did when casting."
+      }
+     ]
+    },
+    {
+     "rank": 6,
+     "title": "Galactic",
+     "id": "part-1-common-heritages-heritage-magic-earthsong",
+     "default": null,
+     "spells": [
+      {
+       "name": "Heart of the Mountain",
+       "opt": "A",
+       "id": "part-1-common-heritages-a-heart-of-the-mountain",
+       "cost": "6, attuned (stays committed)",
+       "text": "While attuned, Lethal damage you take becomes Bashing, and Aggravated damage becomes Lethal."
+      },
+      {
+       "name": "Faultline",
+       "opt": "B",
+       "id": "part-1-common-heritages-b-faultline",
+       "cost": "6",
+       "text": "Crack the ground in a line from you. Roll once; each target in the line defends separately. Each target hit is knocked prone, and their zone becomes Difficult Terrain."
+      }
+     ]
+    },
+    {
+     "rank": 7,
+     "title": "Cosmic",
+     "id": "part-1-common-heritages-heritage-magic-earthsong",
+     "default": null,
+     "spells": [
+      {
+       "name": "Ore God's Hand",
+       "opt": "A",
+       "id": "part-1-common-heritages-a-ore-gods-hand",
+       "cost": "7",
+       "text": "Over a single scene, with the materials at hand, forge or reforge one item of any rating up to 7."
+      },
+      {
+       "name": "The Mountain Wakes",
+       "opt": "B",
+       "id": "part-1-common-heritages-b-the-mountain-wakes",
+       "cost": "7, upkeep 6 each Upkeep Phase",
+       "text": "Reshape the ground: raise walls, open pits, or seal passages. During each Upkeep Phase while maintained, you may reshape one of those zones again."
+      }
+     ]
+    }
+   ]
+  },
+  "Verdant Communion": {
+   "id": "part-1-common-heritages-heritage-magic-verdant-communion",
+   "ranks": [
+    {
+     "rank": 1,
+     "title": "Core",
+     "id": "part-1-common-heritages-heritage-magic-verdant-communion",
+     "default": null,
+     "spells": [
+      {
+       "name": "Forest Tongue",
+       "opt": "A",
+       "id": "part-1-common-heritages-a-forest-tongue",
+       "cost": "1",
+       "text": "Hold a slow conversation with one plant or the minor spirit living in it. Plants think slowly; even asking for directions can take the better part of an hour. The plant shares what it has sensed over the last few days through sound, vibration, warmth, and touch, such as who passed and which way they went. It cannot see."
+      },
+      {
+       "name": "Wind Reading",
+       "opt": "B",
+       "id": "part-1-common-heritages-b-wind-reading",
+       "cost": "1, attuned (stays committed)",
+       "text": "While attuned, add your Heritage dots to Awareness rolls to notice movement within a number of zones equal to your Verdant Communion dots."
+      }
+     ]
+    },
+    {
+     "rank": 2,
+     "title": "Terrestrial",
+     "id": "part-1-common-heritages-heritage-magic-verdant-communion",
+     "default": null,
+     "spells": [
+      {
+       "name": "Rootbind",
+       "opt": "A",
+       "id": "part-1-common-heritages-a-rootbind",
+       "cost": "2",
+       "text": "The target resists with Dexterity + Athletics. If you roll more successes, they gain the Rooted condition until the end of their next turn."
+      },
+      {
+       "name": "Canopy Veil",
+       "opt": "B",
+       "id": "part-1-common-heritages-b-canopy-veil",
+       "cost": "2, upkeep 1 each Upkeep Phase",
+       "text": "Roll when cast. While maintained and in natural terrain, your casting roll becomes the Stealth roll for you and every ally in an adjacent zone. They do not roll Stealth themselves; anyone searching for them must beat your successes with Perception + Awareness."
+      }
+     ]
+    },
+    {
+     "rank": 3,
+     "title": "Aerial",
+     "id": "part-1-common-heritages-heritage-magic-verdant-communion",
+     "default": null,
+     "spells": [
+      {
+       "name": "Spirit Ask",
+       "opt": "A",
+       "id": "part-1-common-heritages-a-spirit-ask",
+       "cost": "3",
+       "text": "Spend a scene in communion with the land. Ask one question per success about the area, such as hidden dangers, water, paths, or recent travelers. The Storyteller answers each truthfully in a few words."
+      },
+      {
+       "name": "Living Ward",
+       "opt": "B",
+       "id": "part-1-common-heritages-b-living-ward",
+       "cost": "3",
+       "text": "When the target is attacked from range, plants rise to intercept. Roll your dice pool. Each success reduces the attacker's successes by 1."
+      }
+     ]
+    },
+    {
+     "rank": 4,
+     "title": "Lunar",
+     "id": "part-1-common-heritages-heritage-magic-verdant-communion",
+     "default": null,
+     "spells": [
+      {
+       "name": "Grove Path",
+       "opt": "A",
+       "id": "part-1-common-heritages-a-grove-path",
+       "cost": "4, attuned (stays committed)",
+       "text": "While attuned, natural Difficult Terrain costs you no extra AP. Allies who move through the same zones on the same turn as you ignore that Difficult Terrain as well."
+      },
+      {
+       "name": "Thornfield",
+       "opt": "B",
+       "id": "part-1-common-heritages-b-thornfield",
+       "cost": "4, upkeep 3 each Upkeep Phase",
+       "text": "Roll when cast. Successes plus mana spent set the damage value. The zone becomes thorned Difficult Terrain. Anyone who enters or begins their turn there rolls Fortitude + Endurance; their successes reduce the damage value, and the rest is compared against their damage thresholds."
+      }
+     ]
+    },
+    {
+     "rank": 5,
+     "title": "Stellar",
+     "id": "part-1-common-heritages-heritage-magic-verdant-communion",
+     "default": null,
+     "spells": [
+      {
+       "name": "Awaken the Grove",
+       "opt": "A",
+       "id": "part-1-common-heritages-a-awaken-the-grove",
+       "cost": "5, upkeep 4 each Upkeep Phase",
+       "text": "The plant becomes a conjuration that cannot leave its zone. During each Upkeep Phase it may attack one enemy in a zone adjacent to it using your dice pool, or cast Rootbind on one at no extra mana."
+      },
+      {
+       "name": "Spirit Sight",
+       "opt": "B",
+       "id": "part-1-common-heritages-b-spirit-sight",
+       "cost": "5, attuned (stays committed)",
+       "text": "While attuned, you see mana flowing. When a spell is cast within a number of zones equal to your Verdant Communion dots, roll your dice pool; on a success you learn its school and rank."
+      }
+     ]
+    },
+    {
+     "rank": 6,
+     "title": "Galactic",
+     "id": "part-1-common-heritages-heritage-magic-verdant-communion",
+     "default": null,
+     "spells": [
+      {
+       "name": "Forest's Embrace",
+       "opt": "A",
+       "id": "part-1-common-heritages-a-forests-embrace",
+       "cost": "6, upkeep 5 each Upkeep Phase",
+       "text": "The zones become living forest. Allies in them add a bonus die to Dodge rolls. During each Upkeep Phase, each enemy in them resists with Dexterity + Athletics against your casting successes or gains the Rooted condition."
+      },
+      {
+       "name": "Gale Step",
+       "opt": "B",
+       "id": "part-1-common-heritages-b-gale-step",
+       "cost": "6",
+       "text": "When the ally is targeted by an attack, the wind moves them one zone before it resolves. The attacker rolls against them with -2 dice."
+      }
+     ]
+    },
+    {
+     "rank": 7,
+     "title": "Cosmic",
+     "id": "part-1-common-heritages-heritage-magic-verdant-communion",
+     "default": null,
+     "spells": [
+      {
+       "name": "Heart of the Great Forest",
+       "opt": "A",
+       "id": "part-1-common-heritages-a-heart-of-the-great-forest",
+       "cost": "7, upkeep 6 each Upkeep Phase",
+       "text": "While maintained, once per turn you may cast Rootbind on any target in sight at no extra mana or AP."
+      },
+      {
+       "name": "Voice of Ages",
+       "opt": "B",
+       "id": "part-1-common-heritages-b-voice-of-ages",
+       "cost": "7",
+       "text": "Over a scene of communion, call an ancient forest spirit. It answers one question truthfully and in full, or performs one feat the Storyteller judges within the power of a forest, such as raising a wall of trees across six zones."
+      }
+     ]
+    }
+   ]
+  },
+  "Tinker's Spark": {
+   "id": "part-1-common-heritages-heritage-magic-tinkers-spark",
+   "ranks": [
+    {
+     "rank": 1,
+     "title": "Core",
+     "id": "part-1-common-heritages-heritage-magic-tinkers-spark",
+     "default": null,
+     "spells": [
+      {
+       "name": "Spark Touch",
+       "opt": "A",
+       "id": "part-1-common-heritages-a-spark-touch",
+       "cost": "1",
+       "text": "Power on, switch off, or open a small device or simple lock. The device resists with dice equal to its rating; you need more successes."
+      },
+      {
+       "name": "Gadget Sense",
+       "opt": "B",
+       "id": "part-1-common-heritages-b-gadget-sense",
+       "cost": "1, attuned (stays committed)",
+       "text": "While attuned, add your Heritage dots to rolls to understand, take apart, or find the flaw in a device."
+      }
+     ]
+    },
+    {
+     "rank": 2,
+     "title": "Terrestrial",
+     "id": "part-1-common-heritages-heritage-magic-tinkers-spark",
+     "default": null,
+     "spells": [
+      {
+       "name": "Jury Rig",
+       "opt": "A",
+       "id": "part-1-common-heritages-a-jury-rig",
+       "cost": "2",
+       "text": "Build a one-use gadget from scrap: a smoke puff, noisemaker, flash, or trip line. It must be used before the end of the scene, and its effect resolves with this roll's successes."
+      },
+      {
+       "name": "Gremlin Hex",
+       "opt": "B",
+       "id": "part-1-common-heritages-b-gremlin-hex",
+       "cost": "2",
+       "text": "The item's user resists with Intelligence + Crafts. If you beat them, they lose dice equal to your extra successes on their next roll with that item."
+      }
+     ]
+    },
+    {
+     "rank": 3,
+     "title": "Aerial",
+     "id": "part-1-common-heritages-heritage-magic-tinkers-spark",
+     "default": null,
+     "spells": [
+      {
+       "name": "Overclock",
+       "opt": "A",
+       "id": "part-1-common-heritages-a-overclock",
+       "cost": "3",
+       "text": "The ally adds your successes, up to your Heritage dots, as bonus dice on their next roll with the item. The item then suffers -1 die for the rest of the scene."
+      },
+      {
+       "name": "Object Shell",
+       "opt": "B",
+       "id": "part-1-common-heritages-b-object-shell",
+       "cost": "3, attuned (stays committed)",
+       "text": "Roll when you attune. While attuned you look like an object of your size. Spotting you requires beating your successes with Perception + Awareness."
+      }
+     ]
+    },
+    {
+     "rank": 4,
+     "title": "Lunar",
+     "id": "part-1-common-heritages-heritage-magic-tinkers-spark",
+     "default": null,
+     "spells": [
+      {
+       "name": "Animate Contraption",
+       "opt": "A",
+       "id": "part-1-common-heritages-a-animate-contraption",
+       "cost": "4, upkeep 3 each Upkeep Phase",
+       "text": "The device becomes a conjuration. During each Upkeep Phase it may move one zone, or attack one enemy in a zone adjacent to it using your dice pool."
+      },
+      {
+       "name": "Short Circuit",
+       "opt": "B",
+       "id": "part-1-common-heritages-b-short-circuit",
+       "cost": "4",
+       "text": "Crystal network devices and implements in range stop working until the end of your next turn. Constructs and conjurations resist with their maker's dice pool."
+      }
+     ]
+    },
+    {
+     "rank": 5,
+     "title": "Stellar",
+     "id": "part-1-common-heritages-heritage-magic-tinkers-spark",
+     "default": null,
+     "spells": [
+      {
+       "name": "Spare Parts",
+       "opt": "A",
+       "id": "part-1-common-heritages-a-spare-parts",
+       "cost": "5",
+       "text": "When an ally's item, construct, or conjuration would break, be destroyed, or end from damage, roll your dice pool. On a success it is repaired at once and the hit that caused it has no effect."
+      },
+      {
+       "name": "Bomb Bag",
+       "opt": "B",
+       "id": "part-1-common-heritages-b-bomb-bag",
+       "cost": "5",
+       "text": "Throw a gadget at the zone. It bursts across that zone and every zone adjacent to it. Roll once; each target in those zones defends separately."
+      }
+     ]
+    },
+    {
+     "rank": 6,
+     "title": "Galactic",
+     "id": "part-1-common-heritages-heritage-magic-tinkers-spark",
+     "default": null,
+     "spells": [
+      {
+       "name": "Gremlin Swarm",
+       "opt": "A",
+       "id": "part-1-common-heritages-a-gremlin-swarm",
+       "cost": "6, upkeep 5 each Upkeep Phase",
+       "text": "While maintained, enemies in those zones suffer -2 dice on rolls using weapons, armor, or implements."
+      },
+      {
+       "name": "Masterwork Tinkering",
+       "opt": "B",
+       "id": "part-1-common-heritages-b-masterwork-tinkering",
+       "cost": "6",
+       "text": "Over a session of work, build one permanent gadget with a rating up to your Heritage dots."
+      }
+     ]
+    },
+    {
+     "rank": 7,
+     "title": "Cosmic",
+     "id": "part-1-common-heritages-heritage-magic-tinkers-spark",
+     "default": null,
+     "spells": [
+      {
+       "name": "Grand Contraption",
+       "opt": "A",
+       "id": "part-1-common-heritages-a-grand-contraption",
+       "cost": "7, upkeep 6 each Upkeep Phase",
+       "text": "Assemble a combat construct as a conjuration. During each Upkeep Phase it attacks every enemy in zones adjacent to it using your dice pool; each defends separately."
+      },
+      {
+       "name": "Unmake",
+       "opt": "B",
+       "id": "part-1-common-heritages-b-unmake",
+       "cost": "7",
+       "text": "The object resists with dice equal to its rating, or a construct with its maker's dice pool. If you beat it, it falls apart into its component parts."
+      }
+     ]
+    }
+   ]
+  },
+  "Hearthluck": {
+   "id": "part-1-common-heritages-heritage-magic-hearthluck",
+   "ranks": [
+    {
+     "rank": 1,
+     "title": "Core",
+     "id": "part-1-common-heritages-heritage-magic-hearthluck",
+     "default": null,
+     "spells": [
+      {
+       "name": "Lucky Break",
+       "opt": "A",
+       "id": "part-1-common-heritages-a-lucky-break",
+       "cost": "1",
+       "text": "Once per scene, after you roll, reroll a number of your own dice up to your Heritage dots."
+      },
+      {
+       "name": "Beneath Notice",
+       "opt": "B",
+       "id": "part-1-common-heritages-b-beneath-notice",
+       "cost": "1, attuned (stays committed)",
+       "text": "While attuned, add your Heritage dots to Stealth rolls."
+      }
+     ]
+    },
+    {
+     "rank": 2,
+     "title": "Terrestrial",
+     "id": "part-1-common-heritages-heritage-magic-hearthluck",
+     "default": null,
+     "spells": [
+      {
+       "name": "Bad Luck Charm",
+       "opt": "A",
+       "id": "part-1-common-heritages-a-bad-luck-charm",
+       "cost": "2",
+       "text": "When the enemy rolls against you or an ally in an adjacent zone, roll your dice pool. Each success removes 1 success from their roll."
+      },
+      {
+       "name": "Hearth Comfort",
+       "opt": "B",
+       "id": "part-1-common-heritages-b-hearth-comfort",
+       "cost": "2",
+       "text": "Cook a meal over a scene. On a success, each ally who shares it regains 1 Willpower. Once per session."
+      }
+     ]
+    },
+    {
+     "rank": 3,
+     "title": "Aerial",
+     "id": "part-1-common-heritages-heritage-magic-hearthluck",
+     "default": null,
+     "spells": [
+      {
+       "name": "Slipped Away",
+       "opt": "A",
+       "id": "part-1-common-heritages-a-slipped-away",
+       "cost": "3",
+       "text": "After an attack against you fails, move to an adjacent zone at no AP cost."
+      },
+      {
+       "name": "Fortune's Favor",
+       "opt": "B",
+       "id": "part-1-common-heritages-b-fortunes-favor",
+       "cost": "3",
+       "text": "Roll your dice pool. The ally adds your successes, up to your Heritage dots, as bonus dice on their next roll."
+      }
+     ]
+    },
+    {
+     "rank": 4,
+     "title": "Lunar",
+     "id": "part-1-common-heritages-heritage-magic-hearthluck",
+     "default": null,
+     "spells": [
+      {
+       "name": "Forgotten",
+       "opt": "A",
+       "id": "part-1-common-heritages-a-forgotten",
+       "cost": "4, attuned (stays committed)",
+       "text": "Roll when you attune. While attuned, an enemy you have not attacked this scene must beat your successes with Perception + Awareness before they can target you."
+      },
+      {
+       "name": "Jinx",
+       "opt": "B",
+       "id": "part-1-common-heritages-b-jinx",
+       "cost": "4",
+       "text": "The target resists with Composure + Insight. If you beat them, they suffer penalty dice equal to your extra successes on their next roll."
+      }
+     ]
+    },
+    {
+     "rank": 5,
+     "title": "Stellar",
+     "id": "part-1-common-heritages-heritage-magic-hearthluck",
+     "default": null,
+     "spells": [
+      {
+       "name": "Lucky Streak",
+       "opt": "A",
+       "id": "part-1-common-heritages-a-lucky-streak",
+       "cost": "5, attuned (stays committed)",
+       "text": "While attuned, once per turn you may reroll one failed roll of your own."
+      },
+      {
+       "name": "Pass the Luck",
+       "opt": "B",
+       "id": "part-1-common-heritages-b-pass-the-luck",
+       "cost": "5",
+       "text": "When the ally fails a roll, they reroll it. You take a penalty die on your next roll."
+      }
+     ]
+    },
+    {
+     "rank": 6,
+     "title": "Galactic",
+     "id": "part-1-common-heritages-heritage-magic-hearthluck",
+     "default": null,
+     "spells": [
+      {
+       "name": "Not Even There",
+       "opt": "A",
+       "id": "part-1-common-heritages-a-not-even-there",
+       "cost": "6, upkeep 5 each Upkeep Phase",
+       "text": "Roll when cast. While maintained, enemies must beat your successes with Perception + Awareness to notice you at all. It ends when you attack or take damage."
+      },
+      {
+       "name": "Catastrophe",
+       "opt": "B",
+       "id": "part-1-common-heritages-b-catastrophe",
+       "cost": "6",
+       "text": "The target resists with Composure + Insight. If you beat them, their next roll automatically fails unless they spend 1 Willpower."
+      }
+     ]
+    },
+    {
+     "rank": 7,
+     "title": "Cosmic",
+     "id": "part-1-common-heritages-heritage-magic-hearthluck",
+     "default": null,
+     "spells": [
+      {
+       "name": "Luck of the Hills",
+       "opt": "A",
+       "id": "part-1-common-heritages-a-luck-of-the-hills",
+       "cost": "7, upkeep 6 each Upkeep Phase",
+       "text": "While maintained, you and allies in adjacent zones may reroll each failed roll once."
+      },
+      {
+       "name": "Fate's Pocket",
+       "opt": "B",
+       "id": "part-1-common-heritages-b-fates-pocket",
+       "cost": "7",
+       "text": "Once per session, declare that something improbable already happened: a door was left unlocked, a guard dozed off, a rope held. The Storyteller makes it true unless it would directly defeat a major character."
+      }
+     ]
+    }
+   ]
+  },
+  "Adaptation": {
+   "id": "part-1-common-heritages-heritage-magic-adaptation",
+   "ranks": null
+  },
+  "Undying Flesh": {
+   "id": "part-1-common-heritages-heritage-magic-undying-flesh",
+   "ranks": null
+  },
+  "Oni Ward": {
+   "id": "part-1-common-heritages-heritage-magic-oni-ward",
+   "ranks": [
+    {
+     "rank": 1,
+     "title": "Core",
+     "id": "part-1-common-heritages-heritage-magic-oni-ward",
+     "default": null,
+     "spells": [
+      {
+       "name": "Guarding Stance",
+       "opt": "A",
+       "id": "part-1-common-heritages-a-guarding-stance",
+       "cost": "1",
+       "text": "When you are attacked, roll your dice pool. Each success removes 1 success from the attacker's roll."
+      },
+      {
+       "name": "Calm Presence",
+       "opt": "B",
+       "id": "part-1-common-heritages-b-calm-presence",
+       "cost": "1, attuned (stays committed)",
+       "text": "While attuned, add your Heritage dots to Diplomacy rolls made to de-escalate a situation before violence begins."
+      }
+     ]
+    },
+    {
+     "rank": 2,
+     "title": "Terrestrial",
+     "id": "part-1-common-heritages-heritage-magic-oni-ward",
+     "default": null,
+     "spells": [
+      {
+       "name": "Iron Body",
+       "opt": "A",
+       "id": "part-1-common-heritages-a-iron-body",
+       "cost": "2, attuned (stays committed)",
+       "text": "While attuned, add half your Heritage dots, rounded up, to your BDT."
+      },
+      {
+       "name": "Answering Strike",
+       "opt": "B",
+       "id": "part-1-common-heritages-b-answering-strike",
+       "cost": "2",
+       "text": "After an attack hits you, make one unarmed or weapon attack against that attacker with this dice pool at no AP cost."
+      }
+     ]
+    },
+    {
+     "rank": 3,
+     "title": "Aerial",
+     "id": "part-1-common-heritages-heritage-magic-oni-ward",
+     "default": null,
+     "spells": [
+      {
+       "name": "Take the Blow",
+       "opt": "A",
+       "id": "part-1-common-heritages-a-take-the-blow",
+       "cost": "3",
+       "text": "An attack aimed at the ally hits you instead. You defend against it normally."
+      },
+      {
+       "name": "Breaking Hold",
+       "opt": "B",
+       "id": "part-1-common-heritages-b-breaking-hold",
+       "cost": "3",
+       "text": "The target resists with Strength + Athletics. If you beat them, they are restrained and cannot attack until they beat your successes with Strength + Athletics on their turn."
+      }
+     ]
+    },
+    {
+     "rank": 4,
+     "title": "Lunar",
+     "id": "part-1-common-heritages-heritage-magic-oni-ward",
+     "default": null,
+     "spells": [
+      {
+       "name": "Monastic Ward",
+       "opt": "A",
+       "id": "part-1-common-heritages-a-monastic-ward",
+       "cost": "4, upkeep 3 each Upkeep Phase",
+       "text": "While maintained, allies in adjacent zones add half your Heritage dots, rounded up, to their BDT."
+      },
+      {
+       "name": "Unmoving",
+       "opt": "B",
+       "id": "part-1-common-heritages-b-unmoving",
+       "cost": "4, attuned (stays committed)",
+       "text": "While attuned, if you have not moved this turn, you cannot be moved, knocked prone, or Rooted."
+      }
+     ]
+    },
+    {
+     "rank": 5,
+     "title": "Stellar",
+     "id": "part-1-common-heritages-heritage-magic-oni-ward",
+     "default": null,
+     "spells": [
+      {
+       "name": "Mountain Discipline",
+       "opt": "A",
+       "id": "part-1-common-heritages-a-mountain-discipline",
+       "cost": "5, attuned (stays committed)",
+       "text": "While attuned, ignore wound penalties from Bashing and Lethal damage."
+      },
+      {
+       "name": "Disarming Grace",
+       "opt": "B",
+       "id": "part-1-common-heritages-b-disarming-grace",
+       "cost": "5",
+       "text": "When a melee attack against you or an ally in an adjacent zone fails, roll your dice pool. The attacker resists with Strength + Athletics. If you beat them, they drop their weapon."
+      }
+     ]
+    },
+    {
+     "rank": 6,
+     "title": "Galactic",
+     "id": "part-1-common-heritages-heritage-magic-oni-ward",
+     "default": null,
+     "spells": [
+      {
+       "name": "Oath Shield",
+       "opt": "A",
+       "id": "part-1-common-heritages-a-oath-shield",
+       "cost": "6, upkeep 5 each Upkeep Phase",
+       "text": "While maintained, the first attack that hits the ally each turn deals them no damage. You take half of it instead, rounded down."
+      },
+      {
+       "name": "Peace Aura",
+       "opt": "B",
+       "id": "part-1-common-heritages-b-peace-aura",
+       "cost": "6",
+       "text": "Every creature in range resists with Composure + Diplomacy. Each one you beat cannot attack on their next turn."
+      }
+     ]
+    },
+    {
+     "rank": 7,
+     "title": "Cosmic",
+     "id": "part-1-common-heritages-heritage-magic-oni-ward",
+     "default": null,
+     "spells": [
+      {
+       "name": "Unbreakable Vow",
+       "opt": "A",
+       "id": "part-1-common-heritages-a-unbreakable-vow",
+       "cost": "7, attuned (stays committed)",
+       "text": "While attuned, every hit against you is treated as one damage threshold lower: Aggravated becomes Lethal, Lethal becomes Bashing, and Bashing deals nothing."
+      },
+      {
+       "name": "Sanctuary",
+       "opt": "B",
+       "id": "part-1-common-heritages-b-sanctuary",
+       "cost": "7, upkeep 6 each Upkeep Phase",
+       "text": "Roll when cast. While maintained, anyone who tries to attack inside those zones must first beat your successes with Willpower. On a failure the action is wasted."
+      }
+     ]
+    }
+   ]
+  },
+  "Venom": {
+   "id": "part-1-common-heritages-heritage-magic-venom",
+   "ranks": [
+    {
+     "rank": 1,
+     "title": "Core",
+     "id": "part-1-common-heritages-heritage-magic-venom",
+     "default": null,
+     "spells": [
+      {
+       "name": "Venom Bite",
+       "opt": "A",
+       "id": "part-1-common-heritages-a-venom-bite",
+       "cost": "1",
+       "text": "Attack with your natural weapons. On a hit the target gains the Poisoned condition."
+      },
+      {
+       "name": "Taste the Air",
+       "opt": "B",
+       "id": "part-1-common-heritages-b-taste-the-air",
+       "cost": "1, attuned (stays committed)",
+       "text": "While attuned, add your Heritage dots to Awareness and Survival rolls to track by scent and to detect poisons."
+      }
+     ]
+    },
+    {
+     "rank": 2,
+     "title": "Terrestrial",
+     "id": "part-1-common-heritages-heritage-magic-venom",
+     "default": null,
+     "spells": [
+      {
+       "name": "Spit",
+       "opt": "A",
+       "id": "part-1-common-heritages-a-spit",
+       "cost": "2",
+       "text": "On a hit the target suffers -2 dice on sight-based rolls on their next turn instead of taking damage."
+      },
+      {
+       "name": "Toxin Craft",
+       "opt": "B",
+       "id": "part-1-common-heritages-b-toxin-craft",
+       "cost": "2",
+       "text": "Over a scene, milk doses of your venom equal to your successes, up to your Heritage dots. Doses keep for one session. A weapon coated with a dose applies the Poisoned condition on its next hit."
+      }
+     ]
+    },
+    {
+     "rank": 3,
+     "title": "Aerial",
+     "id": "part-1-common-heritages-heritage-magic-venom",
+     "default": null,
+     "spells": [
+      {
+       "name": "Paralytic",
+       "opt": "A",
+       "id": "part-1-common-heritages-a-paralytic",
+       "cost": "3",
+       "text": "Venom Bite whose hit also costs the target 1 AP on their next turn."
+      },
+      {
+       "name": "Venom Immunity",
+       "opt": "B",
+       "id": "part-1-common-heritages-b-venom-immunity",
+       "cost": "3, attuned (stays committed)",
+       "text": "While attuned, resist poisons with this dice pool."
+      }
+     ]
+    },
+    {
+     "rank": 4,
+     "title": "Lunar",
+     "id": "part-1-common-heritages-heritage-magic-venom",
+     "default": null,
+     "spells": [
+      {
+       "name": "Necrotic Venom",
+       "opt": "A",
+       "id": "part-1-common-heritages-a-necrotic-venom",
+       "cost": "4",
+       "text": "Venom Bite whose Poisoned damage is Lethal instead of Bashing."
+      },
+      {
+       "name": "Webline",
+       "opt": "B",
+       "id": "part-1-common-heritages-b-webline",
+       "cost": "4",
+       "text": "The target resists with Dexterity + Athletics. If you beat them, they gain the Rooted condition until they beat your successes with Strength + Athletics on their turn."
+      }
+     ]
+    },
+    {
+     "rank": 5,
+     "title": "Stellar",
+     "id": "part-1-common-heritages-heritage-magic-venom",
+     "default": null,
+     "spells": [
+      {
+       "name": "Toxic Cloud",
+       "opt": "A",
+       "id": "part-1-common-heritages-a-toxic-cloud",
+       "cost": "5, upkeep 4 each Upkeep Phase",
+       "text": "Roll when cast. Successes plus mana spent set the damage value. Anyone who enters or begins their turn in the zone rolls Fortitude + Endurance; their successes reduce the damage value, and the rest is compared against their damage thresholds."
+      },
+      {
+       "name": "Shed Skin",
+       "opt": "B",
+       "id": "part-1-common-heritages-b-shed-skin",
+       "cost": "5",
+       "text": "Once per scene, shed your outer layer. Remove all conditions and heal 1 Lethal damage."
+      }
+     ]
+    },
+    {
+     "rank": 6,
+     "title": "Galactic",
+     "id": "part-1-common-heritages-heritage-magic-venom",
+     "default": null,
+     "spells": [
+      {
+       "name": "Hemotoxin",
+       "opt": "A",
+       "id": "part-1-common-heritages-a-hemotoxin",
+       "cost": "6",
+       "text": "Venom Bite whose target gains the Bleeding condition as well as Poisoned."
+      },
+      {
+       "name": "Venom Mastery",
+       "opt": "B",
+       "id": "part-1-common-heritages-b-venom-mastery",
+       "cost": "6, attuned (stays committed)",
+       "text": "While attuned, each Venom Bite hit also applies your choice of -2 dice on the target's next roll, the loss of 1 AP, or the Bleeding condition."
+      }
+     ]
+    },
+    {
+     "rank": 7,
+     "title": "Cosmic",
+     "id": "part-1-common-heritages-heritage-magic-venom",
+     "default": null,
+     "spells": [
+      {
+       "name": "Death's Kiss",
+       "opt": "A",
+       "id": "part-1-common-heritages-a-deaths-kiss",
+       "cost": "7",
+       "text": "On a hit, the target also resists with Fortitude + Endurance. If you beat them, the hit is treated as meeting the next-higher damage threshold, and Poisoned lasts the whole scene."
+      },
+      {
+       "name": "Plague Bearer",
+       "opt": "B",
+       "id": "part-1-common-heritages-b-plague-bearer",
+       "cost": "7, upkeep 6 each Upkeep Phase",
+       "text": "Toxic Cloud across up to 6 connected zones. It moves with you during each Upkeep Phase and never affects your allies."
+      }
+     ]
+    }
+   ]
+  },
+  "Deathless": {
+   "id": "part-2-rare-heritages-storyteller-approval-required-heritage-magic-deathless",
+   "ranks": [
+    {
+     "rank": 1,
+     "title": "Core",
+     "id": "part-2-rare-heritages-storyteller-approval-required-heritage-magic-deathless",
+     "default": null,
+     "spells": [
+      {
+       "name": "Unfeeling",
+       "opt": "A",
+       "id": "part-2-rare-heritages-storyteller-approval-required-a-unfeeling",
+       "cost": "1, attuned (stays committed)",
+       "text": "While attuned, ignore wound penalties from Bashing damage."
+      },
+      {
+       "name": "Corpse Still",
+       "opt": "B",
+       "id": "part-2-rare-heritages-storyteller-approval-required-b-corpse-still",
+       "cost": "1, attuned (stays committed)",
+       "text": "Roll when you attune. While attuned you appear fully dead. Seeing through it requires beating your successes with Perception + Awareness."
+      }
+     ]
+    },
+    {
+     "rank": 2,
+     "title": "Terrestrial",
+     "id": "part-2-rare-heritages-storyteller-approval-required-heritage-magic-deathless",
+     "default": null,
+     "spells": [
+      {
+       "name": "Mana Mending",
+       "opt": "A",
+       "id": "part-2-rare-heritages-storyteller-approval-required-a-mana-mending",
+       "cost": "2",
+       "text": "Cast during your Upkeep Phase. Basic healing on yourself."
+      },
+      {
+       "name": "Grave Chill",
+       "opt": "B",
+       "id": "part-2-rare-heritages-storyteller-approval-required-b-grave-chill",
+       "cost": "2",
+       "text": "On a hit, the target also gains the Chilled condition."
+      }
+     ]
+    },
+    {
+     "rank": 3,
+     "title": "Aerial",
+     "id": "part-2-rare-heritages-storyteller-approval-required-heritage-magic-deathless",
+     "default": null,
+     "spells": [
+      {
+       "name": "Detached Parts",
+       "opt": "A",
+       "id": "part-2-rare-heritages-storyteller-approval-required-a-detached-parts",
+       "cost": "3, upkeep 2 each Upkeep Phase",
+       "text": "A hand, head, or other part of you detaches and acts on its own in an adjacent zone to scout or carry something small. You perceive through it."
+      },
+      {
+       "name": "Unbreathing",
+       "opt": "B",
+       "id": "part-2-rare-heritages-storyteller-approval-required-b-unbreathing",
+       "cost": "3, attuned (stays committed)",
+       "text": "While attuned, you are immune to suffocation, airborne poisons, and disease."
+      }
+     ]
+    },
+    {
+     "rank": 4,
+     "title": "Lunar",
+     "id": "part-2-rare-heritages-storyteller-approval-required-heritage-magic-deathless",
+     "default": null,
+     "spells": [
+      {
+       "name": "Deep Mending",
+       "opt": "A",
+       "id": "part-2-rare-heritages-storyteller-approval-required-a-deep-mending",
+       "cost": "4",
+       "text": "Cast during your Upkeep Phase. Advanced healing on yourself."
+      },
+      {
+       "name": "Grave Aura",
+       "opt": "B",
+       "id": "part-2-rare-heritages-storyteller-approval-required-b-grave-aura",
+       "cost": "4, upkeep 3 each Upkeep Phase",
+       "text": "Each enemy in range resists with Composure + Presence when it is cast. Each one you beat suffers -2 dice to attack you while maintained."
+      }
+     ]
+    },
+    {
+     "rank": 5,
+     "title": "Stellar",
+     "id": "part-2-rare-heritages-storyteller-approval-required-heritage-magic-deathless",
+     "default": null,
+     "spells": [
+      {
+       "name": "Reassemble",
+       "opt": "A",
+       "id": "part-2-rare-heritages-storyteller-approval-required-a-reassemble",
+       "cost": "5",
+       "text": "Once per scene, when a hit would make you Incapacitated, you collapse instead and reform in an adjacent zone at your next Upkeep Phase without that hit's damage."
+      },
+      {
+       "name": "Drain Life",
+       "opt": "B",
+       "id": "part-2-rare-heritages-storyteller-approval-required-b-drain-life",
+       "cost": "5",
+       "text": "On a hit, regain mana equal to the boxes of damage dealt."
+      }
+     ]
+    },
+    {
+     "rank": 6,
+     "title": "Galactic",
+     "id": "part-2-rare-heritages-storyteller-approval-required-heritage-magic-deathless",
+     "default": null,
+     "spells": [
+      {
+       "name": "Phylactery",
+       "opt": "A",
+       "id": "part-2-rare-heritages-storyteller-approval-required-a-phylactery",
+       "cost": "6",
+       "text": "Over a session of work, bind your existence to one object. While it exists, your death ends with you reforming beside it after one day."
+      },
+      {
+       "name": "Command the Lesser Dead",
+       "opt": "B",
+       "id": "part-2-rare-heritages-storyteller-approval-required-b-command-the-lesser-dead",
+       "cost": "6, upkeep 5 each Upkeep Phase",
+       "text": "Mindless undead in sight, up to your Heritage dots in number, obey you while maintained. Undead imprinted by another necromancer or lich resist with their controller's dice pool."
+      }
+     ]
+    },
+    {
+     "rank": 7,
+     "title": "Cosmic",
+     "id": "part-2-rare-heritages-storyteller-approval-required-heritage-magic-deathless",
+     "default": null,
+     "spells": [
+      {
+       "name": "Deathless Lord",
+       "opt": "A",
+       "id": "part-2-rare-heritages-storyteller-approval-required-a-deathless-lord",
+       "cost": "7, attuned (stays committed)",
+       "text": "While attuned, damage cannot take you past Incapacitated. Bright Magic ignores this protection."
+      },
+      {
+       "name": "Army of the Grave",
+       "opt": "B",
+       "id": "part-2-rare-heritages-storyteller-approval-required-b-army-of-the-grave",
+       "cost": "7, upkeep 6 each Upkeep Phase",
+       "text": "Raise up to your Heritage dots in bodies as one conjuration. During each Upkeep Phase, each risen body may move one zone or attack one enemy in a zone adjacent to it using your dice pool."
+      }
+     ]
+    }
+   ]
+  },
+  "Tribal Magic": {
+   "id": "part-2-rare-heritages-storyteller-approval-required-heritage-magic-tribal-magic",
+   "ranks": null
+  },
+  "Contract Magic": {
+   "id": "part-2-rare-heritages-storyteller-approval-required-heritage-magic-contract-magic",
+   "ranks": [
+    {
+     "rank": 1,
+     "title": "Core",
+     "id": "part-2-rare-heritages-storyteller-approval-required-heritage-magic-contract-magic",
+     "default": null,
+     "spells": [
+      {
+       "name": "Binding Word",
+       "opt": "A",
+       "id": "part-2-rare-heritages-storyteller-approval-required-a-binding-word",
+       "cost": "1, spent when written",
+       "text": "A contract holding one simple promise between two signers. Both know at once if it is broken."
+      },
+      {
+       "name": "Fine Print Seal",
+       "opt": "B",
+       "id": "part-2-rare-heritages-storyteller-approval-required-b-fine-print-seal",
+       "cost": "1, spent when written",
+       "text": "Seal an existing agreement or document. Whoever reads it adds your successes as bonus dice to rolls to find loopholes, lies, and hidden clauses in it."
+      }
+     ]
+    },
+    {
+     "rank": 2,
+     "title": "Terrestrial",
+     "id": "part-2-rare-heritages-storyteller-approval-required-heritage-magic-contract-magic",
+     "default": null,
+     "spells": [
+      {
+       "name": "Minor Pact",
+       "opt": "A",
+       "id": "part-2-rare-heritages-storyteller-approval-required-a-minor-pact",
+       "cost": "2, spent when written",
+       "text": "A signer gives you 1 mana or 1 Willpower when they sign, in exchange for a favor named in the contract. If you fail to deliver the favor, you take 1 Lethal damage."
+      },
+      {
+       "name": "Witness Clause",
+       "opt": "B",
+       "id": "part-2-rare-heritages-storyteller-approval-required-b-witness-clause",
+       "cost": "2, spent when written",
+       "text": "The contract records how each signer felt when they signed. Whoever holds it knows if any signer felt fear, deceit, or anger at that moment."
+      }
+     ]
+    },
+    {
+     "rank": 3,
+     "title": "Aerial",
+     "id": "part-2-rare-heritages-storyteller-approval-required-heritage-magic-contract-magic",
+     "default": null,
+     "spells": [
+      {
+       "name": "Penalty Clause",
+       "opt": "A",
+       "id": "part-2-rare-heritages-storyteller-approval-required-a-penalty-clause",
+       "cost": "3, spent when written",
+       "text": "Whoever breaks the contract takes Bashing damage equal to your successes when writing it, up to your Heritage dots."
+      },
+      {
+       "name": "Truth Circle",
+       "opt": "B",
+       "id": "part-2-rare-heritages-storyteller-approval-required-b-truth-circle",
+       "cost": "3, spent when written",
+       "text": "Draw a circle around a room or zone. For the next scene held inside it, anyone who lies suffers -2 dice for that scene, and everyone in the circle knows a lie was told."
+      }
+     ]
+    },
+    {
+     "rank": 4,
+     "title": "Lunar",
+     "id": "part-2-rare-heritages-storyteller-approval-required-heritage-magic-contract-magic",
+     "default": null,
+     "spells": [
+      {
+       "name": "Debt Mark",
+       "opt": "A",
+       "id": "part-2-rare-heritages-storyteller-approval-required-a-debt-mark",
+       "cost": "4, spent when written",
+       "text": "While a signer owes you under the contract, they cannot hide their location from you and suffer -2 dice to attack you."
+      },
+      {
+       "name": "Shared Burden",
+       "opt": "B",
+       "id": "part-2-rare-heritages-storyteller-approval-required-b-shared-burden",
+       "cost": "4, spent when written",
+       "text": "For one session after signing, signers may split damage they take with another signer, half each, rounded in favor of the one hit."
+      }
+     ]
+    },
+    {
+     "rank": 5,
+     "title": "Stellar",
+     "id": "part-2-rare-heritages-storyteller-approval-required-heritage-magic-contract-magic",
+     "default": null,
+     "spells": [
+      {
+       "name": "Infernal Clause",
+       "opt": "A",
+       "id": "part-2-rare-heritages-storyteller-approval-required-a-infernal-clause",
+       "cost": "5, spent when written",
+       "text": "Penalty Clause whose damage is Lethal."
+      },
+      {
+       "name": "Collect",
+       "opt": "B",
+       "id": "part-2-rare-heritages-storyteller-approval-required-b-collect",
+       "cost": "5, spent when written",
+       "text": "When you call in the debt, a signer must perform one task within their ability. Refusing triggers the contract's penalty."
+      }
+     ]
+    },
+    {
+     "rank": 6,
+     "title": "Galactic",
+     "id": "part-2-rare-heritages-storyteller-approval-required-heritage-magic-contract-magic",
+     "default": null,
+     "spells": [
+      {
+       "name": "Soul Ledger",
+       "opt": "A",
+       "id": "part-2-rare-heritages-storyteller-approval-required-a-soul-ledger",
+       "cost": "6",
+       "text": "Study a contract or magical agreement over a scene. Roll against its maker's writing successes. If you win, you may void it."
+      },
+      {
+       "name": "Accepted Gift",
+       "opt": "B",
+       "id": "part-2-rare-heritages-storyteller-approval-required-b-accepted-gift",
+       "cost": "6, spent when written",
+       "text": "Write a contract into a gift: a drink, a token, a pair of gloves. Whoever accepts it is bound to one condition you named unless they beat your successes with Willpower when they accept."
+      }
+     ]
+    },
+    {
+     "rank": 7,
+     "title": "Cosmic",
+     "id": "part-2-rare-heritages-storyteller-approval-required-heritage-magic-contract-magic",
+     "default": null,
+     "spells": [
+      {
+       "name": "Grand Contract",
+       "opt": "A",
+       "id": "part-2-rare-heritages-storyteller-approval-required-a-grand-contract",
+       "cost": "7",
+       "text": "Over a full session of writing, bind up to your Heritage dots x100 willing signers. Penalties may be set up to Aggravated damage."
+      },
+      {
+       "name": "Hell's Notary",
+       "opt": "B",
+       "id": "part-2-rare-heritages-storyteller-approval-required-b-hells-notary",
+       "cost": "7, spent when written",
+       "text": "A contract that trades dots of an Attribute, Ability, or Merit between willing signers, up to half your Heritage dots, rounded up. The Storyteller may require a Sanity cost for large trades."
+      }
+     ]
+    }
+   ]
+  },
+  "Dragon Blood": {
+   "id": "part-2-rare-heritages-storyteller-approval-required-heritage-magic-dragon-blood",
+   "ranks": [
+    {
+     "rank": 1,
+     "title": "Core",
+     "id": "part-2-rare-heritages-storyteller-approval-required-heritage-magic-dragon-blood",
+     "default": null,
+     "spells": [
+      {
+       "name": "Scale Skin",
+       "opt": "A",
+       "id": "part-2-rare-heritages-storyteller-approval-required-a-scale-skin",
+       "cost": "1, attuned (stays committed)",
+       "text": "While attuned, gain Armor equal to half your Heritage dots, rounded up."
+      },
+      {
+       "name": "Dragon's Presence",
+       "opt": "B",
+       "id": "part-2-rare-heritages-storyteller-approval-required-b-dragons-presence",
+       "cost": "1, attuned (stays committed)",
+       "text": "While attuned, add your Heritage dots to Presence rolls made to intimidate or command attention."
+      }
+     ]
+    },
+    {
+     "rank": 2,
+     "title": "Terrestrial",
+     "id": "part-2-rare-heritages-storyteller-approval-required-heritage-magic-dragon-blood",
+     "default": null,
+     "spells": [
+      {
+       "name": "Dragon Breath",
+       "opt": "A",
+       "id": "part-2-rare-heritages-storyteller-approval-required-a-dragon-breath",
+       "cost": "2",
+       "text": "Breathe raw draconic force at the target."
+      },
+      {
+       "name": "Weighty Air",
+       "opt": "B",
+       "id": "part-2-rare-heritages-storyteller-approval-required-b-weighty-air",
+       "cost": "2, upkeep 1 each Upkeep Phase",
+       "text": "While maintained, enemies in range suffer -1 die on Dodge rolls."
+      }
+     ]
+    },
+    {
+     "rank": 3,
+     "title": "Aerial",
+     "id": "part-2-rare-heritages-storyteller-approval-required-heritage-magic-dragon-blood",
+     "default": null,
+     "spells": [
+      {
+       "name": "Claw and Fang",
+       "opt": "A",
+       "id": "part-2-rare-heritages-storyteller-approval-required-a-claw-and-fang",
+       "cost": "3, attuned (stays committed)",
+       "text": "While attuned, your natural weapons have a rating equal to your Heritage dots, and attacks with them ignore Armor equal to half your Heritage dots, rounded up."
+      },
+      {
+       "name": "Draconic Will",
+       "opt": "B",
+       "id": "part-2-rare-heritages-storyteller-approval-required-b-draconic-will",
+       "cost": "3",
+       "text": "When resisting fear or mental control, roll this dice pool instead of your normal roll."
+      }
+     ]
+    },
+    {
+     "rank": 4,
+     "title": "Lunar",
+     "id": "part-2-rare-heritages-storyteller-approval-required-heritage-magic-dragon-blood",
+     "default": null,
+     "spells": [
+      {
+       "name": "Breath Cone",
+       "opt": "A",
+       "id": "part-2-rare-heritages-storyteller-approval-required-a-breath-cone",
+       "cost": "4",
+       "text": "Dragon Breath against every target in the cone. Roll once; each target defends separately."
+      },
+      {
+       "name": "Wings Unfurled",
+       "opt": "B",
+       "id": "part-2-rare-heritages-storyteller-approval-required-b-wings-unfurled",
+       "cost": "4, attuned (stays committed)",
+       "text": "While attuned, you manifest wings and fly at double your normal movement."
+      }
+     ]
+    },
+    {
+     "rank": 5,
+     "title": "Stellar",
+     "id": "part-2-rare-heritages-storyteller-approval-required-heritage-magic-dragon-blood",
+     "default": null,
+     "spells": [
+      {
+       "name": "Dragon Scales",
+       "opt": "A",
+       "id": "part-2-rare-heritages-storyteller-approval-required-a-dragon-scales",
+       "cost": "5, attuned (stays committed)",
+       "text": "While attuned, add your Heritage dots to your BDT. You are immune to the Burning and Chilled conditions."
+      },
+      {
+       "name": "Roar of Dominion",
+       "opt": "B",
+       "id": "part-2-rare-heritages-storyteller-approval-required-b-roar-of-dominion",
+       "cost": "5",
+       "text": "Each enemy resists with Composure + Presence. Each one you beat suffers -2 dice to attack you for the rest of the scene."
+      }
+     ]
+    },
+    {
+     "rank": 6,
+     "title": "Galactic",
+     "id": "part-2-rare-heritages-storyteller-approval-required-heritage-magic-dragon-blood",
+     "default": null,
+     "spells": [
+      {
+       "name": "Breath Line",
+       "opt": "A",
+       "id": "part-2-rare-heritages-storyteller-approval-required-a-breath-line",
+       "cost": "6",
+       "text": "Dragon Breath in a straight line. Each target defends separately. Damage does not fall off with distance."
+      },
+      {
+       "name": "Dragon's Weight",
+       "opt": "B",
+       "id": "part-2-rare-heritages-storyteller-approval-required-b-dragons-weight",
+       "cost": "6",
+       "text": "Each enemy in range resists with Strength + Athletics. Each one you beat is knocked prone and cannot stand on their next turn."
+      }
+     ]
+    },
+    {
+     "rank": 7,
+     "title": "Cosmic",
+     "id": "part-2-rare-heritages-storyteller-approval-required-heritage-magic-dragon-blood",
+     "default": null,
+     "spells": [
+      {
+       "name": "True Dragon",
+       "opt": "A",
+       "id": "part-2-rare-heritages-storyteller-approval-required-a-true-dragon",
+       "cost": "7, attuned (stays committed)",
+       "text": "While attuned, you take a partial dragon form: you fly, your BDT doubles, and once per turn you may cast Breath Cone without its AP cost. You still pay its mana."
+      },
+      {
+       "name": "Fire of Ages",
+       "opt": "B",
+       "id": "part-2-rare-heritages-storyteller-approval-required-b-fire-of-ages",
+       "cost": "7",
+       "text": "Breath Line whose hits are treated as meeting the next-higher damage threshold."
+      }
+     ]
+    }
+   ]
+  },
+  "Fey Magic": {
+   "id": "part-2-rare-heritages-storyteller-approval-required-heritage-magic-fey-magic",
+   "ranks": [
+    {
+     "rank": 1,
+     "title": "Core",
+     "id": "part-2-rare-heritages-storyteller-approval-required-heritage-magic-fey-magic",
+     "default": null,
+     "spells": [
+      {
+       "name": "Pocket Pull",
+       "opt": "A",
+       "id": "part-2-rare-heritages-storyteller-approval-required-a-pocket-pull",
+       "cost": "1, attuned (stays committed)",
+       "text": "While attuned, a small ordinary object you imagine stays in your hand: a cup, a rope, a frying pan. It vanishes when the attunement ends."
+      },
+      {
+       "name": "Imagined Comfort",
+       "opt": "B",
+       "id": "part-2-rare-heritages-storyteller-approval-required-b-imagined-comfort",
+       "cost": "1",
+       "text": "Basic healing."
+      }
+     ]
+    },
+    {
+     "rank": 2,
+     "title": "Terrestrial",
+     "id": "part-2-rare-heritages-storyteller-approval-required-heritage-magic-fey-magic",
+     "default": null,
+     "spells": [
+      {
+       "name": "Cartoon Mallet",
+       "opt": "A",
+       "id": "part-2-rare-heritages-storyteller-approval-required-a-cartoon-mallet",
+       "cost": "2",
+       "text": "An imagined comic weapon strikes. On a hit the target also suffers -1 die on their next roll."
+      },
+      {
+       "name": "Make-Believe Bandage",
+       "opt": "B",
+       "id": "part-2-rare-heritages-storyteller-approval-required-b-make-believe-bandage",
+       "cost": "2",
+       "text": "Basic healing. It also removes the Bleeding condition."
+      }
+     ]
+    },
+    {
+     "rank": 3,
+     "title": "Aerial",
+     "id": "part-2-rare-heritages-storyteller-approval-required-heritage-magic-fey-magic",
+     "default": null,
+     "spells": [
+      {
+       "name": "Imagined Tool",
+       "opt": "A",
+       "id": "part-2-rare-heritages-storyteller-approval-required-a-imagined-tool",
+       "cost": "3, attuned (stays committed)",
+       "text": "While attuned, any non-magical tool or object up to your own size that you imagine exists."
+      },
+      {
+       "name": "Feel Better",
+       "opt": "B",
+       "id": "part-2-rare-heritages-storyteller-approval-required-b-feel-better",
+       "cost": "3",
+       "text": "Advanced healing."
+      }
+     ]
+    },
+    {
+     "rank": 4,
+     "title": "Lunar",
+     "id": "part-2-rare-heritages-storyteller-approval-required-heritage-magic-fey-magic",
+     "default": null,
+     "spells": [
+      {
+       "name": "Anvil Drop",
+       "opt": "A",
+       "id": "part-2-rare-heritages-storyteller-approval-required-a-anvil-drop",
+       "cost": "4",
+       "text": "A heavy object falls on the target. On a hit they are also knocked prone."
+      },
+      {
+       "name": "Daydream Shield",
+       "opt": "B",
+       "id": "part-2-rare-heritages-storyteller-approval-required-b-daydream-shield",
+       "cost": "4",
+       "text": "An imagined wall, pillow, or umbrella appears. Roll your dice pool. Each success reduces the attacker's successes by 1."
+      }
+     ]
+    },
+    {
+     "rank": 5,
+     "title": "Stellar",
+     "id": "part-2-rare-heritages-storyteller-approval-required-heritage-magic-fey-magic",
+     "default": null,
+     "spells": [
+      {
+       "name": "Toon Logic",
+       "opt": "A",
+       "id": "part-2-rare-heritages-storyteller-approval-required-a-toon-logic",
+       "cost": "5",
+       "text": "Once per scene, an ally who would be hit is somehow in an adjacent zone instead. The attack misses."
+      },
+      {
+       "name": "Heart's Wish",
+       "opt": "B",
+       "id": "part-2-rare-heritages-storyteller-approval-required-b-hearts-wish",
+       "cost": "5",
+       "text": "Expert healing."
+      }
+     ]
+    },
+    {
+     "rank": 6,
+     "title": "Galactic",
+     "id": "part-2-rare-heritages-storyteller-approval-required-heritage-magic-fey-magic",
+     "default": null,
+     "spells": [
+      {
+       "name": "Imagined Companion",
+       "opt": "A",
+       "id": "part-2-rare-heritages-storyteller-approval-required-a-imagined-companion",
+       "cost": "6, upkeep 5 each Upkeep Phase",
+       "text": "Imagine a creature into being as a conjuration. During each Upkeep Phase it may move one zone, or attack one enemy in a zone adjacent to it using your dice pool."
+      },
+      {
+       "name": "Mend the Lost",
+       "opt": "B",
+       "id": "part-2-rare-heritages-storyteller-approval-required-b-mend-the-lost",
+       "cost": "6",
+       "text": "Master healing. Over several turns of incantation, regrow a lost limb, head not included."
+      }
+     ]
+    },
+    {
+     "rank": 7,
+     "title": "Cosmic",
+     "id": "part-2-rare-heritages-storyteller-approval-required-heritage-magic-fey-magic",
+     "default": null,
+     "spells": [
+      {
+       "name": "Dream Made Real",
+       "opt": "A",
+       "id": "part-2-rare-heritages-storyteller-approval-required-a-dream-made-real",
+       "cost": "7, upkeep 6 each Upkeep Phase",
+       "text": "While maintained, any non-magical object or terrain you can imagine, up to the size of a house, exists within range. It cannot be a creature, a magic item, or anything that acts on its own. Everything you made vanishes when the spell ends."
+      },
+      {
+       "name": "Wake Them Up",
+       "opt": "B",
+       "id": "part-2-rare-heritages-storyteller-approval-required-b-wake-them-up",
+       "cost": "7",
+       "text": "Over one scene, resurrect someone whose body still has mana left in its countdown, following the rules in the Resurrection chapter."
+      }
+     ]
+    }
+   ]
+  },
+  "Tidewarden": {
+   "id": "part-2-rare-heritages-storyteller-approval-required-heritage-magic-tidewarden",
+   "ranks": [
+    {
+     "rank": 1,
+     "title": "Core",
+     "id": "part-2-rare-heritages-storyteller-approval-required-heritage-magic-tidewarden",
+     "default": null,
+     "spells": [
+      {
+       "name": "Deep Senses",
+       "opt": "A",
+       "id": "part-2-rare-heritages-storyteller-approval-required-a-deep-senses",
+       "cost": "1, attuned (stays committed)",
+       "text": "While attuned, add your Heritage dots to rolls to detect Void-touched creatures and Void energy within a number of zones equal to your Tidewarden dots."
+      },
+      {
+       "name": "Pressure Born",
+       "opt": "B",
+       "id": "part-2-rare-heritages-storyteller-approval-required-b-pressure-born",
+       "cost": "1",
+       "text": "When resisting crushing force, depth, or pressure, roll this dice pool instead of your normal roll."
+      }
+     ]
+    },
+    {
+     "rank": 2,
+     "title": "Terrestrial",
+     "id": "part-2-rare-heritages-storyteller-approval-required-heritage-magic-tidewarden",
+     "default": null,
+     "spells": [
+      {
+       "name": "Pressure Grip",
+       "opt": "A",
+       "id": "part-2-rare-heritages-storyteller-approval-required-a-pressure-grip",
+       "cost": "2",
+       "text": "The target resists with Fortitude + Endurance. If you beat them, they suffer -2 dice on physical rolls on their next turn."
+      },
+      {
+       "name": "Tide Mark",
+       "opt": "B",
+       "id": "part-2-rare-heritages-storyteller-approval-required-b-tide-mark",
+       "cost": "2, attuned (stays committed)",
+       "text": "While attuned, you know where the marked creature is."
+      }
+     ]
+    },
+    {
+     "rank": 3,
+     "title": "Aerial",
+     "id": "part-2-rare-heritages-storyteller-approval-required-heritage-magic-tidewarden",
+     "default": null,
+     "spells": [
+      {
+       "name": "Void Ward",
+       "opt": "A",
+       "id": "part-2-rare-heritages-storyteller-approval-required-a-void-ward",
+       "cost": "3, attuned (stays committed)",
+       "text": "While attuned, the target adds your Heritage dots to their BDT against Voidlings and Void entities."
+      },
+      {
+       "name": "Undertow",
+       "opt": "B",
+       "id": "part-2-rare-heritages-storyteller-approval-required-b-undertow",
+       "cost": "3",
+       "text": "The target resists with Strength + Athletics. If you beat them, they are pulled one zone toward you."
+      }
+     ]
+    },
+    {
+     "rank": 4,
+     "title": "Lunar",
+     "id": "part-2-rare-heritages-storyteller-approval-required-heritage-magic-tidewarden",
+     "default": null,
+     "spells": [
+      {
+       "name": "Seal Glyph",
+       "opt": "A",
+       "id": "part-2-rare-heritages-storyteller-approval-required-a-seal-glyph",
+       "cost": "4",
+       "text": "The target resists with Willpower, or a conjuration with its maker's dice pool. If you beat it, it cannot act until the end of its next turn."
+      },
+      {
+       "name": "Crushing Depth",
+       "opt": "B",
+       "id": "part-2-rare-heritages-storyteller-approval-required-b-crushing-depth",
+       "cost": "4",
+       "text": "Water pressure strikes the target. They defend with Fortitude + Endurance instead of Dodge, and Armor does not apply."
+      }
+     ]
+    },
+    {
+     "rank": 5,
+     "title": "Stellar",
+     "id": "part-2-rare-heritages-storyteller-approval-required-heritage-magic-tidewarden",
+     "default": null,
+     "spells": [
+      {
+       "name": "Containment Ring",
+       "opt": "A",
+       "id": "part-2-rare-heritages-storyteller-approval-required-a-containment-ring",
+       "cost": "5, upkeep 4 each Upkeep Phase",
+       "text": "Roll when cast. While maintained, nothing can enter or leave the zone without beating your successes with Strength + Athletics."
+      },
+      {
+       "name": "Pressure Shield",
+       "opt": "B",
+       "id": "part-2-rare-heritages-storyteller-approval-required-b-pressure-shield",
+       "cost": "5",
+       "text": "When the target is attacked, roll your dice pool. Each success reduces the attacker's successes by 1."
+      }
+     ]
+    },
+    {
+     "rank": 6,
+     "title": "Galactic",
+     "id": "part-2-rare-heritages-storyteller-approval-required-heritage-magic-tidewarden",
+     "default": null,
+     "spells": [
+      {
+       "name": "Banish",
+       "opt": "A",
+       "id": "part-2-rare-heritages-storyteller-approval-required-a-banish",
+       "cost": "6",
+       "text": "The target resists with Willpower, or a conjuration with its maker's dice pool. If you beat it and its rank is no higher than your Heritage dots, it is driven out of the world. A banished conjuration ends."
+      },
+      {
+       "name": "Abyssal Weight",
+       "opt": "B",
+       "id": "part-2-rare-heritages-storyteller-approval-required-b-abyssal-weight",
+       "cost": "6, upkeep 5 each Upkeep Phase",
+       "text": "While maintained, enemies in those zones suffer -2 dice, and moving through them costs double AP."
+      }
+     ]
+    },
+    {
+     "rank": 7,
+     "title": "Cosmic",
+     "id": "part-2-rare-heritages-storyteller-approval-required-heritage-magic-tidewarden",
+     "default": null,
+     "spells": [
+      {
+       "name": "Seal the Opening",
+       "opt": "A",
+       "id": "part-2-rare-heritages-storyteller-approval-required-a-seal-the-opening",
+       "cost": "7",
+       "text": "Over a full scene of ritual work, close the opening. The great Void Opening of the Ringus Sea can only be slowed, never sealed, by one warden alone."
+      },
+      {
+       "name": "Warden of the Deep",
+       "opt": "B",
+       "id": "part-2-rare-heritages-storyteller-approval-required-b-warden-of-the-deep",
+       "cost": "7, upkeep 6 each Upkeep Phase",
+       "text": "While maintained, each Void entity in sight gains the Rooted condition and takes damage equal to your Heritage dots during each Upkeep Phase."
+      }
+     ]
+    }
+   ]
+  },
+  "Manifestation": {
+   "id": "part-2-rare-heritages-storyteller-approval-required-heritage-magic-manifestation",
+   "ranks": [
+    {
+     "rank": 1,
+     "title": "Core",
+     "id": "part-2-rare-heritages-storyteller-approval-required-heritage-magic-manifestation",
+     "default": null,
+     "spells": [
+      {
+       "name": "Cold Spot",
+       "opt": "A",
+       "id": "part-2-rare-heritages-storyteller-approval-required-a-cold-spot",
+       "cost": "1, attuned (stays committed)",
+       "text": "While attuned, the air in all adjacent zones turns cold and lights there flicker. Living creatures in range feel that something is present."
+      },
+      {
+       "name": "Whisper",
+       "opt": "B",
+       "id": "part-2-rare-heritages-storyteller-approval-required-b-whisper",
+       "cost": "1",
+       "text": "The target hears up to one sentence from you. No one else hears it."
+      }
+     ]
+    },
+    {
+     "rank": 2,
+     "title": "Terrestrial",
+     "id": "part-2-rare-heritages-storyteller-approval-required-heritage-magic-manifestation",
+     "default": null,
+     "spells": [
+      {
+       "name": "Nudge",
+       "opt": "A",
+       "id": "part-2-rare-heritages-storyteller-approval-required-a-nudge",
+       "cost": "2",
+       "text": "Move one object weighing a few pounds or less up to one zone, such as opening an unlocked door, tipping a cup, or sliding a key. An object someone is holding cannot be moved."
+      },
+      {
+       "name": "Glimpse",
+       "opt": "B",
+       "id": "part-2-rare-heritages-storyteller-approval-required-b-glimpse",
+       "cost": "2, attuned (stays committed)",
+       "text": "While attuned, you are visible as a faint figure of your living self. People who knew you in life can recognize you."
+      }
+     ]
+    },
+    {
+     "rank": 3,
+     "title": "Aerial",
+     "id": "part-2-rare-heritages-storyteller-approval-required-heritage-magic-manifestation",
+     "default": null,
+     "spells": [
+      {
+       "name": "Poltergeist Throw",
+       "opt": "A",
+       "id": "part-2-rare-heritages-storyteller-approval-required-a-poltergeist-throw",
+       "cost": "3",
+       "text": "Hurl a small loose object from an adjacent zone at the target. Damage is kinetic."
+      },
+      {
+       "name": "Grave Touch",
+       "opt": "B",
+       "id": "part-2-rare-heritages-storyteller-approval-required-b-grave-touch",
+       "cost": "3",
+       "text": "Your hand passes into the target. They defend with Fortitude + Endurance instead of Dodge. On a hit they take damage and suffer -2 dice on physical rolls on their next turn."
+      }
+     ]
+    },
+    {
+     "rank": 4,
+     "title": "Lunar",
+     "id": "part-2-rare-heritages-storyteller-approval-required-heritage-magic-manifestation",
+     "default": null,
+     "spells": [
+      {
+       "name": "Inhabit Object",
+       "opt": "A",
+       "id": "part-2-rare-heritages-storyteller-approval-required-a-inhabit-object",
+       "cost": "4, upkeep 3 each Upkeep Phase",
+       "text": "Your presence fills the object, such as a doll, a suit of armor, or a tool, and it becomes a conjuration. During each Upkeep Phase it may move one zone, or attack one enemy in a zone adjacent to it using your dice pool. You perceive through it."
+      },
+      {
+       "name": "Solid Hands",
+       "opt": "B",
+       "id": "part-2-rare-heritages-storyteller-approval-required-b-solid-hands",
+       "cost": "4, attuned (stays committed)",
+       "text": "While attuned, your hands are solid enough to hold, carry, and use objects, tools, and weapons. The rest of you stays insubstantial."
+      }
+     ]
+    },
+    {
+     "rank": 5,
+     "title": "Stellar",
+     "id": "part-2-rare-heritages-storyteller-approval-required-heritage-magic-manifestation",
+     "default": null,
+     "spells": [
+      {
+       "name": "Possession",
+       "opt": "A",
+       "id": "part-2-rare-heritages-storyteller-approval-required-a-possession",
+       "cost": "5, lasts half the mana spent in turns, rounded up; pay 4 in an Upkeep Phase to freeze the countdown",
+       "text": "The target resists with Composure + Insight. If you beat them, you enter their body and control it. They stay aware but cannot act. You use their physical Attributes and your own mental and social traits. It ends when the countdown runs out or the body takes damage, whichever comes first, and you reappear in a zone adjacent to them."
+      },
+      {
+       "name": "Full Manifestation",
+       "opt": "B",
+       "id": "part-2-rare-heritages-storyteller-approval-required-b-full-manifestation",
+       "cost": "5, attuned (stays committed)",
+       "text": "While attuned, you are fully solid and visible as your living self, though plainly a ghost. Physical attacks can harm you, and your dormant Heritage magic and Combat Styles can be used."
+      }
+     ]
+    },
+    {
+     "rank": 6,
+     "title": "Galactic",
+     "id": "part-2-rare-heritages-storyteller-approval-required-heritage-magic-manifestation",
+     "default": null,
+     "spells": [
+      {
+       "name": "Haunting",
+       "opt": "A",
+       "id": "part-2-rare-heritages-storyteller-approval-required-a-haunting",
+       "cost": "6, upkeep 5 each Upkeep Phase",
+       "text": "While maintained, loose objects in those zones fly. During each Upkeep Phase, roll your dice pool once against every enemy in those zones; each defends separately. Damage is kinetic."
+      },
+      {
+       "name": "Drain the Living",
+       "opt": "B",
+       "id": "part-2-rare-heritages-storyteller-approval-required-b-drain-the-living",
+       "cost": "6",
+       "text": "Your hand passes into the target. They defend with Fortitude + Endurance instead of Dodge. On a hit you regain mana equal to the boxes of damage dealt, and they lose 1 Willpower."
+      }
+     ]
+    },
+    {
+     "rank": 7,
+     "title": "Cosmic",
+     "id": "part-2-rare-heritages-storyteller-approval-required-heritage-magic-manifestation",
+     "default": null,
+     "spells": [
+      {
+       "name": "Reclaim Flesh",
+       "opt": "A",
+       "id": "part-2-rare-heritages-storyteller-approval-required-a-reclaim-flesh",
+       "cost": "7, upkeep 6 each Upkeep Phase",
+       "text": "Once per day, conjure a body of mana in the shape of your living self and possess it. While maintained, you look, feel, and pass as alive. Physical attacks harm you, damage goes on your own Health track, and your dormant Heritage magic and Combat Styles can be used. In combat, pay upkeep each Upkeep Phase as normal. Outside combat, pay 7 mana for each hour in the body, up to a number of hours equal to half your Heritage dots, rounded up. When it ends, the body dissolves."
+      },
+      {
+       "name": "Unbound",
+       "opt": "B",
+       "id": "part-2-rare-heritages-storyteller-approval-required-b-unbound",
+       "cost": "7, attuned (stays committed)",
+       "text": "While attuned, your anchor no longer limits you: your maximum mana pool does not drop while you are away from it. You can also pass through magical walls and barriers short of Cosmic rank magic."
+      }
+     ]
+    }
+   ]
+  },
+  "Siren Song": {
+   "id": "part-2-rare-heritages-storyteller-approval-required-heritage-magic-siren-song",
+   "ranks": [
+    {
+     "rank": 1,
+     "title": "Core",
+     "id": "part-2-rare-heritages-storyteller-approval-required-heritage-magic-siren-song",
+     "default": null,
+     "spells": [
+      {
+       "name": "Hush",
+       "opt": "A",
+       "id": "part-2-rare-heritages-storyteller-approval-required-a-hush",
+       "cost": "1",
+       "text": "Everyone in range resists with Composure + Presence. Each one you beat stops speaking until the end of their next turn."
+      },
+      {
+       "name": "Current Rider",
+       "opt": "B",
+       "id": "part-2-rare-heritages-storyteller-approval-required-b-current-rider",
+       "cost": "1, attuned (stays committed)",
+       "text": "While attuned, add your Heritage dots to Athletics rolls made in or under water."
+      }
+     ]
+    },
+    {
+     "rank": 2,
+     "title": "Terrestrial",
+     "id": "part-2-rare-heritages-storyteller-approval-required-heritage-magic-siren-song",
+     "default": null,
+     "spells": [
+      {
+       "name": "Lure",
+       "opt": "A",
+       "id": "part-2-rare-heritages-storyteller-approval-required-a-lure",
+       "cost": "2",
+       "text": "The target resists with Composure + Insight. If you beat them, they must move one zone toward you on their next turn."
+      },
+      {
+       "name": "Soothing Song",
+       "opt": "B",
+       "id": "part-2-rare-heritages-storyteller-approval-required-b-soothing-song",
+       "cost": "2",
+       "text": "Each ally ends one fear or panic effect and adds a bonus die to Composure rolls for the rest of the scene."
+      }
+     ]
+    },
+    {
+     "rank": 3,
+     "title": "Aerial",
+     "id": "part-2-rare-heritages-storyteller-approval-required-heritage-magic-siren-song",
+     "default": null,
+     "spells": [
+      {
+       "name": "Enthrall",
+       "opt": "A",
+       "id": "part-2-rare-heritages-storyteller-approval-required-a-enthrall",
+       "cost": "3, lasts half the mana spent in turns, rounded up; pay 2 in an Upkeep Phase to freeze the countdown",
+       "text": "The target resists with Composure + Insight. If you beat them, they cannot attack you. It ends when the countdown runs out or you attack them, whichever comes first."
+      },
+      {
+       "name": "Echo Song",
+       "opt": "B",
+       "id": "part-2-rare-heritages-storyteller-approval-required-b-echo-song",
+       "cost": "3, attuned (stays committed)",
+       "text": "While attuned and underwater or in darkness, you sense every creature within a number of zones equal to your Siren Song dots."
+      }
+     ]
+    },
+    {
+     "rank": 4,
+     "title": "Lunar",
+     "id": "part-2-rare-heritages-storyteller-approval-required-heritage-magic-siren-song",
+     "default": null,
+     "spells": [
+      {
+       "name": "Siren's Call",
+       "opt": "A",
+       "id": "part-2-rare-heritages-storyteller-approval-required-a-sirens-call",
+       "cost": "4",
+       "text": "Each enemy in range resists separately with Composure + Insight. Each one you beat must move one zone toward you on their next turn."
+      },
+      {
+       "name": "Wave Voice",
+       "opt": "B",
+       "id": "part-2-rare-heritages-storyteller-approval-required-b-wave-voice",
+       "cost": "4",
+       "text": "A sound wave strikes the target. They defend with Composure + Endurance instead of Dodge."
+      }
+     ]
+    },
+    {
+     "rank": 5,
+     "title": "Stellar",
+     "id": "part-2-rare-heritages-storyteller-approval-required-heritage-magic-siren-song",
+     "default": null,
+     "spells": [
+      {
+       "name": "Command Song",
+       "opt": "A",
+       "id": "part-2-rare-heritages-storyteller-approval-required-a-command-song",
+       "cost": "5",
+       "text": "Each target in range resists with Composure + Insight. Each one you beat obeys the same command of up to three words on their next turn. The command cannot directly harm them."
+      },
+      {
+       "name": "Lullaby",
+       "opt": "B",
+       "id": "part-2-rare-heritages-storyteller-approval-required-b-lullaby",
+       "cost": "5, lasts half the mana spent in turns, rounded up; pay 4 in an Upkeep Phase to freeze the countdown",
+       "text": "Each target in range resists with Composure + Endurance. Each one you beat falls asleep. The sleep ends when the countdown runs out or the sleeper takes damage, whichever comes first."
+      }
+     ]
+    },
+    {
+     "rank": 6,
+     "title": "Galactic",
+     "id": "part-2-rare-heritages-storyteller-approval-required-heritage-magic-siren-song",
+     "default": null,
+     "spells": [
+      {
+       "name": "Chorus of the Deep",
+       "opt": "A",
+       "id": "part-2-rare-heritages-storyteller-approval-required-a-chorus-of-the-deep",
+       "cost": "6, upkeep 5 each Upkeep Phase",
+       "text": "While maintained, allies add a bonus die to all rolls. You cannot attack while singing."
+      },
+      {
+       "name": "Shattering Note",
+       "opt": "B",
+       "id": "part-2-rare-heritages-storyteller-approval-required-b-shattering-note",
+       "cost": "6",
+       "text": "Wave Voice whose hit is treated as meeting the next-higher damage threshold. Glass, crystal, and crystal network devices in the target's zone break."
+      }
+     ]
+    },
+    {
+     "rank": 7,
+     "title": "Cosmic",
+     "id": "part-2-rare-heritages-storyteller-approval-required-heritage-magic-siren-song",
+     "default": null,
+     "spells": [
+      {
+       "name": "Song of the Ringus Sea",
+       "opt": "A",
+       "id": "part-2-rare-heritages-storyteller-approval-required-a-song-of-the-ringus-sea",
+       "cost": "7, upkeep 6 each Upkeep Phase",
+       "text": "During each Upkeep Phase while maintained, each enemy resists with Composure + Insight. Each one you beat can only move toward you that turn."
+      },
+      {
+       "name": "The Drowning Voice",
+       "opt": "B",
+       "id": "part-2-rare-heritages-storyteller-approval-required-b-the-drowning-voice",
+       "cost": "7, lasts half the mana spent in turns, rounded up; pay 6 in an Upkeep Phase to freeze the countdown",
+       "text": "The target resists with Composure + Endurance. If you beat them, they believe they are drowning and take damage equal to your Heritage dots during each Upkeep Phase. It ends when the countdown runs out or when they beat your casting successes with Composure + Endurance on their turn, whichever comes first."
+      }
+     ]
+    }
+   ]
+  },
+  "Mindvoice": {
+   "id": "part-2-rare-heritages-storyteller-approval-required-heritage-magic-mindvoice",
+   "ranks": [
+    {
+     "rank": 1,
+     "title": "Core",
+     "id": "part-2-rare-heritages-storyteller-approval-required-heritage-magic-mindvoice",
+     "default": null,
+     "spells": [
+      {
+       "name": "Whisper Link",
+       "opt": "A",
+       "id": "part-2-rare-heritages-storyteller-approval-required-a-whisper-link",
+       "cost": "1, attuned (stays committed)",
+       "text": "While attuned, you and the target speak mind to mind."
+      },
+      {
+       "name": "Surface Read",
+       "opt": "B",
+       "id": "part-2-rare-heritages-storyteller-approval-required-b-surface-read",
+       "cost": "1",
+       "text": "The target resists with Composure + Insight. If you beat them, you learn their current emotion."
+      }
+     ]
+    },
+    {
+     "rank": 2,
+     "title": "Terrestrial",
+     "id": "part-2-rare-heritages-storyteller-approval-required-heritage-magic-mindvoice",
+     "default": null,
+     "spells": [
+      {
+       "name": "Party Link",
+       "opt": "A",
+       "id": "part-2-rare-heritages-storyteller-approval-required-a-party-link",
+       "cost": "2, attuned (stays committed)",
+       "text": "While attuned, you and the linked allies speak mind to mind at no AP cost."
+      },
+      {
+       "name": "Long Whisper",
+       "opt": "B",
+       "id": "part-2-rare-heritages-storyteller-approval-required-b-long-whisper",
+       "cost": "2",
+       "text": "Send a message of a few sentences and hear their reply."
+      }
+     ]
+    },
+    {
+     "rank": 3,
+     "title": "Aerial",
+     "id": "part-2-rare-heritages-storyteller-approval-required-heritage-magic-mindvoice",
+     "default": null,
+     "spells": [
+      {
+       "name": "Mind Shout",
+       "opt": "A",
+       "id": "part-2-rare-heritages-storyteller-approval-required-a-mind-shout",
+       "cost": "3",
+       "text": "The target resists with Composure + Insight. If you beat them, they lose their next Reaction and lose 1 AP on their next turn."
+      },
+      {
+       "name": "Shared Sight",
+       "opt": "B",
+       "id": "part-2-rare-heritages-storyteller-approval-required-b-shared-sight",
+       "cost": "3",
+       "text": "The ally uses your Perception dots in place of their own for one roll."
+      }
+     ]
+    },
+    {
+     "rank": 4,
+     "title": "Lunar",
+     "id": "part-2-rare-heritages-storyteller-approval-required-heritage-magic-mindvoice",
+     "default": null,
+     "spells": [
+      {
+       "name": "Thought Shield",
+       "opt": "A",
+       "id": "part-2-rare-heritages-storyteller-approval-required-a-thought-shield",
+       "cost": "4",
+       "text": "When the target resists mental control or fear, they roll this dice pool instead of their own."
+      },
+      {
+       "name": "Coordinated Strike",
+       "opt": "B",
+       "id": "part-2-rare-heritages-storyteller-approval-required-b-coordinated-strike",
+       "cost": "4, upkeep 3 each Upkeep Phase",
+       "text": "While maintained, linked allies who attack the same target in the same turn each add a bonus die."
+      }
+     ]
+    },
+    {
+     "rank": 5,
+     "title": "Stellar",
+     "id": "part-2-rare-heritages-storyteller-approval-required-heritage-magic-mindvoice",
+     "default": null,
+     "spells": [
+      {
+       "name": "Mind Spike",
+       "opt": "A",
+       "id": "part-2-rare-heritages-storyteller-approval-required-a-mind-spike",
+       "cost": "5",
+       "text": "Strike the target's mind. They defend with Composure + Insight. Damage is dealt to their Willpower."
+      },
+      {
+       "name": "Deep Read",
+       "opt": "B",
+       "id": "part-2-rare-heritages-storyteller-approval-required-b-deep-read",
+       "cost": "5",
+       "text": "The target resists with Composure + Insight. If you beat them, you learn one memory or secret of your choice."
+      }
+     ]
+    },
+    {
+     "rank": 6,
+     "title": "Galactic",
+     "id": "part-2-rare-heritages-storyteller-approval-required-heritage-magic-mindvoice",
+     "default": null,
+     "spells": [
+      {
+       "name": "Hive Link",
+       "opt": "A",
+       "id": "part-2-rare-heritages-storyteller-approval-required-a-hive-link",
+       "cost": "6, attuned (stays committed)",
+       "text": "While attuned, if one linked ally can see an enemy, all of them can."
+      },
+      {
+       "name": "Mind Lock",
+       "opt": "B",
+       "id": "part-2-rare-heritages-storyteller-approval-required-b-mind-lock",
+       "cost": "6",
+       "text": "The target resists with Composure + Insight. If you beat them, they cannot act on their next turn."
+      }
+     ]
+    },
+    {
+     "rank": 7,
+     "title": "Cosmic",
+     "id": "part-2-rare-heritages-storyteller-approval-required-heritage-magic-mindvoice",
+     "default": null,
+     "spells": [
+      {
+       "name": "Great Communion",
+       "opt": "A",
+       "id": "part-2-rare-heritages-storyteller-approval-required-a-great-communion",
+       "cost": "7, upkeep 6 each Upkeep Phase",
+       "text": "While maintained, everyone linked shares what any one of them sees and hears."
+      },
+      {
+       "name": "Overwhelm",
+       "opt": "B",
+       "id": "part-2-rare-heritages-storyteller-approval-required-b-overwhelm",
+       "cost": "7",
+       "text": "Mind Spike against every enemy in sight. Roll once; each defends separately."
+      }
+     ]
+    }
+   ]
+  },
+  "Transformation": {
+   "id": "part-2-rare-heritages-storyteller-approval-required-heritage-magic-transformation",
+   "ranks": [
+    {
+     "rank": 1,
+     "title": "Core",
+     "id": "part-2-rare-heritages-storyteller-approval-required-heritage-magic-transformation",
+     "default": null,
+     "spells": [
+      {
+       "name": "Minor Change",
+       "opt": "A",
+       "id": "part-2-rare-heritages-storyteller-approval-required-a-minor-change",
+       "cost": "1, attuned (stays committed)",
+       "text": "While attuned, your hair, eyes, skin, voice, or small features look however you choose."
+      },
+      {
+       "name": "Shift Limb",
+       "opt": "B",
+       "id": "part-2-rare-heritages-storyteller-approval-required-b-shift-limb",
+       "cost": "1, attuned (stays committed)",
+       "text": "While attuned, one limb becomes a claw, tentacle, or tool shape. As a weapon its rating equals your Heritage dots."
+      }
+     ]
+    },
+    {
+     "rank": 2,
+     "title": "Terrestrial",
+     "id": "part-2-rare-heritages-storyteller-approval-required-heritage-magic-transformation",
+     "default": null,
+     "spells": [
+      {
+       "name": "Borrowed Shape",
+       "opt": "A",
+       "id": "part-2-rare-heritages-storyteller-approval-required-a-borrowed-shape",
+       "cost": "2, attuned (stays committed)",
+       "text": "Roll when you attune. You take the appearance of a specific person of similar size you have seen. Seeing through it requires beating your successes with Perception + Insight."
+      },
+      {
+       "name": "Fluid Body",
+       "opt": "B",
+       "id": "part-2-rare-heritages-storyteller-approval-required-b-fluid-body",
+       "cost": "2",
+       "text": "When grappled or trapped, escape with this dice pool. You fit through any gap your head fits through."
+      }
+     ]
+    },
+    {
+     "rank": 3,
+     "title": "Aerial",
+     "id": "part-2-rare-heritages-storyteller-approval-required-heritage-magic-transformation",
+     "default": null,
+     "spells": [
+      {
+       "name": "Beast Shape",
+       "opt": "A",
+       "id": "part-2-rare-heritages-storyteller-approval-required-a-beast-shape",
+       "cost": "3, attuned (stays committed)",
+       "text": "While attuned, you are an animal between the size of a cat and a horse. You gain its movement, such as swimming or climbing, and keep your own mind."
+      },
+      {
+       "name": "Hardened Form",
+       "opt": "B",
+       "id": "part-2-rare-heritages-storyteller-approval-required-b-hardened-form",
+       "cost": "3",
+       "text": "When attacked, roll your dice pool. Each success reduces the attacker's successes by 1."
+      }
+     ]
+    },
+    {
+     "rank": 4,
+     "title": "Lunar",
+     "id": "part-2-rare-heritages-storyteller-approval-required-heritage-magic-transformation",
+     "default": null,
+     "spells": [
+      {
+       "name": "War Form",
+       "opt": "A",
+       "id": "part-2-rare-heritages-storyteller-approval-required-a-war-form",
+       "cost": "4, attuned (stays committed)",
+       "text": "While attuned, add 2 to your choice of Strength or Dexterity for all rolls, chosen when you attune. Your natural weapons have a rating equal to your Heritage dots."
+      },
+      {
+       "name": "Perfect Mimicry",
+       "opt": "B",
+       "id": "part-2-rare-heritages-storyteller-approval-required-b-perfect-mimicry",
+       "cost": "4, attuned (stays committed)",
+       "text": "Borrowed Shape that also copies voice and mannerisms. Seeing through it requires beating your successes with Perception + Insight, and people who know the original suffer -2 dice to do so."
+      }
+     ]
+    },
+    {
+     "rank": 5,
+     "title": "Stellar",
+     "id": "part-2-rare-heritages-storyteller-approval-required-heritage-magic-transformation",
+     "default": null,
+     "spells": [
+      {
+       "name": "Size Shift",
+       "opt": "A",
+       "id": "part-2-rare-heritages-storyteller-approval-required-a-size-shift",
+       "cost": "5, attuned (stays committed)",
+       "text": "While attuned, grow large enough that your melee attacks reach adjacent zones, or shrink to Tiny size."
+      },
+      {
+       "name": "Split Self",
+       "opt": "B",
+       "id": "part-2-rare-heritages-storyteller-approval-required-b-split-self",
+       "cost": "5, upkeep 4 each Upkeep Phase",
+       "text": "A second body forms as a conjuration. During each Upkeep Phase it may move one zone or attack using your dice pool. Damage to it goes on your own Health track."
+      }
+     ]
+    },
+    {
+     "rank": 6,
+     "title": "Galactic",
+     "id": "part-2-rare-heritages-storyteller-approval-required-heritage-magic-transformation",
+     "default": null,
+     "spells": [
+      {
+       "name": "Perfect Copy",
+       "opt": "A",
+       "id": "part-2-rare-heritages-storyteller-approval-required-a-perfect-copy",
+       "cost": "6, attuned (stays committed)",
+       "text": "Perfect Mimicry that also copies the target's physical Attributes. Abilities and magic are not copied."
+      },
+      {
+       "name": "Regenerative Shift",
+       "opt": "B",
+       "id": "part-2-rare-heritages-storyteller-approval-required-b-regenerative-shift",
+       "cost": "6",
+       "text": "Change your form and receive Expert healing."
+      }
+     ]
+    },
+    {
+     "rank": 7,
+     "title": "Cosmic",
+     "id": "part-2-rare-heritages-storyteller-approval-required-heritage-magic-transformation",
+     "default": null,
+     "spells": [
+      {
+       "name": "Thousand Faces",
+       "opt": "A",
+       "id": "part-2-rare-heritages-storyteller-approval-required-a-thousand-faces",
+       "cost": "7, attuned (stays committed)",
+       "text": "While attuned, once per turn change into any form you know at no AP cost."
+      },
+      {
+       "name": "Living Myth",
+       "opt": "B",
+       "id": "part-2-rare-heritages-storyteller-approval-required-b-living-myth",
+       "cost": "7, attuned (stays committed)",
+       "text": "While attuned, you take a monstrous form spanning up to 3 connected zones. Your attacks hit every target in one of those zones; each defends separately."
+      }
+     ]
+    }
+   ]
+  },
+  "Heaven's Wing": {
+   "id": "part-2-rare-heritages-storyteller-approval-required-heritage-magic-heavens-wing",
+   "ranks": [
+    {
+     "rank": 1,
+     "title": "Core",
+     "id": "part-2-rare-heritages-storyteller-approval-required-heritage-magic-heavens-wing",
+     "default": null,
+     "spells": [
+      {
+       "name": "Wing Burst",
+       "opt": "A",
+       "id": "part-2-rare-heritages-storyteller-approval-required-a-wing-burst",
+       "cost": "1",
+       "text": "While flying, move two extra zones this turn at no AP cost."
+      },
+      {
+       "name": "Hawk's Eye",
+       "opt": "B",
+       "id": "part-2-rare-heritages-storyteller-approval-required-b-hawks-eye",
+       "cost": "1, attuned (stays committed)",
+       "text": "While attuned, you ignore range penalties on Awareness rolls and add your Heritage dots to sight-based Awareness rolls."
+      }
+     ]
+    },
+    {
+     "rank": 2,
+     "title": "Terrestrial",
+     "id": "part-2-rare-heritages-storyteller-approval-required-heritage-magic-heavens-wing",
+     "default": null,
+     "spells": [
+      {
+       "name": "Stoop",
+       "opt": "A",
+       "id": "part-2-rare-heritages-storyteller-approval-required-a-stoop",
+       "cost": "2",
+       "text": "A diving attack after descending at least one zone this turn. Add your Heritage dots to the attack roll."
+      },
+      {
+       "name": "Read the Sky",
+       "opt": "B",
+       "id": "part-2-rare-heritages-storyteller-approval-required-b-read-the-sky",
+       "cost": "2",
+       "text": "Learn the position of every flying creature in sight. Allies add a bonus die to ranged attacks on their next turn."
+      }
+     ]
+    },
+    {
+     "rank": 3,
+     "title": "Aerial",
+     "id": "part-2-rare-heritages-storyteller-approval-required-heritage-magic-heavens-wing",
+     "default": null,
+     "spells": [
+      {
+       "name": "Thin Air",
+       "opt": "A",
+       "id": "part-2-rare-heritages-storyteller-approval-required-a-thin-air",
+       "cost": "3, upkeep 2 each Upkeep Phase",
+       "text": "Roll when cast. During each Upkeep Phase, enemies in the zone must beat your successes with Fortitude + Endurance or suffer -2 dice on physical rolls that turn."
+      },
+      {
+       "name": "Hover Shot",
+       "opt": "B",
+       "id": "part-2-rare-heritages-storyteller-approval-required-b-hover-shot",
+       "cost": "3, attuned (stays committed)",
+       "text": "While attuned and airborne, add half your Heritage dots, rounded up, to ranged attack rolls."
+      }
+     ]
+    },
+    {
+     "rank": 4,
+     "title": "Lunar",
+     "id": "part-2-rare-heritages-storyteller-approval-required-heritage-magic-heavens-wing",
+     "default": null,
+     "spells": [
+      {
+       "name": "Wing Shield",
+       "opt": "A",
+       "id": "part-2-rare-heritages-storyteller-approval-required-a-wing-shield",
+       "cost": "4",
+       "text": "When the target is attacked, wrap them in your wings. Roll your dice pool. Each success reduces the attacker's successes by 1."
+      },
+      {
+       "name": "Carry Aloft",
+       "opt": "B",
+       "id": "part-2-rare-heritages-storyteller-approval-required-b-carry-aloft",
+       "cost": "4, attuned (stays committed)",
+       "text": "While attuned, you can carry one ally while flying at no extra AP cost."
+      }
+     ]
+    },
+    {
+     "rank": 5,
+     "title": "Stellar",
+     "id": "part-2-rare-heritages-storyteller-approval-required-heritage-magic-heavens-wing",
+     "default": null,
+     "spells": [
+      {
+       "name": "Gale Wings",
+       "opt": "A",
+       "id": "part-2-rare-heritages-storyteller-approval-required-a-gale-wings",
+       "cost": "5",
+       "text": "Each target resists with Strength + Athletics. Each one you beat is pushed one zone and knocked prone."
+      },
+      {
+       "name": "Long Horizon",
+       "opt": "B",
+       "id": "part-2-rare-heritages-storyteller-approval-required-b-long-horizon",
+       "cost": "5, attuned (stays committed)",
+       "text": "While attuned, you and allies who can see you cannot be surprised."
+      }
+     ]
+    },
+    {
+     "rank": 6,
+     "title": "Galactic",
+     "id": "part-2-rare-heritages-storyteller-approval-required-heritage-magic-heavens-wing",
+     "default": null,
+     "spells": [
+      {
+       "name": "Heaven Dive",
+       "opt": "A",
+       "id": "part-2-rare-heritages-storyteller-approval-required-a-heaven-dive",
+       "cost": "6",
+       "text": "You must begin the turn at high altitude. A hit is treated as meeting the next-higher damage threshold."
+      },
+      {
+       "name": "Cloud Veil",
+       "opt": "B",
+       "id": "part-2-rare-heritages-storyteller-approval-required-b-cloud-veil",
+       "cost": "6, upkeep 5 each Upkeep Phase",
+       "text": "Clouds cover the zones. While maintained, you are hidden from anyone below them, and ranged attacks into those zones suffer -3 dice."
+      }
+     ]
+    },
+    {
+     "rank": 7,
+     "title": "Cosmic",
+     "id": "part-2-rare-heritages-storyteller-approval-required-heritage-magic-heavens-wing",
+     "default": null,
+     "spells": [
+      {
+       "name": "Wings of Heaven",
+       "opt": "A",
+       "id": "part-2-rare-heritages-storyteller-approval-required-a-wings-of-heaven",
+       "cost": "7, attuned (stays committed)",
+       "text": "While attuned, move any number of zones each turn at no AP cost. Attacks you make after moving add your Heritage dots to the damage roll."
+      },
+      {
+       "name": "Eye of the Sky",
+       "opt": "B",
+       "id": "part-2-rare-heritages-storyteller-approval-required-b-eye-of-the-sky",
+       "cost": "7, attuned (stays committed)",
+       "text": "Roll when you attune. While attuned you perceive every zone of the battlefield, and a hidden or invisible creature stays concealed from you only if it beats your successes with Dexterity + Stealth."
+      }
+     ]
+    }
+   ]
+  },
+  "Morph": {
+   "id": "part-2-rare-heritages-storyteller-approval-required-heritage-magic-morph",
+   "ranks": [
+    {
+     "rank": 1,
+     "title": "Core",
+     "id": "part-2-rare-heritages-storyteller-approval-required-heritage-magic-morph",
+     "default": null,
+     "spells": [
+      {
+       "name": "Pseudopod Lash",
+       "opt": "A",
+       "id": "part-2-rare-heritages-storyteller-approval-required-a-pseudopod-lash",
+       "cost": "1",
+       "text": "Stretch an arm into a whip and strike. A hit deals damage normally."
+      },
+      {
+       "name": "Gel Cushion",
+       "opt": "B",
+       "id": "part-2-rare-heritages-storyteller-approval-required-b-gel-cushion",
+       "cost": "1",
+       "text": "Cast when you take Bashing damage. Reduce that damage by your Heritage dots."
+      }
+     ]
+    },
+    {
+     "rank": 2,
+     "title": "Terrestrial",
+     "id": "part-2-rare-heritages-storyteller-approval-required-heritage-magic-morph",
+     "default": null,
+     "spells": [
+      {
+       "name": "Cling",
+       "opt": "A",
+       "id": "part-2-rare-heritages-storyteller-approval-required-a-cling",
+       "cost": "2, attuned (stays committed)",
+       "text": "While attuned, you can move across walls and ceilings at your normal Move, and add your Heritage dots to rolls to keep your grip or stay on your feet."
+      },
+      {
+       "name": "Engulf",
+       "opt": "B",
+       "id": "part-2-rare-heritages-storyteller-approval-required-b-engulf",
+       "cost": "2",
+       "text": "Wrap part of your body around the target. If you beat them, they are Grappled until they beat your successes with Strength + Athletics."
+      }
+     ]
+    },
+    {
+     "rank": 3,
+     "title": "Aerial",
+     "id": "part-2-rare-heritages-storyteller-approval-required-heritage-magic-morph",
+     "default": null,
+     "spells": [
+      {
+       "name": "Reform",
+       "opt": "A",
+       "id": "part-2-rare-heritages-storyteller-approval-required-a-reform",
+       "cost": "3",
+       "text": "Pull your body back together. Each success is Basic healing on yourself only."
+      },
+      {
+       "name": "Tendril Volley",
+       "opt": "B",
+       "id": "part-2-rare-heritages-storyteller-approval-required-b-tendril-volley",
+       "cost": "3",
+       "text": "Lash out with several tendrils. Make one attack roll; each target defends separately."
+      }
+     ]
+    },
+    {
+     "rank": 4,
+     "title": "Lunar",
+     "id": "part-2-rare-heritages-storyteller-approval-required-heritage-magic-morph",
+     "default": null,
+     "spells": [
+      {
+       "name": "Shape Tool",
+       "opt": "A",
+       "id": "part-2-rare-heritages-storyteller-approval-required-a-shape-tool",
+       "cost": "4",
+       "text": "Form part of your body into a simple tool such as a lockpick, rope, or blade. If you have touched a key or the lock it opens, you can form a working key on your fingertip. Add your Heritage dots to rolls the tool helps with."
+      },
+      {
+       "name": "Hardened Hide",
+       "opt": "B",
+       "id": "part-2-rare-heritages-storyteller-approval-required-b-hardened-hide",
+       "cost": "4, attuned (stays committed)",
+       "text": "While attuned, gain Armor equal to your Heritage dots. Your Move is reduced by 1."
+      }
+     ]
+    },
+    {
+     "rank": 5,
+     "title": "Stellar",
+     "id": "part-2-rare-heritages-storyteller-approval-required-heritage-magic-morph",
+     "default": null,
+     "spells": [
+      {
+       "name": "Whip Arms",
+       "opt": "A",
+       "id": "part-2-rare-heritages-storyteller-approval-required-a-whip-arms",
+       "cost": "5, attuned (stays committed)",
+       "text": "While attuned, your unarmed attacks reach 1 zone farther, and you add your Heritage dots to their damage."
+      },
+      {
+       "name": "Absorb Spell",
+       "opt": "B",
+       "id": "part-2-rare-heritages-storyteller-approval-required-b-absorb-spell",
+       "cost": "5",
+       "text": "Cast when a spell attack hits you. If your roll beats the attacker's successes, you take no damage from it and gain mana equal to its mana cost, up to your Max Mana Per Turn."
+      }
+     ]
+    },
+    {
+     "rank": 6,
+     "title": "Galactic",
+     "id": "part-2-rare-heritages-storyteller-approval-required-heritage-magic-morph",
+     "default": null,
+     "spells": [
+      {
+       "name": "Extra Limbs",
+       "opt": "A",
+       "id": "part-2-rare-heritages-storyteller-approval-required-a-extra-limbs",
+       "cost": "6, attuned (stays committed)",
+       "text": "While attuned, you grow two more arms. You can hold two more weapons or shields, and once per turn you can make one extra unarmed or melee attack at no AP cost, with its own attack roll."
+      },
+      {
+       "name": "Slime Wings",
+       "opt": "B",
+       "id": "part-2-rare-heritages-storyteller-approval-required-b-slime-wings",
+       "cost": "6, attuned (stays committed)",
+       "text": "While attuned, you grow wings and can fly at your normal Move, following the Flight rules (Chapter 13)."
+      }
+     ]
+    },
+    {
+     "rank": 7,
+     "title": "Cosmic",
+     "id": "part-2-rare-heritages-storyteller-approval-required-heritage-magic-morph",
+     "default": null,
+     "spells": [
+      {
+       "name": "Predation",
+       "opt": "A",
+       "id": "part-2-rare-heritages-storyteller-approval-required-a-predation",
+       "cost": "7",
+       "text": "Absorb part of the creature and copy one of its natural traits, such as flight, a natural weapon, a breath attack, or a resistance, as the Storyteller approves. You keep it until you copy a different trait. You can hold one copied trait at a time."
+      },
+      {
+       "name": "Endless Body",
+       "opt": "B",
+       "id": "part-2-rare-heritages-storyteller-approval-required-b-endless-body",
+       "cost": "7",
+       "text": "Once per story, when you would be Incapacitated or killed, you burst apart instead and reform in your zone at the start of your next turn with all Bashing and Lethal damage healed."
+      }
+     ]
+    }
+   ]
+  },
+  "Soulbound": {
+   "id": "part-2-rare-heritages-storyteller-approval-required-heritage-magic-soulbound",
+   "ranks": [
+    {
+     "rank": 1,
+     "title": "Core",
+     "id": "part-2-rare-heritages-storyteller-approval-required-heritage-magic-soulbound",
+     "default": null,
+     "spells": [
+      {
+       "name": "Third Eye Sight",
+       "opt": "A",
+       "id": "part-2-rare-heritages-storyteller-approval-required-a-third-eye-sight",
+       "cost": "1, attuned (stays committed)",
+       "text": "While attuned, you see living beings through walls and darkness within a number of zones equal to your Soulbound dots."
+      },
+      {
+       "name": "Spear Call",
+       "opt": "B",
+       "id": "part-2-rare-heritages-storyteller-approval-required-b-spear-call",
+       "cost": "1",
+       "text": "Your spear returns to your hand."
+      }
+     ]
+    },
+    {
+     "rank": 2,
+     "title": "Terrestrial",
+     "id": "part-2-rare-heritages-storyteller-approval-required-heritage-magic-soulbound",
+     "default": null,
+     "spells": [
+      {
+       "name": "Life Read",
+       "opt": "A",
+       "id": "part-2-rare-heritages-storyteller-approval-required-a-life-read",
+       "cost": "2",
+       "text": "On a success you learn how injured the creature is and whether it intends you harm."
+      },
+      {
+       "name": "Soul Throw",
+       "opt": "B",
+       "id": "part-2-rare-heritages-storyteller-approval-required-b-soul-throw",
+       "cost": "2",
+       "text": "Throw your spear and call it back in the same action."
+      }
+     ]
+    },
+    {
+     "rank": 3,
+     "title": "Aerial",
+     "id": "part-2-rare-heritages-storyteller-approval-required-heritage-magic-soulbound",
+     "default": null,
+     "spells": [
+      {
+       "name": "Nothing Hidden",
+       "opt": "A",
+       "id": "part-2-rare-heritages-storyteller-approval-required-a-nothing-hidden",
+       "cost": "3, attuned (stays committed)",
+       "text": "Roll when you attune. While attuned, hidden or invisible living creatures in sight must beat your successes with Dexterity + Stealth to stay concealed from you."
+      },
+      {
+       "name": "Soul Strike",
+       "opt": "B",
+       "id": "part-2-rare-heritages-storyteller-approval-required-b-soul-strike",
+       "cost": "3",
+       "text": "A spear attack that ignores Armor equal to your Heritage dots."
+      }
+     ]
+    },
+    {
+     "rank": 4,
+     "title": "Lunar",
+     "id": "part-2-rare-heritages-storyteller-approval-required-heritage-magic-soulbound",
+     "default": null,
+     "spells": [
+      {
+       "name": "Read the Blow",
+       "opt": "A",
+       "id": "part-2-rare-heritages-storyteller-approval-required-a-read-the-blow",
+       "cost": "4",
+       "text": "When attacked, you see the blow gather in the mana flow. Roll your dice pool. Each success reduces the attacker's successes by 1."
+      },
+      {
+       "name": "Spear Dance",
+       "opt": "B",
+       "id": "part-2-rare-heritages-storyteller-approval-required-b-spear-dance",
+       "cost": "4",
+       "text": "Roll once against every enemy in range; each defends separately."
+      }
+     ]
+    },
+    {
+     "rank": 5,
+     "title": "Stellar",
+     "id": "part-2-rare-heritages-storyteller-approval-required-heritage-magic-soulbound",
+     "default": null,
+     "spells": [
+      {
+       "name": "Mana Flow Sight",
+       "opt": "A",
+       "id": "part-2-rare-heritages-storyteller-approval-required-a-mana-flow-sight",
+       "cost": "5, attuned (stays committed)",
+       "text": "While attuned, you see spells gathering before they are cast and know their school and target. One ally you warn adds 2 dice to defend against that spell."
+      },
+      {
+       "name": "Unbreaking Grip",
+       "opt": "B",
+       "id": "part-2-rare-heritages-storyteller-approval-required-b-unbreaking-grip",
+       "cost": "5, attuned (stays committed)",
+       "text": "While attuned, your spear cannot be taken from you or knocked from your hands, and your spear attacks add half your Heritage dots, rounded up, to the damage roll."
+      }
+     ]
+    },
+    {
+     "rank": 6,
+     "title": "Galactic",
+     "id": "part-2-rare-heritages-storyteller-approval-required-heritage-magic-soulbound",
+     "default": null,
+     "spells": [
+      {
+       "name": "Eye of the Hunter",
+       "opt": "A",
+       "id": "part-2-rare-heritages-storyteller-approval-required-a-eye-of-the-hunter",
+       "cost": "6, attuned (stays committed)",
+       "text": "While attuned, the target cannot hide from you within a day's travel, and you add half your Heritage dots, rounded up, to attacks against it."
+      },
+      {
+       "name": "Soul Lance",
+       "opt": "B",
+       "id": "part-2-rare-heritages-storyteller-approval-required-b-soul-lance",
+       "cost": "6",
+       "text": "Hurl your spear in a straight line. Each target defends separately. The spear returns to you."
+      }
+     ]
+    },
+    {
+     "rank": 7,
+     "title": "Cosmic",
+     "id": "part-2-rare-heritages-storyteller-approval-required-heritage-magic-soulbound",
+     "default": null,
+     "spells": [
+      {
+       "name": "All-Seeing Eye",
+       "opt": "A",
+       "id": "part-2-rare-heritages-storyteller-approval-required-a-all-seeing-eye",
+       "cost": "7, upkeep 6 each Upkeep Phase",
+       "text": "While maintained, you perceive every living being within a city."
+      },
+      {
+       "name": "Warrior of Old",
+       "opt": "B",
+       "id": "part-2-rare-heritages-storyteller-approval-required-b-warrior-of-old",
+       "cost": "7",
+       "text": "Roll once against every enemy in range. Each hit is treated as meeting the next-higher damage threshold."
+      }
+     ]
+    }
+   ]
+  },
+  "Glamour": {
+   "id": "part-2-rare-heritages-storyteller-approval-required-heritage-magic-glamour",
+   "ranks": [
+    {
+     "rank": 1,
+     "title": "Core",
+     "id": "part-2-rare-heritages-storyteller-approval-required-heritage-magic-glamour",
+     "default": null,
+     "spells": [
+      {
+       "name": "Minor Glamour",
+       "opt": "A",
+       "id": "part-2-rare-heritages-storyteller-approval-required-a-minor-glamour",
+       "cost": "1, upkeep 0 each Upkeep Phase",
+       "text": "Create a small illusion: a sound, a light, or a small object. Seeing through it requires beating your successes with Perception + Awareness."
+      },
+      {
+       "name": "Pixie Dust",
+       "opt": "B",
+       "id": "part-2-rare-heritages-storyteller-approval-required-b-pixie-dust",
+       "cost": "1",
+       "text": "The ally falls slowly and ignores Difficult Terrain on their next move."
+      }
+     ]
+    },
+    {
+     "rank": 2,
+     "title": "Terrestrial",
+     "id": "part-2-rare-heritages-storyteller-approval-required-heritage-magic-glamour",
+     "default": null,
+     "spells": [
+      {
+       "name": "Disguise Glamour",
+       "opt": "A",
+       "id": "part-2-rare-heritages-storyteller-approval-required-a-disguise-glamour",
+       "cost": "2, attuned (stays committed)",
+       "text": "Roll when you attune. While attuned you look like another small creature or an object. Seeing through it requires beating your successes with Perception + Awareness."
+      },
+      {
+       "name": "Dazzle",
+       "opt": "B",
+       "id": "part-2-rare-heritages-storyteller-approval-required-b-dazzle",
+       "cost": "2",
+       "text": "The target resists with Perception + Awareness. If you beat them, they suffer -2 dice on sight-based rolls on their next turn."
+      }
+     ]
+    },
+    {
+     "rank": 3,
+     "title": "Aerial",
+     "id": "part-2-rare-heritages-storyteller-approval-required-heritage-magic-glamour",
+     "default": null,
+     "spells": [
+      {
+       "name": "Phantom Double",
+       "opt": "A",
+       "id": "part-2-rare-heritages-storyteller-approval-required-a-phantom-double",
+       "cost": "3, upkeep 2 each Upkeep Phase",
+       "text": "Roll when cast. An illusory copy of you appears. Attackers must beat your successes with Perception + Awareness or target the copy instead."
+      },
+      {
+       "name": "Pixie Flight",
+       "opt": "B",
+       "id": "part-2-rare-heritages-storyteller-approval-required-b-pixie-flight",
+       "cost": "3",
+       "text": "The ally can fly at double their normal movement on their next turn."
+      }
+     ]
+    },
+    {
+     "rank": 4,
+     "title": "Lunar",
+     "id": "part-2-rare-heritages-storyteller-approval-required-heritage-magic-glamour",
+     "default": null,
+     "spells": [
+      {
+       "name": "Glamour Veil",
+       "opt": "A",
+       "id": "part-2-rare-heritages-storyteller-approval-required-a-glamour-veil",
+       "cost": "4, attuned (stays committed)",
+       "text": "Roll when you attune. While attuned, you and the ally are invisible to anyone who does not beat your successes with Perception + Awareness. It ends for whichever of you attacks."
+      },
+      {
+       "name": "Befuddle",
+       "opt": "B",
+       "id": "part-2-rare-heritages-storyteller-approval-required-b-befuddle",
+       "cost": "4",
+       "text": "The target resists with Composure + Insight. If you beat them, they attack the nearest creature on their next turn, friend or foe."
+      }
+     ]
+    },
+    {
+     "rank": 5,
+     "title": "Stellar",
+     "id": "part-2-rare-heritages-storyteller-approval-required-heritage-magic-glamour",
+     "default": null,
+     "spells": [
+      {
+       "name": "Grand Illusion",
+       "opt": "A",
+       "id": "part-2-rare-heritages-storyteller-approval-required-a-grand-illusion",
+       "cost": "5, upkeep 4 each Upkeep Phase",
+       "text": "Create illusory terrain: walls, pits, fire. Each turn, creatures must beat your successes with Perception + Awareness to ignore it."
+      },
+      {
+       "name": "Shrink",
+       "opt": "B",
+       "id": "part-2-rare-heritages-storyteller-approval-required-b-shrink",
+       "cost": "5, lasts half the mana spent in turns, rounded up; pay 4 in an Upkeep Phase to freeze the countdown",
+       "text": "The target resists with Fortitude + Endurance. If you beat them, they shrink to Tiny size and suffer the Tiny flaw until the countdown runs out."
+      }
+     ]
+    },
+    {
+     "rank": 6,
+     "title": "Galactic",
+     "id": "part-2-rare-heritages-storyteller-approval-required-heritage-magic-glamour",
+     "default": null,
+     "spells": [
+      {
+       "name": "Fairy Ring",
+       "opt": "A",
+       "id": "part-2-rare-heritages-storyteller-approval-required-a-fairy-ring",
+       "cost": "6, upkeep 5 each Upkeep Phase",
+       "text": "Roll when cast. Enemies who enter the zone must beat your successes with Composure + Athletics or lose 2 AP each turn they stay, dancing against their will."
+      },
+      {
+       "name": "Mass Pixie Flight",
+       "opt": "B",
+       "id": "part-2-rare-heritages-storyteller-approval-required-b-mass-pixie-flight",
+       "cost": "6, upkeep 5 each Upkeep Phase",
+       "text": "While maintained, allies in sight can fly at double their normal movement."
+      }
+     ]
+    },
+    {
+     "rank": 7,
+     "title": "Cosmic",
+     "id": "part-2-rare-heritages-storyteller-approval-required-heritage-magic-glamour",
+     "default": null,
+     "spells": [
+      {
+       "name": "Dreamscape",
+       "opt": "A",
+       "id": "part-2-rare-heritages-storyteller-approval-required-a-dreamscape",
+       "cost": "7, upkeep 6 each Upkeep Phase",
+       "text": "While maintained, you decide what everyone in sight perceives. Once per turn, each creature may roll Perception + Awareness against your successes to see through one detail."
+      },
+      {
+       "name": "Fairy Swarm",
+       "opt": "B",
+       "id": "part-2-rare-heritages-storyteller-approval-required-b-fairy-swarm",
+       "cost": "7, upkeep 6 each Upkeep Phase",
+       "text": "A swarm of tiny kin forms as a conjuration. During each Upkeep Phase it attacks every enemy in those zones using your dice pool; each defends separately."
+      }
+     ]
+    }
+   ]
+  },
+  "Vampiric Powers": {
+   "id": "part-2-rare-heritages-storyteller-approval-required-heritage-magic-vampiric-powers",
+   "ranks": null
+  },
+  "Auspex": {
+   "id": "part-2-rare-heritages-storyteller-approval-required-vampiric-power-auspex",
+   "ranks": [
+    {
+     "rank": 1,
+     "title": "Core",
+     "id": "part-2-rare-heritages-storyteller-approval-required-vampiric-power-auspex",
+     "default": null,
+     "spells": [
+      {
+       "name": "Heightened Senses",
+       "opt": "A",
+       "id": "part-2-rare-heritages-storyteller-approval-required-a-heightened-senses",
+       "cost": "1, attuned (stays committed)",
+       "text": "While attuned, add your Heritage dots to Awareness rolls."
+      },
+      {
+       "name": "Emotional Aura",
+       "opt": "B",
+       "id": "part-2-rare-heritages-storyteller-approval-required-b-emotional-aura",
+       "cost": "1, upkeep 0 each Upkeep Phase",
+       "text": "While maintained, you see the emotions of everyone in sight as colors around them."
+      }
+     ]
+    },
+    {
+     "rank": 2,
+     "title": "Terrestrial",
+     "id": "part-2-rare-heritages-storyteller-approval-required-vampiric-power-auspex",
+     "default": null,
+     "spells": [
+      {
+       "name": "Night Eyes",
+       "opt": "A",
+       "id": "part-2-rare-heritages-storyteller-approval-required-a-night-eyes",
+       "cost": "2, attuned (stays committed)",
+       "text": "While attuned, you see normally in total darkness."
+      },
+      {
+       "name": "Read Intent",
+       "opt": "B",
+       "id": "part-2-rare-heritages-storyteller-approval-required-b-read-intent",
+       "cost": "2",
+       "text": "The target resists with Composure + Subterfuge. If you beat them, you learn whether they plan to attack this turn, and whom."
+      }
+     ]
+    },
+    {
+     "rank": 3,
+     "title": "Aerial",
+     "id": "part-2-rare-heritages-storyteller-approval-required-vampiric-power-auspex",
+     "default": null,
+     "spells": [
+      {
+       "name": "Object Echo",
+       "opt": "A",
+       "id": "part-2-rare-heritages-storyteller-approval-required-a-object-echo",
+       "cost": "3",
+       "text": "On a success you see the last strong emotion or event connected to the object you touch."
+      },
+      {
+       "name": "Spot the Hidden",
+       "opt": "B",
+       "id": "part-2-rare-heritages-storyteller-approval-required-b-spot-the-hidden",
+       "cost": "3, attuned (stays committed)",
+       "text": "Roll when you attune. While attuned, a hidden or invisible creature stays concealed from you only if it beats your successes with Dexterity + Stealth."
+      }
+     ]
+    },
+    {
+     "rank": 4,
+     "title": "Lunar",
+     "id": "part-2-rare-heritages-storyteller-approval-required-vampiric-power-auspex",
+     "default": null,
+     "spells": [
+      {
+       "name": "Mind Glimpse",
+       "opt": "A",
+       "id": "part-2-rare-heritages-storyteller-approval-required-a-mind-glimpse",
+       "cost": "4",
+       "text": "The target resists with Composure + Insight. If you beat them, you read their surface thoughts."
+      },
+      {
+       "name": "Foresight",
+       "opt": "B",
+       "id": "part-2-rare-heritages-storyteller-approval-required-b-foresight",
+       "cost": "4",
+       "text": "When attacked, roll your dice pool. Each success reduces the attacker's successes by 1."
+      }
+     ]
+    },
+    {
+     "rank": 5,
+     "title": "Stellar",
+     "id": "part-2-rare-heritages-storyteller-approval-required-vampiric-power-auspex",
+     "default": null,
+     "spells": [
+      {
+       "name": "Distant Sight",
+       "opt": "A",
+       "id": "part-2-rare-heritages-storyteller-approval-required-a-distant-sight",
+       "cost": "5, upkeep 4 each Upkeep Phase",
+       "text": "While maintained, you see and hear that place."
+      },
+      {
+       "name": "Truth Sense",
+       "opt": "B",
+       "id": "part-2-rare-heritages-storyteller-approval-required-b-truth-sense",
+       "cost": "5, attuned (stays committed)",
+       "text": "Roll when you attune. While attuned, you know when anyone in sight lies unless they beat your successes with Manipulation + Subterfuge."
+      }
+     ]
+    },
+    {
+     "rank": 6,
+     "title": "Galactic",
+     "id": "part-2-rare-heritages-storyteller-approval-required-vampiric-power-auspex",
+     "default": null,
+     "spells": [
+      {
+       "name": "Astral Step",
+       "opt": "A",
+       "id": "part-2-rare-heritages-storyteller-approval-required-a-astral-step",
+       "cost": "6, upkeep 5 each Upkeep Phase",
+       "text": "While maintained, your spirit leaves your body and moves freely and unseen within a city. Your body is helpless while you are away."
+      },
+      {
+       "name": "Battle Precognition",
+       "opt": "B",
+       "id": "part-2-rare-heritages-storyteller-approval-required-b-battle-precognition",
+       "cost": "6, attuned (stays committed)",
+       "text": "While attuned, once per turn, before an enemy acts, you learn their target and action and may cast a Reaction in response."
+      }
+     ]
+    },
+    {
+     "rank": 7,
+     "title": "Cosmic",
+     "id": "part-2-rare-heritages-storyteller-approval-required-vampiric-power-auspex",
+     "default": null,
+     "spells": [
+      {
+       "name": "Astral Journey",
+       "opt": "A",
+       "id": "part-2-rare-heritages-storyteller-approval-required-a-astral-journey",
+       "cost": "7, upkeep 6 each Upkeep Phase",
+       "text": "Astral Step that can reach anywhere in the world."
+      },
+      {
+       "name": "Omniscient Moment",
+       "opt": "B",
+       "id": "part-2-rare-heritages-storyteller-approval-required-b-omniscient-moment",
+       "cost": "7",
+       "text": "Once per scene, ask the Storyteller one question about the current scene. They answer truthfully."
+      }
+     ]
+    }
+   ]
+  },
+  "Blood Sorcery": {
+   "id": "part-2-rare-heritages-storyteller-approval-required-vampiric-power-blood-sorcery",
+   "ranks": [
+    {
+     "rank": 1,
+     "title": "Core",
+     "id": "part-2-rare-heritages-storyteller-approval-required-vampiric-power-blood-sorcery",
+     "default": null,
+     "spells": [
+      {
+       "name": "Blood Boost",
+       "opt": "A",
+       "id": "part-2-rare-heritages-storyteller-approval-required-a-blood-boost",
+       "cost": "1",
+       "text": "Roll your dice pool. Add your successes, up to your Heritage dots, as bonus dice to one physical roll you make this turn."
+      },
+      {
+       "name": "Sense Blood",
+       "opt": "B",
+       "id": "part-2-rare-heritages-storyteller-approval-required-b-sense-blood",
+       "cost": "1, attuned (stays committed)",
+       "text": "While attuned, you smell fresh blood within a number of zones equal to your Blood Sorcery dots and add your Heritage dots to rolls to track a creature by its blood."
+      }
+     ]
+    },
+    {
+     "rank": 2,
+     "title": "Terrestrial",
+     "id": "part-2-rare-heritages-storyteller-approval-required-vampiric-power-blood-sorcery",
+     "default": null,
+     "spells": [
+      {
+       "name": "Blood Blade",
+       "opt": "A",
+       "id": "part-2-rare-heritages-storyteller-approval-required-a-blood-blade",
+       "cost": "2, attuned (stays committed)",
+       "text": "Take 1 Bashing damage to form a weapon from your own blood. While attuned, its rating equals your Heritage dots."
+      },
+      {
+       "name": "Clot",
+       "opt": "B",
+       "id": "part-2-rare-heritages-storyteller-approval-required-b-clot",
+       "cost": "2",
+       "text": "Remove the Bleeding condition and give Basic healing."
+      }
+     ]
+    },
+    {
+     "rank": 3,
+     "title": "Aerial",
+     "id": "part-2-rare-heritages-storyteller-approval-required-vampiric-power-blood-sorcery",
+     "default": null,
+     "spells": [
+      {
+       "name": "Blood Bolt",
+       "opt": "A",
+       "id": "part-2-rare-heritages-storyteller-approval-required-a-blood-bolt",
+       "cost": "3",
+       "text": "Take 1 Bashing damage to fire a bolt of blood. Damage is piercing."
+      },
+      {
+       "name": "Blood Ward",
+       "opt": "B",
+       "id": "part-2-rare-heritages-storyteller-approval-required-b-blood-ward",
+       "cost": "3",
+       "text": "When attacked, roll your dice pool. Each success reduces the attacker's successes by 1."
+      }
+     ]
+    },
+    {
+     "rank": 4,
+     "title": "Lunar",
+     "id": "part-2-rare-heritages-storyteller-approval-required-vampiric-power-blood-sorcery",
+     "default": null,
+     "spells": [
+      {
+       "name": "Boil Blood",
+       "opt": "A",
+       "id": "part-2-rare-heritages-storyteller-approval-required-a-boil-blood",
+       "cost": "4",
+       "text": "The target resists with Fortitude + Endurance. If you beat them, they gain the Bleeding condition."
+      },
+      {
+       "name": "Blood Bond",
+       "opt": "B",
+       "id": "part-2-rare-heritages-storyteller-approval-required-b-blood-bond",
+       "cost": "4",
+       "text": "Drink from the ally. You can speak mind to mind with them for one session."
+      }
+     ]
+    },
+    {
+     "rank": 5,
+     "title": "Stellar",
+     "id": "part-2-rare-heritages-storyteller-approval-required-vampiric-power-blood-sorcery",
+     "default": null,
+     "spells": [
+      {
+       "name": "Blood Puppet",
+       "opt": "A",
+       "id": "part-2-rare-heritages-storyteller-approval-required-a-blood-puppet",
+       "cost": "5",
+       "text": "The target resists with Fortitude + Endurance. If you beat them, they lose their next action or move one zone where you choose."
+      },
+      {
+       "name": "Crimson Barrier",
+       "opt": "B",
+       "id": "part-2-rare-heritages-storyteller-approval-required-b-crimson-barrier",
+       "cost": "5, upkeep 4 each Upkeep Phase",
+       "text": "Raise a wall of blood. It blocks movement. An attack breaks it only if the attacker rolls more successes than you did when casting."
+      }
+     ]
+    },
+    {
+     "rank": 6,
+     "title": "Galactic",
+     "id": "part-2-rare-heritages-storyteller-approval-required-vampiric-power-blood-sorcery",
+     "default": null,
+     "spells": [
+      {
+       "name": "Hemorrhage",
+       "opt": "A",
+       "id": "part-2-rare-heritages-storyteller-approval-required-a-hemorrhage",
+       "cost": "6",
+       "text": "Roll once; each target defends separately. Damage is slashing."
+      },
+      {
+       "name": "Blood Feast",
+       "opt": "B",
+       "id": "part-2-rare-heritages-storyteller-approval-required-b-blood-feast",
+       "cost": "6",
+       "text": "On a hit, heal Lethal damage on yourself equal to the boxes of damage dealt."
+      }
+     ]
+    },
+    {
+     "rank": 7,
+     "title": "Cosmic",
+     "id": "part-2-rare-heritages-storyteller-approval-required-vampiric-power-blood-sorcery",
+     "default": null,
+     "spells": [
+      {
+       "name": "Exsanguinate",
+       "opt": "A",
+       "id": "part-2-rare-heritages-storyteller-approval-required-a-exsanguinate",
+       "cost": "7",
+       "text": "A hit is treated as meeting the next-higher damage threshold, and you heal one box for each box it deals."
+      },
+      {
+       "name": "Crimson Tide",
+       "opt": "B",
+       "id": "part-2-rare-heritages-storyteller-approval-required-b-crimson-tide",
+       "cost": "7, upkeep 6 each Upkeep Phase",
+       "text": "Roll when cast. Successes plus mana spent set the damage value. Anyone who enters or begins their turn there rolls Fortitude + Endurance to reduce it, takes the rest as damage, and gains the Bleeding condition."
+      }
+     ]
+    }
+   ]
+  },
+  "Celerity": {
+   "id": "part-2-rare-heritages-storyteller-approval-required-vampiric-power-celerity",
+   "ranks": [
+    {
+     "rank": 1,
+     "title": "Core",
+     "id": "part-2-rare-heritages-storyteller-approval-required-vampiric-power-celerity",
+     "default": null,
+     "spells": [
+      {
+       "name": "Quick Reflexes",
+       "opt": "A",
+       "id": "part-2-rare-heritages-storyteller-approval-required-a-quick-reflexes",
+       "cost": "1, attuned (stays committed)",
+       "text": "While attuned, add your Heritage dots to rolls to react to surprise."
+      },
+      {
+       "name": "Fleet Foot",
+       "opt": "B",
+       "id": "part-2-rare-heritages-storyteller-approval-required-b-fleet-foot",
+       "cost": "1, attuned (stays committed)",
+       "text": "While attuned, move one extra zone each turn at no AP cost."
+      }
+     ]
+    },
+    {
+     "rank": 2,
+     "title": "Terrestrial",
+     "id": "part-2-rare-heritages-storyteller-approval-required-vampiric-power-celerity",
+     "default": null,
+     "spells": [
+      {
+       "name": "Blur",
+       "opt": "A",
+       "id": "part-2-rare-heritages-storyteller-approval-required-a-blur",
+       "cost": "2, attuned (stays committed)",
+       "text": "While attuned, attacks against you suffer -1 die."
+      },
+      {
+       "name": "Quick Hands",
+       "opt": "B",
+       "id": "part-2-rare-heritages-storyteller-approval-required-b-quick-hands",
+       "cost": "2, attuned (stays committed)",
+       "text": "While attuned, drawing, stowing, and passing items costs no AP."
+      }
+     ]
+    },
+    {
+     "rank": 3,
+     "title": "Aerial",
+     "id": "part-2-rare-heritages-storyteller-approval-required-vampiric-power-celerity",
+     "default": null,
+     "spells": [
+      {
+       "name": "Strike and Go",
+       "opt": "A",
+       "id": "part-2-rare-heritages-storyteller-approval-required-a-strike-and-go",
+       "cost": "3",
+       "text": "Move one zone and attack with no extra AP."
+      },
+      {
+       "name": "Dodge Instinct",
+       "opt": "B",
+       "id": "part-2-rare-heritages-storyteller-approval-required-b-dodge-instinct",
+       "cost": "3, attuned (stays committed)",
+       "text": "While attuned, once per turn you may Dodge without spending your Reaction."
+      }
+     ]
+    },
+    {
+     "rank": 4,
+     "title": "Lunar",
+     "id": "part-2-rare-heritages-storyteller-approval-required-vampiric-power-celerity",
+     "default": null,
+     "spells": [
+      {
+       "name": "Second Strike",
+       "opt": "A",
+       "id": "part-2-rare-heritages-storyteller-approval-required-a-second-strike",
+       "cost": "4",
+       "text": "Make two attacks in this action. Roll each separately."
+      },
+      {
+       "name": "Catch",
+       "opt": "B",
+       "id": "part-2-rare-heritages-storyteller-approval-required-b-catch",
+       "cost": "4",
+       "text": "Snatch a thrown weapon or arrow from the air. Roll your dice pool against the attacker's successes. If you win, the attack misses."
+      }
+     ]
+    },
+    {
+     "rank": 5,
+     "title": "Stellar",
+     "id": "part-2-rare-heritages-storyteller-approval-required-vampiric-power-celerity",
+     "default": null,
+     "spells": [
+      {
+       "name": "Afterimage",
+       "opt": "A",
+       "id": "part-2-rare-heritages-storyteller-approval-required-a-afterimage",
+       "cost": "5, attuned (stays committed)",
+       "text": "Roll when you attune. While attuned, attackers must beat your successes with Perception + Awareness or strike an afterimage instead."
+      },
+      {
+       "name": "Across the Field",
+       "opt": "B",
+       "id": "part-2-rare-heritages-storyteller-approval-required-b-across-the-field",
+       "cost": "5",
+       "text": "Move to any zone in sight."
+      }
+     ]
+    },
+    {
+     "rank": 6,
+     "title": "Galactic",
+     "id": "part-2-rare-heritages-storyteller-approval-required-vampiric-power-celerity",
+     "default": null,
+     "spells": [
+      {
+       "name": "Flurry",
+       "opt": "A",
+       "id": "part-2-rare-heritages-storyteller-approval-required-a-flurry",
+       "cost": "6",
+       "text": "Roll once against every enemy in range; each defends separately. Each target hit also loses 1 AP on their next turn."
+      },
+      {
+       "name": "Untouchable",
+       "opt": "B",
+       "id": "part-2-rare-heritages-storyteller-approval-required-b-untouchable",
+       "cost": "6, attuned (stays committed)",
+       "text": "While attuned, the first attack against you each turn fails automatically."
+      }
+     ]
+    },
+    {
+     "rank": 7,
+     "title": "Cosmic",
+     "id": "part-2-rare-heritages-storyteller-approval-required-vampiric-power-celerity",
+     "default": null,
+     "spells": [
+      {
+       "name": "Time Stands Still",
+       "opt": "A",
+       "id": "part-2-rare-heritages-storyteller-approval-required-a-time-stands-still",
+       "cost": "7",
+       "text": "Once per scene, take a full extra turn immediately."
+      },
+      {
+       "name": "Faster Than Sight",
+       "opt": "B",
+       "id": "part-2-rare-heritages-storyteller-approval-required-b-faster-than-sight",
+       "cost": "7",
+       "text": "Once per scene, for one turn, you act as if you had the full 6 AP a character can use in one turn, without spending any of your own."
+      }
+     ]
+    }
+   ]
+  },
+  "Dominion": {
+   "id": "part-2-rare-heritages-storyteller-approval-required-vampiric-power-dominion",
+   "ranks": [
+    {
+     "rank": 1,
+     "title": "Core",
+     "id": "part-2-rare-heritages-storyteller-approval-required-vampiric-power-dominion",
+     "default": null,
+     "spells": [
+      {
+       "name": "Awe",
+       "opt": "A",
+       "id": "part-2-rare-heritages-storyteller-approval-required-a-awe",
+       "cost": "1, attuned (stays committed)",
+       "text": "While attuned, add your Heritage dots to Presence rolls."
+      },
+      {
+       "name": "Whisper Suggestion",
+       "opt": "B",
+       "id": "part-2-rare-heritages-storyteller-approval-required-b-whisper-suggestion",
+       "cost": "1",
+       "text": "The target resists with Composure + Insight. If you beat them, they feel moved to follow one short suggestion on their next turn, such as \"step aside\" or \"look over there.\" They will not follow a suggestion that would harm them or their allies, or that goes against their nature."
+      }
+     ]
+    },
+    {
+     "rank": 2,
+     "title": "Terrestrial",
+     "id": "part-2-rare-heritages-storyteller-approval-required-vampiric-power-dominion",
+     "default": null,
+     "spells": [
+      {
+       "name": "Dread Gaze",
+       "opt": "A",
+       "id": "part-2-rare-heritages-storyteller-approval-required-a-dread-gaze",
+       "cost": "2",
+       "text": "The target resists with Composure + Presence. If you beat them, they suffer -2 dice to attack you for the rest of the scene."
+      },
+      {
+       "name": "Charm",
+       "opt": "B",
+       "id": "part-2-rare-heritages-storyteller-approval-required-b-charm",
+       "cost": "2, lasts half the mana spent in turns, rounded up; pay 1 in an Upkeep Phase to freeze the countdown",
+       "text": "The target resists with Composure + Insight. If you beat them, they treat you as a friend. It ends when the countdown runs out or you harm them or their allies, whichever comes first."
+      }
+     ]
+    },
+    {
+     "rank": 3,
+     "title": "Aerial",
+     "id": "part-2-rare-heritages-storyteller-approval-required-vampiric-power-dominion",
+     "default": null,
+     "spells": [
+      {
+       "name": "Command",
+       "opt": "A",
+       "id": "part-2-rare-heritages-storyteller-approval-required-a-command",
+       "cost": "3",
+       "text": "The target resists with Composure + Insight. If you beat them, they obey a command of up to three words on their next turn. The command cannot directly harm them."
+      },
+      {
+       "name": "Entrance",
+       "opt": "B",
+       "id": "part-2-rare-heritages-storyteller-approval-required-b-entrance",
+       "cost": "3, lasts half the mana spent in turns, rounded up; pay 2 in an Upkeep Phase to freeze the countdown",
+       "text": "The target resists with Composure + Insight. If you beat them, they follow you and seek your approval. It ends when the countdown runs out or you harm them, whichever comes first."
+      }
+     ]
+    },
+    {
+     "rank": 4,
+     "title": "Lunar",
+     "id": "part-2-rare-heritages-storyteller-approval-required-vampiric-power-dominion",
+     "default": null,
+     "spells": [
+      {
+       "name": "Forget",
+       "opt": "A",
+       "id": "part-2-rare-heritages-storyteller-approval-required-a-forget",
+       "cost": "4",
+       "text": "The target resists with Composure + Insight. If you beat them, they forget the last five minutes."
+      },
+      {
+       "name": "Mass Awe",
+       "opt": "B",
+       "id": "part-2-rare-heritages-storyteller-approval-required-b-mass-awe",
+       "cost": "4",
+       "text": "Every target in range resists separately with Composure + Presence. Each one you beat suffers -2 dice to attack you for the rest of the scene."
+      }
+     ]
+    },
+    {
+     "rank": 5,
+     "title": "Stellar",
+     "id": "part-2-rare-heritages-storyteller-approval-required-vampiric-power-dominion",
+     "default": null,
+     "spells": [
+      {
+       "name": "Compel",
+       "opt": "A",
+       "id": "part-2-rare-heritages-storyteller-approval-required-a-compel",
+       "cost": "5, lasts half the mana spent in turns, rounded up; pay 4 in an Upkeep Phase to freeze the countdown",
+       "text": "The target resists with Composure + Insight. If you beat them, they obey your spoken commands until the countdown runs out. A command that would directly harm them lets them roll Composure + Insight again; if they beat your casting successes, the spell ends."
+      },
+      {
+       "name": "Rewrite",
+       "opt": "B",
+       "id": "part-2-rare-heritages-storyteller-approval-required-b-rewrite",
+       "cost": "5",
+       "text": "The target resists with Composure + Insight. If you beat them, you change their memory of one event."
+      }
+     ]
+    },
+    {
+     "rank": 6,
+     "title": "Galactic",
+     "id": "part-2-rare-heritages-storyteller-approval-required-vampiric-power-dominion",
+     "default": null,
+     "spells": [
+      {
+       "name": "Crowd Command",
+       "opt": "A",
+       "id": "part-2-rare-heritages-storyteller-approval-required-a-crowd-command",
+       "cost": "6",
+       "text": "Everyone in sight resists separately with Composure + Insight. Each one you beat obeys the same command of up to three words on their next turn. The command cannot directly harm them."
+      },
+      {
+       "name": "Puppet",
+       "opt": "B",
+       "id": "part-2-rare-heritages-storyteller-approval-required-b-puppet",
+       "cost": "6",
+       "text": "The target resists with Composure + Insight. If you beat them, you decide their entire next turn. You cannot make them directly harm themselves."
+      }
+     ]
+    },
+    {
+     "rank": 7,
+     "title": "Cosmic",
+     "id": "part-2-rare-heritages-storyteller-approval-required-vampiric-power-dominion",
+     "default": null,
+     "spells": [
+      {
+       "name": "Thrall",
+       "opt": "A",
+       "id": "part-2-rare-heritages-storyteller-approval-required-a-thrall",
+       "cost": "7",
+       "text": "The target resists with Composure + Insight. Each time you beat them, mark it. A target marked three times in one session becomes loyal to you until you die or Cosmic rank Bright Magic frees them."
+      },
+      {
+       "name": "King's Word",
+       "opt": "B",
+       "id": "part-2-rare-heritages-storyteller-approval-required-b-kings-word",
+       "cost": "7",
+       "text": "Each enemy in sight resists separately with Composure + Presence. Each one you beat drops what they hold and cannot attack on their next turn."
+      }
+     ]
+    }
+   ]
+  },
+  "Vigor": {
+   "id": "part-2-rare-heritages-storyteller-approval-required-vampiric-power-vigor",
+   "ranks": [
+    {
+     "rank": 1,
+     "title": "Core",
+     "id": "part-2-rare-heritages-storyteller-approval-required-vampiric-power-vigor",
+     "default": null,
+     "spells": [
+      {
+       "name": "Mighty Grip",
+       "opt": "A",
+       "id": "part-2-rare-heritages-storyteller-approval-required-a-mighty-grip",
+       "cost": "1, attuned (stays committed)",
+       "text": "While attuned, add your Heritage dots to rolls to lift, break, grapple, or crush."
+      },
+      {
+       "name": "Leap",
+       "opt": "B",
+       "id": "part-2-rare-heritages-storyteller-approval-required-b-leap",
+       "cost": "1",
+       "text": "Jump to an adjacent zone over obstacles, walls, or gaps."
+      }
+     ]
+    },
+    {
+     "rank": 2,
+     "title": "Terrestrial",
+     "id": "part-2-rare-heritages-storyteller-approval-required-vampiric-power-vigor",
+     "default": null,
+     "spells": [
+      {
+       "name": "Crushing Blow",
+       "opt": "A",
+       "id": "part-2-rare-heritages-storyteller-approval-required-a-crushing-blow",
+       "cost": "2",
+       "text": "The attack ignores Armor equal to half your Heritage dots, rounded up."
+      },
+      {
+       "name": "Toss",
+       "opt": "B",
+       "id": "part-2-rare-heritages-storyteller-approval-required-b-toss",
+       "cost": "2",
+       "text": "Throw a heavy object at the target."
+      }
+     ]
+    },
+    {
+     "rank": 3,
+     "title": "Aerial",
+     "id": "part-2-rare-heritages-storyteller-approval-required-vampiric-power-vigor",
+     "default": null,
+     "spells": [
+      {
+       "name": "Knockback",
+       "opt": "A",
+       "id": "part-2-rare-heritages-storyteller-approval-required-a-knockback",
+       "cost": "3",
+       "text": "On a hit, the target is also sent one zone away and knocked prone."
+      },
+      {
+       "name": "Break Through",
+       "opt": "B",
+       "id": "part-2-rare-heritages-storyteller-approval-required-b-break-through",
+       "cost": "3",
+       "text": "Smash through a door, wall, or barrier as part of your movement."
+      }
+     ]
+    },
+    {
+     "rank": 4,
+     "title": "Lunar",
+     "id": "part-2-rare-heritages-storyteller-approval-required-vampiric-power-vigor",
+     "default": null,
+     "spells": [
+      {
+       "name": "Stomp",
+       "opt": "A",
+       "id": "part-2-rare-heritages-storyteller-approval-required-a-stomp",
+       "cost": "4",
+       "text": "Each enemy in range resists with Dexterity + Athletics. Each one you beat is knocked prone."
+      },
+      {
+       "name": "Unbreakable Hold",
+       "opt": "B",
+       "id": "part-2-rare-heritages-storyteller-approval-required-b-unbreakable-hold",
+       "cost": "4, attuned (stays committed)",
+       "text": "While attuned, a creature trying to escape your grapple rolls Strength + Athletics against this dice pool instead of your normal roll."
+      }
+     ]
+    },
+    {
+     "rank": 5,
+     "title": "Stellar",
+     "id": "part-2-rare-heritages-storyteller-approval-required-vampiric-power-vigor",
+     "default": null,
+     "spells": [
+      {
+       "name": "Titan Lift",
+       "opt": "A",
+       "id": "part-2-rare-heritages-storyteller-approval-required-a-titan-lift",
+       "cost": "5",
+       "text": "Lift and throw a creature or a cart sized object at the target. On a hit, the target and a thrown creature both take the damage of the hit, and the target is knocked prone."
+      },
+      {
+       "name": "Thunder Clap",
+       "opt": "B",
+       "id": "part-2-rare-heritages-storyteller-approval-required-b-thunder-clap",
+       "cost": "5",
+       "text": "Each enemy in range resists with Fortitude + Endurance. Each one you beat loses 1 AP on their next turn."
+      }
+     ]
+    },
+    {
+     "rank": 6,
+     "title": "Galactic",
+     "id": "part-2-rare-heritages-storyteller-approval-required-vampiric-power-vigor",
+     "default": null,
+     "spells": [
+      {
+       "name": "Rending Strike",
+       "opt": "A",
+       "id": "part-2-rare-heritages-storyteller-approval-required-a-rending-strike",
+       "cost": "6",
+       "text": "A hit is treated as meeting the next-higher damage threshold."
+      },
+      {
+       "name": "Wall Breaker",
+       "opt": "B",
+       "id": "part-2-rare-heritages-storyteller-approval-required-b-wall-breaker",
+       "cost": "6",
+       "text": "One blow destroys a structure or barrier in an adjacent zone, of any material short of Cosmic rank magic."
+      }
+     ]
+    },
+    {
+     "rank": 7,
+     "title": "Cosmic",
+     "id": "part-2-rare-heritages-storyteller-approval-required-vampiric-power-vigor",
+     "default": null,
+     "spells": [
+      {
+       "name": "Godlike Strength",
+       "opt": "A",
+       "id": "part-2-rare-heritages-storyteller-approval-required-a-godlike-strength",
+       "cost": "7, attuned (stays committed)",
+       "text": "While attuned, add 3 to Strength for all rolls, and your melee hits ignore Armor."
+      },
+      {
+       "name": "World Breaker",
+       "opt": "B",
+       "id": "part-2-rare-heritages-storyteller-approval-required-b-world-breaker",
+       "cost": "7",
+       "text": "One blow strikes every target in range. Roll once; each target defends separately. Each target hit is also pushed one zone away from you and knocked prone."
+      }
+     ]
+    }
+   ]
+  }
+ }
 }
