@@ -605,7 +605,10 @@
         var id = 'grp-' + g;
         var sel = el('select', { id: id }, [el('option', { value: '', text: 'Dots...' })]);
         for (var n = 2; n <= 7; n++) {
-          var o = el('option', { value: String(n), text: String(n) });
+          // each number can be used by one group only (Storyteller Mode can break this)
+          var takenBy = GROUPS.filter(function (o) { return o !== g && build.ab_groups[o] === n; })[0];
+          var o = el('option', { value: String(n), text: takenBy ? n + ' (used by ' + takenBy + ')' : String(n) });
+          if (takenBy && !stMode()) o.disabled = true;
           if (build.ab_groups[g] === n) o.selected = true;
           sel.appendChild(o);
         }
