@@ -601,7 +601,7 @@ textarea:focus { border-color: var(--gold); }
         <div data-field="mana.dots" data-ref="attribute:mana" style="display:flex;justify-content:center;gap:7px;margin-top:5px;">
           <div class="d f" onclick="ts(this)"></div><div class="d" onclick="ts(this)"></div><div class="d" onclick="ts(this)"></div><div class="d" onclick="ts(this)"></div><div class="d" onclick="ts(this)"></div><div class="d" onclick="ts(this)"></div><div class="d" onclick="ts(this)"></div><div class="d" onclick="ts(this)"></div><div class="d" onclick="ts(this)"></div><div class="d" onclick="ts(this)"></div>
         </div>
-        <div style="font-size:7pt;text-align:center;color:#666;margin-top:3px;">(Magic + Circle Magic) × Mana</div>
+        <div style="font-size:7pt;text-align:center;color:#666;margin-top:3px;">(Magic + Circle Magic + Knowledges) × Mana</div>
         <div style="display:flex;align-items:center;gap:5px;margin:3px 0;"><span style="font-size:8pt;white-space:nowrap;">Pool:</span><input data-field="mana.pool.max" type="text" style="flex:1;min-width:0;height:14px;font-size:8pt;"><span style="font-size:8pt;">|</span><input data-field="mana.pool.current" type="text" style="width:0.28in;flex-shrink:0;height:14px;font-size:8pt;text-align:center;"></div>
         <div style="font-size:7pt;text-align:center;color:#666;">Max Mana/Turn [Fort + Mana]</div>
         <div style="display:flex;align-items:center;gap:5px;margin:3px 0;"><span style="font-size:8pt;white-space:nowrap;">Max/Turn:</span><input data-field="mana.per_turn.max" type="text" style="flex:1;min-width:0;height:14px;font-size:8pt;"><span style="font-size:8pt;">|</span><input data-field="mana.per_turn.current" type="text" style="width:0.28in;flex-shrink:0;height:14px;font-size:8pt;text-align:center;"></div>
@@ -1357,7 +1357,7 @@ textarea:focus { border-color: var(--gold); }
         <div class="qr-title">Mana and Magic</div>
         <div class="qr-body">
           <ul>
-            <li><strong>Mana Pool</strong> = (Magic + Circle Magic) × Mana attribute.</li>
+            <li><strong>Mana Pool</strong> = (Magic + Circle Magic + every Magical Knowledge dot) × Mana.</li>
             <li><strong>Max Mana Per Turn</strong> = Fortitude + Mana attribute.</li>
             <li><strong>Activation cost</strong> = rank of effect (1 mana at rank 1 through 7 mana at rank 7).</li>
             <li><strong>Bonus dice:</strong> 1 mana = 1 die, up to your school dots or Max Mana Per Turn. Declare before rolling, for attack or damage. Fire, Earth, Shade: damage only. Air, Bright: attack only. Water, Nature, Battle Aura: either.</li>
