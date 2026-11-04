@@ -1050,9 +1050,10 @@
   function evenSpreadSafe() { return hyumanAdapt(); }
   function styleLeft() { var b = skBudget('Physical'); if (b === null) return null; var s = 0; D.styles.forEach(function (x) { s += styleVal(x.name); }); return b - s; }
   // Heritage Magic: 1 free dot from Step 4, more can be bought with knowledge dots
-  function hmVal() { return heritage() ? Math.max(1, build.hm_dots || 1) : 0; }
+  function hmBase() { return heritage() ? Math.max(1, build.hm_dots || 1) : 0; }
+  function hmVal() { return heritage() ? hmBase() + ((build.fb || {}).hm || 0) : 0; }
   function hmName() { var h = heritage(); return h ? (h.name === 'Demon' && build.heritage.magic ? build.heritage.magic : h.heritage_magic) : ''; }
-  function knowLeft() { var b = skBudget('Mental'); if (b === null) return null; var s = 0; D.knowledges.forEach(function (x) { s += knowVal(x.name); }); if (heritage()) s += hmVal() - 1; return b - s; }
+  function knowLeft() { var b = skBudget('Mental'); if (b === null) return null; var s = 0; D.knowledges.forEach(function (x) { s += knowVal(x.name); }); if (heritage()) s += hmBase() - 1; return b - s; }
   // Combination spells: open to a casting school's rank once every school in
   // the combination has enough dots (2 each for two schools, 3 each for three)
   // A rank's pick is one value for players; Storyteller Mode can keep several
@@ -1261,7 +1262,7 @@
       selectAllBar(p, ['know'], 'spell, technique, and combination spell');
       var h = heritage();
       if (h) {
-        var hv = hmVal();
+        var hv = hmBase();
         p.appendChild(el('h2', { class: 'sub-title px', text: 'Heritage Magic' }));
         var hcard = el('div', { class: 'sk-card picked' });
         hcard.appendChild(el('div', { class: 'sk-head' }, [
@@ -1295,7 +1296,7 @@
     },
     check: function () {
       var w = [], l = knowLeft();
-      if (heritage()) w = w.concat(goldenRule(hmName(), hmVal()));
+      if (heritage()) w = w.concat(goldenRule(hmName(), hmBase()));
       if (l === null) w.push({ key: 'kn.nocol', text: 'Give your Mental column a designation in Step 5 first.' });
       else if (l > 0) w.push({ key: 'kn.left.' + l, text: l + ' knowledge dot' + (l === 1 ? '' : 's') + ' left to place.' });
       else if (l < 0) w.push({ key: 'kn.over.' + l, text: 'You are ' + (-l) + ' knowledge dot' + (l === -1 ? '' : 's') + ' over.' });
@@ -1319,7 +1320,7 @@
 
   // ---------- Step 12: Freebie Points ----------
   var fbOpen = {}; // which Step 12 groups are open, kept while you click dots
-  var FB_COST = { attrs: 3, abilities: 2, styles: 4, knows: 4, backgrounds: 1, mana: 7 };
+  var FB_COST = { attrs: 3, abilities: 2, styles: 4, knows: 4, backgrounds: 1, mana: 7, hm: 4 };
   function fbPoints() {
     var f = build.fb || {};
     if (f.preset === 'Custom') return Number(f.custom) || 0;
@@ -1331,14 +1332,14 @@
     ['attrs', 'abilities', 'styles', 'knows', 'backgrounds'].forEach(function (k) {
       Object.keys(f[k] || {}).forEach(function (n) { s += (f[k][n] || 0) * FB_COST[k]; });
     });
-    return s + (f.mana || 0) * FB_COST.mana;
+    return s + (f.mana || 0) * FB_COST.mana + (f.hm || 0) * FB_COST.hm;
   }
   function fbLeft() { return fbPoints() - fbSpent(); }
 
   // A dot row where earlier dots are locked gold and freebie dots are blue
   function fbRow(label, base, kind, name, cap) {
     var f = fb();
-    var extra = kind === 'mana' ? f.mana : (f[kind][name] || 0);
+    var extra = kind === 'mana' || kind === 'hm' ? (f[kind] || 0) : (f[kind][name] || 0);
     var max = stMode() ? 10 : 7;
     var limit = stMode() ? 10 : Math.min(cap, base + extra + Math.max(0, Math.floor(fbLeft() / FB_COST[kind])));
     var row = el('div', { class: 'dots', role: 'group', 'aria-label': label });
@@ -1353,7 +1354,7 @@
       });
       b.addEventListener('click', function () {
         var nx = (n === base + extra) ? extra - 1 : n - base;
-        if (kind === 'mana') f.mana = nx; else if (nx > 0) f[kind][name] = nx; else delete f[kind][name];
+        if (kind === 'mana' || kind === 'hm') f[kind] = nx; else if (nx > 0) f[kind][name] = nx; else delete f[kind][name];
         refresh(true);
       });
       row.appendChild(b);
@@ -1363,7 +1364,7 @@
   }
 
   S[12] = {
-    intro: 'Spend your Freebie Points. Each dot costs: Attribute 3, Ability 2, Combat Style or Magical Knowledge 4, Background 1, Mana 7. This is the only time Mana can be raised during creation. A new style or knowledge bought here is marked S for Secondary. Freebies cannot be spent on Merits, Flaws, Willpower, Fate, Sanity, or Heritage traits, and nothing goes above 5. Gold dots are from earlier steps; blue dots are freebies.',
+    intro: 'Spend your Freebie Points. Each dot costs: Attribute 3, Ability 2, Combat Style, Magical Knowledge, or Heritage Magic 4, Background 1, Mana 7. This is the only time Mana can be raised during creation. A new style or knowledge bought here is marked S for Secondary. Freebies cannot be spent on Merits, Flaws, Willpower, Fate, Sanity, or other Heritage traits, and nothing goes above 5. Gold dots are from earlier steps; blue dots are freebies.',
     link: '../rulebook/ch6.html#the-creation-process',
     counter: function () { return [['Freebie points', fbLeft()]]; },
     render: function (p) {
@@ -1422,7 +1423,8 @@
           line(box, s.name + (base ? ' (P)' : x ? ' (S)' : ''), fbRow(s.name, base, 'styles', s.name, 5), function (b) { if (x) rankPicks(b, s, 'style', base + 1, base + x); });
         });
       });
-      group('Magical Knowledges (4 each)', anyIn('knows'), function (box) {
+      group('Magical Knowledges (4 each)', anyIn('knows') || f.hm > 0, function (box) {
+        if (heritage()) line(box, hmName() + ' (Heritage Magic, P)', fbRow(hmName(), hmBase(), 'hm', 'hm', 5));
         D.knowledges.forEach(function (k) {
           var base = knowVal(k.name), x = fbOf('knows', k.name);
           line(box, k.name + (base ? ' (P)' : x ? ' (S)' : ''), fbRow(k.name, base, 'knows', k.name, 5), function (b) { if (x && k.ranks) rankPicks(b, k, 'know', base + 1, base + x); });
