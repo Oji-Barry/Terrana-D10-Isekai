@@ -956,6 +956,8 @@
     intro: 'These are filled in for you: 5 dots of each. If both of your highs are Vices, Willpower is 4. If both are Virtues, it is 6. One of each leaves it at 5. Fate and Sanity can only be changed at creation by Merits and Flaws.',
     link: '../rulebook/ch11.html',
     render: function (p) {
+      // players can't change these, so drop any change saved before they were locked
+      if (!(me && me.is_admin)) build.stats = {};
       build.stats = build.stats || {};
       var h = highsBySide();
       p.appendChild(el('p', { class: 'note-box', text: 'Your highs: ' + h.virtue + ' Virtue, ' + h.vice + ' Vice. Starting Willpower: ' + startWillpower() + '.' }));
