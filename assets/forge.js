@@ -843,7 +843,7 @@
     if (v === undefined) return n === 'Resources' ? 1 : 0;
     return v;
   }
-  var PEOPLE_BGS = ['Allies', 'Contacts', 'Followers', 'Fixer', 'Mentor', 'Retainers'];
+  var PEOPLE_BGS = ['Allies', 'Contacts', 'Fixer', 'Mentor', 'Retainers'];
   function bgSpent() {
     var s = 0;
     D.backgrounds.forEach(function (b) { s += bgVal(b.name) - (b.name === 'Resources' ? 1 : 0); });
