@@ -843,6 +843,7 @@
     if (v === undefined) return n === 'Resources' ? 1 : 0;
     return v;
   }
+  var PEOPLE_BGS = ['Allies', 'Contacts', 'Followers', 'Fixer', 'Mentor', 'Retainers'];
   function bgSpent() {
     var s = 0;
     D.backgrounds.forEach(function (b) { s += bgVal(b.name) - (b.name === 'Resources' ? 1 : 0); });
@@ -866,6 +867,14 @@
             bgVal(b.name) + Math.max(0, bgBudget() - bgSpent())),
           bookLink(b.link, 'Rules')
         ]));
+        // name the NPCs you and your Storyteller add to the game
+        if (PEOPLE_BGS.indexOf(b.name) >= 0 && bgVal(b.name) + fbOf('backgrounds', b.name) > 0) {
+          build.bg_names = build.bg_names || {};
+          var nid = 'bgn-' + slug(b.name);
+          var nm = el('input', { id: nid, maxlength: '200', value: build.bg_names[b.name] || '', placeholder: 'Names, separated by commas' });
+          nm.addEventListener('input', function () { build.bg_names[b.name] = nm.value; refresh(); });
+          box.appendChild(el('div', { class: 'field bg-names' }, [el('label', { for: nid, text: b.name + ': who are they?' }), nm]));
+        }
       });
       p.appendChild(box);
       p.appendChild(el('h2', { class: 'sub-title px', text: 'Guild Standing' }));
@@ -925,7 +934,10 @@
       return w;
     },
     summary: function () {
-      var items = D.backgrounds.filter(function (b) { return bgVal(b.name) > 0; }).map(function (b) { return b.name + ' ' + bgVal(b.name); });
+      var items = D.backgrounds.filter(function (b) { return bgVal(b.name) > 0; }).map(function (b) {
+        var who = ((build.bg_names || {})[b.name] || '').trim();
+        return b.name + ' ' + bgVal(b.name) + (who ? ' (' + who + ')' : '');
+      });
       (build.guilds || []).forEach(function (g) { if (g && g.dots) items.push((g.name || 'Guild') + ' ' + g.dots); });
       return items.length ? [['Backgrounds', items.join(', ')]] : [];
     }

@@ -271,3 +271,5 @@
 .level-row .px { color: var(--gold); font-size: 20px; }
 .level-row.total { border-bottom: 0; font-size: 22px; }
 .level-row.total .px { font-size: 28px; }
+.bg-names { margin: 0 0 8px; padding: 0 0 8px; border-bottom: 1px solid rgba(233, 237, 248, 0.12); }
+.bg-names input { width: 100%; }
