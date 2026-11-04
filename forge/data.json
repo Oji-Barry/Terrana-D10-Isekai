@@ -3226,12 +3226,88 @@
    "name": "Cursed",
    "group": "Magical",
    "points": {
-    "text": "2 to 7, set with the Storyteller",
-    "kind": "range",
+    "text": "2 to 7, by curse",
+    "kind": "named",
     "min": 2,
-    "max": 7
+    "max": 7,
+    "options": [
+     {
+      "name": "Hex of Small Misfortunes",
+      "points": 2,
+      "dots": null,
+      "text": "Once per session, the Storyteller can turn one of your successful rolls on a minor task outside combat into a failure. It can only cause a small inconvenience, such as a dropped key, a snapped bootstring, or ink spilled on a letter, never real harm or the loss of a scene."
+     },
+     {
+      "name": "Beast's Dread",
+      "points": 3,
+      "dots": null,
+      "text": "Animals hate you. You take a penalty die on Ride and on any roll to calm, train, or bond with a creature, and mounts throw you when startled."
+     },
+     {
+      "name": "Ill-Starred",
+      "points": 4,
+      "dots": null,
+      "text": "The first Fate point you spend each session does nothing."
+     },
+     {
+      "name": "Withering Flesh",
+      "points": 5,
+      "dots": null,
+      "text": "Healing magic and potions heal 1 less box on you. Wounds that heal naturally leave scars people notice."
+     },
+     {
+      "name": "The Thing That Follows",
+      "points": 6,
+      "dots": null,
+      "text": "Something bound to the curse, such as a spirit, a voidling, or a dead rival, keeps finding you. The Storyteller brings it into every story arc."
+     },
+     {
+      "name": "Creeping Doom",
+      "points": 7,
+      "dots": null,
+      "text": "The curse is slowly winning. The Storyteller marks a tally each session. When it fills, something terrible happens, such as a death, a transformation, or a great loss, unless the curse is broken first."
+     }
+    ]
    },
-   "link": "../rulebook/ch9.html#core-flaws-cursed"
+   "link": "../rulebook/ch9.html#core-flaws-curses",
+   "options": [
+    {
+     "name": "Hex of Small Misfortunes",
+     "points": 2,
+     "dots": null,
+     "text": "Once per session, the Storyteller can turn one of your successful rolls on a minor task outside combat into a failure. It can only cause a small inconvenience, such as a dropped key, a snapped bootstring, or ink spilled on a letter, never real harm or the loss of a scene."
+    },
+    {
+     "name": "Beast's Dread",
+     "points": 3,
+     "dots": null,
+     "text": "Animals hate you. You take a penalty die on Ride and on any roll to calm, train, or bond with a creature, and mounts throw you when startled."
+    },
+    {
+     "name": "Ill-Starred",
+     "points": 4,
+     "dots": null,
+     "text": "The first Fate point you spend each session does nothing."
+    },
+    {
+     "name": "Withering Flesh",
+     "points": 5,
+     "dots": null,
+     "text": "Healing magic and potions heal 1 less box on you. Wounds that heal naturally leave scars people notice."
+    },
+    {
+     "name": "The Thing That Follows",
+     "points": 6,
+     "dots": null,
+     "text": "Something bound to the curse, such as a spirit, a voidling, or a dead rival, keeps finding you. The Storyteller brings it into every story arc."
+    },
+    {
+     "name": "Creeping Doom",
+     "points": 7,
+     "dots": null,
+     "text": "The curse is slowly winning. The Storyteller marks a tally each session. When it fills, something terrible happens, such as a death, a transformation, or a great loss, unless the curse is broken first."
+    }
+   ]
   },
   {
    "name": "Magic Averse",
@@ -3333,12 +3409,93 @@
    "name": "Devil's Bargain",
    "group": "Special Powers",
    "points": {
-    "text": "3 to 7 points back, 1 to 3 dots",
-    "kind": "range",
+    "text": "3, 5, or 7 points back (1 to 3 dots)",
+    "kind": "named",
     "min": 3,
-    "max": 7
+    "max": 7,
+    "options": [
+     {
+      "name": "One Favor Owed",
+      "points": 3,
+      "dots": 1,
+      "text": "Once per story arc, your patron can call in a favor. Until you do it, your power does not work."
+     },
+     {
+      "name": "The Price of Use",
+      "points": 3,
+      "dots": 1,
+      "text": "Each use of the power costs 1 Willpower."
+     },
+     {
+      "name": "The Tithe",
+      "points": 5,
+      "dots": 2,
+      "text": "Your patron feeds on you. Your Mana Pool is 3 lower."
+     },
+     {
+      "name": "The Bane",
+      "points": 5,
+      "dots": 2,
+      "text": "Choose one thing, such as silver, holy ground, running water, or a spoken name. While you touch it or stand in it, the power fails and you take a penalty die on everything."
+     },
+     {
+      "name": "Soul Collateral",
+      "points": 7,
+      "dots": 3,
+      "text": "Your soul belongs to your patron. If you die, you cannot be Resurrected without the patron's consent, and the patron always names a price."
+     },
+     {
+      "name": "The Contract Comes Due",
+      "points": 7,
+      "dots": 3,
+      "text": "The bargain has an end date set with your Storyteller. When it arrives, you pay in full or lose the power forever, and the patron comes to collect."
+     }
+    ],
+    "levels": [
+     3,
+     5,
+     7
+    ]
    },
-   "link": "../rulebook/ch9.html#special-powers-devils-bargain-flaw"
+   "link": "../rulebook/ch9.html#special-powers-devils-bargains",
+   "options": [
+    {
+     "name": "One Favor Owed",
+     "points": 3,
+     "dots": 1,
+     "text": "Once per story arc, your patron can call in a favor. Until you do it, your power does not work."
+    },
+    {
+     "name": "The Price of Use",
+     "points": 3,
+     "dots": 1,
+     "text": "Each use of the power costs 1 Willpower."
+    },
+    {
+     "name": "The Tithe",
+     "points": 5,
+     "dots": 2,
+     "text": "Your patron feeds on you. Your Mana Pool is 3 lower."
+    },
+    {
+     "name": "The Bane",
+     "points": 5,
+     "dots": 2,
+     "text": "Choose one thing, such as silver, holy ground, running water, or a spoken name. While you touch it or stand in it, the power fails and you take a penalty die on everything."
+    },
+    {
+     "name": "Soul Collateral",
+     "points": 7,
+     "dots": 3,
+     "text": "Your soul belongs to your patron. If you die, you cannot be Resurrected without the patron's consent, and the patron always names a price."
+    },
+    {
+     "name": "The Contract Comes Due",
+     "points": 7,
+     "dots": 3,
+     "text": "The bargain has an end date set with your Storyteller. When it arrives, you pay in full or lose the power forever, and the patron comes to collect."
+    }
+   ]
   }
  ],
  "backgrounds": [
