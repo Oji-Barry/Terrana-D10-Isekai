@@ -311,7 +311,7 @@
       } else {
         box.appendChild(el('p', {}, [el('strong', { text: 'Heritage Merit: ' }), h.heritage_merits[0] || '']));
       }
-      box.appendChild(el('p', {}, [el('strong', { text: 'Heritage Magic: ' }), h.heritage_magic + ', 1 free dot, marked P']));
+      heritageMagicChoice(box, h);
       box.appendChild(el('p', {}, [bookLink(h.link, 'Read the full ' + h.name + ' entry')]));
       p.appendChild(box);
     },
@@ -327,6 +327,9 @@
         w.push({ key: 'her.innate', text: 'Choose your Innate Attribute.' });
       }
       if (!build.heritage.merit) w.push({ key: 'her.merit', text: 'Choose your Heritage Merit.' });
+      if (h.name === 'Vampire' && !build.heritage.vpower) w.push({ key: 'her.vpower', text: 'Choose which Vampiric Power gets your free dot.' });
+      if (h.name === 'Hyuman' && !build.heritage.adapt) w.push({ key: 'her.adapt', text: 'Choose where your Adaptation dot goes.' });
+      if (h.name === 'Demon' && !(build.heritage.magic || '').trim()) w.push({ key: 'her.demon.magic', text: 'Name your tribe\u2019s Heritage magic with your Storyteller.' });
       return w;
     },
     summary: function () {
@@ -335,7 +338,8 @@
       var out = [['Heritage', h.name]];
       if (build.heritage.innate) out.push(['Innate', build.heritage.innate + ' (2 dots)']);
       if (build.heritage.merit) out.push(['Heritage Merit', build.heritage.merit]);
-      out.push(['Heritage Magic', hmName() + ' ' + hmVal() + ' (P)']);
+      if (hmOn()) out.push(['Heritage Magic', hmName() + ' ' + hmVal() + ' (P)']);
+      else if (hyAdapt()) out.push(['Adaptation', hyAdapt().slice(2) + ' 1 (free)']);
       return out;
     }
   };
@@ -1039,7 +1043,7 @@
   function styleVal(n) { return (build.styles || {})[n] || 0; }
   function knowVal(n) { return (build.knows || {})[n] || 0; }
   function styleTotal(n) { return styleVal(n) + fbOf('styles', n); }
-  function knowTotal(n) { return knowVal(n) + fbOf('knows', n); }
+  function knowTotal(n) { return knowVal(n) + knowFree(n) + fbOf('knows', n); }
   function manaTotal() { return 1 + ((build.fb || {}).mana || 0); }
   // dots for Steps 10 and 11 come from the Physical or Mental column
   function skBudget(col) {
@@ -1050,10 +1054,72 @@
   function evenSpreadSafe() { return hyumanAdapt(); }
   function styleLeft() { var b = skBudget('Physical'); if (b === null) return null; var s = 0; D.styles.forEach(function (x) { s += styleVal(x.name); }); return b - s; }
   // Heritage Magic: 1 free dot from Step 4, more can be bought with knowledge dots
-  function hmBase() { return heritage() ? Math.max(1, build.hm_dots || 1) : 0; }
-  function hmVal() { return heritage() ? hmBase() + ((build.fb || {}).hm || 0) : 0; }
-  function hmName() { var h = heritage(); return h ? (h.name === 'Demon' && build.heritage.magic ? build.heritage.magic : h.heritage_magic) : ''; }
-  function knowLeft() { var b = skBudget('Mental'); if (b === null) return null; var s = 0; D.knowledges.forEach(function (x) { s += knowVal(x.name); }); if (heritage()) s += hmBase() - 1; return b - s; }
+  // Hyuman Adaptation: 'hm:<a bloodline magic>' or 'k:<a casting school or circle discipline>'
+  function hyAdapt() { var h = heritage(); return h && h.name === 'Hyuman' ? (build.heritage.adapt || '') : null; }
+  function knowFree(n) { return hyAdapt() === 'k:' + n ? 1 : 0; }
+  function hmOn() { var a = hyAdapt(); return !!heritage() && !(a && a.indexOf('k:') === 0); }
+  function hmBase() { return hmOn() ? Math.max(1, build.hm_dots || 1) : 0; }
+  function hmVal() { return hmOn() ? hmBase() + ((build.fb || {}).hm || 0) : 0; }
+  function hmName() {
+    var h = heritage(); if (!h) return '';
+    if (h.name === 'Demon') return (build.heritage.magic || '').trim() || 'Tribal Magic';
+    if (h.name === 'Vampire') return build.heritage.vpower || 'Vampiric Powers';
+    var a = hyAdapt();
+    if (a && a.indexOf('hm:') === 0) return a.slice(3);
+    return h.heritage_magic;
+  }
+  function hmKey() { var h = heritage(); return h && h.name === 'Demon' ? 'Tribal Magic' : hmName(); }
+  function hmData() { return (D.heritage_magic || {})[hmKey()] || null; }
+  function hmItem() { var d = hmData(); return d && d.ranks ? { name: hmName(), ranks: d.ranks, link: '../rulebook/ch8.html#' + d.id } : null; }
+  var VPOWERS = ['Auspex', 'Blood Sorcery', 'Celerity', 'Dominion', 'Vigor'];
+  // Step 4: which Heritage magic the free dot goes to
+  function heritageMagicChoice(box, h) {
+    var hd = (D.heritage_magic || {})[h.heritage_magic] || {};
+    var link = hd.id ? '../rulebook/ch8.html#' + hd.id : h.link;
+    if (h.name === 'Vampire') {
+      var vs = el('select', { id: 'her-vpower' }, [el('option', { value: '', text: 'Choose a Vampiric Power' })]);
+      VPOWERS.forEach(function (v) { vs.appendChild(el('option', { value: v, text: v })); });
+      vs.value = build.heritage.vpower || '';
+      vs.addEventListener('change', function () { build.heritage.vpower = vs.value; refresh(true); });
+      box.appendChild(el('div', { class: 'field' }, [el('label', { for: 'her-vpower', text: 'Vampiric Power (1 free dot, marked P)' }), vs]));
+      box.appendChild(el('p', { class: 'hint' }, ['A born vampire starts with one of the five powers. The others can be bought with XP after creation. ', bookLink(link, 'Vampiric Powers')]));
+      return;
+    }
+    if (h.name === 'Hyuman') {
+      var as = el('select', { id: 'her-adapt' }, [el('option', { value: '', text: 'Choose where your free dot goes' })]);
+      var g1 = el('optgroup', { label: 'A non-Hyuman parent\u2019s bloodline magic' });
+      var seen = {};
+      D.heritages.forEach(function (x) {
+        var names = x.heritage_magic === 'Vampiric Powers' ? VPOWERS : [x.heritage_magic];
+        names.forEach(function (n) {
+          if (x.name === 'Hyuman' || seen[n] || !((D.heritage_magic || {})[n] || {}).ranks) return;
+          seen[n] = 1;
+          g1.appendChild(el('option', { value: 'hm:' + n, text: n + ' (' + x.name + ')' }));
+        });
+      });
+      var g2 = el('optgroup', { label: 'One dot in a casting school' });
+      var g3 = el('optgroup', { label: 'One dot in a Circle Magic discipline' });
+      D.knowledges.forEach(function (k) {
+        if (k.kind === 'Casting school') g2.appendChild(el('option', { value: 'k:' + k.name, text: k.name }));
+        else if (k.circle) g3.appendChild(el('option', { value: 'k:' + k.name, text: k.name }));
+      });
+      [g1, g2, g3].forEach(function (g) { as.appendChild(g); });
+      as.value = build.heritage.adapt || '';
+      as.addEventListener('change', function () { build.heritage.adapt = as.value; delete build.hm_dots; if (build.fb) delete build.fb.hm; refresh(true); });
+      box.appendChild(el('div', { class: 'field' }, [el('label', { for: 'her-adapt', text: 'Adaptation (1 free dot)' }), as]));
+      box.appendChild(el('p', { class: 'hint' }, ['A bloodline magic is raised like any Heritage magic, and a Hyuman is never locked out of its spells. A school or discipline dot is a normal knowledge dot. ', bookLink(link, 'Adaptation')]));
+      return;
+    }
+    if (h.name === 'Demon') {
+      var mi = el('input', { id: 'dem-magic', maxlength: '60', value: build.heritage.magic || '', placeholder: 'Name your tribe\u2019s magic' });
+      mi.addEventListener('input', function () { build.heritage.magic = mi.value; refresh(false, true); });
+      box.appendChild(el('div', { class: 'field' }, [el('label', { for: 'dem-magic', text: 'Heritage Magic (Tribal Magic, 1 free dot)' }), mi]));
+      box.appendChild(el('p', { class: 'hint' }, ['Designed with your Storyteller. ', bookLink(link, 'Tribal Magic guidelines')]));
+      return;
+    }
+    box.appendChild(el('p', {}, [el('strong', { text: 'Heritage Magic: ' }), bookLink(link, h.heritage_magic), ', 1 free dot, marked P']));
+  }
+  function knowLeft() { var b = skBudget('Mental'); if (b === null) return null; var s = 0; D.knowledges.forEach(function (x) { s += knowVal(x.name); }); if (hmOn()) s += hmBase() - 1; return b - s; }
   // Combination spells: open to a casting school's rank once every school in
   // the combination has enough dots (2 each for two schools, 3 each for three)
   // A rank's pick is one value for players; Storyteller Mode can keep several
@@ -1132,6 +1198,12 @@
           mine[r] = ['0', '1'].concat(keep);
         }
       });
+      var hi = hmItem();
+      if (hi) {
+        build.hm_picks = build.hm_picks || {};
+        var hp = build.hm_picks[hi.name] = build.hm_picks[hi.name] || {};
+        for (var hr = 1; hr <= Math.min(hmVal(), hi.ranks.length); hr++) hp[hr] = ['0', '1'];
+      }
       (D.combos || []).forEach(function (c) {
         if (!comboMet(c) || comboTakenElsewhere(c, null, null)) return;
         var school = c.schools[0], r = c.dots;
@@ -1148,12 +1220,48 @@
       el('span', { class: 'hint', text: 'Storyteller Mode: checks every ' + what + ' your dots reach.' })
     ]));
   }
+  // Heritage magic picks: Option A or B per rank, a single spell (Undying Flesh), or Storyteller-written spells (Tribal Magic)
+  function heritagePicks(box, from, to) {
+    if (to < from) return;
+    var h = heritage(), d = hmData();
+    if (h.name === 'Demon') {
+      build.tribal = build.tribal || {};
+      var fs = el('fieldset', { class: 'rank-pick' }, [el('legend', {}, [bookLink(d ? '../rulebook/ch8.html#' + d.id : h.link, 'Tribal Magic spells')]),
+        el('p', { class: 'hint', text: 'Write each rank\u2019s spell with your Storyteller. Every spell costs mana equal to its rank. The Storyteller may write them one rank at a time.' })]);
+      for (var r = from; r <= to; r++) (function (r) {
+        var id = 'tribal-' + r;
+        var inp = el('input', { id: id, maxlength: '120', value: build.tribal[r] || '', placeholder: 'Spell name' });
+        inp.addEventListener('input', function () { build.tribal[r] = inp.value; if (!inp.value.trim()) delete build.tribal[r]; refresh(false, true); });
+        fs.appendChild(el('div', { class: 'field' }, [el('label', { for: id, text: 'Rank ' + r + (RANKS[r - 1] ? ': ' + RANKS[r - 1] : '') }), inp]));
+      })(r);
+      box.appendChild(fs);
+      return;
+    }
+    var hi = hmItem();
+    if (!hi) {
+      if (d) box.appendChild(el('p', { class: 'hint' }, [hmName() + ' is a single spell with no Option A or B. Each rank improves what it can do. ', bookLink('../rulebook/ch8.html#' + d.id, 'Rank table')]));
+      return;
+    }
+    if (h.name === 'Hyuman') box.appendChild(el('p', { class: 'hint', text: 'Hyuman: you are never locked out. Each dot gives one of its two spells, and the other can be bought with XP later.' }));
+    rankPicks(box, hi, 'hm', from, Math.min(to, hi.ranks.length));
+  }
+  var RANKS = ['Core', 'Terrestrial', 'Aerial', 'Lunar', 'Stellar', 'Galactic', 'Cosmic'];
+  function heritageSpellNames() {
+    var h = heritage(); if (!h || !hmOn()) return [];
+    var out = [];
+    if (h.name === 'Demon') { Object.keys(build.tribal || {}).sort().forEach(function (r) { if (+r <= hmVal() && build.tribal[r]) out.push(build.tribal[r]); }); return out; }
+    var hi = hmItem(); if (!hi) return [];
+    var mine = (build.hm_picks || {})[hi.name] || {};
+    for (var r = 1; r <= Math.min(hmVal(), hi.ranks.length); r++) picksAt(mine[r]).forEach(function (v) { var sp = hi.ranks[r - 1].spells[+v]; if (sp) out.push(sp.name); });
+    return out;
+  }
   function rankLabel(r) { return 'Rank ' + r.rank + ': ' + r.title; }
 
   // Choices for each new rank of a style (Option A or B) or a school (one of two spells)
+  var PICK_STORE = { style: 'style_picks', know: 'know_picks', hm: 'hm_picks' };
   function rankPicks(box, item, kind, from, to) {
-    var page = kind === 'style' ? 'ch12' : 'ch13';
-    var store = kind === 'style' ? 'style_picks' : 'know_picks';
+    var page = kind === 'style' ? 'ch12' : kind === 'hm' ? 'ch8' : 'ch13';
+    var store = PICK_STORE[kind];
     build[store] = build[store] || {};
     var mine = build[store][item.name] = build[store][item.name] || {};
     for (var r = from; r <= to; r++) (function (r) {
@@ -1170,7 +1278,7 @@
         ]));
       }
       if (stMode()) fs.appendChild(el('p', { class: 'hint', text: 'Storyteller Mode: check as many as you like.' }));
-      var opts = kind === 'style' ? [['a', 'Option A', rk.a], ['b', 'Option B', rk.b]] : rk.spells.map(function (s, i) { return [String(i), 'Spell', s]; });
+      var opts = kind === 'style' ? [['a', 'Option A', rk.a], ['b', 'Option B', rk.b]] : rk.spells.map(function (s, i) { return [String(i), s.opt ? 'Option ' + s.opt : 'Spell', s]; });
       var combos = kind === 'know' && item.kind === 'Casting school' ? combosFor(item.name, r) : [];
       opts = opts.concat(combos.map(function (c) { return ['c:' + c.id, 'Combination', { name: c.name + ' (' + c.schools.join(' + ') + ')', id: c.id, cost: c.cost, text: c.text }, true]; }));
       opts.forEach(function (o, oi) {
@@ -1187,11 +1295,11 @@
           } else {
             mine[r] = o[0];
           }
-          refresh(kind === 'know');
+          refresh(kind !== 'style');
         });
         fs.appendChild(el('div', { class: 'rank-opt' }, [
           input,
-          el('label', { for: id }, [el('strong', { text: o[2].name }), kind === 'style' ? ' (' + o[1] + (o[2].use ? ', ' + o[2].use : '') + ')' : (o[2].cost ? ' (' + o[2].cost + ' mana)' : ''),
+          el('label', { for: id }, [el('strong', { text: o[2].name }), kind === 'style' ? ' (' + o[1] + (o[2].use ? ', ' + o[2].use : '') + ')' : kind === 'hm' ? ' (' + o[1] + (o[2].cost ? ', ' + o[2].cost.replace(/\s*\(stays committed\)/, '').replace(/^(\d+)/, '$1 mana') : '') + ')' : (o[2].cost ? ' (' + o[2].cost + ' mana)' : ''),
             el('span', { class: 'hint rank-text', text: o[2].text })]),
           bookLink('../rulebook/' + page + '.html#' + o[2].id, 'Rules')
         ]));
@@ -1200,7 +1308,7 @@
     })(r);
   }
   function missingPicks(item, kind, upTo, w) {
-    var mine = ((build[kind === 'style' ? 'style_picks' : 'know_picks'] || {})[item.name]) || {};
+    var mine = ((build[PICK_STORE[kind]] || {})[item.name]) || {};
     if (!item.ranks) return;
     for (var r = 1; r <= upTo; r++) {
       var arr = picksAt(mine[r]);
@@ -1211,7 +1319,7 @@
         w.push({ key: 'pick.know.' + slug(item.name) + '.' + r, text: item.name + ' Rank ' + r + ': ' + (cb ? cb.name + ' needs ' + cb.dots + ' dots in ' + cb.schools.join(', ') : 'that combination spell') + '. Pick again.' });
         continue;
       }
-      if (!arr.length) w.push({ key: 'pick.' + kind + '.' + slug(item.name) + '.' + r, text: item.name + ' Rank ' + r + ': choose ' + (kind === 'style' ? 'Option A or B.' : item.name === 'Battle Aura' ? 'one of the two techniques.' : 'one of the two spells.') });
+      if (!arr.length) w.push({ key: 'pick.' + kind + '.' + slug(item.name) + '.' + r, text: item.name + ' Rank ' + r + ': choose ' + (kind !== 'know' ? 'Option A or B.' : item.name === 'Battle Aura' ? 'one of the two techniques.' : 'one of the two spells.') });
     }
   }
 
@@ -1254,7 +1362,7 @@
 
   // ---------- Step 11: Magical Knowledges ----------
   S[11] = {
-    intro: 'Your Mental column decides how many dots you spend on Magical Knowledges (casting schools, Battle Aura, and Circle Magic): 7 for Affinity, 5 for Standard, or 3 for Aversion, up to 5 dots in one knowledge. Every knowledge taken here is marked P. Your Heritage Magic starts with its free dot from Step 4, and you can raise it with these dots too. For a casting school or Battle Aura, each dot gives that rank’s Default Ability and your choice of one of its two techniques.',
+    intro: 'Your Mental column decides how many dots you spend on Magical Knowledges (casting schools, Battle Aura, and Circle Magic): 7 for Affinity, 5 for Standard, or 3 for Aversion, up to 5 dots in one knowledge. Every knowledge taken here is marked P. Your Heritage Magic starts with its free dot from Step 4, and you can raise it with these dots too. For a casting school or Battle Aura, each dot gives that rank’s Default Ability and your choice of one of its two techniques. Each Heritage magic dot gives that rank’s Option A or Option B.',
     link: '../rulebook/ch13.html#learning-the-casting-schools',
     counter: function () { var l = knowLeft(); return [['Knowledge dots', l === null ? '-' : l]]; },
     render: function (p) {
@@ -1262,31 +1370,43 @@
       selectAllBar(p, ['know'], 'spell, technique, and combination spell');
       var h = heritage();
       if (h) {
-        var hv = hmBase();
         p.appendChild(el('h2', { class: 'sub-title px', text: 'Heritage Magic' }));
         var hcard = el('div', { class: 'sk-card picked' });
-        hcard.appendChild(el('div', { class: 'sk-head' }, [
-          el('div', { class: 'sk-name' }, [bookLink(h.link, hmName()), el('span', { class: 'pmark px', text: ' P' }),
-            el('span', { class: 'hint sk-meta', text: h.name + ' Heritage Magic. The first dot is free from Step 4; each dot above it uses one knowledge dot.' })]),
-          dotRow(hmName(), hv, stMode() ? 10 : 7, 1, function (nv) { build.hm_dots = Math.max(1, nv); refresh(true); },
-            knowLeft() === null ? 1 : hv + Math.max(0, knowLeft()))
-        ]));
+        var hd = hmData();
+        var hlink = hd ? '../rulebook/ch8.html#' + hd.id : h.link;
+        if (!hmOn()) {
+          hcard.appendChild(el('p', { class: 'hint' }, ['Adaptation: your free dot is in ' + hyAdapt().slice(2) + ', shown below with your other knowledges. ', bookLink(hlink, 'Adaptation')]));
+        } else if (h.name === 'Hyuman' && !hyAdapt()) {
+          hcard.appendChild(el('p', { class: 'note-box', text: 'Choose where your Adaptation dot goes in Step 4 first.' }));
+        } else if (h.name === 'Vampire' && !build.heritage.vpower) {
+          hcard.appendChild(el('p', { class: 'note-box', text: 'Choose your Vampiric Power in Step 4 first.' }));
+        } else {
+          var hv = hmBase();
+          hcard.appendChild(el('div', { class: 'sk-head' }, [
+            el('div', { class: 'sk-name' }, [bookLink(hlink, hmName()), el('span', { class: 'pmark px', text: ' P' }),
+              el('span', { class: 'hint sk-meta', text: h.name + ' Heritage Magic. The first dot is free from Step 4; each dot above it uses one knowledge dot.' })]),
+            dotRow(hmName(), hv, stMode() ? 10 : 7, 1, function (nv) { build.hm_dots = Math.max(1, nv); refresh(true); },
+              knowLeft() === null ? 1 : hv + Math.max(0, knowLeft()))
+          ]));
+          heritagePicks(hcard, 1, hmVal());
+        }
         p.appendChild(hcard);
       }
       if (skBudget('Mental') === null) p.appendChild(el('p', { class: 'note-box', text: 'Give your Mental column a designation in Step 5 first. It sets how many knowledge dots you get.' }));
       var left = knowLeft();
       D.knowledges.forEach(function (k, ki) {
+        var free = knowFree(k.name);
         var head = k.circle ? 'Circle Magic' : k.kind === 'Casting school' ? 'Casting Magic' : k.name;
         var prev = D.knowledges[ki - 1];
         var prevHead = prev ? (prev.circle ? 'Circle Magic' : prev.kind === 'Casting school' ? 'Casting Magic' : prev.name) : null;
         if (head !== prevHead) p.appendChild(el('h2', { class: 'sub-title px', text: head }));
-        var v = knowVal(k.name);
+        var v = knowVal(k.name) + free;
         var card = el('div', { class: 'sk-card' + (v ? ' picked' : '') });
         card.appendChild(el('div', { class: 'sk-head' }, [
           el('div', { class: 'sk-name' }, [bookLink(k.link, k.name), v ? el('span', { class: 'pmark px', text: ' P' }) : null,
-            el('span', { class: 'hint sk-meta', text: (k.kind + (k.focus ? '. ' + k.focus : '')).replace(/\.*$/, '.') })]),
-          dotRow(k.name, v, stMode() ? 10 : 7, 0, function (nv) { build.knows[k.name] = nv; if (!nv) delete build.knows[k.name]; refresh(true); },
-            left === null ? 0 : v + Math.max(0, left))
+            el('span', { class: 'hint sk-meta', text: (k.kind + (k.focus ? '. ' + k.focus : '') + (free ? '. 1 free dot from Hyuman Adaptation' : '')).replace(/\.+/g, '.').replace(/\.*$/, '.') })]),
+          dotRow(k.name, v, stMode() ? 10 : 7, free, function (nv) { nv -= free; build.knows[k.name] = nv; if (nv <= 0) delete build.knows[k.name]; refresh(true); },
+            left === null ? free : v + Math.max(0, left))
         ]));
         if (v && k.ranks) rankPicks(card, k, 'know', 1, v);
         if (v && !k.ranks) card.appendChild(el('p', { class: 'hint' }, ['Circle Magic disciplines have no spell list. What you can do at each dot is in its entry. ', bookLink(k.link, k.name + ' rules')]));
@@ -1296,16 +1416,18 @@
     },
     check: function () {
       var w = [], l = knowLeft();
-      if (heritage()) w = w.concat(goldenRule(hmName(), hmBase()));
+      if (hmOn()) { w = w.concat(goldenRule(hmName(), hmBase())); var hi = hmItem(); if (hi) missingPicks(hi, 'hm', hmBase(), w); }
       if (l === null) w.push({ key: 'kn.nocol', text: 'Give your Mental column a designation in Step 5 first.' });
       else if (l > 0) w.push({ key: 'kn.left.' + l, text: l + ' knowledge dot' + (l === 1 ? '' : 's') + ' left to place.' });
       else if (l < 0) w.push({ key: 'kn.over.' + l, text: 'You are ' + (-l) + ' knowledge dot' + (l === -1 ? '' : 's') + ' over.' });
-      D.knowledges.forEach(function (k) { var v = knowVal(k.name); w = w.concat(goldenRule(k.name, v)); missingPicks(k, 'know', v, w); });
+      D.knowledges.forEach(function (k) { var v = knowVal(k.name) + knowFree(k.name); w = w.concat(goldenRule(k.name, v)); missingPicks(k, 'know', v, w); });
       return w;
     },
     summary: function () {
-      var a = D.knowledges.filter(function (k) { return knowVal(k.name); }).map(function (k) { return k.name + ' ' + knowVal(k.name) + ' (P)'; });
+      var a = D.knowledges.filter(function (k) { return knowVal(k.name) + knowFree(k.name); }).map(function (k) { return k.name + ' ' + (knowVal(k.name) + knowFree(k.name)) + ' (P)'; });
       var out = a.length ? [['Magical Knowledges', a.join(', ')]] : [];
+      var hs = heritageSpellNames();
+      if (hs.length) out.push(['Heritage Spells', hs.join(', ')]);
       var cs = [];
       Object.keys(build.know_picks || {}).forEach(function (sc) { Object.keys(build.know_picks[sc]).forEach(function (r) {
         picksAt(build.know_picks[sc][r]).forEach(function (v) {
@@ -1424,9 +1546,9 @@
         });
       });
       group('Magical Knowledges (4 each)', anyIn('knows') || f.hm > 0, function (box) {
-        if (heritage()) line(box, hmName() + ' (Heritage Magic, P)', fbRow(hmName(), hmBase(), 'hm', 'hm', 5));
+        if (hmOn()) line(box, hmName() + ' (Heritage Magic, P)', fbRow(hmName(), hmBase(), 'hm', 'hm', 5), function (b) { var x = (build.fb || {}).hm || 0; if (x) heritagePicks(b, hmBase() + 1, hmBase() + x); });
         D.knowledges.forEach(function (k) {
-          var base = knowVal(k.name), x = fbOf('knows', k.name);
+          var base = knowVal(k.name) + knowFree(k.name), x = fbOf('knows', k.name);
           line(box, k.name + (base ? ' (P)' : x ? ' (S)' : ''), fbRow(k.name, base, 'knows', k.name, 5), function (b) { if (x && k.ranks) rankPicks(b, k, 'know', base + 1, base + x); });
         });
       });
@@ -1444,13 +1566,14 @@
       if ((build.fb || {}).preset && build.fb.preset !== 'Newb') w.push({ key: 'fb.preset.' + build.fb.preset, text: build.fb.preset + ' gives more than the standard 7 points. Check with your Storyteller.' });
       D.styles.forEach(function (s) { if (fbOf('styles', s.name)) missingPicks(s, 'style', styleTotal(s.name), w); });
       D.knowledges.forEach(function (k) { if (fbOf('knows', k.name)) missingPicks(k, 'know', knowTotal(k.name), w); });
+      if ((build.fb || {}).hm && hmItem()) missingPicks(hmItem(), 'hm', hmVal(), w);
       return w;
     },
     summary: function () {
       var f = build.fb || {}, out = [];
       if (fbSpent()) out.push(['Freebies', fbSpent() + ' of ' + fbPoints() + ' spent']);
       var s = D.styles.filter(function (x) { return fbOf('styles', x.name) && !styleVal(x.name); }).map(function (x) { return x.name.replace(/ Style$/, '') + ' ' + fbOf('styles', x.name) + ' (S)'; })
-        .concat(D.knowledges.filter(function (x) { return fbOf('knows', x.name) && !knowVal(x.name); }).map(function (x) { return x.name + ' ' + fbOf('knows', x.name) + ' (S)'; }));
+        .concat(D.knowledges.filter(function (x) { return fbOf('knows', x.name) && !knowVal(x.name) && !knowFree(x.name); }).map(function (x) { return x.name + ' ' + fbOf('knows', x.name) + ' (S)'; }));
       if (s.length) out.push(['Secondary', s.join(', ')]);
       out.push(['Mana', String(manaTotal())]);
       return out;
