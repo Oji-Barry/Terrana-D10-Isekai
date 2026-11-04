@@ -865,6 +865,7 @@
     render: function (p) {
       build.backgrounds = build.backgrounds || {};
       build.guilds = build.guilds || [];
+      build.guilds.forEach(function (g) { if (g && g.name === 'Mercenaries Guild (space era)') g.name = 'Mercenaries Guild (Future Era)'; });
       var box = el('div', { class: 'bg-list' });
       D.backgrounds.forEach(function (b) {
         var base = b.name === 'Resources' ? 1 : 0;
@@ -937,6 +938,8 @@
       (build.guilds || []).forEach(function (g, i) {
         if (g && g.dots > 3) w.push({ key: 'guild.over.' + i + '.' + g.dots, text: (g.name || 'A guild') + ' has ' + g.dots + ' dots. Most games limit Guild Standing to 3 at creation.' });
         if (g && g.dots && !(g.name || '').trim()) w.push({ key: 'guild.noname.' + i, text: 'Choose the guild for your Guild Standing.' });
+        var gx = g && byName(D.guilds, g.name || '');
+        if (gx && gx.era) w.push({ key: 'guild.era.' + i, text: g.name + ' only exists in a ' + gx.era.toLowerCase() + ' game (Chapter 16). Check with your Storyteller.' });
       });
       return w;
     },

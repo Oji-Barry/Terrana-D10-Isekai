@@ -3582,6 +3582,11 @@
    "what": "Smiths, engineers, and crafters of implements, machines, and gear."
   },
   {
+   "name": "Mercenaries Guild (Future Era)",
+   "era": "Future Era",
+   "what": "Future era only. What the Adventurers Guild is on Terrana, the Mercenaries Guild is in space (Chapter 16, The Space Era)."
+  },
+  {
    "name": "Merchants Guild",
    "what": "Traders, shopkeepers, bankers, and the moneyed interests of Monsera."
   },
@@ -3596,10 +3601,6 @@
   {
    "name": "Thieves Guild (unofficial)",
    "what": "Extralegal and unrepresented, with no cabinet seat. Speaks its own secure dialect, Thieves' Cant. Its members do not advertise their standing."
-  },
-  {
-   "name": "Mercenaries Guild (space era)",
-   "what": "What the Adventurers Guild is on Terrana, the Mercenaries Guild is in space (Chapter 16)."
   }
  ],
  "backgrounds": [

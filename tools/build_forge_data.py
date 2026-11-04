@@ -369,7 +369,10 @@ def main(src):
                 else:
                     guilds.append({'name': nm + ' Guild', 'what': r[1]})
     assert len(guilds) == 12, guilds
-    guilds.append({'name': 'Mercenaries Guild (space era)', 'what': 'What the Adventurers Guild is on Terrana, the Mercenaries Guild is in space (Chapter 16).'})
+    # Mercenaries Guild: future era only (Chapter 16, The Space Era), listed in the menu with its tag
+    i = [g['name'] for g in guilds].index('Merchants Guild')
+    guilds.insert(i, {'name': 'Mercenaries Guild (Future Era)', 'era': 'Future Era',
+                      'what': 'Future era only. What the Adventurers Guild is on Terrana, the Mercenaries Guild is in space (Chapter 16, The Space Era).'})
     data['guilds'] = guilds
 
     data['backgrounds'] = [{'name': r[0], 'what': r[1], 'link': link(links, 'ch10', r[0])}
