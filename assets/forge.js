@@ -1052,12 +1052,14 @@
   function knowLeft() { var b = skBudget('Mental'); if (b === null) return null; var s = 0; D.knowledges.forEach(function (x) { s += knowVal(x.name); }); return b - s; }
   // Combination spells: open to a casting school's rank once every school in
   // the combination has enough dots (2 each for two schools, 3 each for three)
+  // A rank's pick is one value for players; Storyteller Mode can keep several
+  function picksAt(v) { return v === undefined || v === null ? [] : (Array.isArray(v) ? v.map(String) : [String(v)]); }
   function comboById(id) { for (var i = 0; i < D.combos.length; i++) if (D.combos[i].id === id) return D.combos[i]; return null; }
   function comboMet(c) { return c.schools.every(function (sc) { return knowTotal(sc) >= c.dots; }); }
   function comboTakenElsewhere(c, school, r) {
     var kp = build.know_picks || {};
     return Object.keys(kp).some(function (sc) {
-      return Object.keys(kp[sc] || {}).some(function (rr) { return kp[sc][rr] === 'c:' + c.id && !(sc === school && String(rr) === String(r)); });
+      return Object.keys(kp[sc] || {}).some(function (rr) { return picksAt(kp[sc][rr]).indexOf('c:' + c.id) >= 0 && !(sc === school && String(rr) === String(r)); });
     });
   }
   function combosFor(school, r) {
@@ -1127,15 +1129,26 @@
           el('span', { class: 'hint', text: ' ' + (rk.default.note ? '(' + rk.default.note + ') ' : '') + rk.default.text })
         ]));
       }
+      if (stMode()) fs.appendChild(el('p', { class: 'hint', text: 'Storyteller Mode: check as many as you like.' }));
       var opts = kind === 'style' ? [['a', 'Option A', rk.a], ['b', 'Option B', rk.b]] : rk.spells.map(function (s, i) { return [String(i), 'Spell', s]; });
       var combos = kind === 'know' && item.kind === 'Casting school' ? combosFor(item.name, r) : [];
       opts = opts.concat(combos.map(function (c) { return ['c:' + c.id, 'Combination', { name: c.name + ' (' + c.schools.join(' + ') + ')', id: c.id, cost: c.cost, text: c.text }, true]; }));
       opts.forEach(function (o, oi) {
-        if (o[3] && !(opts[oi - 1] || [])[3]) fs.appendChild(el('p', { class: 'combo-head px', text: 'Or a combination spell instead:' }));
+        if (o[3] && !(opts[oi - 1] || [])[3]) fs.appendChild(el('p', { class: 'combo-head px', text: stMode() ? 'Combination spells:' : 'Or a combination spell instead:' }));
         var id = 'rk-' + kind + '-' + slug(item.name) + '-' + r + '-' + o[0];
-        var input = el('input', { type: 'radio', name: 'rk-' + kind + '-' + slug(item.name) + '-' + r, id: id, value: o[0] });
-        if (String(mine[r]) === o[0]) input.checked = true;
-        input.addEventListener('change', function () { mine[r] = o[0]; refresh(kind === 'know'); });
+        var multi = stMode();
+        var input = el('input', { type: multi ? 'checkbox' : 'radio', name: 'rk-' + kind + '-' + slug(item.name) + '-' + r, id: id, value: o[0] });
+        if (picksAt(mine[r]).indexOf(o[0]) >= 0) input.checked = true;
+        input.addEventListener('change', function () {
+          if (multi) {
+            var cur = picksAt(mine[r]).filter(function (x) { return x !== o[0]; });
+            if (input.checked) cur.push(o[0]);
+            if (cur.length) mine[r] = cur; else delete mine[r];
+          } else {
+            mine[r] = o[0];
+          }
+          refresh(kind === 'know');
+        });
         fs.appendChild(el('div', { class: 'rank-opt' }, [
           input,
           el('label', { for: id }, [el('strong', { text: o[2].name }), kind === 'style' ? ' (' + o[1] + (o[2].use ? ', ' + o[2].use : '') + ')' : (o[2].cost ? ' (' + o[2].cost + ' mana)' : ''),
@@ -1150,13 +1163,15 @@
     var mine = ((build[kind === 'style' ? 'style_picks' : 'know_picks'] || {})[item.name]) || {};
     if (!item.ranks) return;
     for (var r = 1; r <= upTo; r++) {
-      var cpick = String(mine[r] || '');
-      if (cpick.indexOf('c:') === 0) {
-        var cb = comboById(cpick.slice(2));
-        if (!cb || !comboMet(cb)) w.push({ key: 'pick.know.' + slug(item.name) + '.' + r, text: item.name + ' Rank ' + r + ': ' + (cb ? cb.name + ' needs ' + cb.dots + ' dots in ' + cb.schools.join(', ') : 'that combination spell') + '. Pick again.' });
+      var arr = picksAt(mine[r]);
+      var broken = arr.filter(function (v) { return v.indexOf('c:') === 0; }).map(function (v) { return comboById(v.slice(2)); })
+        .filter(function (cb) { return !cb || !comboMet(cb); });
+      if (broken.length) {
+        var cb = broken[0];
+        w.push({ key: 'pick.know.' + slug(item.name) + '.' + r, text: item.name + ' Rank ' + r + ': ' + (cb ? cb.name + ' needs ' + cb.dots + ' dots in ' + cb.schools.join(', ') : 'that combination spell') + '. Pick again.' });
         continue;
       }
-      if (mine[r] === undefined) w.push({ key: 'pick.' + kind + '.' + slug(item.name) + '.' + r, text: item.name + ' Rank ' + r + ': choose ' + (kind === 'style' ? 'Option A or B.' : item.name === 'Battle Aura' ? 'one of the two techniques.' : 'one of the two spells.') });
+      if (!arr.length) w.push({ key: 'pick.' + kind + '.' + slug(item.name) + '.' + r, text: item.name + ' Rank ' + r + ': choose ' + (kind === 'style' ? 'Option A or B.' : item.name === 'Battle Aura' ? 'one of the two techniques.' : 'one of the two spells.') });
     }
   }
 
@@ -1239,8 +1254,9 @@
       var out = a.length ? [['Magical Knowledges', a.join(', ')]] : [];
       var cs = [];
       Object.keys(build.know_picks || {}).forEach(function (sc) { Object.keys(build.know_picks[sc]).forEach(function (r) {
-        var v = String(build.know_picks[sc][r]);
-        if (v.indexOf('c:') === 0 && comboById(v.slice(2))) cs.push(comboById(v.slice(2)).name);
+        picksAt(build.know_picks[sc][r]).forEach(function (v) {
+          if (v.indexOf('c:') === 0 && comboById(v.slice(2))) cs.push(comboById(v.slice(2)).name);
+        });
       }); });
       if (cs.length) out.push(['Combination Spells', cs.join(', ')]);
       if (knowTotal('Summoning Magic') && companionText(build.starter_summon)) out.push(['First SumMonz', companionText(build.starter_summon)]);
