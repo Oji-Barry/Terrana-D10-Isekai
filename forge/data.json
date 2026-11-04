@@ -1,0 +1,2721 @@
+{
+ "source": "Chapter 6 Quick Reference, second draft",
+ "attributes": {
+  "Physical": [
+   "Strength",
+   "Dexterity",
+   "Fortitude"
+  ],
+  "Social": [
+   "Charisma",
+   "Manipulation",
+   "Composure"
+  ],
+  "Mental": [
+   "Intelligence",
+   "Perception",
+   "Wisdom"
+  ]
+ },
+ "columns": {
+  "Affinity": {
+   "dots": 6,
+   "style_or_knowledge": 7
+  },
+  "Standard": {
+   "dots": 5,
+   "style_or_knowledge": 5
+  },
+  "Aversion": {
+   "dots": 4,
+   "style_or_knowledge": 3
+  }
+ },
+ "abilities": {
+  "Warrior": [
+   {
+    "name": "Athletics",
+    "used_for": "Climbing, running, jumping, swimming, and flying."
+   },
+   {
+    "name": "Endurance",
+    "used_for": "Pushing through pain, fatigue, poison, and harsh conditions."
+   },
+   {
+    "name": "Martial Arts",
+    "used_for": "Fighting unarmed: fists, kicks, grapples, and throws."
+   },
+   {
+    "name": "Melee",
+    "used_for": "Fighting with blades, axes, polearms, shields, and other hand weapons."
+   },
+   {
+    "name": "Ranged",
+    "used_for": "Bows, guns, and thrown weapons."
+   }
+  ],
+  "Rogue": [
+   {
+    "name": "Acrobatics",
+    "used_for": "Balance, tumbling, and agile movement."
+   },
+   {
+    "name": "Chicanery",
+    "used_for": "Cons, disguises, tricks, and dirty tactics."
+   },
+   {
+    "name": "Dodge",
+    "used_for": "Getting out of the way of attacks and hazards."
+   },
+   {
+    "name": "Sleight of Hand",
+    "used_for": "Picking pockets, palming objects, and quick-fingered work."
+   },
+   {
+    "name": "Stealth",
+    "used_for": "Hiding, sneaking, and moving unseen."
+   }
+  ],
+  "Troubadour": [
+   {
+    "name": "Expression",
+    "used_for": "Art, writing, and putting ideas and feelings across."
+   },
+   {
+    "name": "Performance",
+    "used_for": "Music, acting, dance, and entertaining a crowd."
+   },
+   {
+    "name": "Presence",
+    "used_for": "Force of personality: impressing, commanding, and intimidating."
+   },
+   {
+    "name": "Persuasion",
+    "used_for": "Convincing others with argument or appeal."
+   },
+   {
+    "name": "Subterfuge",
+    "used_for": "Lying, misdirection, and hiding your intentions."
+   }
+  ],
+  "Noble": [
+   {
+    "name": "Commerce",
+    "used_for": "Trade, haggling, appraisal, and business."
+   },
+   {
+    "name": "Diplomacy",
+    "used_for": "Negotiating and settling disputes between parties."
+   },
+   {
+    "name": "Etiquette",
+    "used_for": "Manners, protocol, and moving through high society."
+   },
+   {
+    "name": "Pilot",
+    "used_for": "Sailing ships and piloting any vehicle."
+   },
+   {
+    "name": "Ride",
+    "used_for": "Riding and handling mounts."
+   }
+  ],
+  "Mage": [
+   {
+    "name": "Alchemy",
+    "used_for": "Brewing potions and working with reagents."
+   },
+   {
+    "name": "Attunement",
+    "used_for": "Bonding with and drawing on magical items and attuned effects."
+   },
+   {
+    "name": "Circle Magic",
+    "used_for": "Ritual magic: scrolls, wards, contracts, summoning. Counts toward your Mana Pool."
+   },
+   {
+    "name": "Implements",
+    "used_for": "Using and working with crafted magical devices."
+   },
+   {
+    "name": "Magic",
+    "used_for": "Casting spells from the schools. Counts toward your Mana Pool."
+   }
+  ],
+  "Sage": [
+   {
+    "name": "Artifacts",
+    "used_for": "Understanding, handling, and repairing magical artifacts."
+   },
+   {
+    "name": "Awareness",
+    "used_for": "Noticing things with your senses."
+   },
+   {
+    "name": "Crafts",
+    "used_for": "Building, making, and repairing things."
+   },
+   {
+    "name": "Insight",
+    "used_for": "Reading people, their motives, and their lies."
+   },
+   {
+    "name": "Survival",
+    "used_for": "Tracking, foraging, and living off the land."
+   }
+  ]
+ },
+ "tropes": [
+  {
+   "name": "Genki",
+   "group": "Warrior",
+   "boon": "Athletics",
+   "bane": "Subterfuge",
+   "link": "../rulebook/ch7.html#part-1-tropes-genki"
+  },
+  {
+   "name": "Himbo/Bimbo",
+   "group": "Warrior",
+   "boon": "Athletics",
+   "bane": "Dodge",
+   "link": "../rulebook/ch7.html#part-1-tropes-himbo-bimbo"
+  },
+  {
+   "name": "Underdog",
+   "group": "Warrior",
+   "boon": "Endurance",
+   "bane": "Ranged",
+   "link": "../rulebook/ch7.html#part-1-tropes-underdog"
+  },
+  {
+   "name": "Gentle Giant",
+   "group": "Warrior",
+   "boon": "Endurance",
+   "bane": "Melee",
+   "link": "../rulebook/ch7.html#part-1-tropes-gentle-giant"
+  },
+  {
+   "name": "Berserker",
+   "group": "Warrior",
+   "boon": "Martial Arts",
+   "bane": "Dodge",
+   "link": "../rulebook/ch7.html#part-1-tropes-berserker"
+  },
+  {
+   "name": "Battle Maniac",
+   "group": "Warrior",
+   "boon": "Martial Arts",
+   "bane": "Diplomacy",
+   "link": "../rulebook/ch7.html#part-1-tropes-battle-maniac"
+  },
+  {
+   "name": "Weapon Savant",
+   "group": "Warrior",
+   "boon": "Melee",
+   "bane": "Circle Magic",
+   "link": "../rulebook/ch7.html#part-1-tropes-weapon-savant"
+  },
+  {
+   "name": "Hotblooded",
+   "group": "Warrior",
+   "boon": "Melee",
+   "bane": "Martial Arts",
+   "link": "../rulebook/ch7.html#part-1-tropes-hotblooded"
+  },
+  {
+   "name": "Sharpshooter",
+   "group": "Warrior",
+   "boon": "Ranged",
+   "bane": "Endurance",
+   "link": "../rulebook/ch7.html#part-1-tropes-sharpshooter"
+  },
+  {
+   "name": "Gunslinger",
+   "group": "Warrior",
+   "boon": "Ranged",
+   "bane": "Magic",
+   "link": "../rulebook/ch7.html#part-1-tropes-gunslinger"
+  },
+  {
+   "name": "Daredevil",
+   "group": "Rogue",
+   "boon": "Acrobatics",
+   "bane": "Melee",
+   "link": "../rulebook/ch7.html#part-1-tropes-daredevil"
+  },
+  {
+   "name": "Free Runner",
+   "group": "Rogue",
+   "boon": "Acrobatics",
+   "bane": "Expression",
+   "link": "../rulebook/ch7.html#part-1-tropes-free-runner"
+  },
+  {
+   "name": "Trickster",
+   "group": "Rogue",
+   "boon": "Chicanery",
+   "bane": "Implements",
+   "link": "../rulebook/ch7.html#part-1-tropes-trickster"
+  },
+  {
+   "name": "Gambler",
+   "group": "Rogue",
+   "boon": "Chicanery",
+   "bane": "Insight",
+   "link": "../rulebook/ch7.html#part-1-tropes-gambler"
+  },
+  {
+   "name": "Reluctant Hero",
+   "group": "Rogue",
+   "boon": "Dodge",
+   "bane": "Presence",
+   "link": "../rulebook/ch7.html#part-1-tropes-reluctant-hero"
+  },
+  {
+   "name": "Kuudere",
+   "group": "Rogue",
+   "boon": "Dodge",
+   "bane": "Endurance",
+   "link": "../rulebook/ch7.html#part-1-tropes-kuudere"
+  },
+  {
+   "name": "Street Rat",
+   "group": "Rogue",
+   "boon": "Sleight of Hand",
+   "bane": "Chicanery",
+   "link": "../rulebook/ch7.html#part-1-tropes-street-rat"
+  },
+  {
+   "name": "Class Clown",
+   "group": "Rogue",
+   "boon": "Sleight of Hand",
+   "bane": "Etiquette",
+   "link": "../rulebook/ch7.html#part-1-tropes-class-clown"
+  },
+  {
+   "name": "Ghost",
+   "group": "Rogue",
+   "boon": "Stealth",
+   "bane": "Subterfuge",
+   "link": "../rulebook/ch7.html#part-1-tropes-ghost"
+  },
+  {
+   "name": "Lone Wolf",
+   "group": "Rogue",
+   "boon": "Stealth",
+   "bane": "Commerce",
+   "link": "../rulebook/ch7.html#part-1-tropes-lone-wolf"
+  },
+  {
+   "name": "Chosen Optimist",
+   "group": "Troubadour",
+   "boon": "Expression",
+   "bane": "Martial Arts",
+   "link": "../rulebook/ch7.html#part-1-tropes-chosen-optimist"
+  },
+  {
+   "name": "Yandere",
+   "group": "Troubadour",
+   "boon": "Expression",
+   "bane": "Magic",
+   "link": "../rulebook/ch7.html#part-1-tropes-yandere"
+  },
+  {
+   "name": "Fame Hungry",
+   "group": "Troubadour",
+   "boon": "Performance",
+   "bane": "Stealth",
+   "link": "../rulebook/ch7.html#part-1-tropes-fame-hungry"
+  },
+  {
+   "name": "Idol",
+   "group": "Troubadour",
+   "boon": "Performance",
+   "bane": "Persuasion",
+   "link": "../rulebook/ch7.html#part-1-tropes-idol"
+  },
+  {
+   "name": "Thug",
+   "group": "Troubadour",
+   "boon": "Presence",
+   "bane": "Persuasion",
+   "link": "../rulebook/ch7.html#part-1-tropes-thug"
+  },
+  {
+   "name": "Rival",
+   "group": "Troubadour",
+   "boon": "Presence",
+   "bane": "Stealth",
+   "link": "../rulebook/ch7.html#part-1-tropes-rival"
+  },
+  {
+   "name": "Pacifist",
+   "group": "Troubadour",
+   "boon": "Persuasion",
+   "bane": "Diplomacy",
+   "link": "../rulebook/ch7.html#part-1-tropes-pacifist"
+  },
+  {
+   "name": "People Pleaser",
+   "group": "Troubadour",
+   "boon": "Persuasion",
+   "bane": "Awareness",
+   "link": "../rulebook/ch7.html#part-1-tropes-people-pleaser"
+  },
+  {
+   "name": "Shadow Broker",
+   "group": "Troubadour",
+   "boon": "Subterfuge",
+   "bane": "Chicanery",
+   "link": "../rulebook/ch7.html#part-1-tropes-shadow-broker"
+  },
+  {
+   "name": "Dark Past",
+   "group": "Troubadour",
+   "boon": "Subterfuge",
+   "bane": "Expression",
+   "link": "../rulebook/ch7.html#part-1-tropes-dark-past"
+  },
+  {
+   "name": "Fallen Noble",
+   "group": "Noble",
+   "boon": "Commerce",
+   "bane": "Etiquette",
+   "link": "../rulebook/ch7.html#part-1-tropes-fallen-noble"
+  },
+  {
+   "name": "Hoarder",
+   "group": "Noble",
+   "boon": "Commerce",
+   "bane": "Athletics",
+   "link": "../rulebook/ch7.html#part-1-tropes-hoarder"
+  },
+  {
+   "name": "Idealist",
+   "group": "Noble",
+   "boon": "Diplomacy",
+   "bane": "Performance",
+   "link": "../rulebook/ch7.html#part-1-tropes-idealist"
+  },
+  {
+   "name": "Mentor",
+   "group": "Noble",
+   "boon": "Diplomacy",
+   "bane": "Attunement",
+   "link": "../rulebook/ch7.html#part-1-tropes-mentor"
+  },
+  {
+   "name": "Reluctant Royalty",
+   "group": "Noble",
+   "boon": "Etiquette",
+   "bane": "Ride",
+   "link": "../rulebook/ch7.html#part-1-tropes-reluctant-royalty"
+  },
+  {
+   "name": "Dandere",
+   "group": "Noble",
+   "boon": "Etiquette",
+   "bane": "Presence",
+   "link": "../rulebook/ch7.html#part-1-tropes-dandere"
+  },
+  {
+   "name": "Navigator",
+   "group": "Noble",
+   "boon": "Pilot",
+   "bane": "Acrobatics",
+   "link": "../rulebook/ch7.html#part-1-tropes-navigator"
+  },
+  {
+   "name": "Speed Demon",
+   "group": "Noble",
+   "boon": "Pilot",
+   "bane": "Insight",
+   "link": "../rulebook/ch7.html#part-1-tropes-speed-demon"
+  },
+  {
+   "name": "Wanderer",
+   "group": "Noble",
+   "boon": "Ride",
+   "bane": "Pilot",
+   "link": "../rulebook/ch7.html#part-1-tropes-wanderer"
+  },
+  {
+   "name": "Feral One",
+   "group": "Noble",
+   "boon": "Ride",
+   "bane": "Pilot",
+   "link": "../rulebook/ch7.html#part-1-tropes-feral-one"
+  },
+  {
+   "name": "Full Metal",
+   "group": "Mage",
+   "boon": "Alchemy",
+   "bane": "Sleight of Hand",
+   "link": "../rulebook/ch7.html#part-1-tropes-full-metal"
+  },
+  {
+   "name": "Mad Scientist",
+   "group": "Mage",
+   "boon": "Alchemy",
+   "bane": "Attunement",
+   "link": "../rulebook/ch7.html#part-1-tropes-mad-scientist"
+  },
+  {
+   "name": "Magical Bloodline",
+   "group": "Mage",
+   "boon": "Attunement",
+   "bane": "Alchemy",
+   "link": "../rulebook/ch7.html#part-1-tropes-magical-bloodline"
+  },
+  {
+   "name": "Fey Chosen",
+   "group": "Mage",
+   "boon": "Attunement",
+   "bane": "Pilot",
+   "link": "../rulebook/ch7.html#part-1-tropes-fey-chosen"
+  },
+  {
+   "name": "Arcanist",
+   "group": "Mage",
+   "boon": "Circle Magic",
+   "bane": "Ranged",
+   "link": "../rulebook/ch7.html#part-1-tropes-arcanist"
+  },
+  {
+   "name": "Bookworm",
+   "group": "Mage",
+   "boon": "Circle Magic",
+   "bane": "Acrobatics",
+   "link": "../rulebook/ch7.html#part-1-tropes-bookworm"
+  },
+  {
+   "name": "Shut-In",
+   "group": "Mage",
+   "boon": "Implements",
+   "bane": "Survival",
+   "link": "../rulebook/ch7.html#part-1-tropes-shut-in"
+  },
+  {
+   "name": "Broken Ace",
+   "group": "Mage",
+   "boon": "Implements",
+   "bane": "Survival",
+   "link": "../rulebook/ch7.html#part-1-tropes-broken-ace"
+  },
+  {
+   "name": "Hedge Mage",
+   "group": "Mage",
+   "boon": "Magic",
+   "bane": "Alchemy",
+   "link": "../rulebook/ch7.html#part-1-tropes-hedge-mage"
+  },
+  {
+   "name": "Prodigy",
+   "group": "Mage",
+   "boon": "Magic",
+   "bane": "Awareness",
+   "link": "../rulebook/ch7.html#part-1-tropes-prodigy"
+  },
+  {
+   "name": "Collector",
+   "group": "Sage",
+   "boon": "Artifacts",
+   "bane": "Athletics",
+   "link": "../rulebook/ch7.html#part-1-tropes-collector"
+  },
+  {
+   "name": "Opportunist",
+   "group": "Sage",
+   "boon": "Artifacts",
+   "bane": "Commerce",
+   "link": "../rulebook/ch7.html#part-1-tropes-opportunist"
+  },
+  {
+   "name": "Perfectionist",
+   "group": "Sage",
+   "boon": "Awareness",
+   "bane": "Crafts",
+   "link": "../rulebook/ch7.html#part-1-tropes-perfectionist"
+  },
+  {
+   "name": "Stoic Veteran",
+   "group": "Sage",
+   "boon": "Awareness",
+   "bane": "Circle Magic",
+   "link": "../rulebook/ch7.html#part-1-tropes-stoic-veteran"
+  },
+  {
+   "name": "Artisan",
+   "group": "Sage",
+   "boon": "Crafts",
+   "bane": "Sleight of Hand",
+   "link": "../rulebook/ch7.html#part-1-tropes-artisan"
+  },
+  {
+   "name": "Lore Keeper",
+   "group": "Sage",
+   "boon": "Crafts",
+   "bane": "Artifacts",
+   "link": "../rulebook/ch7.html#part-1-tropes-lore-keeper"
+  },
+  {
+   "name": "Empath",
+   "group": "Sage",
+   "boon": "Insight",
+   "bane": "Performance",
+   "link": "../rulebook/ch7.html#part-1-tropes-empath"
+  },
+  {
+   "name": "Conspiracy Theorist",
+   "group": "Sage",
+   "boon": "Insight",
+   "bane": "Artifacts",
+   "link": "../rulebook/ch7.html#part-1-tropes-conspiracy-theorist"
+  },
+  {
+   "name": "Caretaker",
+   "group": "Sage",
+   "boon": "Survival",
+   "bane": "Crafts",
+   "link": "../rulebook/ch7.html#part-1-tropes-caretaker"
+  },
+  {
+   "name": "Naturalist",
+   "group": "Sage",
+   "boon": "Survival",
+   "bane": "Implements",
+   "link": "../rulebook/ch7.html#part-1-tropes-naturalist"
+  },
+  {
+   "name": "Nihilist",
+   "group": "Extra",
+   "boon": "Endurance",
+   "bane": "Melee",
+   "link": "../rulebook/ch7.html#part-1-tropes-nihilist"
+  },
+  {
+   "name": "Tsundere",
+   "group": "Extra",
+   "boon": "Melee",
+   "bane": "Expression",
+   "link": "../rulebook/ch7.html#part-1-tropes-tsundere"
+  },
+  {
+   "name": "Glass Cannon",
+   "group": "Extra",
+   "boon": "Martial Arts",
+   "bane": "Endurance",
+   "link": "../rulebook/ch7.html#part-1-tropes-glass-cannon"
+  },
+  {
+   "name": "Veteran Adventurer",
+   "group": "Extra",
+   "boon": "Survival",
+   "bane": "Magic",
+   "link": "../rulebook/ch7.html#part-1-tropes-veteran-adventurer"
+  },
+  {
+   "name": "Schemer",
+   "group": "Extra",
+   "boon": "Subterfuge",
+   "bane": "Insight",
+   "link": "../rulebook/ch7.html#part-1-tropes-schemer"
+  },
+  {
+   "name": "Burnout",
+   "group": "Extra",
+   "boon": "Awareness",
+   "bane": "Insight",
+   "link": "../rulebook/ch7.html#part-1-tropes-burnout"
+  }
+ ],
+ "scales": [
+  {
+   "name": "Humility / Pride",
+   "virtue": "Humility",
+   "vice": "Pride",
+   "tension": "Where do I place my own worth relative to others?",
+   "virtue_drives": [
+    "Devotion",
+    "Penance"
+   ],
+   "vice_drives": [
+    "Honor",
+    "Dominance"
+   ],
+   "link": "../rulebook/ch7.html#the-seven-scales-full-reference-humility-pride"
+  },
+  {
+   "name": "Charity / Greed",
+   "virtue": "Charity",
+   "vice": "Greed",
+   "tension": "Do I give or do I keep?",
+   "virtue_drives": [
+    "Generosity",
+    "Patronage"
+   ],
+   "vice_drives": [
+    "Ambition",
+    "Avarice"
+   ],
+   "link": "../rulebook/ch7.html#the-seven-scales-full-reference-charity-greed"
+  },
+  {
+   "name": "Chastity / Lust",
+   "virtue": "Chastity",
+   "vice": "Lust",
+   "tension": "Do I restrain or do I pursue?",
+   "virtue_drives": [
+    "Discipline",
+    "Repression"
+   ],
+   "vice_drives": [
+    "Passion",
+    "Indulgence"
+   ],
+   "link": "../rulebook/ch7.html#the-seven-scales-full-reference-chastity-lust"
+  },
+  {
+   "name": "Patience / Wrath",
+   "virtue": "Patience",
+   "vice": "Wrath",
+   "tension": "Do I endure or do I act on my anger?",
+   "virtue_drives": [
+    "Steadfast",
+    "Passivity"
+   ],
+   "vice_drives": [
+    "Righteous",
+    "Rage"
+   ],
+   "link": "../rulebook/ch7.html#the-seven-scales-full-reference-patience-wrath"
+  },
+  {
+   "name": "Temperance / Gluttony",
+   "virtue": "Temperance",
+   "vice": "Gluttony",
+   "tension": "Do I hold back or do I commit fully?",
+   "virtue_drives": [
+    "Balance",
+    "Restraint"
+   ],
+   "vice_drives": [
+    "Obsession",
+    "Excess"
+   ],
+   "link": "../rulebook/ch7.html#the-seven-scales-full-reference-temperance-gluttony"
+  },
+  {
+   "name": "Kindness / Envy",
+   "virtue": "Kindness",
+   "vice": "Envy",
+   "tension": "Do I care for others or do I want what they have?",
+   "virtue_drives": [
+    "Compassion",
+    "Codependence"
+   ],
+   "vice_drives": [
+    "Aspiration",
+    "Resentment"
+   ],
+   "link": "../rulebook/ch7.html#the-seven-scales-full-reference-kindness-envy"
+  },
+  {
+   "name": "Diligence / Sloth",
+   "virtue": "Diligence",
+   "vice": "Sloth",
+   "tension": "Do I work or do I rest?",
+   "virtue_drives": [
+    "Purpose",
+    "Compulsion"
+   ],
+   "vice_drives": [
+    "Stillness",
+    "Apathy"
+   ],
+   "link": "../rulebook/ch7.html#the-seven-scales-full-reference-diligence-sloth"
+  }
+ ],
+ "roles": {
+  "lines": [
+   "Frontline",
+   "Midline",
+   "Backline"
+  ],
+  "examples": [
+   "Frontline Tank",
+   "Frontline Fighter",
+   "Midline Healer",
+   "Midline Support",
+   "Backline Mage",
+   "Backline Rogue"
+  ]
+ },
+ "heritages": [
+  {
+   "name": "Avian",
+   "rare": false,
+   "innate_attribute": "Dexterity or Perception",
+   "innate_flaw": "Hollow Bones",
+   "attribute_flaw": "Social",
+   "heritage_merits": [
+    "Aerial Agility",
+    "Keen Eye"
+   ],
+   "heritage_magic": "Skycall",
+   "creation_allowed": true,
+   "link": "../rulebook/ch8.html#part-1-common-heritages-avian"
+  },
+  {
+   "name": "Beastfolk",
+   "rare": false,
+   "innate_attribute": "Perception or Dexterity",
+   "innate_flaw": "Animalistic Instincts",
+   "attribute_flaw": "Mental",
+   "heritage_merits": [
+    "Pack Sense",
+    "Predator's Instinct"
+   ],
+   "heritage_magic": "Howling Magic",
+   "creation_allowed": true,
+   "link": "../rulebook/ch8.html#part-1-common-heritages-beastfolk"
+  },
+  {
+   "name": "Bestial Demon",
+   "rare": false,
+   "innate_attribute": "Strength or Dexterity",
+   "innate_flaw": "Animalistic Instincts",
+   "attribute_flaw": "Social",
+   "heritage_merits": [
+    "Beast Sense",
+    "Feral Surge"
+   ],
+   "heritage_magic": "Feral Blood",
+   "creation_allowed": true,
+   "link": "../rulebook/ch8.html#part-1-common-heritages-bestial-demon"
+  },
+  {
+   "name": "Brutes",
+   "rare": false,
+   "innate_attribute": "Strength or Fortitude",
+   "innate_flaw": "Imposing",
+   "attribute_flaw": "Mental",
+   "heritage_merits": [
+    "Brute Force",
+    "Thick Hide"
+   ],
+   "heritage_magic": "Titan's Weight",
+   "creation_allowed": true,
+   "link": "../rulebook/ch8.html#part-1-common-heritages-brutes"
+  },
+  {
+   "name": "Dwarf",
+   "rare": false,
+   "innate_attribute": "Fortitude or Wisdom",
+   "innate_flaw": "Giggle Fibbers",
+   "attribute_flaw": "Social",
+   "heritage_merits": [
+    "Dwarven Crafting",
+    "Dwarven Constitution"
+   ],
+   "heritage_magic": "Earthsong",
+   "creation_allowed": true,
+   "link": "../rulebook/ch8.html#part-1-common-heritages-dwarf"
+  },
+  {
+   "name": "Elf",
+   "rare": false,
+   "innate_attribute": "Intelligence or Fortitude",
+   "innate_flaw": "Insular Grace",
+   "attribute_flaw": "Social",
+   "heritage_merits": [
+    "Elven Compass",
+    "Mana Touched"
+   ],
+   "heritage_magic": "Verdant Communion",
+   "creation_allowed": true,
+   "link": "../rulebook/ch8.html#part-1-common-heritages-elf"
+  },
+  {
+   "name": "Gremlinesque",
+   "rare": false,
+   "innate_attribute": "Intelligence or Dexterity",
+   "innate_flaw": "Mischief Prone",
+   "attribute_flaw": "Physical",
+   "heritage_merits": [
+    "Tinker",
+    "Scurry"
+   ],
+   "heritage_magic": "Tinker's Spark",
+   "creation_allowed": true,
+   "link": "../rulebook/ch8.html#part-1-common-heritages-gremlinesque"
+  },
+  {
+   "name": "Halfling",
+   "rare": false,
+   "innate_attribute": "Charisma or Dexterity",
+   "innate_flaw": "Underestimated",
+   "attribute_flaw": "Physical",
+   "heritage_merits": [
+    "A Lil Luck",
+    "Disarming Charm"
+   ],
+   "heritage_magic": "Hearthluck",
+   "creation_allowed": true,
+   "link": "../rulebook/ch8.html#part-1-common-heritages-halfling"
+  },
+  {
+   "name": "Hyuman",
+   "rare": false,
+   "innate_attribute": "Any one",
+   "innate_flaw": "Restless",
+   "attribute_flaw": "None",
+   "heritage_merits": [
+    "Hyuman Adaptability",
+    "Tenacity"
+   ],
+   "heritage_magic": "Adaptation",
+   "creation_allowed": true,
+   "link": "../rulebook/ch8.html#part-1-common-heritages-hyuman"
+  },
+  {
+   "name": "Immortal Mix",
+   "rare": false,
+   "innate_attribute": "Strength or Dexterity",
+   "innate_flaw": "Badi's Blood",
+   "attribute_flaw": "Mental",
+   "heritage_merits": [
+    "Four Armed Fighting",
+    "Quadbidextrous"
+   ],
+   "heritage_magic": "Undying Flesh",
+   "creation_allowed": true,
+   "link": "../rulebook/ch8.html#part-1-common-heritages-immortal-mix"
+  },
+  {
+   "name": "Ogre / Oni",
+   "rare": false,
+   "innate_attribute": "Strength or Wisdom",
+   "innate_flaw": "Ogre's Grace",
+   "attribute_flaw": "Social",
+   "heritage_merits": [
+    "Iron Gut",
+    "Peacemaker"
+   ],
+   "heritage_magic": "Oni Ward",
+   "creation_allowed": true,
+   "link": "../rulebook/ch8.html#part-1-common-heritages-ogre-oni"
+  },
+  {
+   "name": "Reptilian / Bug",
+   "rare": false,
+   "innate_attribute": "Fortitude or Perception",
+   "innate_flaw": "Cold Blooded",
+   "attribute_flaw": "Social",
+   "heritage_merits": [
+    "Scaled Hide",
+    "Toxic Knack"
+   ],
+   "heritage_magic": "Venom",
+   "creation_allowed": true,
+   "link": "../rulebook/ch8.html#part-1-common-heritages-reptilian-bug"
+  },
+  {
+   "name": "Shifters",
+   "rare": false,
+   "innate_attribute": "Charisma or Dexterity",
+   "innate_flaw": "Unstable Form",
+   "attribute_flaw": "Mental",
+   "heritage_merits": [
+    "Faceswap",
+    "Adaptive"
+   ],
+   "heritage_magic": "Transformation",
+   "creation_allowed": true,
+   "link": "../rulebook/ch8.html#part-1-common-heritages-shifters"
+  },
+  {
+   "name": "Corporeal Undead",
+   "rare": true,
+   "innate_attribute": "Intelligence or Composure",
+   "innate_flaw": "Mana Dependent",
+   "attribute_flaw": "Physical",
+   "heritage_merits": [
+    "Undying Resilience",
+    "Death Sense"
+   ],
+   "heritage_magic": "Deathless",
+   "creation_allowed": true,
+   "link": "../rulebook/ch8.html#part-2-rare-heritages-storyteller-approval-required-corporeal-undead"
+  },
+  {
+   "name": "Demon",
+   "rare": true,
+   "innate_attribute": "With the Storyteller",
+   "innate_flaw": "With the Storyteller",
+   "attribute_flaw": "With the Storyteller",
+   "heritage_merits": [
+    "Tribal Gift",
+    "Demon Tongue",
+    "Mana Born"
+   ],
+   "heritage_magic": "Tribal Magic",
+   "creation_allowed": true,
+   "link": "../rulebook/ch8.html#part-2-rare-heritages-storyteller-approval-required-demon"
+  },
+  {
+   "name": "Devils",
+   "rare": true,
+   "innate_attribute": "Intelligence or Charisma",
+   "innate_flaw": "Devil's Rejects",
+   "attribute_flaw": "Physical",
+   "heritage_merits": [
+    "Devil Wings",
+    "Emotional Taste",
+    "Emotional Harvest",
+    "Devil Spawn"
+   ],
+   "heritage_magic": "Contract Magic",
+   "creation_allowed": true,
+   "link": "../rulebook/ch8.html#part-2-rare-heritages-storyteller-approval-required-devils"
+  },
+  {
+   "name": "Dragonfolk",
+   "rare": true,
+   "innate_attribute": "Strength or Fortitude",
+   "innate_flaw": "Intimidating",
+   "attribute_flaw": "Social",
+   "heritage_merits": [
+    "Greater Mana Usage",
+    "Dragon's Might"
+   ],
+   "heritage_magic": "Dragon Blood",
+   "creation_allowed": true,
+   "link": "../rulebook/ch8.html#part-2-rare-heritages-storyteller-approval-required-dragonfolk"
+  },
+  {
+   "name": "Fey",
+   "rare": true,
+   "innate_attribute": "Charisma or Wisdom",
+   "innate_flaw": "Otherworldly",
+   "attribute_flaw": "Physical",
+   "heritage_merits": [
+    "Nature Bond",
+    "Wellspring"
+   ],
+   "heritage_magic": "Fey Magic",
+   "creation_allowed": true,
+   "link": "../rulebook/ch8.html#part-2-rare-heritages-storyteller-approval-required-fey"
+  },
+  {
+   "name": "Fishfolk",
+   "rare": true,
+   "innate_attribute": "Fortitude or Intelligence",
+   "innate_flaw": "Fisheye",
+   "attribute_flaw": "Social",
+   "heritage_merits": [
+    "Water Sense",
+    "Deep Dweller"
+   ],
+   "heritage_magic": "Tidewarden",
+   "creation_allowed": true,
+   "link": "../rulebook/ch8.html#part-2-rare-heritages-storyteller-approval-required-fishfolk"
+  },
+  {
+   "name": "Incorporeal Undead",
+   "rare": true,
+   "innate_attribute": "Former heritage's",
+   "innate_flaw": "Insubstantial",
+   "attribute_flaw": "Former heritage's",
+   "heritage_merits": [
+    "Unseen",
+    "Grave Voice"
+   ],
+   "heritage_magic": "Manifestation",
+   "creation_allowed": false,
+   "link": "../rulebook/ch8.html#part-2-rare-heritages-storyteller-approval-required-incorporeal-undead"
+  },
+  {
+   "name": "Merfolk",
+   "rare": true,
+   "innate_attribute": "Charisma or Perception",
+   "innate_flaw": "Tidal Pull",
+   "attribute_flaw": "Mental",
+   "heritage_merits": [
+    "Tide Born",
+    "Striking Beauty"
+   ],
+   "heritage_magic": "Siren Song",
+   "creation_allowed": true,
+   "link": "../rulebook/ch8.html#part-2-rare-heritages-storyteller-approval-required-merfolk"
+  },
+  {
+   "name": "Migurd",
+   "rare": true,
+   "innate_attribute": "Perception or Wisdom",
+   "innate_flaw": "Lost in Translation",
+   "attribute_flaw": "Physical",
+   "heritage_merits": [
+    "Telepathic Read",
+    "Demon Continent Instinct"
+   ],
+   "heritage_magic": "Mindvoice",
+   "creation_allowed": true,
+   "link": "../rulebook/ch8.html#part-2-rare-heritages-storyteller-approval-required-migurd"
+  },
+  {
+   "name": "Skyfolk",
+   "rare": true,
+   "innate_attribute": "Perception or Dexterity",
+   "innate_flaw": "Above It All",
+   "attribute_flaw": "Social",
+   "heritage_merits": [
+    "Far Sight",
+    "Wind Born"
+   ],
+   "heritage_magic": "Heaven's Wing",
+   "creation_allowed": true,
+   "link": "../rulebook/ch8.html#part-2-rare-heritages-storyteller-approval-required-skyfolk"
+  },
+  {
+   "name": "Superd",
+   "rare": true,
+   "innate_attribute": "Strength or Composure",
+   "innate_flaw": "Spear Sworn",
+   "attribute_flaw": "Social",
+   "heritage_merits": [
+    "Third Eye",
+    "Soul Spear"
+   ],
+   "heritage_magic": "Soulbound",
+   "creation_allowed": true,
+   "link": "../rulebook/ch8.html#part-2-rare-heritages-storyteller-approval-required-superd"
+  },
+  {
+   "name": "Tiny",
+   "rare": true,
+   "innate_attribute": "Dexterity or Charisma",
+   "innate_flaw": "Tiny",
+   "attribute_flaw": "Physical",
+   "heritage_merits": [
+    "Hard to Hit",
+    "Tiny Terror"
+   ],
+   "heritage_magic": "Glamour",
+   "creation_allowed": true,
+   "link": "../rulebook/ch8.html#part-2-rare-heritages-storyteller-approval-required-tiny"
+  },
+  {
+   "name": "Vampire",
+   "rare": true,
+   "innate_attribute": "Any one",
+   "innate_flaw": "Compulsion",
+   "attribute_flaw": "None",
+   "heritage_merits": [
+    "Resilience"
+   ],
+   "heritage_magic": "Vampiric Powers",
+   "creation_allowed": true,
+   "link": "../rulebook/ch8.html#part-2-rare-heritages-storyteller-approval-required-vampire"
+  }
+ ],
+ "merits": [
+  {
+   "name": "Ambidextrous",
+   "group": "Physical",
+   "cost": {
+    "text": "2",
+    "kind": "fixed",
+    "cost": 2
+   },
+   "link": "../rulebook/ch9.html#core-merits-ambidextrous"
+  },
+  {
+   "name": "Bonus Aggravated Health",
+   "group": "Physical",
+   "cost": {
+    "text": "4 for 1 box, 7 for 2",
+    "kind": "levels",
+    "levels": [
+     4,
+     7
+    ],
+    "unit": "box"
+   },
+   "link": "../rulebook/ch9.html#core-merits-bonus-aggravated-health"
+  },
+  {
+   "name": "Bonus Lethal Health",
+   "group": "Physical",
+   "cost": {
+    "text": "3 for 1 box, 5 for 2",
+    "kind": "levels",
+    "levels": [
+     3,
+     5
+    ],
+    "unit": "box"
+   },
+   "link": "../rulebook/ch9.html#core-merits-bonus-lethal-health"
+  },
+  {
+   "name": "Gifted Athlete",
+   "group": "Physical",
+   "cost": {
+    "text": "2 per dot, max 3",
+    "kind": "per_dot",
+    "per": 2,
+    "max": 3
+   },
+   "link": "../rulebook/ch9.html#core-merits-gifted-athlete"
+  },
+  {
+   "name": "Iron Will",
+   "group": "Physical",
+   "cost": {
+    "text": "2 per dot, max 3",
+    "kind": "per_dot",
+    "per": 2,
+    "max": 3
+   },
+   "link": "../rulebook/ch9.html#core-merits-iron-will"
+  },
+  {
+   "name": "Keen Senses",
+   "group": "Physical",
+   "cost": {
+    "text": "2 per dot, max 3",
+    "kind": "per_dot",
+    "per": 2,
+    "max": 3
+   },
+   "link": "../rulebook/ch9.html#core-merits-keen-senses"
+  },
+  {
+   "name": "Natural Armor",
+   "group": "Physical",
+   "cost": {
+    "text": "4 per dot, max 3",
+    "kind": "per_dot",
+    "per": 4,
+    "max": 3
+   },
+   "link": "../rulebook/ch9.html#core-merits-natural-armor"
+  },
+  {
+   "name": "Quick Reflexes",
+   "group": "Physical",
+   "cost": {
+    "text": "2 per dot, max 3",
+    "kind": "per_dot",
+    "per": 2,
+    "max": 3
+   },
+   "link": "../rulebook/ch9.html#core-merits-quick-reflexes"
+  },
+  {
+   "name": "Resilience",
+   "group": "Physical",
+   "cost": {
+    "text": "2 per dot, max 7",
+    "kind": "per_dot",
+    "per": 2,
+    "max": 7
+   },
+   "link": "../rulebook/ch9.html#core-merits-resilience"
+  },
+  {
+   "name": "Survivor's Grit",
+   "group": "Physical",
+   "cost": {
+    "text": "2 per dot, max 5",
+    "kind": "per_dot",
+    "per": 2,
+    "max": 5
+   },
+   "link": "../rulebook/ch9.html#core-merits-survivors-grit"
+  },
+  {
+   "name": "Animal Kinship",
+   "group": "Social",
+   "cost": {
+    "text": "2 per dot, max 3",
+    "kind": "per_dot",
+    "per": 2,
+    "max": 3
+   },
+   "link": "../rulebook/ch9.html#core-merits-animal-kinship"
+  },
+  {
+   "name": "Born Negotiator",
+   "group": "Social",
+   "cost": {
+    "text": "2 per dot, max 3",
+    "kind": "per_dot",
+    "per": 2,
+    "max": 3
+   },
+   "link": "../rulebook/ch9.html#core-merits-born-negotiator"
+  },
+  {
+   "name": "Come Back",
+   "group": "Social",
+   "cost": {
+    "text": "2 per dot, max 3",
+    "kind": "per_dot",
+    "per": 2,
+    "max": 3
+   },
+   "link": "../rulebook/ch9.html#core-merits-come-back"
+  },
+  {
+   "name": "Commanding Voice",
+   "group": "Social",
+   "cost": {
+    "text": "2 per dot, max 3",
+    "kind": "per_dot",
+    "per": 2,
+    "max": 3
+   },
+   "link": "../rulebook/ch9.html#core-merits-commanding-voice"
+  },
+  {
+   "name": "Disquieting Presence",
+   "group": "Social",
+   "cost": {
+    "text": "2 per dot, max 3",
+    "kind": "per_dot",
+    "per": 2,
+    "max": 3
+   },
+   "link": "../rulebook/ch9.html#core-merits-disquieting-presence"
+  },
+  {
+   "name": "Honest Face",
+   "group": "Social",
+   "cost": {
+    "text": "2 per dot, max 3",
+    "kind": "per_dot",
+    "per": 2,
+    "max": 3
+   },
+   "link": "../rulebook/ch9.html#core-merits-honest-face"
+  },
+  {
+   "name": "Natural Leader",
+   "group": "Social",
+   "cost": {
+    "text": "2 per dot, max 3",
+    "kind": "per_dot",
+    "per": 2,
+    "max": 3
+   },
+   "link": "../rulebook/ch9.html#core-merits-natural-leader"
+  },
+  {
+   "name": "Silver Tongue",
+   "group": "Social",
+   "cost": {
+    "text": "2 per dot, max 3",
+    "kind": "per_dot",
+    "per": 2,
+    "max": 3
+   },
+   "link": "../rulebook/ch9.html#core-merits-silver-tongue"
+  },
+  {
+   "name": "Social Butterfly",
+   "group": "Social",
+   "cost": {
+    "text": "2 per dot, max 3",
+    "kind": "per_dot",
+    "per": 2,
+    "max": 3
+   },
+   "link": "../rulebook/ch9.html#core-merits-social-butterfly"
+  },
+  {
+   "name": "Striking Looks",
+   "group": "Social",
+   "cost": {
+    "text": "2 per dot, max 3",
+    "kind": "per_dot",
+    "per": 2,
+    "max": 3
+   },
+   "link": "../rulebook/ch9.html#core-merits-striking-looks"
+  },
+  {
+   "name": "Calm Mind",
+   "group": "Mental",
+   "cost": {
+    "text": "2 per dot, max 3",
+    "kind": "per_dot",
+    "per": 2,
+    "max": 3
+   },
+   "link": "../rulebook/ch9.html#core-merits-calm-mind"
+  },
+  {
+   "name": "Danger Sense",
+   "group": "Mental",
+   "cost": {
+    "text": "2",
+    "kind": "fixed",
+    "cost": 2
+   },
+   "link": "../rulebook/ch9.html#core-merits-danger-sense"
+  },
+  {
+   "name": "Direction Sense",
+   "group": "Mental",
+   "cost": {
+    "text": "3",
+    "kind": "fixed",
+    "cost": 3
+   },
+   "link": "../rulebook/ch9.html#core-merits-direction-sense"
+  },
+  {
+   "name": "Eidetic Memory",
+   "group": "Mental",
+   "cost": {
+    "text": "2",
+    "kind": "fixed",
+    "cost": 2
+   },
+   "link": "../rulebook/ch9.html#core-merits-eidetic-memory"
+  },
+  {
+   "name": "Encyclopedic Knowledge",
+   "group": "Mental",
+   "cost": {
+    "text": "3",
+    "kind": "fixed",
+    "cost": 3
+   },
+   "link": "../rulebook/ch9.html#core-merits-encyclopedic-knowledge"
+  },
+  {
+   "name": "Iron Focus",
+   "group": "Mental",
+   "cost": {
+    "text": "2 per dot, max 3",
+    "kind": "per_dot",
+    "per": 2,
+    "max": 3
+   },
+   "link": "../rulebook/ch9.html#core-merits-iron-focus"
+  },
+  {
+   "name": "Jack of All Trades",
+   "group": "Mental",
+   "cost": {
+    "text": "4",
+    "kind": "fixed",
+    "cost": 4
+   },
+   "link": "../rulebook/ch9.html#core-merits-jack-of-all-trades"
+  },
+  {
+   "name": "Multilingual",
+   "group": "Mental",
+   "cost": {
+    "text": "2 per dot, max 5",
+    "kind": "per_dot",
+    "per": 2,
+    "max": 5
+   },
+   "link": "../rulebook/ch9.html#core-merits-multilingual"
+  },
+  {
+   "name": "Sharp Mind",
+   "group": "Mental",
+   "cost": {
+    "text": "2 per dot, max 3",
+    "kind": "per_dot",
+    "per": 2,
+    "max": 3
+   },
+   "link": "../rulebook/ch9.html#core-merits-sharp-mind"
+  },
+  {
+   "name": "Tactical Mind",
+   "group": "Mental",
+   "cost": {
+    "text": "3",
+    "kind": "fixed",
+    "cost": 3
+   },
+   "link": "../rulebook/ch9.html#core-merits-tactical-mind"
+  },
+  {
+   "name": "Arcane Ward",
+   "group": "Magical",
+   "cost": {
+    "text": "2 per dot, max 3",
+    "kind": "per_dot",
+    "per": 2,
+    "max": 3
+   },
+   "link": "../rulebook/ch9.html#core-merits-arcane-ward"
+  },
+  {
+   "name": "Aura Sensitivity",
+   "group": "Magical",
+   "cost": {
+    "text": "2 per dot, max 3",
+    "kind": "per_dot",
+    "per": 2,
+    "max": 3
+   },
+   "link": "../rulebook/ch9.html#core-merits-aura-sensitivity"
+  },
+  {
+   "name": "Deep Well",
+   "group": "Magical",
+   "cost": {
+    "text": "4",
+    "kind": "fixed",
+    "cost": 4
+   },
+   "link": "../rulebook/ch9.html#core-merits-deep-well"
+  },
+  {
+   "name": "Elemental Kinship",
+   "group": "Magical",
+   "cost": {
+    "text": "2 per dot, max 3",
+    "kind": "per_dot",
+    "per": 2,
+    "max": 3
+   },
+   "link": "../rulebook/ch9.html#core-merits-elemental-kinship"
+  },
+  {
+   "name": "Leyline Sense",
+   "group": "Magical",
+   "cost": {
+    "text": "2",
+    "kind": "fixed",
+    "cost": 2
+   },
+   "link": "../rulebook/ch9.html#core-merits-leyline-sense"
+  },
+  {
+   "name": "Magical Affinity",
+   "group": "Magical",
+   "cost": {
+    "text": "5",
+    "kind": "fixed",
+    "cost": 5
+   },
+   "link": "../rulebook/ch9.html#core-merits-magical-affinity"
+  },
+  {
+   "name": "Mana Reservoir",
+   "group": "Magical",
+   "cost": {
+    "text": "2 per dot, max 5",
+    "kind": "per_dot",
+    "per": 2,
+    "max": 5
+   },
+   "link": "../rulebook/ch9.html#core-merits-mana-reservoir"
+  },
+  {
+   "name": "Spell Memory",
+   "group": "Magical",
+   "cost": {
+    "text": "2 per dot, max 3",
+    "kind": "per_dot",
+    "per": 2,
+    "max": 3
+   },
+   "link": "../rulebook/ch9.html#core-merits-spell-memory"
+  },
+  {
+   "name": "Spell Touched",
+   "group": "Magical",
+   "cost": {
+    "text": "2 per dot, max 3",
+    "kind": "per_dot",
+    "per": 2,
+    "max": 3
+   },
+   "link": "../rulebook/ch9.html#core-merits-spell-touched"
+  },
+  {
+   "name": "Steady Focus",
+   "group": "Magical",
+   "cost": {
+    "text": "2 per dot, max 3",
+    "kind": "per_dot",
+    "per": 2,
+    "max": 3
+   },
+   "link": "../rulebook/ch9.html#core-merits-steady-focus"
+  },
+  {
+   "name": "Familiar Bond",
+   "group": "Innate Power",
+   "cost": {
+    "text": "2 per dot, max 3",
+    "kind": "per_dot",
+    "per": 2,
+    "max": 3
+   },
+   "link": "../rulebook/ch9.html#core-merits-familiar-bond"
+  },
+  {
+   "name": "Fast Healer",
+   "group": "Innate Power",
+   "cost": {
+    "text": "2 per dot, max 3",
+    "kind": "per_dot",
+    "per": 2,
+    "max": 3
+   },
+   "link": "../rulebook/ch9.html#core-merits-fast-healer"
+  },
+  {
+   "name": "Fey Touched",
+   "group": "Innate Power",
+   "cost": {
+    "text": "3 per Gift, max 2 Gifts",
+    "kind": "per_dot",
+    "per": 3,
+    "max": 2,
+    "unit": "Gift"
+   },
+   "link": "../rulebook/ch9.html#core-merits-fey-touched"
+  },
+  {
+   "name": "Hard to Kill",
+   "group": "Innate Power",
+   "cost": {
+    "text": "4",
+    "kind": "fixed",
+    "cost": 4
+   },
+   "link": "../rulebook/ch9.html#core-merits-hard-to-kill"
+  },
+  {
+   "name": "Lucky",
+   "group": "Innate Power",
+   "cost": {
+    "text": "5",
+    "kind": "fixed",
+    "cost": 5
+   },
+   "link": "../rulebook/ch9.html#core-merits-lucky"
+  },
+  {
+   "name": "Night Eyes",
+   "group": "Innate Power",
+   "cost": {
+    "text": "2",
+    "kind": "fixed",
+    "cost": 2
+   },
+   "link": "../rulebook/ch9.html#core-merits-night-eyes"
+  },
+  {
+   "name": "Old Soul",
+   "group": "Innate Power",
+   "cost": {
+    "text": "2",
+    "kind": "fixed",
+    "cost": 2
+   },
+   "link": "../rulebook/ch9.html#core-merits-old-soul"
+  },
+  {
+   "name": "Second Wind",
+   "group": "Innate Power",
+   "cost": {
+    "text": "3",
+    "kind": "fixed",
+    "cost": 3
+   },
+   "link": "../rulebook/ch9.html#core-merits-second-wind"
+  },
+  {
+   "name": "Youthful Charisma",
+   "group": "Innate Power",
+   "cost": {
+    "text": "2 per dot, max 3",
+    "kind": "per_dot",
+    "per": 2,
+    "max": 3
+   },
+   "link": "../rulebook/ch9.html#core-merits-youthful-charisma"
+  },
+  {
+   "name": "Magic Eye: Mana Perception",
+   "group": "Magic Eyes",
+   "cost": {
+    "text": "5",
+    "kind": "fixed",
+    "cost": 5
+   },
+   "link": "../rulebook/ch9.html#magic-eyes-mana-perception"
+  },
+  {
+   "name": "Magic Eye: Identification",
+   "group": "Magic Eyes",
+   "cost": {
+    "text": "5",
+    "kind": "fixed",
+    "cost": 5
+   },
+   "link": "../rulebook/ch9.html#magic-eyes-identification"
+  },
+  {
+   "name": "Magic Eye: X-Ray",
+   "group": "Magic Eyes",
+   "cost": {
+    "text": "5",
+    "kind": "fixed",
+    "cost": 5
+   },
+   "link": "../rulebook/ch9.html#magic-eyes-x-ray"
+  },
+  {
+   "name": "Magic Eye: Clairvoyant",
+   "group": "Magic Eyes",
+   "cost": {
+    "text": "5",
+    "kind": "fixed",
+    "cost": 5
+   },
+   "link": "../rulebook/ch9.html#magic-eyes-clairvoyant"
+  },
+  {
+   "name": "Magic Eye: Foresight",
+   "group": "Magic Eyes",
+   "cost": {
+    "text": "7",
+    "kind": "fixed",
+    "cost": 7
+   },
+   "link": "../rulebook/ch9.html#magic-eyes-foresight"
+  },
+  {
+   "name": "Magic Eye: Absorption",
+   "group": "Magic Eyes",
+   "cost": {
+    "text": "7",
+    "kind": "fixed",
+    "cost": 7
+   },
+   "link": "../rulebook/ch9.html#magic-eyes-absorption"
+  },
+  {
+   "name": "Magic Eye: All-Seeing",
+   "group": "Magic Eyes",
+   "cost": {
+    "text": "7",
+    "kind": "fixed",
+    "cost": 7
+   },
+   "link": "../rulebook/ch9.html#magic-eyes-all-seeing"
+  },
+  {
+   "name": "Magic Eye: Absolute Void",
+   "group": "Magic Eyes",
+   "cost": {
+    "text": "7",
+    "kind": "fixed",
+    "cost": 7
+   },
+   "link": "../rulebook/ch9.html#magic-eyes-absolute-void"
+  },
+  {
+   "name": "Magic Eye: Tracking",
+   "group": "Magic Eyes",
+   "cost": {
+    "text": "5",
+    "kind": "fixed",
+    "cost": 5
+   },
+   "link": "../rulebook/ch9.html#magic-eyes-tracking"
+  },
+  {
+   "name": "Magic Eye: Superd",
+   "group": "Magic Eyes",
+   "cost": {
+    "text": "5",
+    "kind": "fixed",
+    "cost": 5
+   },
+   "link": "../rulebook/ch9.html#magic-eyes-superd"
+  },
+  {
+   "name": "Magic Eye: Affection",
+   "group": "Magic Eyes",
+   "cost": {
+    "text": "5",
+    "kind": "fixed",
+    "cost": 5
+   },
+   "link": "../rulebook/ch9.html#magic-eyes-affection"
+  },
+  {
+   "name": "Devil's Fruit",
+   "group": "Special Powers",
+   "cost": {
+    "text": "7 per dot, max 2",
+    "kind": "per_dot",
+    "per": 7,
+    "max": 2
+   },
+   "link": "../rulebook/ch9.html#special-powers-devils-fruit"
+  },
+  {
+   "name": "Shadow Monarch",
+   "group": "Special Powers",
+   "cost": {
+    "text": "7 per dot, max 2",
+    "kind": "per_dot",
+    "per": 7,
+    "max": 2
+   },
+   "link": "../rulebook/ch9.html#special-powers-shadow-monarch"
+  },
+  {
+   "name": "Bankai Potential",
+   "group": "Special Powers",
+   "cost": {
+    "text": "7 per dot, max 2",
+    "kind": "per_dot",
+    "per": 7,
+    "max": 2
+   },
+   "link": "../rulebook/ch9.html#special-powers-bankai-potential"
+  },
+  {
+   "name": "Titan Shift",
+   "group": "Special Powers",
+   "cost": {
+    "text": "7 per dot, max 2",
+    "kind": "per_dot",
+    "per": 7,
+    "max": 2
+   },
+   "link": "../rulebook/ch9.html#special-powers-titan-shift"
+  },
+  {
+   "name": "Cursed Energy",
+   "group": "Special Powers",
+   "cost": {
+    "text": "7 per dot, max 2",
+    "kind": "per_dot",
+    "per": 7,
+    "max": 2
+   },
+   "link": "../rulebook/ch9.html#special-powers-cursed-energy"
+  },
+  {
+   "name": "Nen Awakening",
+   "group": "Special Powers",
+   "cost": {
+    "text": "7 per dot, max 2",
+    "kind": "per_dot",
+    "per": 7,
+    "max": 2
+   },
+   "link": "../rulebook/ch9.html#special-powers-nen-awakening"
+  },
+  {
+   "name": "Witch Factor",
+   "group": "Special Powers",
+   "cost": {
+    "text": "7 per dot, max 2",
+    "kind": "per_dot",
+    "per": 7,
+    "max": 2
+   },
+   "link": "../rulebook/ch9.html#special-powers-witch-factor"
+  },
+  {
+   "name": "Breath Style",
+   "group": "Special Powers",
+   "cost": {
+    "text": "7 per dot, max 2",
+    "kind": "per_dot",
+    "per": 7,
+    "max": 2
+   },
+   "link": "../rulebook/ch9.html#special-powers-breath-style"
+  },
+  {
+   "name": "Unique Skill",
+   "group": "Special Powers",
+   "cost": {
+    "text": "7 per dot, max 2",
+    "kind": "per_dot",
+    "per": 7,
+    "max": 2
+   },
+   "link": "../rulebook/ch9.html#special-powers-unique-skill"
+  },
+  {
+   "name": "Prosthetic Limb",
+   "group": "Arcane Enhancements",
+   "cost": {
+    "text": "4",
+    "kind": "fixed",
+    "cost": 4
+   },
+   "heavy": false,
+   "link": "../rulebook/ch9.html#arcane-enhancements-prosthetic-limb"
+  },
+  {
+   "name": "Filter Lungs",
+   "group": "Arcane Enhancements",
+   "cost": {
+    "text": "4",
+    "kind": "fixed",
+    "cost": 4
+   },
+   "heavy": false,
+   "link": "../rulebook/ch9.html#arcane-enhancements-filter-lungs"
+  },
+  {
+   "name": "Optic Implants",
+   "group": "Arcane Enhancements",
+   "cost": {
+    "text": "4",
+    "kind": "fixed",
+    "cost": 4
+   },
+   "heavy": false,
+   "link": "../rulebook/ch9.html#arcane-enhancements-optic-implants"
+  },
+  {
+   "name": "Skill Chip",
+   "group": "Arcane Enhancements",
+   "cost": {
+    "text": "4",
+    "kind": "fixed",
+    "cost": 4
+   },
+   "heavy": false,
+   "link": "../rulebook/ch9.html#arcane-enhancements-skill-chip"
+  },
+  {
+   "name": "Reinforced Bones",
+   "group": "Arcane Enhancements",
+   "cost": {
+    "text": "5",
+    "kind": "fixed",
+    "cost": 5
+   },
+   "heavy": false,
+   "link": "../rulebook/ch9.html#arcane-enhancements-reinforced-bones"
+  },
+  {
+   "name": "Hidden Blade",
+   "group": "Arcane Enhancements",
+   "cost": {
+    "text": "5",
+    "kind": "fixed",
+    "cost": 5
+   },
+   "heavy": false,
+   "link": "../rulebook/ch9.html#arcane-enhancements-hidden-blade"
+  },
+  {
+   "name": "Spring Legs",
+   "group": "Arcane Enhancements",
+   "cost": {
+    "text": "5",
+    "kind": "fixed",
+    "cost": 5
+   },
+   "heavy": false,
+   "link": "../rulebook/ch9.html#arcane-enhancements-spring-legs"
+  },
+  {
+   "name": "Muscle Weave",
+   "group": "Arcane Enhancements",
+   "cost": {
+    "text": "6",
+    "kind": "fixed",
+    "cost": 6
+   },
+   "heavy": false,
+   "link": "../rulebook/ch9.html#arcane-enhancements-muscle-weave"
+  },
+  {
+   "name": "Reflex Wiring",
+   "group": "Arcane Enhancements",
+   "cost": {
+    "text": "6",
+    "kind": "fixed",
+    "cost": 6
+   },
+   "heavy": false,
+   "link": "../rulebook/ch9.html#arcane-enhancements-reflex-wiring"
+  },
+  {
+   "name": "Neural Link",
+   "group": "Arcane Enhancements",
+   "cost": {
+    "text": "6",
+    "kind": "fixed",
+    "cost": 6
+   },
+   "heavy": false,
+   "link": "../rulebook/ch9.html#arcane-enhancements-neural-link"
+  },
+  {
+   "name": "Subdermal Plating",
+   "group": "Arcane Enhancements",
+   "cost": {
+    "text": "7, heavy",
+    "kind": "fixed",
+    "cost": 7
+   },
+   "heavy": true,
+   "link": "../rulebook/ch9.html#arcane-enhancements-subdermal-plating"
+  },
+  {
+   "name": "Jump Jets",
+   "group": "Arcane Enhancements",
+   "cost": {
+    "text": "8, heavy",
+    "kind": "fixed",
+    "cost": 8
+   },
+   "heavy": true,
+   "link": "../rulebook/ch9.html#arcane-enhancements-jump-jets"
+  },
+  {
+   "name": "Mana Capacitor",
+   "group": "Arcane Enhancements",
+   "cost": {
+    "text": "8, heavy",
+    "kind": "fixed",
+    "cost": 8
+   },
+   "heavy": true,
+   "link": "../rulebook/ch9.html#arcane-enhancements-mana-capacitor"
+  }
+ ],
+ "flaws": [
+  {
+   "name": "Addiction",
+   "group": "Physical",
+   "points": {
+    "text": "1 per dot, max 5",
+    "kind": "per_dot",
+    "per": 1,
+    "max": 5
+   },
+   "link": "../rulebook/ch9.html#core-flaws-addiction"
+  },
+  {
+   "name": "Blind",
+   "group": "Physical",
+   "points": {
+    "text": "7",
+    "kind": "fixed",
+    "cost": 7
+   },
+   "link": "../rulebook/ch9.html#core-flaws-blind"
+  },
+  {
+   "name": "Chronic Pain",
+   "group": "Physical",
+   "points": {
+    "text": "1 per dot, max 3",
+    "kind": "per_dot",
+    "per": 1,
+    "max": 3
+   },
+   "link": "../rulebook/ch9.html#core-flaws-chronic-pain"
+  },
+  {
+   "name": "Clumsy",
+   "group": "Physical",
+   "points": {
+    "text": "1 per dot, max 3",
+    "kind": "per_dot",
+    "per": 1,
+    "max": 3
+   },
+   "link": "../rulebook/ch9.html#core-flaws-clumsy"
+  },
+  {
+   "name": "Deaf",
+   "group": "Physical",
+   "points": {
+    "text": "5",
+    "kind": "fixed",
+    "cost": 5
+   },
+   "link": "../rulebook/ch9.html#core-flaws-deaf"
+  },
+  {
+   "name": "Frail",
+   "group": "Physical",
+   "points": {
+    "text": "1 per dot, max 2",
+    "kind": "per_dot",
+    "per": 1,
+    "max": 2
+   },
+   "link": "../rulebook/ch9.html#core-flaws-frail"
+  },
+  {
+   "name": "Glass Jaw",
+   "group": "Physical",
+   "points": {
+    "text": "1 per dot, max 3",
+    "kind": "per_dot",
+    "per": 1,
+    "max": 3
+   },
+   "link": "../rulebook/ch9.html#core-flaws-glass-jaw"
+  },
+  {
+   "name": "Missing Limb",
+   "group": "Physical",
+   "points": {
+    "text": "3 for a hand or foot, 5 for an arm or leg",
+    "kind": "choice",
+    "options": [
+     3,
+     5
+    ]
+   },
+   "link": "../rulebook/ch9.html#core-flaws-missing-limb"
+  },
+  {
+   "name": "Sickly",
+   "group": "Physical",
+   "points": {
+    "text": "1 per dot, max 3",
+    "kind": "per_dot",
+    "per": 1,
+    "max": 3
+   },
+   "link": "../rulebook/ch9.html#core-flaws-sickly"
+  },
+  {
+   "name": "Slow",
+   "group": "Physical",
+   "points": {
+    "text": "1 per dot, max 3",
+    "kind": "per_dot",
+    "per": 1,
+    "max": 3
+   },
+   "link": "../rulebook/ch9.html#core-flaws-slow"
+  },
+  {
+   "name": "Awkward",
+   "group": "Social",
+   "points": {
+    "text": "1 per dot, max 3",
+    "kind": "per_dot",
+    "per": 1,
+    "max": 3
+   },
+   "link": "../rulebook/ch9.html#core-flaws-awkward"
+  },
+  {
+   "name": "Dark Secret",
+   "group": "Social",
+   "points": {
+    "text": "1 per dot, max 4",
+    "kind": "per_dot",
+    "per": 1,
+    "max": 4
+   },
+   "link": "../rulebook/ch9.html#core-flaws-dark-secret"
+  },
+  {
+   "name": "Debt",
+   "group": "Social",
+   "points": {
+    "text": "1 per dot, max 3",
+    "kind": "per_dot",
+    "per": 1,
+    "max": 3
+   },
+   "link": "../rulebook/ch9.html#core-flaws-debt"
+  },
+  {
+   "name": "Enemy",
+   "group": "Social",
+   "points": {
+    "text": "2, 3, or 5 (1 to 3 dots)",
+    "kind": "levels",
+    "levels": [
+     2,
+     3,
+     5
+    ]
+   },
+   "link": "../rulebook/ch9.html#core-flaws-enemy"
+  },
+  {
+   "name": "Honest to a Fault",
+   "group": "Social",
+   "points": {
+    "text": "3",
+    "kind": "fixed",
+    "cost": 3
+   },
+   "link": "../rulebook/ch9.html#core-flaws-honest-to-a-fault"
+  },
+  {
+   "name": "Infamous Family",
+   "group": "Social",
+   "points": {
+    "text": "1 per dot, max 3",
+    "kind": "per_dot",
+    "per": 1,
+    "max": 3
+   },
+   "link": "../rulebook/ch9.html#core-flaws-infamous-family"
+  },
+  {
+   "name": "Notoriety",
+   "group": "Social",
+   "points": {
+    "text": "1 per dot, max 3",
+    "kind": "per_dot",
+    "per": 1,
+    "max": 3
+   },
+   "link": "../rulebook/ch9.html#core-flaws-notoriety"
+  },
+  {
+   "name": "Outcast",
+   "group": "Social",
+   "points": {
+    "text": "1 per dot, max 3",
+    "kind": "per_dot",
+    "per": 1,
+    "max": 3
+   },
+   "link": "../rulebook/ch9.html#core-flaws-outcast"
+  },
+  {
+   "name": "Sworn Rival",
+   "group": "Social",
+   "points": {
+    "text": "2",
+    "kind": "fixed",
+    "cost": 2
+   },
+   "link": "../rulebook/ch9.html#core-flaws-sworn-rival"
+  },
+  {
+   "name": "Ward",
+   "group": "Social",
+   "points": {
+    "text": "1 per dot, max 3",
+    "kind": "per_dot",
+    "per": 1,
+    "max": 3
+   },
+   "link": "../rulebook/ch9.html#core-flaws-ward"
+  },
+  {
+   "name": "Absent-Minded",
+   "group": "Mental",
+   "points": {
+    "text": "1 per dot, max 3",
+    "kind": "per_dot",
+    "per": 1,
+    "max": 3
+   },
+   "link": "../rulebook/ch9.html#core-flaws-absent-minded"
+  },
+  {
+   "name": "Amnesia",
+   "group": "Mental",
+   "points": {
+    "text": "2 to 5 (1 to 4 dots)",
+    "kind": "levels",
+    "levels": [
+     2,
+     3,
+     4,
+     5
+    ]
+   },
+   "link": "../rulebook/ch9.html#core-flaws-amnesia"
+  },
+  {
+   "name": "Compulsion",
+   "group": "Mental",
+   "points": {
+    "text": "1 per dot, max 4",
+    "kind": "per_dot",
+    "per": 1,
+    "max": 4
+   },
+   "link": "../rulebook/ch9.html#core-flaws-compulsion"
+  },
+  {
+   "name": "Gullible",
+   "group": "Mental",
+   "points": {
+    "text": "1 per dot, max 3",
+    "kind": "per_dot",
+    "per": 1,
+    "max": 3
+   },
+   "link": "../rulebook/ch9.html#core-flaws-gullible"
+  },
+  {
+   "name": "Haunted",
+   "group": "Mental",
+   "points": {
+    "text": "2 to 4 (1 to 3 dots)",
+    "kind": "levels",
+    "levels": [
+     2,
+     3,
+     4
+    ]
+   },
+   "link": "../rulebook/ch9.html#core-flaws-haunted"
+  },
+  {
+   "name": "Insomnia",
+   "group": "Mental",
+   "points": {
+    "text": "1 per dot, max 2",
+    "kind": "per_dot",
+    "per": 1,
+    "max": 2
+   },
+   "link": "../rulebook/ch9.html#core-flaws-insomnia"
+  },
+  {
+   "name": "Nightmares",
+   "group": "Mental",
+   "points": {
+    "text": "1 per dot, max 2",
+    "kind": "per_dot",
+    "per": 1,
+    "max": 2
+   },
+   "link": "../rulebook/ch9.html#core-flaws-nightmares"
+  },
+  {
+   "name": "Paranoid",
+   "group": "Mental",
+   "points": {
+    "text": "1 per dot, max 3",
+    "kind": "per_dot",
+    "per": 1,
+    "max": 3
+   },
+   "link": "../rulebook/ch9.html#core-flaws-paranoid"
+  },
+  {
+   "name": "Phobia",
+   "group": "Mental",
+   "points": {
+    "text": "1 per dot, max 4",
+    "kind": "per_dot",
+    "per": 1,
+    "max": 4
+   },
+   "link": "../rulebook/ch9.html#core-flaws-phobia"
+  },
+  {
+   "name": "Reckless",
+   "group": "Mental",
+   "points": {
+    "text": "2",
+    "kind": "fixed",
+    "cost": 2
+   },
+   "link": "../rulebook/ch9.html#core-flaws-reckless"
+  },
+  {
+   "name": "Cursed",
+   "group": "Magical",
+   "points": {
+    "text": "2 to 7, set with the Storyteller",
+    "kind": "range",
+    "min": 2,
+    "max": 7
+   },
+   "link": "../rulebook/ch9.html#core-flaws-cursed"
+  },
+  {
+   "name": "Magic Averse",
+   "group": "Magical",
+   "points": {
+    "text": "1 per dot, max 7",
+    "kind": "per_dot",
+    "per": 1,
+    "max": 7
+   },
+   "link": "../rulebook/ch9.html#core-flaws-magic-averse"
+  },
+  {
+   "name": "Mana Beacon",
+   "group": "Magical",
+   "points": {
+    "text": "2",
+    "kind": "fixed",
+    "cost": 2
+   },
+   "link": "../rulebook/ch9.html#core-flaws-mana-beacon"
+  },
+  {
+   "name": "Mana Deficient",
+   "group": "Magical",
+   "points": {
+    "text": "1 per dot, max 5",
+    "kind": "per_dot",
+    "per": 1,
+    "max": 5
+   },
+   "link": "../rulebook/ch9.html#core-flaws-mana-deficient"
+  },
+  {
+   "name": "Mana Leak",
+   "group": "Magical",
+   "points": {
+    "text": "1 per dot, max 3",
+    "kind": "per_dot",
+    "per": 1,
+    "max": 3
+   },
+   "link": "../rulebook/ch9.html#core-flaws-mana-leak"
+  },
+  {
+   "name": "Mana Sensitive",
+   "group": "Magical",
+   "points": {
+    "text": "1 per dot, max 3",
+    "kind": "per_dot",
+    "per": 1,
+    "max": 3
+   },
+   "link": "../rulebook/ch9.html#core-flaws-mana-sensitive"
+  },
+  {
+   "name": "Slow Channel",
+   "group": "Magical",
+   "points": {
+    "text": "1 per dot, max 3",
+    "kind": "per_dot",
+    "per": 1,
+    "max": 3
+   },
+   "link": "../rulebook/ch9.html#core-flaws-slow-channel"
+  },
+  {
+   "name": "Unstable Magic",
+   "group": "Magical",
+   "points": {
+    "text": "1 per dot, max 3",
+    "kind": "per_dot",
+    "per": 1,
+    "max": 3
+   },
+   "link": "../rulebook/ch9.html#core-flaws-unstable-magic"
+  },
+  {
+   "name": "Void Touched",
+   "group": "Magical",
+   "points": {
+    "text": "3",
+    "kind": "fixed",
+    "cost": 3
+   },
+   "link": "../rulebook/ch9.html#core-flaws-void-touched"
+  },
+  {
+   "name": "Wild Mana",
+   "group": "Magical",
+   "points": {
+    "text": "2",
+    "kind": "fixed",
+    "cost": 2
+   },
+   "link": "../rulebook/ch9.html#core-flaws-wild-mana"
+  },
+  {
+   "name": "Devil's Bargain",
+   "group": "Special Powers",
+   "points": {
+    "text": "3 to 7 points back, 1 to 3 dots",
+    "kind": "range",
+    "min": 3,
+    "max": 7
+   },
+   "link": "../rulebook/ch9.html#special-powers-devils-bargain-flaw"
+  }
+ ],
+ "backgrounds": [
+  {
+   "name": "Allies",
+   "what": "Reliable people who will actively help you when asked.",
+   "link": "../rulebook/ch10.html#background-list-allies"
+  },
+  {
+   "name": "Contacts",
+   "what": "People who feed you information in a chosen field.",
+   "link": "../rulebook/ch10.html#background-list-contacts"
+  },
+  {
+   "name": "Fame",
+   "what": "How widely you are known, and for what.",
+   "link": "../rulebook/ch10.html#background-list-fame"
+  },
+  {
+   "name": "Fixer",
+   "what": "Someone who works outside normal channels and makes things happen: finding work, solving problems quietly, and connecting people.",
+   "link": "../rulebook/ch10.html#background-list-fixer"
+  },
+  {
+   "name": "Followers",
+   "what": "People personally loyal to you or your cause, not hired staff.",
+   "link": "../rulebook/ch10.html#background-list-followers"
+  },
+  {
+   "name": "Hacker",
+   "what": "Your skill at getting into and moving through the CCN and the crystal-based systems that run the modern world.",
+   "link": "../rulebook/ch10.html#background-list-hacker"
+  },
+  {
+   "name": "Influence",
+   "what": "Pull within one institution, organization, or power structure, defined at creation.",
+   "link": "../rulebook/ch10.html#background-list-influence"
+  },
+  {
+   "name": "Mentor",
+   "what": "A more experienced person invested in your growth.",
+   "link": "../rulebook/ch10.html#background-list-mentor"
+  },
+  {
+   "name": "Nobility",
+   "what": "You were born into a noble family.",
+   "link": "../rulebook/ch10.html#background-list-nobility"
+  },
+  {
+   "name": "Resources",
+   "what": "Wealth, income, and lifestyle.",
+   "link": "../rulebook/ch10.html#background-list-resources"
+  },
+  {
+   "name": "Retainers",
+   "what": "Staff, employees, or trained assistants in your service.",
+   "link": "../rulebook/ch10.html#background-list-retainers"
+  },
+  {
+   "name": "Safe House",
+   "what": "Secure places to hide, rest, or lie low.",
+   "link": "../rulebook/ch10.html#background-list-safe-house"
+  },
+  {
+   "name": "Street Cred",
+   "what": "Respect within a community or scene you define with the Storyteller.",
+   "link": "../rulebook/ch10.html#background-list-street-cred"
+  },
+  {
+   "name": "Subscribers",
+   "what": "An engaged audience that follows you on the CCN, as a creator, public figure, or someone whose life simply caught people's attention.",
+   "link": "../rulebook/ch10.html#background-list-subscribers"
+  }
+ ],
+ "styles": [
+  {
+   "name": "Quickcut Style",
+   "weapons": "Short Blades",
+   "primary": "Dexterity + Melee",
+   "secondary": "Dexterity + Stealth",
+   "link": "../rulebook/ch12.html#learning-styles-quickcut-style"
+  },
+  {
+   "name": "Silver Arc Style",
+   "weapons": "Long Blades",
+   "primary": "Dexterity + Melee",
+   "secondary": "Perception + Dodge",
+   "link": "../rulebook/ch12.html#learning-styles-silver-arc-style"
+  },
+  {
+   "name": "Timberfall Style",
+   "weapons": "Axes",
+   "primary": "Strength + Melee",
+   "secondary": "Fortitude + Endurance",
+   "link": "../rulebook/ch12.html#learning-styles-timberfall-style"
+  },
+  {
+   "name": "Heron's Reach Style",
+   "weapons": "Polearms",
+   "primary": "Dexterity + Melee",
+   "secondary": "Perception + Awareness",
+   "link": "../rulebook/ch12.html#learning-styles-herons-reach-style"
+  },
+  {
+   "name": "Wallguard Style",
+   "weapons": "Shields",
+   "primary": "Strength + Melee",
+   "secondary": "Fortitude + Endurance",
+   "link": "../rulebook/ch12.html#learning-styles-wallguard-style"
+  },
+  {
+   "name": "Ten Count Style",
+   "weapons": "Boxing",
+   "primary": "Strength + Martial Arts",
+   "secondary": "Fortitude + Endurance",
+   "link": "../rulebook/ch12.html#learning-styles-ten-count-style"
+  },
+  {
+   "name": "Drifting Leaf Style",
+   "weapons": "Kung Fu",
+   "primary": "Dexterity + Martial Arts",
+   "secondary": "Perception + Dodge",
+   "link": "../rulebook/ch12.html#learning-styles-drifting-leaf-style"
+  },
+  {
+   "name": "Main Event Style",
+   "weapons": "Wrestling",
+   "primary": "Strength + Martial Arts (or Athletics)",
+   "secondary": "Fortitude + Endurance",
+   "link": "../rulebook/ch12.html#learning-styles-main-event-style"
+  },
+  {
+   "name": "Windreader Style",
+   "weapons": "Bows",
+   "primary": "Dexterity + Ranged",
+   "secondary": "Perception + Awareness",
+   "link": "../rulebook/ch12.html#learning-styles-windreader-style"
+  },
+  {
+   "name": "Sundown Style",
+   "weapons": "Hand Guns",
+   "primary": "Dexterity + Ranged",
+   "secondary": "Perception + Awareness",
+   "link": "../rulebook/ch12.html#learning-styles-sundown-style"
+  },
+  {
+   "name": "Iron Rain Style",
+   "weapons": "Large Guns",
+   "primary": "Fortitude + Ranged",
+   "secondary": "Strength + Athletics",
+   "link": "../rulebook/ch12.html#learning-styles-iron-rain-style"
+  }
+ ],
+ "knowledges": [
+  {
+   "name": "Fire",
+   "kind": "Casting school",
+   "extra_mana_dice": "Damage",
+   "focus": "Heat and burning. Imposes Burning.",
+   "link": "../rulebook/ch13.html#fire-magic"
+  },
+  {
+   "name": "Water",
+   "kind": "Casting school",
+   "extra_mana_dice": "Attack or damage",
+   "focus": "Force, cold, and flow. Imposes Chilled; moves targets.",
+   "link": "../rulebook/ch13.html#water-magic"
+  },
+  {
+   "name": "Air",
+   "kind": "Casting school",
+   "extra_mana_dice": "Attack",
+   "focus": "Wind, speed, and precision. Ranged attacks and control.",
+   "link": "../rulebook/ch13.html#air-magic"
+  },
+  {
+   "name": "Earth",
+   "kind": "Casting school",
+   "extra_mana_dice": "Damage",
+   "focus": "Stone and terrain. Barriers and heavy damage.",
+   "link": "../rulebook/ch13.html#earth-magic"
+  },
+  {
+   "name": "Nature",
+   "kind": "Casting school",
+   "extra_mana_dice": "Attack or damage",
+   "focus": "Growth, vines, and spores. Roots, terrain, damage over time.",
+   "link": "../rulebook/ch13.html#nature-magic"
+  },
+  {
+   "name": "Bright",
+   "kind": "Casting school",
+   "extra_mana_dice": "Attack",
+   "focus": "Radiance. Harms undead, buffs the living, transfers mana.",
+   "link": "../rulebook/ch13.html#bright-magic"
+  },
+  {
+   "name": "Shade",
+   "kind": "Casting school",
+   "extra_mana_dice": "Damage",
+   "focus": "Darkness and drain. Harms the living, buffs undead, drains mana.",
+   "link": "../rulebook/ch13.html#shade-magic"
+  },
+  {
+   "name": "Battle Aura",
+   "kind": "Discipline",
+   "extra_mana_dice": "Attack or damage",
+   "focus": "Mana through body and weapon. Pairs with Combat Styles.",
+   "link": "../rulebook/ch13.html#battle-aura"
+  },
+  {
+   "name": "Circle Magic",
+   "kind": "Ritual disciplines",
+   "extra_mana_dice": "None in combat",
+   "focus": "Scrolls, divination, summoning, teleportation, contracts, binding, wards, and more.",
+   "link": "../rulebook/ch13.html#part-three-circle-magic"
+  }
+ ],
+ "freebies": {
+  "points": 7,
+  "costs": {
+   "Attribute": 3,
+   "Ability": 2,
+   "Combat Style": 4,
+   "Magical Knowledge": 4,
+   "Background": 1,
+   "Mana": 7
+  }
+ },
+ "stats": [
+  {
+   "name": "Willpower",
+   "start": "5 (4 to 6)",
+   "range": "1 to 10",
+   "used_for": "Social combat health. Spend 1 per turn: +3 dice, or reroll 3 failed dice.",
+   "gained": "Checks from acting on your drives and holding firm. Full row of checks: +1 dot."
+  },
+  {
+   "name": "Fate",
+   "start": "5",
+   "range": "1 to 10",
+   "used_for": "Weaving the story your way. Fate contests against opposing Fate.",
+   "gained": "Checks from influence, kept deals, and won contests. Never spent."
+  },
+  {
+   "name": "Sanity",
+   "start": "5",
+   "range": "1 to 10",
+   "used_for": "Resisting the Void. Lost dots bring traumas; at 1 or 10 the Storyteller takes control.",
+   "gained": "Checks from living life, time with loved ones, and therapy."
+  },
+  {
+   "name": "Mana",
+   "start": "1",
+   "range": "1 to 10",
+   "used_for": "Powers all magic. Pool = (Magic + Circle Magic) x Mana. M/T = Fortitude + Mana.",
+   "gained": "Freebies (7 per dot) or XP (new dot x7). Pool recovers each Upkeep and quickly between fights."
+  }
+ ]
+}
