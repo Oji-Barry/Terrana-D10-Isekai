@@ -346,9 +346,12 @@
 
   // A row of clickable dots. base = dots that come free (drawn locked).
   // limit (optional): dots above it can't be filled right now and are faded out
-  function dotRow(label, value, max, base, onSet, limit) {
+  // Outside Storyteller Mode nothing can be filled past 5 at creation (the
+  // Golden Rule), unless noCap is set (Willpower, Fate, Sanity).
+  function dotRow(label, value, max, base, onSet, limit, noCap) {
     base = base || 0;
     if (limit === undefined || limit === null) limit = max;
+    if (!noCap && !stMode()) limit = Math.min(limit, 5);
     var row = el('div', { class: 'dots', role: 'group', 'aria-label': label });
     for (var i = 1; i <= max; i++) {
       (function (n) {
@@ -858,7 +861,8 @@
         var base = b.name === 'Resources' ? 1 : 0;
         box.appendChild(el('div', { class: 'trait bg' }, [
           el('span', { class: 'trait-name' }, [b.name, el('span', { class: 'trait-what', text: b.what })]),
-          dotRow(b.name, bgVal(b.name), dotMax(7), base, function (v) { build.backgrounds[b.name] = v; refresh(true); }),
+          dotRow(b.name, bgVal(b.name), dotMax(7), base, function (v) { build.backgrounds[b.name] = v; refresh(true); },
+            bgVal(b.name) + Math.max(0, bgBudget() - bgSpent())),
           bookLink(b.link, 'Rules')
         ]));
       });
@@ -900,7 +904,8 @@
           }
           gl.appendChild(el('div', { class: 'trait guild' }, [
             pick,
-            dotRow('Guild ' + (i + 1) + ' standing', g.dots || 0, dotMax(7), 0, function (v) { build.guilds[i] = Object.assign(build.guilds[i] || { name: '' }, { dots: v }); refresh(true); })
+            dotRow('Guild ' + (i + 1) + ' standing', g.dots || 0, dotMax(7), 0, function (v) { build.guilds[i] = Object.assign(build.guilds[i] || { name: '' }, { dots: v }); refresh(true); },
+              (g.dots || 0) + Math.max(0, bgBudget() - bgSpent()))
           ]));
         })(i);
       }
@@ -956,7 +961,7 @@
       ['Willpower', 'Fate', 'Sanity'].forEach(function (n) {
         p.appendChild(el('div', { class: 'trait stat' }, [
           el('span', { class: 'trait-name', text: n }),
-          dotRow(n, statVal(n), 10, 0, function (v) { build.stats[n] = v; refresh(true); }),
+          dotRow(n, statVal(n), 10, 0, function (v) { build.stats[n] = v; refresh(true); }, null, true),
           statVal(n) !== statStart(n) ? el('button', { type: 'button', class: 'act small', text: 'Reset to ' + statStart(n), onclick: function () { delete build.stats[n]; refresh(true); } }) : null
         ]));
       });
@@ -982,7 +987,7 @@
     var box = el('fieldset', { class: 'st-extras' }, [el('legend', { class: 'px', text: 'Storyteller Extras' })]);
     box.appendChild(el('div', { class: 'trait' }, [
       el('span', { class: 'trait-name', text: 'Mana' }),
-      dotRow('Mana', x.mana || 1, 20, 0, function (v) { x.mana = v; refresh(true); })
+      dotRow('Mana', x.mana || 1, 20, 0, function (v) { x.mana = v; refresh(true); }, null, true)
     ]));
     [['bashing', 'Bashing boxes'], ['lethal', 'Lethal boxes'], ['aggravated', 'Aggravated boxes']].forEach(function (h) {
       var id = 'hb-' + h[0];
