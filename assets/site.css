@@ -199,7 +199,8 @@ body.menu-hidden .rail { display: flex; }
 .panel { padding: 22px 26px; }
 .panel h1, .panel h2, .panel h3 { font-family: var(--pixel); font-weight: 400; color: var(--gold); text-align: center; line-height: 1.3; }
 .panel h1 { margin: 0 0 14px; font-size: 32px; }
-.panel h2 { margin: 18px 0 8px; font-size: 22px; }
+.panel h2 { margin: 18px 0 10px; font-size: 27px; }
+.panel h3 { font-size: 20px; }
 .panel h3 { margin: 14px 0 6px; font-size: 18px; }
 .panel p { margin: 0 0 12px; }
 .panel p:last-child { margin-bottom: 0; }
@@ -441,3 +442,5 @@ button.act { cursor: pointer; font-family: var(--body); }
 .menu-sub .menu-node.has-kids[aria-expanded="true"]::after { transform: rotate(45deg); margin-top: -7px; border-color: var(--gold); }
 .menu-kids { margin: 0 0 4px 10px; padding-left: 6px; border-left: 1px solid var(--line); }
 .home-item { margin-bottom: 4px; border-bottom: 1px solid var(--line); border-radius: 4px 4px 0 0; }
+
+@media (max-width: 760px) { .panel h2 { font-size: 23px; } }
