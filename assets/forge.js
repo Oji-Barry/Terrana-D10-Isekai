@@ -869,11 +869,37 @@
         (function (i) {
           var g = build.guilds[i] || { name: '', dots: 0 };
           var id = 'guild-' + i;
-          var name = el('input', { id: id, maxlength: '50', value: g.name || '', placeholder: 'Guild name' });
-          name.addEventListener('input', function () { build.guilds[i] = Object.assign(build.guilds[i] || { dots: 0 }, { name: name.value }); refresh(); });
+          // pick a guild from the book (each one once), or Other to write one in
+          var listed = !!byName(D.guilds, g.name || '');
+          var other = !!g.other || (!!g.name && !listed);
+          var sel = el('select', { id: id }, [el('option', { value: '', text: 'Choose a guild...' })]);
+          D.guilds.forEach(function (x) {
+            var taken = build.guilds.some(function (o, j) { return j !== i && o && o.name === x.name; });
+            var op = el('option', { value: x.name, text: x.name + (taken ? ' (already picked)' : '') });
+            if (taken) op.disabled = true;
+            if (!other && g.name === x.name) op.selected = true;
+            sel.appendChild(op);
+          });
+          var ot = el('option', { value: OTHER, text: 'Other...' });
+          if (other) ot.selected = true;
+          sel.appendChild(ot);
+          sel.addEventListener('change', function () {
+            var cur = build.guilds[i] || { dots: 0 };
+            if (sel.value === OTHER) { cur.other = true; if (byName(D.guilds, cur.name || '')) cur.name = ''; }
+            else { delete cur.other; cur.name = sel.value; }
+            build.guilds[i] = cur;
+            refresh(true);
+          });
+          var pick = el('div', { class: 'guild-pick' }, [el('label', { for: id, class: 'visually-hidden', text: 'Guild ' + (i + 1) }), sel]);
+          if (other) {
+            var name = el('input', { id: id + '-other', maxlength: '50', value: g.name || '', placeholder: 'Guild name', 'aria-label': 'Guild ' + (i + 1) + ' name' });
+            name.addEventListener('input', function () { build.guilds[i] = Object.assign(build.guilds[i] || { dots: 0 }, { name: name.value }); refresh(); });
+            pick.appendChild(name);
+          } else if (listed) {
+            pick.appendChild(el('p', { class: 'hint', text: byName(D.guilds, g.name).what }));
+          }
           gl.appendChild(el('div', { class: 'trait guild' }, [
-            el('label', { for: id, class: 'visually-hidden', text: 'Guild ' + (i + 1) }),
-            name,
+            pick,
             dotRow('Guild ' + (i + 1) + ' standing', g.dots || 0, dotMax(7), 0, function (v) { build.guilds[i] = Object.assign(build.guilds[i] || { name: '' }, { dots: v }); refresh(true); })
           ]));
         })(i);
@@ -888,7 +914,7 @@
       D.backgrounds.forEach(function (b) { w = w.concat(goldenRule(b.name, bgVal(b.name))); });
       (build.guilds || []).forEach(function (g, i) {
         if (g && g.dots > 3) w.push({ key: 'guild.over.' + i + '.' + g.dots, text: (g.name || 'A guild') + ' has ' + g.dots + ' dots. Most games limit Guild Standing to 3 at creation.' });
-        if (g && g.dots && !g.name) w.push({ key: 'guild.noname.' + i, text: 'Name the guild for your Guild Standing.' });
+        if (g && g.dots && !(g.name || '').trim()) w.push({ key: 'guild.noname.' + i, text: 'Choose the guild for your Guild Standing.' });
       });
       return w;
     },
