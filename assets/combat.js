@@ -39,10 +39,11 @@
   }
   function successes(dice) { return dice.reduce(function (s, d) { return s + (d === 10 ? 2 : d >= 6 ? 1 : 0); }, 0); }
   // Wound penalties, cumulative across damage types (the sheet's health track)
-  var PEN = { b: [0, 0, 0, 0, 1, 2, 4], l: [0, 0, 1, 2, 4, 4, 4], a: [1, 2, 4, 4, 4, 4, 4] };
   function woundPenalty(c) {
     var h = c.health || {}, p = 0;
-    ['b', 'l', 'a'].forEach(function (k) { var n = h[k] || 0; if (n > 0) p += PEN[k][Math.min(n, 7) - 1] || 4; });
+    var bx = c.boxes || { b: 7, l: 5, a: 3 };
+    // only the last three boxes of each track carry a penalty: -1, -2, -4
+    ['b', 'l', 'a'].forEach(function (k) { var n = Math.min(h[k] || 0, bx[k] || 0), tot = bx[k] || 0; if (n > tot - 3 && n > 0) p += [1, 2, 4][n - (tot - 3) - 1]; });
     return p;
   }
   function incap(c) { var h = c.health || {}, b = c.boxes || {}; return (h.a || 0) >= (b.a || 3); }
