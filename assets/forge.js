@@ -775,7 +775,7 @@
           sel,
           bookLink(m.link, 'Rules')
         ]));
-        if (kind === 'merits' && m.name === 'Familiar Bond' && build.merits[m.name]) companionBox(det, 'familiar', 'Your Familiar', 'Familiar Bond at creation gives you one Rank 1 (F) familiar, chosen with your Storyteller. Add your Familiar Bond dots to its Attack and Defense pools.');
+        if (kind === 'merits' && m.name === 'Familiar Bond' && build.merits[m.name]) companionBox(det, 'familiar', 'Your Familiar', 'Familiar Bond at creation gives you one tiny or small Rank F familiar. Add your Familiar Bond dots to its Attack and Defense pools. It does not count toward your SumMonz on the field.');
         // the chosen curse or bargain, or a box to describe your own
         var v = build[kind][m.name] || '';
         if (m.options && v.charAt(0) === 'n') {
@@ -828,8 +828,7 @@
       var out = [];
       var ms = Object.keys(build.merits || {}), fs = Object.keys(build.flaws || {});
       if (ms.length) out.push(['Merits', ms.join(', ')]);
-      var fm = build.familiar || {};
-      if ((build.merits || {})['Familiar Bond'] && (fm.name || fm.what)) out.push(['Familiar', [fm.name, fm.what].filter(Boolean).join(', ')]);
+      if ((build.merits || {})['Familiar Bond'] && companionText(build.familiar)) out.push(['Familiar', companionText(build.familiar)]);
       if (fs.length) out.push(['Flaws', fs.map(function (n) {
         var f = byName(D.flaws, n), v = String(build.flaws[n]);
         if (f && f.options && v.charAt(0) === 'n') return n + ' (' + f.options[Number(v.slice(1))].name + ')';
@@ -1065,21 +1064,46 @@
       return c.schools.indexOf(school) >= 0 && c.dots <= r && comboMet(c) && !comboTakenElsewhere(c, school, r);
     });
   }
-  // A small "name it and describe it" box, for a starter SumMonz or a familiar
+  // Name and pick a starter companion: a familiar, or a first SumMonz (fiend or spirit)
   function companionBox(box, key, title, hint) {
     build[key] = build[key] || {};
     var c = build[key];
-    var nid = 'cmp-' + key + '-name', wid = 'cmp-' + key + '-what';
+    var isSummon = key === 'starter_summon';
+    var fs = el('fieldset', { class: 'companion' }, [el('legend', { class: 'px', text: title }), el('p', { class: 'hint', text: hint })]);
+    var nid = 'cmp-' + key + '-name';
     var nm = el('input', { id: nid, maxlength: '60', value: c.name || '', placeholder: 'Name' });
-    var wh = el('input', { id: wid, maxlength: '200', value: c.what || '', placeholder: 'What it is, such as an Ember Fox fiend (Fire)' });
     nm.addEventListener('input', function () { c.name = nm.value; refresh(); });
-    wh.addEventListener('input', function () { c.what = wh.value; refresh(); });
-    box.appendChild(el('fieldset', { class: 'companion' }, [
-      el('legend', { class: 'px', text: title }),
-      el('p', { class: 'hint', text: hint }),
-      el('div', { class: 'field' }, [el('label', { for: nid, text: 'Name' }), nm]),
-      el('div', { class: 'field' }, [el('label', { for: wid, text: 'Creature' }), wh])
-    ]));
+    fs.appendChild(el('div', { class: 'field' }, [el('label', { for: nid, text: 'Name' }), nm]));
+    if (isSummon) {
+      var kid = 'cmp-' + key + '-kind';
+      var ks = el('select', { id: kid }, [el('option', { value: '', text: 'Choose...' }), el('option', { value: 'fiend', text: 'Fiend (a creature of the world)' }), el('option', { value: 'spirit', text: 'Spirit (Soul Summoning, any form)' })]);
+      ks.value = c.kind || '';
+      ks.addEventListener('change', function () { c.kind = ks.value; c.pick = ''; refresh(true); });
+      fs.appendChild(el('div', { class: 'field' }, [el('label', { for: kid, text: 'Kind' }), ks]));
+    }
+    var list = isSummon ? (c.kind ? D.starters[c.kind === 'fiend' ? 'fiends' : 'spirits'] : null) : D.starters.familiars;
+    if (list) {
+      var pid = 'cmp-' + key + '-pick';
+      var ps = el('select', { id: pid }, [el('option', { value: '', text: 'Choose...' })]);
+      list.forEach(function (x) { ps.appendChild(el('option', { value: x, text: x })); });
+      ps.appendChild(el('option', { value: OTHER, text: 'Other...' }));
+      ps.value = c.pick || '';
+      ps.addEventListener('change', function () { c.pick = ps.value; refresh(true); });
+      fs.appendChild(el('div', { class: 'field' }, [el('label', { for: pid, text: 'Creature' }), ps]));
+      if (c.pick === OTHER) {
+        var wid = 'cmp-' + key + '-what';
+        var wh = el('input', { id: wid, maxlength: '200', value: c.what || '', placeholder: isSummon && c.kind === 'spirit' ? 'Describe its form and school' : 'Describe it (Storyteller approval)' });
+        wh.addEventListener('input', function () { c.what = wh.value; refresh(); });
+        fs.appendChild(el('div', { class: 'field' }, [el('label', { for: wid, text: 'Your own' }), wh]));
+      }
+      fs.appendChild(el('p', { class: 'hint', text: 'Rank F: ' + D.starters.stats + '.' }));
+    }
+    box.appendChild(fs);
+  }
+  function companionText(c) {
+    if (!c) return '';
+    var what = c.pick === OTHER ? (c.what || '').trim() : (c.pick || '');
+    return [c.name, what].filter(function (x) { return x && x.trim(); }).join(', ');
   }
   function rankLabel(r) { return 'Rank ' + r.rank + ': ' + r.title; }
 
@@ -1218,8 +1242,7 @@
         if (v.indexOf('c:') === 0 && comboById(v.slice(2))) cs.push(comboById(v.slice(2)).name);
       }); });
       if (cs.length) out.push(['Combination Spells', cs.join(', ')]);
-      var ss = build.starter_summon || {};
-      if (knowTotal('Summoning Magic') && (ss.name || ss.what)) out.push(['First SumMonz', [ss.name, ss.what].filter(Boolean).join(', ')]);
+      if (knowTotal('Summoning Magic') && companionText(build.starter_summon)) out.push(['First SumMonz', companionText(build.starter_summon)]);
       return out;
     }
   };

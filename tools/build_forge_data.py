@@ -252,6 +252,18 @@ def main(src):
         assert 3 <= len(pl) <= 5, job
         data['occupations'].append({'name': job, 'pl': pl})
 
+    # Starter companions (all Rank F), from Chapters 9 and 13
+    data['starters'] = {
+        'familiars': ['Giant Rat', 'Horned Rabbit', 'Slime', 'Cat', 'Small Dog', 'Mouse', 'Ferret', 'Fox Kit', 'Raven',
+                      'Owl', 'Parrot', 'Bat', 'Snake', 'Lizard', 'Toad', 'Hedgehog', 'Squirrel', 'Monkey'],
+        'fiends': ['Giant Rat (Battle Aura)', 'Horned Rabbit (Battle Aura)', 'Slime (Water)', 'Ember Kit (Fire)', 'Cinder Newt (Fire)',
+                   'Puddle Frog (Water)', 'Frost Ferret (Water)', 'Breeze Sparrow (Air)', 'Gust Bat (Air)', 'Pebble Mole (Earth)',
+                   'Rock Tortoise (Earth)', 'Moss Pup (Nature)', 'Thorn Hedgehog (Nature)', 'Scrapper Pup (Battle Aura)', 'Iron Beetle (Battle Aura)'],
+        'spirits': ['Candle Wisp (Bright)', 'Lantern Sprite (Bright)', 'Shadow Imp (Shade)', 'Bone Puppet (Shade)', 'Paper Crane (Air)',
+                    'Teacup Ghost (Water)', 'Haunted Doll (Shade)', 'Fey Sprite (Nature)'],
+        'stats': 'Attack 4, Defense 4, Damage 3, BDT 3, Health 3 / 2 / 1, Mana 3, M/T 2, Move 1',
+    }
+
     # Tropes
     tropes = []
     for h, rows in qr.items():
