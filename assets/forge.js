@@ -2132,7 +2132,7 @@
   }
   // Modifiers from worn gear and from attuned spells that are switched on
   function modifiers() {
-    var m = { attr: {}, ab: {}, dots: {}, bdt: 0, init: 0, move: 0, pool: 0, mt: 0, attack: 0, damage: 0, defense: 0, doubleBdt: false, moveX2: false, notes: [], held: 0, active: [] };
+    var m = { attr: {}, ab: {}, dots: {}, bdt: 0, init: 0, move: 0, pool: 0, mt: 0, attack: 0, damage: 0, defense: 0, doubleBdt: false, moveX2: false, notes: [], held: 0, active: [], boxes: { b: 0, l: 0, a: 0 } };
     function add(map, k, v) { map[k] = (map[k] || 0) + v; }
     wornList().forEach(function (it) {
       var b = Number(it.bonus) || 0; if (!b) return;
@@ -2148,6 +2148,9 @@
       else if (c === 'Attack') m.attack += b;
       else if (c === 'Damage') m.damage += b;
       else if (c === 'Defense') m.defense += b;
+      else if (c === 'Bashing boxes') m.boxes.b += b;
+      else if (c === 'Lethal boxes') m.boxes.l += b;
+      else if (c === 'Aggravated boxes') m.boxes.a += b;
     });
     var on = EXTRA.attuned || {};
     attunables().forEach(function (a) {
@@ -2162,6 +2165,8 @@
       if (ad && !/your choice of/i.test(e)) { add(m.attr, ad[2], +ad[1]); if (ad[4]) add(m.attr, ad[4], +ad[1]); fx.push('+' + ad[1] + ' ' + ad[2] + (ad[4] ? ' and ' + ad[4] : '')); }
       if (/double your BDT|BDT doubles/i.test(e)) { m.doubleBdt = true; fx.push('BDT doubled'); }
       if (/double your normal movement/i.test(e)) { m.moveX2 = true; fx.push('flying at double movement'); }
+      var hb, re = /(\d+|one|two|three) (?:extra |additional |more )?(Bashing|Lethal|Aggravated)(?: health)? box(?:es)?/ig, W = { one: 1, two: 2, three: 3 };
+      while ((hb = re.exec(e))) { var nb = W[hb[1].toLowerCase()] || +hb[1]; m.boxes[hb[2][0].toLowerCase()] += nb; fx.push('+' + nb + ' ' + hb[2] + ' box' + (nb === 1 ? '' : 'es')); }
       m.active.push({ id: a.id, name: a.name, school: a.school, mana: a.mana, effects: fx, effect: e });
     });
     return m;
@@ -2223,7 +2228,16 @@
     m.tracks = EXTRA.tracks || {};
     var mer = build.merits || {};
     function boxN(v) { var s2 = String(v || ''); return /2|n1/.test(s2) ? 2 : v ? 1 : 0; }
-    m.boxes = { b: 7, l: 5 + boxN(mer['Bonus Lethal Health']), a: 3 + boxN(mer['Bonus Aggravated Health']) };
+    // Health boxes: the book's 7 / 5 / 3 (or the Storyteller's custom count), plus Merits, worn items,
+    // attuned spells that are on, and extra boxes the player adds by hand for anything else (heritage abilities, story rewards)
+    var stH = (build.st_extra || {}).health || {}, mb = m.mods.boxes, hand = (EXTRA.tracks || {}).boxAdj || {};
+    m.boxSources = { b: [], l: [], a: [] };
+    function src(k, n, what) { if (n) m.boxSources[k].push((n > 0 ? '+' : '') + n + ' ' + what); return n; }
+    m.boxes = {
+      b: Math.max(1, (stH.bashing || 7) + src('b', mb.b, 'from items and spells') + src('b', hand.b || 0, 'added by hand')),
+      l: Math.max(1, (stH.lethal || 5) + src('l', boxN(mer['Bonus Lethal Health']), 'Bonus Lethal Health') + src('l', mb.l, 'from items and spells') + src('l', hand.l || 0, 'added by hand')),
+      a: Math.max(1, (stH.aggravated || 3) + src('a', boxN(mer['Bonus Aggravated Health']), 'Bonus Aggravated Health') + src('a', mb.a, 'from items and spells') + src('a', hand.a || 0, 'added by hand'))
+    };
     D.styles.forEach(function (st) {
       var t = styleTotal(st.name); if (!t) return;
       var mine = (build.style_picks || {})[st.name] || {};
