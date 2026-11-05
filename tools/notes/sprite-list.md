@@ -213,4 +213,7 @@ Every creature in the Chapter 15 Bestiary, plus player heritages. Sprites: 8 to 
 - Star Whale, Rank B, Gargantuan (4x4)
 
 ## Status
-- None made or sourced yet. Free sources to check: OpenGameArt.org (CC0 and CC-BY packs), itch.io free asset packs (check each license), and Kenney.nl (CC0).
+- 2026-11-05: The combat room uses DawnLike (16x16 universal roguelike tileset v1.81) by DragonDePlatino, palette by DawnBringer, CC BY-SA 3.0, from https://opengameart.org/content/dawnlike-16x16-universal-rogue-like-tileset-v181 (via the MattConrad/DawnLikeUpscaled GitHub mirror). 710 character sprites, two frames each (the bouncing idle). Files: assets/sprites/dawnlike/, index assets/sprites/sprites.json (tools/build_sprites.py).
+- Every Bestiary creature has a default sprite (SPRITES in tools/build_bestiary.py); the Storyteller can pick any other in Add NPC. Players pick theirs from the title card; it saves to the character sheet (sheet.sprite).
+- Credit is in the site footer. The artist asks that his Platino sprite be hidden in any game using DawnLike: typing "platino" in the sprite picker search shows him.
+- Still to find or make: true male/female pairs for every heritage, front/back/left/right facings, and larger sprites for kaiju and dragons. DawnLike only has one facing.
