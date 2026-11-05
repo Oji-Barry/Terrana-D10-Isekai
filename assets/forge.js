@@ -2501,7 +2501,7 @@
 
   // ---------- start ----------
   async function start() {
-    var res = await fetch('data.json');
+    var res = await fetch('data.json?v=1863d047');
     D = await res.json();
     me = await A.currentPlayer();
     $('forge-loading').hidden = true;

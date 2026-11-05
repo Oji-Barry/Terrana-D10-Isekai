@@ -343,12 +343,12 @@
   async function ensureForge() {
     if (window.TerranaCharacter) return;
     window.FORGE_HEADLESS = true;
-    await loadScript('../assets/forge.js');
-    R.data = R.data || await fetch('../forge/data.json').then(function (r) { return r.json(); });
+    await loadScript('../assets/forge.js?v=63762387');
+    R.data = R.data || await fetch('../forge/data.json?v=1863d047').then(function (r) { return r.json(); });
   }
   async function kitFor(row) {
     await ensureForge();
-    R.data = R.data || await fetch('../forge/data.json').then(function (r) { return r.json(); });
+    R.data = R.data || await fetch('../forge/data.json?v=1863d047').then(function (r) { return r.json(); });
     window.TerranaCharacter.load(R.data, row, { username: me.username, is_admin: !!me.is_admin });
     return window.TerranaCharacter.combatKit();
   }

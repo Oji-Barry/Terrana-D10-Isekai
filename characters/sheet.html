@@ -1451,7 +1451,7 @@ function loadImg(input){const file=input.files[0];if(!file)return;const reader=n
 </script>
 
 <script src="../vendor/supabase-2.118.0.js"></script>
-<script src="../assets/auth.js"></script>
+<script src="../assets/auth.js?v=69bd903b"></script>
 <script>
 (function () {
   var msg = document.getElementById('bar-msg');
@@ -1491,7 +1491,7 @@ function loadImg(input){const file=input.files[0];if(!file)return;const reader=n
   async function liveView(c) {
     window.FORGE_HEADLESS = true;
     await loadScript('../assets/forge.js');
-    var data = await fetch('../forge/data.json').then(function (r) { return r.json(); });
+    var data = await fetch('../forge/data.json?v=1863d047').then(function (r) { return r.json(); });
     var owner = await A.client.from('profiles').select('username').eq('id', c.owner).maybeSingle();
     return window.TerranaForgeView(data, c, { username: owner.data ? owner.data.username : '' });
   }
