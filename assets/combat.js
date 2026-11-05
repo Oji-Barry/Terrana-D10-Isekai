@@ -383,7 +383,7 @@
     var row = await must(db.from('characters').select('id, name, sheet').eq('id', c.character_id).single());
     var k = await kitFor(row);
     var f = fromKit(k);
-    await upd(c, { stats: Object.assign({}, k, { hurt: (c.stats || {}).hurt }), bdt: f.bdt, mana_max: f.mana_max, mt: f.mt, initiative: f.initiative, name: row.name });
+    await upd(c, { stats: Object.assign({}, k, { hurt: (c.stats || {}).hurt }), bdt: f.bdt, boxes: f.boxes, mana_max: f.mana_max, mt: f.mt, initiative: f.initiative, name: row.name });
   }
   function npcDialog() {
     var d = dialog('Add NPCs');
