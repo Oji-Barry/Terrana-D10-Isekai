@@ -30,6 +30,7 @@ forge = h('assets/forge.js')
 for js in ('assets/charview.js', 'assets/combat.js'):
     sub(js, r"('\.\./assets/forge\.js)" + V, forge)
 sub('assets/combat.js', r"(fetch\('bestiary\.json)" + V, h('combat/bestiary.json'))
+sub('assets/combat.js', r"(fetch\('\.\./assets/sprites/sprites\.json)" + V, h('assets/sprites/sprites.json'))
 sub('assets/site.js', r"(root \+ 'assets/auth\.js)" + V, h('assets/auth.js'))
 
 # 2. every page

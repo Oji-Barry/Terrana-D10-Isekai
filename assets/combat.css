@@ -220,3 +220,17 @@
 .cb-inits { display: grid; gap: 4px; max-height: 40vh; overflow: auto; }
 .cb-inits label { display: grid; grid-template-columns: 12px minmax(0, 1fr) 70px; gap: 8px; align-items: center; font-weight: 400; }
 .cb-inits input { min-height: 32px; text-align: center; }
+/* Sprites: two-frame idle */
+.cb-spr { position: relative; display: inline-block; flex-shrink: 0; }
+.cb-spr-f { position: absolute; inset: 0; background-repeat: no-repeat; image-rendering: pixelated; image-rendering: crisp-edges; }
+.cb-spr-f.f1 { animation: cb-frame 0.9s steps(1) infinite; }
+.cb-spr-f.f0 { animation: cb-frame 0.9s steps(1) infinite reverse; }
+@keyframes cb-frame { 0% { opacity: 0; } 50% { opacity: 1; } 100% { opacity: 0; } }
+.cb-token.spr { background-image: none !important; display: flex; align-items: center; justify-content: center; overflow: visible; }
+.cb-portrait .cb-spr { margin: auto; }
+.cb-sprgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(60px, 1fr)); gap: 6px; max-height: 50vh; overflow: auto; padding: 2px; }
+.cb-sprbtn { display: flex; align-items: center; justify-content: center; height: 60px; border: 1px solid var(--line); border-radius: 6px; background: rgba(0, 0, 0, 0.35); cursor: pointer; padding: 0; }
+.cb-sprbtn:hover, .cb-sprbtn:focus-visible, .cb-sprbtn.on { border-color: var(--gold); outline: none; box-shadow: 0 0 8px rgba(255, 215, 106, 0.5); }
+.cb-sprrow { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.cb-lab { font-weight: 700; font-size: 14px; }
+.cb-sprprev { display: inline-flex; align-items: center; justify-content: center; min-width: 56px; min-height: 56px; border: 1px dashed var(--line); border-radius: 6px; background: rgba(0, 0, 0, 0.3); }

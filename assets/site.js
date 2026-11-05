@@ -372,6 +372,7 @@
         '<div class="ac-title px">CREDITS <span class="ac-count">0/1</span></div>' +
         '<div class="ac-coin px">INSERT COIN</div>' +
         '<div class="ac-row"><span class="ac-role">ICONS</span><span class="ac-dots" aria-hidden="true"></span><span class="ac-name">LORC AND SKOLL, <a href="https://game-icons.net">GAME-ICONS.NET</a> (<a href="https://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a>)</span></div>' +
+        '<div class="ac-row"><span class="ac-role">SPRITES</span><span class="ac-dots" aria-hidden="true"></span><span class="ac-name"><a href="https://opengameart.org/content/dawnlike-16x16-universal-rogue-like-tileset-v181">DAWNLIKE</a> BY DRAGONDEPLATINO, PALETTE BY DAWNBRINGER (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a>)</span></div>' +
         '<div class="ac-row"><span class="ac-role">PIXEL FONT</span><span class="ac-dots" aria-hidden="true"></span><span class="ac-name"><a href="https://github.com/fontworks-fonts/DotGothic16">DOTGOTHIC16</a> BY FONTWORKS</span></div>' +
         '<div class="ac-row"><span class="ac-role">TEXT FONT</span><span class="ac-dots" aria-hidden="true"></span><span class="ac-name"><a href="https://fonts.google.com/specimen/Nunito+Sans">NUNITO SANS</a> VIA <a href="https://fontsource.org">FONTSOURCE</a></span></div>' +
         '<div class="ac-row"><span class="ac-role">FONT LICENSE</span><span class="ac-dots" aria-hidden="true"></span><span class="ac-name"><a href="https://openfontlicense.org">SIL OPEN FONT LICENSE</a></span></div>' +

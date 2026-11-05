@@ -32,7 +32,8 @@
 ],
 "trait": "Splits in two when hit by a blade but not destroyed; each half is an F rank slime with half its boxes.",
 "found": "Sewers, dungeon floors 1 to 10, damp fields.",
-"loot": "Slime jelly (alchemy ingredient)."
+"loot": "Slime jelly (alchemy ingredient).",
+"sprite": "Slime:3:0"
 },
 {
 "id": "slimes-water-slime",
@@ -71,7 +72,8 @@
 ],
 "trait": "Takes half damage from Fire attacks, rounded down.",
 "found": "Rivers, rain-soaked caves, the Flooded Caverns.",
-"loot": "Clear slime core (Small Mana Crystal)."
+"loot": "Clear slime core (Small Mana Crystal).",
+"sprite": "Slime:1:0"
 },
 {
 "id": "slimes-acid-slime",
@@ -106,7 +108,8 @@
 ],
 "trait": "Weapons that hit it lose 1 Rating for the scene unless cleaned.",
 "found": "Garbage pits, alchemy lab drains, dungeon floors 6 to 20.",
-"loot": "Acid sac (alchemy, E rank)."
+"loot": "Acid sac (alchemy, E rank).",
+"sprite": "Slime:4:0"
 },
 {
 "id": "slimes-poison-slime",
@@ -145,7 +148,8 @@
 ],
 "trait": "Anything that bites or swallows it is Poisoned.",
 "found": "Swamps, the Fungal Grotto.",
-"loot": "Venom core (antidote ingredient)."
+"loot": "Venom core (antidote ingredient).",
+"sprite": "Slime:1:2"
 },
 {
 "id": "slimes-magma-slime",
@@ -184,7 +188,8 @@
 ],
 "trait": "Leaves a trail of burning ground (Burning Ground, Fire Rank 2) where it moves.",
 "found": "Volcanic Fields, the Forge Depths.",
-"loot": "Ember core (D rank fire focus material)."
+"loot": "Ember core (D rank fire focus material).",
+"sprite": "Slime:3:2"
 },
 {
 "id": "slimes-metal-slime",
@@ -223,7 +228,8 @@
 ],
 "trait": "Its BDT is doubled, and it tries to run from every fight. Defeating one is worth bragging about.",
 "found": "Rare, anywhere in the Grand Dungeon.",
-"loot": "Metal slime alloy (B rank weapon material, worth 1 Large Gold)."
+"loot": "Metal slime alloy (B rank weapon material, worth 1 Large Gold).",
+"sprite": "Slime:4:1"
 },
 {
 "id": "slimes-great-slime",
@@ -262,7 +268,8 @@
 ],
 "trait": "Dozens of slimes merged into one. It is slow but almost impossible to push.",
 "found": "Deep sewers, dungeon floors 10 to 30.",
-"loot": "Great slime core (Mana Crystal)."
+"loot": "Great slime core (Mana Crystal).",
+"sprite": "Slime:2:2"
 },
 {
 "id": "slimes-slime-swarm",
@@ -297,7 +304,8 @@
 ],
 "trait": "A swarm of tiny slimes that counts as one creature filling a 2x2 area. Area attacks deal +2 damage to it.",
 "found": "Anywhere slimes gather.",
-"loot": "Slime jelly by the bucket."
+"loot": "Slime jelly by the bucket.",
+"sprite": "Slime:0:3"
 },
 {
 "id": "beasts-and-wild-fiends-giant-rat",
@@ -332,7 +340,8 @@
 ],
 "trait": "Usually found in packs of 3 to 6.",
 "found": "Sewers, cellars, dungeon floors 1 to 4.",
-"loot": "Rat pelts (worth Small Copper)."
+"loot": "Rat pelts (worth Small Copper).",
+"sprite": "Rodent:2:2"
 },
 {
 "id": "beasts-and-wild-fiends-horned-rabbit",
@@ -367,7 +376,8 @@
 ],
 "trait": "Harmless until startled, then very fast.",
 "found": "Fields and forests across the Central Continent.",
-"loot": "Horn and meat (worth Large Copper)."
+"loot": "Horn and meat (worth Large Copper).",
+"sprite": "Misc:2:0"
 },
 {
 "id": "beasts-and-wild-fiends-acid-wolf",
@@ -406,7 +416,8 @@
 ],
 "trait": "Hunts in packs of 4 to 8 that circle and spit before closing in.",
 "found": "Demon Continent plains and wastes.",
-"loot": "Acid glands (alchemy)."
+"loot": "Acid glands (alchemy).",
+"sprite": "Dog:3:1"
 },
 {
 "id": "beasts-and-wild-fiends-assault-dog",
@@ -441,7 +452,8 @@
 ],
 "trait": "Packs of 5 to 10 that never stop chasing. Movement 2.",
 "found": "Demon Continent, Begaritt fringes.",
-"loot": "Hides."
+"loot": "Hides.",
+"sprite": "Dog:0:1"
 },
 {
 "id": "beasts-and-wild-fiends-pax-coyote",
@@ -480,7 +492,8 @@
 ],
 "trait": "Packs follow a single alpha. Kill the alpha and the pack scatters.",
 "found": "Demon Continent grasslands.",
-"loot": "Pelts, fangs."
+"loot": "Pelts, fangs.",
+"sprite": "Dog:2:0"
 },
 {
 "id": "beasts-and-wild-fiends-cave-crawler",
@@ -519,7 +532,8 @@
 ],
 "trait": "Climbs on walls and ceilings as easily as floors.",
 "found": "The Fungal Grotto, mines, caves.",
-"loot": "Chitin plates."
+"loot": "Chitin plates.",
+"sprite": "Pest:2:2"
 },
 {
 "id": "beasts-and-wild-fiends-dire-boar",
@@ -554,7 +568,8 @@
 ],
 "trait": "Keeps charging even when Incapacitated once: it gets one last Gore before it falls.",
 "found": "Forests of the Central and Milis continents.",
-"loot": "Tusks, a lot of meat."
+"loot": "Tusks, a lot of meat.",
+"sprite": "Quadraped:0:4"
 },
 {
 "id": "beasts-and-wild-fiends-giant-spider",
@@ -593,7 +608,8 @@
 ],
 "trait": "Ignores Difficult Terrain made of webs and can walk on walls.",
 "found": "Dark forests, the Catacombs, abandoned mines.",
-"loot": "Spider silk (Crafts material)."
+"loot": "Spider silk (Crafts material).",
+"sprite": "Pest:4:1"
 },
 {
 "id": "beasts-and-wild-fiends-hellhound",
@@ -632,7 +648,8 @@
 ],
 "trait": "Immune to Burning. Hunts in pairs.",
 "found": "The Infernal Halls, volcanic regions of the Demon Continent.",
-"loot": "Ember fang (C rank fire focus material)."
+"loot": "Ember fang (C rank fire focus material).",
+"sprite": "Dog:5:0"
 },
 {
 "id": "beasts-and-wild-fiends-forest-bear",
@@ -671,7 +688,8 @@
 ],
 "trait": "Fiercely protective of cubs.",
 "found": "Every major forest.",
-"loot": "Pelt, claws."
+"loot": "Pelt, claws.",
+"sprite": "Quadraped:3:3"
 },
 {
 "id": "beasts-and-wild-fiends-rock-turtle",
@@ -710,7 +728,8 @@
 ],
 "trait": "Nearly unbreakable from the front; its underside has half the BDT. Prized for its meat.",
 "found": "Demon Continent wastes and rivers.",
-"loot": "Shell plates (C rank armor material), meat for a whole village."
+"loot": "Shell plates (C rank armor material), meat for a whole village.",
+"sprite": "Reptile:11:0"
 },
 {
 "id": "beasts-and-wild-fiends-thunderbird",
@@ -749,7 +768,8 @@
 ],
 "trait": "Flies at double movement. Lives inside storm clouds.",
 "found": "Mountain peaks, the Canopy Wilds.",
-"loot": "Storm feathers (B rank Air focus material)."
+"loot": "Storm feathers (B rank Air focus material).",
+"sprite": "Avian:9:3"
 },
 {
 "id": "beasts-and-wild-fiends-griffon",
@@ -788,7 +808,8 @@
 ],
 "trait": "Flies at double movement. Can be tamed as a mount by a patient rider.",
 "found": "Cliffs of the Central Continent, Asura mountains.",
-"loot": "Feathers, eggs (worth a Small Gold to a breeder)."
+"loot": "Feathers, eggs (worth a Small Gold to a breeder).",
+"sprite": "Avian:9:0"
 },
 {
 "id": "beasts-and-wild-fiends-manticore",
@@ -827,7 +848,8 @@
 ],
 "trait": "Speaks a little and enjoys taunting its prey.",
 "found": "Begaritt desert, ruins.",
-"loot": "Tail spines (B rank arrowheads)."
+"loot": "Tail spines (B rank arrowheads).",
+"sprite": "Cat:0:4"
 },
 {
 "id": "beasts-and-wild-fiends-basilisk",
@@ -866,7 +888,8 @@
 ],
 "trait": "Looking away or using a mirror gives -2 dice to attack it but immunity to the gaze.",
 "found": "Deep caves, the Crystal Mines.",
-"loot": "Basilisk eye (A rank artifact material)."
+"loot": "Basilisk eye (A rank artifact material).",
+"sprite": "Reptile:8:2"
 },
 {
 "id": "beasts-and-wild-fiends-terminate-boa",
@@ -905,7 +928,8 @@
 ],
 "trait": "Hides in tall grass and trees; first attack each fight gets +3 dice.",
 "found": "Demon Continent jungles and rivers.",
-"loot": "Snakeskin (B rank armor material)."
+"loot": "Snakeskin (B rank armor material).",
+"sprite": "Reptile:4:4"
 },
 {
 "id": "beasts-and-wild-fiends-chimera",
@@ -944,7 +968,8 @@
 ],
 "trait": "Each head can be targeted separately (one third of its boxes each); losing a head loses that attack.",
 "found": "Fighting pits, the Ironwood Colosseum, Demon Continent wilds.",
-"loot": "Chimera heart (A rank alchemy)."
+"loot": "Chimera heart (A rank alchemy).",
+"sprite": "Misc:4:0"
 },
 {
 "id": "beasts-and-wild-fiends-behemoth",
@@ -987,7 +1012,8 @@
 ],
 "trait": "Fills a 4x4 area. Town Rapan is built inside the ribs of one.",
 "found": "Deep in the Demon Continent; one every few generations.",
-"loot": "Bones for a town, hide for an army."
+"loot": "Bones for a town, hide for an army.",
+"sprite": "Quadraped:10:0"
 },
 {
 "id": "plants-and-fungi-mandrake",
@@ -1022,7 +1048,8 @@
 ],
 "trait": "Pulling it from the ground triggers the scream automatically.",
 "found": "Old gardens, witches' plots.",
-"loot": "Mandrake root (alchemy, worth a Small Silver)."
+"loot": "Mandrake root (alchemy, worth a Small Silver).",
+"sprite": "Plant:6:1"
 },
 {
 "id": "plants-and-fungi-myconid-scout",
@@ -1061,7 +1088,8 @@
 ],
 "trait": "Myconids talk with spores; anyone caught in a cloud hears their thoughts as a buzzing.",
 "found": "The Fungal Grotto.",
-"loot": "Glowcap mushrooms."
+"loot": "Glowcap mushrooms.",
+"sprite": "Plant:7:0"
 },
 {
 "id": "plants-and-fungi-carnivorous-vine",
@@ -1100,7 +1128,8 @@
 ],
 "trait": "Looks like a normal hedge until it moves.",
 "found": "Canopy Wilds, Milis forests.",
-"loot": "Sap (alchemy)."
+"loot": "Sap (alchemy).",
+"sprite": "Plant:6:0"
 },
 {
 "id": "plants-and-fungi-treant",
@@ -1139,7 +1168,8 @@
 ],
 "trait": "Takes double damage from Fire attacks. Many are old enough to talk, slowly.",
 "found": "Old forests on every continent.",
-"loot": "Living wood (B rank staff material)."
+"loot": "Living wood (B rank staff material).",
+"sprite": "Plant:0:0"
 },
 {
 "id": "plants-and-fungi-spore-mother",
@@ -1178,7 +1208,8 @@
 ],
 "trait": "Rooted in place. Burning it ends the spawning.",
 "found": "Heart of the Fungal Grotto.",
-"loot": "Mother spore (A rank alchemy)."
+"loot": "Mother spore (A rank alchemy).",
+"sprite": "Plant:0:3"
 },
 {
 "id": "bestial-demonfolk-kobold-scout",
@@ -1217,7 +1248,8 @@
 ],
 "trait": "Kobolds are canine and loyal to their pack; a scout that spots a party runs to fetch the rest.",
 "found": "Demon Continent hills and mines, the Upper Halls.",
-"loot": "Coins, a small blade."
+"loot": "Coins, a small blade.",
+"sprite": "Humanoid:19:0"
 },
 {
 "id": "bestial-demonfolk-kobold-packmaster",
@@ -1256,7 +1288,8 @@
 ],
 "trait": "Leads 4 to 6 Kobold Scouts.",
 "found": "Demon Continent.",
-"loot": "D rank weapon."
+"loot": "D rank weapon.",
+"sprite": "Humanoid:19:2"
 },
 {
 "id": "bestial-demonfolk-orc-warrior",
@@ -1295,7 +1328,8 @@
 ],
 "trait": "Orcs are pigfolk: hearty, loud, and fond of a good meal and a good fight. Most serve Raja Iblis Baglahagla.",
 "found": "Northwest Demon Continent, mercenary companies.",
-"loot": "E rank weapon, rations."
+"loot": "E rank weapon, rations.",
+"sprite": "Player:12:0"
 },
 {
 "id": "bestial-demonfolk-orc-shaman",
@@ -1334,7 +1368,8 @@
 ],
 "trait": "Usually travels with a band of Orc Warriors.",
 "found": "Orc domains.",
-"loot": "Bone charms, a D rank focus."
+"loot": "Bone charms, a D rank focus.",
+"sprite": "Player:12:6"
 },
 {
 "id": "bestial-demonfolk-orc-warlord",
@@ -1373,7 +1408,8 @@
 ],
 "trait": "Commands a war band of 10 or more. Respects anyone who beats them in a fair duel.",
 "found": "Orc domains.",
-"loot": "B rank weapon, war banner."
+"loot": "B rank weapon, war banner.",
+"sprite": "Player:12:4"
 },
 {
 "id": "bestial-demonfolk-lizardman-warrior",
@@ -1412,7 +1448,8 @@
 ],
 "trait": "Swims as well as it walks. Slows in the cold (-1 die).",
 "found": "Demon Continent marshes, rivers.",
-"loot": "Scale shield."
+"loot": "Scale shield.",
+"sprite": "Demon:0:0"
 },
 {
 "id": "bestial-demonfolk-lizardman-shaman",
@@ -1451,7 +1488,8 @@
 ],
 "trait": "Keeper of the tribe's old songs.",
 "found": "Marsh villages.",
-"loot": "Shaman staff (C rank focus: Water)."
+"loot": "Shaman staff (C rank focus: Water).",
+"sprite": "Demon:0:2"
 },
 {
 "id": "bestial-demonfolk-bugfolk-drone",
@@ -1490,7 +1528,8 @@
 ],
 "trait": "Ant-like workers and soldiers. They fight as one.",
 "found": "Hive mounds in the Demon Continent.",
-"loot": "Chitin."
+"loot": "Chitin.",
+"sprite": "Demon:2:1"
 },
 {
 "id": "bestial-demonfolk-mantis-blade",
@@ -1529,7 +1568,8 @@
 ],
 "trait": "Duelists of the bugfolk. Bow before attacking.",
 "found": "Hives, mercenary companies.",
-"loot": "Mantis blades (C rank short blades)."
+"loot": "Mantis blades (C rank short blades).",
+"sprite": "Demon:2:4"
 },
 {
 "id": "bestial-demonfolk-hive-queen",
@@ -1572,7 +1612,8 @@
 ],
 "trait": "Never leaves the hive. The drones fight to the last for her.",
 "found": "The heart of a hive.",
-"loot": "Royal jelly (A rank alchemy, worth a Large Gold)."
+"loot": "Royal jelly (A rank alchemy, worth a Large Gold).",
+"sprite": "Demon:2:5"
 },
 {
 "id": "monster-peoples-goblin",
@@ -1611,7 +1652,8 @@
 ],
 "trait": "Clever, quick, and fond of anything with moving parts.",
 "found": "The Upper Halls, Monsera workshops.",
-"loot": "Gadget scraps, coins."
+"loot": "Gadget scraps, coins.",
+"sprite": "Player:14:0"
 },
 {
 "id": "monster-peoples-goblin-tinkerer",
@@ -1650,7 +1692,8 @@
 ],
 "trait": "Never fights fair and never apologizes.",
 "found": "Workshops, the Gearworks.",
-"loot": "Clockwork parts, an implement."
+"loot": "Clockwork parts, an implement.",
+"sprite": "Player:14:2"
 },
 {
 "id": "monster-peoples-ogre",
@@ -1689,7 +1732,8 @@
 ],
 "trait": "Ogres left the Demon Continent long ago because they prefer peace. Calm and gentle until a friend is hurt.",
 "found": "The Ogre Islands, Monsera.",
-"loot": "C rank club."
+"loot": "C rank club.",
+"sprite": "Humanoid:14:0"
 },
 {
 "id": "monster-peoples-troll",
@@ -1728,7 +1772,8 @@
 ],
 "trait": "Hard to kill and easy to anger.",
 "found": "Bridges, mountains, the Upper Halls.",
-"loot": "Troll blood (regeneration potion ingredient)."
+"loot": "Troll blood (regeneration potion ingredient).",
+"sprite": "Humanoid:21:0"
 },
 {
 "id": "monster-peoples-minotaur",
@@ -1767,7 +1812,8 @@
 ],
 "trait": "Never lost in a maze; always knows the way to its target.",
 "found": "Labyrinths, Monsera's infrastructure division.",
-"loot": "B rank axe."
+"loot": "B rank axe.",
+"sprite": "Demon:0:3"
 },
 {
 "id": "constructs-and-automatons-automaton-servitor",
@@ -1806,7 +1852,8 @@
 ],
 "trait": "Household and factory automatons. Most are harmless unless their orders change.",
 "found": "Monsera homes, factories, the Gearworks.",
-"loot": "Clockwork core (implement part)."
+"loot": "Clockwork core (implement part).",
+"sprite": "Elemental:1:1"
 },
 {
 "id": "constructs-and-automatons-living-armor",
@@ -1845,7 +1892,8 @@
 ],
 "trait": "A suit of armor animated by a lingering will.",
 "found": "Castles, the Catacombs.",
-"loot": "D rank armor."
+"loot": "D rank armor.",
+"sprite": "Humanoid:4:0"
 },
 {
 "id": "constructs-and-automatons-mud-golem",
@@ -1880,7 +1928,8 @@
 ],
 "trait": "Reforms after being destroyed unless its core is removed.",
 "found": "Swamps, the work sites of earth mages.",
-"loot": "Golem core (Small Mana Crystal)."
+"loot": "Golem core (Small Mana Crystal).",
+"sprite": "Elemental:1:0"
 },
 {
 "id": "constructs-and-automatons-clockwork-sentinel",
@@ -1919,7 +1968,8 @@
 ],
 "trait": "Guards one door forever.",
 "found": "Vaults, the Gearworks.",
-"loot": "Gears, a C rank halberd."
+"loot": "Gears, a C rank halberd.",
+"sprite": "Elemental:0:4"
 },
 {
 "id": "constructs-and-automatons-automaton-duelist",
@@ -1958,7 +2008,8 @@
 ],
 "trait": "Built for sport. Some have fought thousands of bouts.",
 "found": "Nite City arenas, noble estates.",
-"loot": "Duelist core (C rank)."
+"loot": "Duelist core (C rank).",
+"sprite": "Elemental:1:3"
 },
 {
 "id": "constructs-and-automatons-stone-golem",
@@ -1997,7 +2048,8 @@
 ],
 "trait": "Slow and relentless. Movement 1.",
 "found": "Ruins, temples.",
-"loot": "Golem core (Mana Crystal)."
+"loot": "Golem core (Mana Crystal).",
+"sprite": "Elemental:0:6"
 },
 {
 "id": "constructs-and-automatons-iron-golem",
@@ -2036,7 +2088,8 @@
 ],
 "trait": "Immune to Poisoned and Chilled.",
 "found": "Dwarven halls, the Forge Depths.",
-"loot": "Iron golem core (Large Mana Crystal)."
+"loot": "Iron golem core (Large Mana Crystal).",
+"sprite": "Humanoid:0:6"
 },
 {
 "id": "constructs-and-automatons-war-automaton",
@@ -2075,7 +2128,8 @@
 ],
 "trait": "Built for the God Wars or the Kaiju lines. Some still wander with old orders.",
 "found": "Battlefields, the Old Rail Tunnels.",
-"loot": "War core (A rank implement part)."
+"loot": "War core (A rank implement part).",
+"sprite": "Elemental:0:0"
 },
 {
 "id": "constructs-and-automatons-mana-construct",
@@ -2114,7 +2168,8 @@
 ],
 "trait": "Built by the Mages Guild to test, and to punish, spellcasters.",
 "found": "Mages Guild vaults, the Arcane Laboratories.",
-"loot": "Construct heart (A rank artifact material)."
+"loot": "Construct heart (A rank artifact material).",
+"sprite": "Elemental:1:4"
 },
 {
 "id": "undead-skeleton",
@@ -2149,7 +2204,8 @@
 ],
 "trait": "Takes half damage from piercing attacks, rounded down.",
 "found": "Catacombs, battlefields.",
-"loot": "Bones, rusty gear."
+"loot": "Bones, rusty gear.",
+"sprite": "Undead:2:0"
 },
 {
 "id": "undead-zombie",
@@ -2184,7 +2240,8 @@
 ],
 "trait": "Keeps coming. Stands back up once unless its head is destroyed.",
 "found": "Graveyards, plague towns.",
-"loot": "None worth keeping."
+"loot": "None worth keeping.",
+"sprite": "Undead:0:1"
 },
 {
 "id": "undead-ghoul",
@@ -2219,7 +2276,8 @@
 ],
 "trait": "Eats the dead. Fast and clever.",
 "found": "Catacombs, old battlefields.",
-"loot": "Ghoul nails (alchemy)."
+"loot": "Ghoul nails (alchemy).",
+"sprite": "Undead:0:6"
 },
 {
 "id": "undead-ghost",
@@ -2258,7 +2316,8 @@
 ],
 "trait": "Incorporeal: nothing physical touches it except magic, silver, and Bright-imbued weapons (Chapter 8).",
 "found": "Haunted houses, Funayurei waters, the Catacombs.",
-"loot": "Ectoplasm (alchemy)."
+"loot": "Ectoplasm (alchemy).",
+"sprite": "Undead:4:0"
 },
 {
 "id": "undead-wraith",
@@ -2297,7 +2356,8 @@
 ],
 "trait": "Incorporeal. Feeds on mana.",
 "found": "Ruins, the Thinning Halls.",
-"loot": "Wraith essence (B rank Shade focus material)."
+"loot": "Wraith essence (B rank Shade focus material).",
+"sprite": "Undead:5:0"
 },
 {
 "id": "undead-dullahan",
@@ -2336,7 +2396,8 @@
 ],
 "trait": "A headless knight on a headless horse. It carries its head and sees through its eyes.",
 "found": "The Shaded Isles, haunted roads.",
-"loot": "Black armor (B rank)."
+"loot": "Black armor (B rank).",
+"sprite": "Undead:3:3"
 },
 {
 "id": "undead-death-knight",
@@ -2379,7 +2440,8 @@
 ],
 "trait": "A fallen knight raised with its skill intact.",
 "found": "Fallen castles, the Silent Necropolis.",
-"loot": "A rank sword, often cursed."
+"loot": "A rank sword, often cursed.",
+"sprite": "Undead:3:0"
 },
 {
 "id": "undead-vampire",
@@ -2422,7 +2484,8 @@
 ],
 "trait": "Vampires are a heritage (Chapter 8), and most are citizens like anyone else. This entry is for the ones who hunt. Each has a Compulsion tied to one of its scales.",
 "found": "Cities at night, old manors, the Shaded Isles.",
-"loot": "Whatever its victims carried."
+"loot": "Whatever its victims carried.",
+"sprite": "Undead:3:1"
 },
 {
 "id": "undead-vampire-lord",
@@ -2465,7 +2528,8 @@
 ],
 "trait": "An old vampire with a house of lesser vampires and human servants. Rarely fights its own battles until it has to.",
 "found": "Noble manors, the Shaded Isles.",
-"loot": "An A rank heirloom, a house's secrets."
+"loot": "An A rank heirloom, a house's secrets.",
+"sprite": "Undead:3:2"
 },
 {
 "id": "undead-vampire-queen",
@@ -2512,7 +2576,8 @@
 ],
 "trait": "The ruler of a vampire court, often centuries old. Her compulsion is the only weakness most of her enemies ever find.",
 "found": "The deepest courts of the Shaded Isles.",
-"loot": "An S rank artifact and a court's worth of debts."
+"loot": "An S rank artifact and a court's worth of debts.",
+"sprite": "Undead:2:1"
 },
 {
 "id": "undead-lich",
@@ -2555,7 +2620,8 @@
 ],
 "trait": "Its soul is bound to a phylactery. Destroy the phylactery or it returns in a month.",
 "found": "Hidden towers, the deepest catacombs.",
-"loot": "Phylactery, spellbooks, S rank focus."
+"loot": "Phylactery, spellbooks, S rank focus.",
+"sprite": "Undead:2:7"
 },
 {
 "id": "undead-bone-dragon",
@@ -2594,7 +2660,8 @@
 ],
 "trait": "A dragon raised by a lich. Flies at double movement, if its wings still hold.",
 "found": "Dragon graveyards, a lich's lair.",
-"loot": "Dragon bone (S rank weapon material)."
+"loot": "Dragon bone (S rank weapon material).",
+"sprite": "Undead:6:0"
 },
 {
 "id": "dragons-fire-drake",
@@ -2633,7 +2700,8 @@
 ],
 "trait": "Wingless and quick. Immune to Burning.",
 "found": "Volcanic Fields, Red Wyrm foothills.",
-"loot": "Drake scales (C rank armor)."
+"loot": "Drake scales (C rank armor).",
+"sprite": "Reptile:3:0"
 },
 {
 "id": "dragons-frost-drake",
@@ -2672,7 +2740,8 @@
 ],
 "trait": "Wingless and sure-footed on ice. Immune to Chilled.",
 "found": "Snowfields, northern mountains, frozen caves.",
-"loot": "Drake scales (C rank armor)."
+"loot": "Drake scales (C rank armor).",
+"sprite": "Reptile:3:4"
 },
 {
 "id": "dragons-wyvern",
@@ -2711,7 +2780,8 @@
 ],
 "trait": "Two legs, two wings, a bad temper. Flies at double movement.",
 "found": "Cliffs and peaks everywhere.",
-"loot": "Wyvern venom, hide."
+"loot": "Wyvern venom, hide.",
+"sprite": "Reptile:1:2"
 },
 {
 "id": "dragons-earth-dragon",
@@ -2754,7 +2824,8 @@
 ],
 "trait": "Wingless, enormous, and found in deep valleys where they lie still for years. Gives off tremors before it attacks.",
 "found": "Earth Dragon valleys of the Central Continent.",
-"loot": "Earth dragon scale (A rank armor material)."
+"loot": "Earth dragon scale (A rank armor material).",
+"sprite": "Reptile:2:4"
 },
 {
 "id": "dragons-red-wyrm",
@@ -2797,7 +2868,8 @@
 ],
 "trait": "Flies at double movement. The Red Wyrm Mountains are home to hundreds, and the passes are only safe in large caravans.",
 "found": "The Red Wyrm Mountains.",
-"loot": "Red wyrm scale (A rank), wyrm heart (S rank alchemy)."
+"loot": "Red wyrm scale (A rank), wyrm heart (S rank alchemy).",
+"sprite": "Reptile:3:3"
 },
 {
 "id": "dragons-blue-wyrm",
@@ -2836,7 +2908,8 @@
 ],
 "trait": "Swims as well as it flies. Lives on cold coasts and sea cliffs.",
 "found": "Northern coasts, the Ringus Sea.",
-"loot": "Blue scale (A rank), frost gland."
+"loot": "Blue scale (A rank), frost gland.",
+"sprite": "Reptile:1:7"
 },
 {
 "id": "dragons-storm-wyrm",
@@ -2875,7 +2948,8 @@
 ],
 "trait": "Rides the edge of thunderstorms.",
 "found": "High peaks, storm seas.",
-"loot": "Storm scale (A rank)."
+"loot": "Storm scale (A rank).",
+"sprite": "Reptile:3:5"
 },
 {
 "id": "dragons-dark-dragon",
@@ -2918,7 +2992,8 @@
 ],
 "trait": "A dark dragon is often seen flying over Gaslow, Atoferatofe's domain. Whether it serves her or simply likes the bog is a matter of debate.",
 "found": "Gaslow, the eastern Demon Continent.",
-"loot": "Dark scale (S rank)."
+"loot": "Dark scale (S rank).",
+"sprite": "Reptile:2:1"
 },
 {
 "id": "dragons-elder-dragon",
@@ -2961,7 +3036,8 @@
 ],
 "trait": "Old, clever, and greedy. Most can speak and some will bargain.",
 "found": "Remote mountains and islands.",
-"loot": "A hoard. Scales worth a fortune."
+"loot": "A hoard. Scales worth a fortune.",
+"sprite": "Reptile:2:7"
 },
 {
 "id": "dragons-ancient-dragon",
@@ -3004,7 +3080,8 @@
 ],
 "trait": "Ancient Dragons are not beasts. They are people with their own goals, kingdoms, and grudges, as old as nations. Fighting one is a story arc, not an encounter. Vaelthrax, the Slime King's companion, is the most famous.",
 "found": "Wherever they choose.",
-"loot": "Whatever they allow you to take."
+"loot": "Whatever they allow you to take.",
+"sprite": "Reptile:2:3"
 },
 {
 "id": "sea-and-freshwater-grindylow",
@@ -3039,7 +3116,8 @@
 ],
 "trait": "Pale lake goblins with long, strong fingers. They drag swimmers down in groups.",
 "found": "Lakes, ponds, the Flooded Caverns.",
-"loot": "None."
+"loot": "None.",
+"sprite": "Aquatic:4:0"
 },
 {
 "id": "sea-and-freshwater-kappa",
@@ -3078,7 +3156,8 @@
 ],
 "trait": "Turtle-shelled river folk with a water-filled dish on their heads. Bowing politely makes them bow back, spilling the water: they lose all their dice until they refill it. They love cucumbers and keep their promises.",
 "found": "Rivers and ponds of the eastern isles.",
-"loot": "Kappa medicine (heals as Basic healing, PHP 2)."
+"loot": "Kappa medicine (heals as Basic healing, PHP 2).",
+"sprite": "Aquatic:4:1"
 },
 {
 "id": "sea-and-freshwater-funayurei",
@@ -3117,7 +3196,8 @@
 ],
 "trait": "Ghosts of drowned sailors. Giving them a ladle with no bottom keeps them busy until dawn.",
 "found": "Foggy seas at night.",
-"loot": "Ectoplasm."
+"loot": "Ectoplasm.",
+"sprite": "Undead:4:1"
 },
 {
 "id": "sea-and-freshwater-deep-raider",
@@ -3156,7 +3236,8 @@
 ],
 "trait": "Fish-headed raiders from the dark water. Not to be confused with Fishfolk citizens (Chapter 8), who resent the comparison.",
 "found": "Reefs, sunken ships.",
-"loot": "Pearls, coral knives."
+"loot": "Pearls, coral knives.",
+"sprite": "Aquatic:3:2"
 },
 {
 "id": "sea-and-freshwater-giant-crab",
@@ -3191,7 +3272,8 @@
 ],
 "trait": "Its shell gives +2 BDT against attacks from the front.",
 "found": "Beaches and tidepools.",
-"loot": "Crab meat, shell (D rank shield material)."
+"loot": "Crab meat, shell (D rank shield material).",
+"sprite": "Aquatic:0:5"
 },
 {
 "id": "sea-and-freshwater-kelpie",
@@ -3234,7 +3316,8 @@
 ],
 "trait": "A water horse that looks like a lost pony. A bridle made with its true name tames it.",
 "found": "Lochs, rivers, lakes.",
-"loot": "Kelpie hair (C rank focus material: Water)."
+"loot": "Kelpie hair (C rank focus material: Water).",
+"sprite": "Quadraped:4:2"
 },
 {
 "id": "sea-and-freshwater-siren",
@@ -3273,7 +3356,8 @@
 ],
 "trait": "Covering your ears gives -2 dice to Awareness but immunity to the song.",
 "found": "Rocky coasts, the Tide Ruins.",
-"loot": "Siren scale."
+"loot": "Siren scale.",
+"sprite": "Humanoid:18:0"
 },
 {
 "id": "sea-and-freshwater-sea-serpent",
@@ -3312,7 +3396,8 @@
 ],
 "trait": "Can wrap a corvette and drag it under.",
 "found": "Open seas.",
-"loot": "Serpent scales (B rank)."
+"loot": "Serpent scales (B rank).",
+"sprite": "Aquatic:2:0"
 },
 {
 "id": "sea-and-freshwater-umibozu",
@@ -3355,7 +3440,8 @@
 ],
 "trait": "A vast black shape with pale eyes that rises out of a calm sea. Rarely fought, often survived by good manners.",
 "found": "Calm seas at night.",
-"loot": "None."
+"loot": "None.",
+"sprite": "Undead:8:1"
 },
 {
 "id": "sea-and-freshwater-kraken",
@@ -3394,7 +3480,8 @@
 ],
 "trait": "Each tentacle has its own boxes (a quarter of the total); cut one off and it loses an attack.",
 "found": "Deep ocean, the Coral Throne.",
-"loot": "Kraken ink (A rank alchemy)."
+"loot": "Kraken ink (A rank alchemy).",
+"sprite": "Aquatic:0:7"
 },
 {
 "id": "sea-and-freshwater-leviathan",
@@ -3437,7 +3524,8 @@
 ],
 "trait": "A creature from the oldest stories. It has been seen twice in recorded history.",
 "found": "The deepest ocean.",
-"loot": "Legend."
+"loot": "Legend.",
+"sprite": "Aquatic:1:3"
 },
 {
 "id": "fey-of-the-dreeming-and-the-seeming-pixie",
@@ -3476,7 +3564,8 @@
 ],
 "trait": "Tiny, playful, and easily offended. Flies at double movement.",
 "found": "Flower meadows, the Dreeming.",
-"loot": "Pixie dust (alchemy)."
+"loot": "Pixie dust (alchemy).",
+"sprite": "Humanoid:3:0"
 },
 {
 "id": "fey-of-the-dreeming-and-the-seeming-will-o-wisp",
@@ -3511,7 +3600,8 @@
 ],
 "trait": "Leads lost travelers somewhere, not always where they meant to go.",
 "found": "Bogs, foggy roads.",
-"loot": "Wisp light (Glow implement part)."
+"loot": "Wisp light (Glow implement part).",
+"sprite": "Elemental:2:0"
 },
 {
 "id": "fey-of-the-dreeming-and-the-seeming-dream-stag",
@@ -3550,7 +3640,8 @@
 ],
 "trait": "A white stag that appears to people who need a reason to keep going.",
 "found": "Old forests, the Dreeming.",
-"loot": "Never taken; it gives a blessing instead."
+"loot": "Never taken; it gives a blessing instead.",
+"sprite": "Quadraped:1:6"
 },
 {
 "id": "fey-of-the-dreeming-and-the-seeming-kitsune-trickster",
@@ -3589,7 +3680,8 @@
 ],
 "trait": "A fox spirit with more than one tail. Loves riddles, fried tofu, and embarrassing the proud.",
 "found": "Shrines, the eastern isles, the Dreeming.",
-"loot": "A tail-hair charm (C rank Fire focus)."
+"loot": "A tail-hair charm (C rank Fire focus).",
+"sprite": "Dog:0:3"
 },
 {
 "id": "fey-of-the-dreeming-and-the-seeming-nightmare-imp",
@@ -3628,7 +3720,8 @@
 ],
 "trait": "Rides sleepers' chests and feeds on their fear.",
 "found": "Bedrooms, the Seeming.",
-"loot": "Nightmare dust."
+"loot": "Nightmare dust.",
+"sprite": "Demon:4:1"
 },
 {
 "id": "fey-of-the-dreeming-and-the-seeming-redcap",
@@ -3667,7 +3760,8 @@
 ],
 "trait": "Murderous goblin-like fey. Reading scripture aloud, or a cross of iron, makes it flee.",
 "found": "Ruined towers, the Seeming.",
-"loot": "Bloodied cap (cursed)."
+"loot": "Bloodied cap (cursed).",
+"sprite": "Player:13:0"
 },
 {
 "id": "fey-of-the-dreeming-and-the-seeming-bogeyman",
@@ -3710,7 +3804,8 @@
 ],
 "trait": "Made from every child's fear of the closet. Bright light hurts it: +2 dice to attacks against it in a lit zone.",
 "found": "Under beds, closets, the Seeming.",
-"loot": "None."
+"loot": "None.",
+"sprite": "Undead:7:1"
 },
 {
 "id": "fey-of-the-dreeming-and-the-seeming-hag-of-the-seeming",
@@ -3753,7 +3848,8 @@
 ],
 "trait": "Hags trade in names, years, and memories.",
 "found": "Swamp cottages, crossroads, the Seeming.",
-"loot": "A bargained item, always cursed."
+"loot": "A bargained item, always cursed.",
+"sprite": "Humanoid:23:0"
 },
 {
 "id": "the-void-voidling-mite",
@@ -3788,7 +3884,8 @@
 ],
 "trait": "A swarm of small, wrong shapes. Area attacks deal +2 damage to it.",
 "found": "Near Void openings, Nyxhollow.",
-"loot": "Void dust (dangerous alchemy)."
+"loot": "Void dust (dangerous alchemy).",
+"sprite": "Pest:0:1"
 },
 {
 "id": "the-void-voidling-stalker",
@@ -3827,7 +3924,8 @@
 ],
 "trait": "Seeing one for the first time forces a Sanity roll.",
 "found": "Void openings, the Thinning Halls.",
-"loot": "Void shard (A rank artifact material)."
+"loot": "Void shard (A rank artifact material).",
+"sprite": "Elemental:2:3"
 },
 {
 "id": "the-void-void-maw",
@@ -3866,7 +3964,8 @@
 ],
 "trait": "A mouth with nothing behind it.",
 "found": "Void openings.",
-"loot": "Void core."
+"loot": "Void core.",
+"sprite": "Elemental:5:2"
 },
 {
 "id": "the-void-voidling-horror",
@@ -3909,7 +4008,8 @@
 ],
 "trait": "What comes through when a Void opening tears wide.",
 "found": "Major Void breaches.",
-"loot": "Void heart (S rank, cursed)."
+"loot": "Void heart (S rank, cursed).",
+"sprite": "Demon:1:6"
 },
 {
 "id": "the-void-void-leviathan",
@@ -3948,7 +4048,8 @@
 ],
 "trait": "A Void creature large enough to swim between worlds.",
 "found": "The Outer Dark, deep Void breaches.",
-"loot": "Legend."
+"loot": "Legend.",
+"sprite": "Aquatic:2:2"
 },
 {
 "id": "the-void-void-kaiju",
@@ -3995,7 +4096,8 @@
 ],
 "trait": "The smallest of the Kaiju, and still an S rank threat. About once a year one breaks out of the Rift at the center of the Ringus Sea, and the HRC and the Titans meet it before it reaches a shore (Chapter 3).",
 "found": "The Rift in the Ringus Sea, other Void breaches.",
-"loot": "A Kaiju core: worth a King's Gold to the right buyer."
+"loot": "A Kaiju core: worth a King's Gold to the right buyer.",
+"sprite": "Demon:1:3"
 },
 {
 "id": "the-void-giant-void-kaiju",
@@ -4042,7 +4144,8 @@
 ],
 "trait": "The worst thing the Void has ever sent. Nations, the HRC, and the Titans together have stopped one only twice.",
 "found": "Catastrophic Void breaches.",
-"loot": "A continent's worth of salvage, if anything survives."
+"loot": "A continent's worth of salvage, if anything survives.",
+"sprite": "Demon:1:0"
 },
 {
 "id": "people-bandit",
@@ -4081,7 +4184,8 @@
 ],
 "trait": "Runs when half the gang is down.",
 "found": "Roads, Breakwater alleys.",
-"loot": "A few coins."
+"loot": "A few coins.",
+"sprite": "Humanoid:7:0"
 },
 {
 "id": "people-thug",
@@ -4120,7 +4224,8 @@
 ],
 "trait": "Usually works for someone worse.",
 "found": "Nite City back streets.",
-"loot": "Coins, a debt ledger."
+"loot": "Coins, a debt ledger.",
+"sprite": "Humanoid:0:0"
 },
 {
 "id": "people-city-guard",
@@ -4159,7 +4264,8 @@
 ],
 "trait": "Would rather arrest you than kill you.",
 "found": "Every city.",
-"loot": "D rank spear, a badge."
+"loot": "D rank spear, a badge.",
+"sprite": "Humanoid:4:1"
 },
 {
 "id": "people-mercenary",
@@ -4198,7 +4304,8 @@
 ],
 "trait": "Members of the Mercenaries Guild in space, or freelancers on Terrana.",
 "found": "Everywhere money is.",
-"loot": "D rank weapon, a contract."
+"loot": "D rank weapon, a contract.",
+"sprite": "Humanoid:0:4"
 },
 {
 "id": "people-veteran-delver",
@@ -4237,7 +4344,8 @@
 ],
 "trait": "Has been to the fortieth floor and has the scars.",
 "found": "The Grand Dungeon, guild halls.",
-"loot": "C rank gear."
+"loot": "C rank gear.",
+"sprite": "Humanoid:5:0"
 },
 {
 "id": "people-knight",
@@ -4276,7 +4384,8 @@
 ],
 "trait": "Sworn to a house or a crown.",
 "found": "Noble estates, Asura, Milishion.",
-"loot": "C rank armor and sword."
+"loot": "C rank armor and sword.",
+"sprite": "Humanoid:4:3"
 },
 {
 "id": "people-battle-mage",
@@ -4315,7 +4424,8 @@
 ],
 "trait": "Usually trained at Monsera University.",
 "found": "Guilds, armies, universities.",
-"loot": "C rank focus."
+"loot": "C rank focus.",
+"sprite": "Humanoid:10:1"
 },
 {
 "id": "people-assassin",
@@ -4354,7 +4464,8 @@
 ],
 "trait": "Works for the Shaded Isles, a noble house, or the highest bidder.",
 "found": "Anywhere.",
-"loot": "B rank daggers, poisons."
+"loot": "B rank daggers, poisons.",
+"sprite": "Humanoid:2:6"
 },
 {
 "id": "people-necromancer",
@@ -4393,7 +4504,8 @@
 ],
 "trait": "Rarely alone: usually surrounded by 3 to 6 Skeletons or Zombies.",
 "found": "Graveyards, hidden labs.",
-"loot": "B rank Shade focus."
+"loot": "B rank Shade focus.",
+"sprite": "Humanoid:17:0"
 },
 {
 "id": "people-sword-saint",
@@ -4432,7 +4544,8 @@
 ],
 "trait": "A Saint rank master of a Combat Style. The Sword God's schools produce a handful a generation.",
 "found": "Sword dojos, the Asura capital.",
-"loot": "A rank sword."
+"loot": "A rank sword.",
+"sprite": "Humanoid:12:1"
 },
 {
 "id": "the-immortal-demon-kings-empress-kishirika-kishirisu",
@@ -4471,7 +4584,8 @@
 ],
 "trait": "The Demon Empress is famously weak in a fight, famously hungry, and famously generous to whoever feeds her. She has died and reincarnated at least five times. Rank C is her fighting strength, not her importance.",
 "found": "Wherever she wandered off to this time.",
-"loot": "A Magic Eye, if she likes you."
+"loot": "A Magic Eye, if she likes you.",
+"sprite": "Humanoid:6:5"
 },
 {
 "id": "the-immortal-demon-kings-badigadi-the-fighting-god",
@@ -4514,7 +4628,8 @@
 ],
 "trait": "Six-armed, loud, and delighted by a good fight or a good party. He has little magical aptitude and needs none. He is the husband of Kishirika and one of the few beings the Slime King treats as a peer.",
 "found": "Biegoya, in the far northeast, or wherever the wine is.",
-"loot": "His respect."
+"loot": "His respect.",
+"sprite": "Demon:1:4"
 },
 {
 "id": "the-immortal-demon-kings-atoferatofe-ryback",
@@ -4557,7 +4672,8 @@
 ],
 "trait": "Badigadi's sister: enormously strong, very loud, and not interested in nuance. She kidnaps foreign royalty and challenges every strong warrior she hears of. Her black-armored Imperial Guard follow her everywhere.",
 "found": "Gaslow, a dark bog in the east, under the shadow of a dark dragon.",
-"loot": "Disciple papers."
+"loot": "Disciple papers.",
+"sprite": "Demon:6:0"
 },
 {
 "id": "the-immortal-demon-kings-atofes-imperial-guard",
@@ -4596,7 +4712,8 @@
 ],
 "trait": "Black-armored disciples, nearly all of them former challengers who lost.",
 "found": "Gaslow, or wherever Atofe goes.",
-"loot": "B rank black armor."
+"loot": "B rank black armor.",
+"sprite": "Undead:3:0"
 },
 {
 "id": "the-immortal-demon-kings-necross-lacross",
@@ -4639,7 +4756,8 @@
 ],
 "trait": "The Five Elements Demon King, a tactician of the God Wars, father of Badigadi and Atoferatofe, and the one who brought Kishirika to Terrana. He built the strongest fortress on the Demon Continent and rules from its heart.",
 "found": "The heart of the Demon Continent.",
-"loot": "Strategy, if he deigns to share it."
+"loot": "Strategy, if he deigns to share it.",
+"sprite": "Undead:2:6"
 },
 {
 "id": "the-immortal-demon-kings-the-earth-god",
@@ -4682,7 +4800,8 @@
 ],
 "trait": "A fairy-type Immortal Demon King who co-owns the Grand Dungeon with the Slime King and redesigns its floors on a whim. Fighting her in her dungeon is a very bad idea.",
 "found": "The Grand Dungeon.",
-"loot": "A new floor named after you, if she is amused."
+"loot": "A new floor named after you, if she is amused.",
+"sprite": "Elemental:3:3"
 },
 {
 "id": "the-immortal-demon-kings-beethove-tovetha",
@@ -4721,7 +4840,8 @@
 ],
 "trait": "A monstrous black slime-octopus who rules the Library Labyrinth and records every piece of written lore in the world.",
 "found": "The Library Labyrinth, in the north.",
-"loot": "A book you were looking for."
+"loot": "A book you were looking for.",
+"sprite": "Demon:7:1"
 },
 {
 "id": "the-immortal-demon-kings-raja-iblis-baglahagla",
@@ -4760,7 +4880,8 @@
 ],
 "trait": "The pig-like King of the Orcs, ruler of the northwest. Judges a guest by their appetite.",
 "found": "The northwestern domain.",
-"loot": "A seat at his table."
+"loot": "A seat at his table.",
+"sprite": "Demon:1:1"
 },
 {
 "id": "the-immortal-demon-kings-vita-the-abyssal-king",
@@ -4799,7 +4920,8 @@
 ],
 "trait": "A parasitic blue slime-demon. Its rank is low because it rarely fights with its own body; the body it is wearing decides how dangerous it is.",
 "found": "The western domain, or inside anyone.",
-"loot": "Nothing you want to keep."
+"loot": "Nothing you want to keep.",
+"sprite": "Demon:1:6"
 },
 {
 "id": "the-immortal-demon-kings-lynebyne-the-stone-king",
@@ -4842,7 +4964,8 @@
 ],
 "trait": "The ruler of the southwest, as patient as the mountains.",
 "found": "The southwestern domain.",
-"loot": "Stone that never breaks."
+"loot": "Stone that never breaks.",
+"sprite": "Elemental:0:6"
 },
 {
 "id": "the-immortal-demon-kings-samedynomedy-demon-king-of-light",
@@ -4881,7 +5004,8 @@
 ],
 "trait": "Ruler of the south, whose domain is never truly dark.",
 "found": "The southern domain.",
-"loot": "Light that keeps voidlings away."
+"loot": "Light that keeps voidlings away.",
+"sprite": "Humanoid:3:5"
 },
 {
 "id": "the-immortal-demon-kings-patorsetor-the-enchantress-demon-king",
@@ -4920,7 +5044,8 @@
 ],
 "trait": "Ruler of the southeastern coast, whose court is full of people who do not remember arriving.",
 "found": "The southeastern coast.",
-"loot": "An invitation you should refuse."
+"loot": "An invitation you should refuse.",
+"sprite": "Humanoid:15:2"
 },
 {
 "id": "the-immortal-demon-kings-qeblaqabla-the-evil-demon-king",
@@ -4959,7 +5084,8 @@
 ],
 "trait": "A floating orb leaking black liquid, ruling the continent's southern end.",
 "found": "The southern end of the Demon Continent.",
-"loot": "Corroded relics."
+"loot": "Corroded relics.",
+"sprite": "Demon:1:2"
 },
 {
 "id": "grand-dungeon-bosses-warchief-gruk-ironmaw",
@@ -4999,7 +5125,8 @@
 ],
 "trait": "Thirty years on the job. Respects a fair fight.",
 "found": "Floor 4.",
-"loot": "D rank cleaver, a handshake."
+"loot": "D rank cleaver, a handshake.",
+"sprite": "Player:14:7"
 },
 {
 "id": "grand-dungeon-bosses-the-grand-beastmaster",
@@ -5039,7 +5166,8 @@
 ],
 "trait": "Fights beside a multi-headed Chimera in the Ironwood Colosseum while the stands bet on the outcome.",
 "found": "Floor 10.",
-"loot": "C rank whip, betting slips."
+"loot": "C rank whip, betting slips.",
+"sprite": "Player:13:1"
 },
 {
 "id": "grand-dungeon-bosses-asterion-of-the-maze",
@@ -5079,7 +5207,8 @@
 ],
 "trait": "Waits at the Labyrinth's final gate.",
 "found": "Floor 14.",
-"loot": "C rank axe, a map that is always wrong."
+"loot": "C rank axe, a map that is always wrong.",
+"sprite": "Demon:0:3"
 },
 {
 "id": "grand-dungeon-bosses-the-chrono-goliath",
@@ -5119,7 +5248,8 @@
 ],
 "trait": "The Shattered Clockwork, built by the Makers Guild long ago.",
 "found": "Floor 20.",
-"loot": "B rank clockwork core."
+"loot": "B rank clockwork core.",
+"sprite": "Elemental:0:4"
 },
 {
 "id": "grand-dungeon-bosses-skyrend-the-storm-alpha",
@@ -5159,7 +5289,8 @@
 ],
 "trait": "Rules the Canopy Wilds.",
 "found": "Floor 24.",
-"loot": "Storm feathers."
+"loot": "Storm feathers.",
+"sprite": "Avian:9:3"
 },
 {
 "id": "grand-dungeon-bosses-the-kraken-vanguard",
@@ -5199,7 +5330,8 @@
 ],
 "trait": "A Seafolk champion under contract with the Navigators Guild.",
 "found": "Floor 30.",
-"loot": "B rank trident."
+"loot": "B rank trident.",
+"sprite": "Aquatic:3:1"
 },
 {
 "id": "grand-dungeon-bosses-the-iron-juggernaut",
@@ -5239,7 +5371,8 @@
 ],
 "trait": "A walking furnace built to clear cave-ins.",
 "found": "Floor 34.",
-"loot": "Furnace core."
+"loot": "Furnace core.",
+"sprite": "Elemental:1:1"
 },
 {
 "id": "grand-dungeon-bosses-the-doppler-matriarch",
@@ -5279,7 +5412,8 @@
 ],
 "trait": "A high-tier devil illusionist from Nite City.",
 "found": "Floor 40.",
-"loot": "A rank mirror shard."
+"loot": "A rank mirror shard.",
+"sprite": "Demon:6:1"
 },
 {
 "id": "grand-dungeon-bosses-mother-maelis-the-siren-matron",
@@ -5319,7 +5453,8 @@
 ],
 "trait": "The eldest of the ruins' sirens.",
 "found": "Floor 44.",
-"loot": "Siren pearl (A rank Water focus)."
+"loot": "Siren pearl (A rank Water focus).",
+"sprite": "Humanoid:18:2"
 },
 {
 "id": "grand-dungeon-bosses-cindermaw-the-magma-wyrm",
@@ -5359,7 +5494,8 @@
 ],
 "trait": "A wild fire drake fused with experimental company machinery.",
 "found": "Floor 50.",
-"loot": "A rank scale."
+"loot": "A rank scale.",
+"sprite": "Reptile:3:1"
 },
 {
 "id": "grand-dungeon-bosses-the-rune-sentinel",
@@ -5399,7 +5535,8 @@
 ],
 "trait": "An ancient guardian covered in shifting runes.",
 "found": "Floor 54.",
-"loot": "Rune plate."
+"loot": "Rune plate.",
+"sprite": "Elemental:1:3"
 },
 {
 "id": "grand-dungeon-bosses-the-dullahan-overseer",
@@ -5439,7 +5576,8 @@
 ],
 "trait": "An ancient knight representing the noble houses of the Shaded Isles.",
 "found": "Floor 60.",
-"loot": "A rank black armor."
+"loot": "A rank black armor.",
+"sprite": "Undead:3:3"
 },
 {
 "id": "grand-dungeon-bosses-conductor-kessler",
@@ -5479,7 +5617,8 @@
 ],
 "trait": "Insists every passenger present a valid ticket. Bring one.",
 "found": "Floor 64.",
-"loot": "A golden ticket."
+"loot": "A golden ticket.",
+"sprite": "Undead:2:5"
 },
 {
 "id": "grand-dungeon-bosses-warden-arcanum",
@@ -5519,7 +5658,8 @@
 ],
 "trait": "An advanced defense construct from the Mages Guild. Physical attacks and combination spells are the way through.",
 "found": "Floor 70.",
-"loot": "S rank construct heart."
+"loot": "S rank construct heart.",
+"sprite": "Elemental:1:4"
 },
 {
 "id": "grand-dungeon-bosses-the-crystal-basilisk",
@@ -5559,7 +5699,8 @@
 ],
 "trait": "Its hide is a living crystal lattice.",
 "found": "Floor 74.",
-"loot": "Living crystal (S rank)."
+"loot": "Living crystal (S rank).",
+"sprite": "Reptile:8:0"
 },
 {
 "id": "grand-dungeon-bosses-the-rift-stalker",
@@ -5599,7 +5740,8 @@
 ],
 "trait": "A real multi-dimensional predator, held on this floor by magic barriers.",
 "found": "Floor 80.",
-"loot": "Void shard (S rank)."
+"loot": "Void shard (S rank).",
+"sprite": "Elemental:2:4"
 },
 {
 "id": "grand-dungeon-bosses-the-monk-of-a-thousand-steps",
@@ -5643,7 +5785,8 @@
 ],
 "trait": "A silent ogre who fights unarmed and will not let a party pass until they prove themselves.",
 "found": "Floor 84.",
-"loot": "His nod."
+"loot": "His nod.",
+"sprite": "Humanoid:14:2"
 },
 {
 "id": "grand-dungeon-bosses-the-devil-prince-defiler",
@@ -5683,7 +5826,8 @@
 ],
 "trait": "An exile from the Hell Dungeon and a true spellsword, under contract to the Earth God.",
 "found": "Floor 90.",
-"loot": "S rank blade."
+"loot": "S rank blade.",
+"sprite": "Demon:1:7"
 },
 {
 "id": "grand-dungeon-bosses-vaelthrax",
@@ -5727,7 +5871,8 @@
 ],
 "trait": "The Slime King's legendary companion and the final boss. No gimmicks: only immense strength, near-total immunity to magic, and devastating breath. No party has beaten it.",
 "found": "Floor 100.",
-"loot": "The record books."
+"loot": "The record books.",
+"sprite": "Reptile:0:4"
 },
 {
 "id": "space-era-creatures-sky-pirate",
@@ -5766,7 +5911,8 @@
 ],
 "trait": "Crews wooden warships driven by Air Magic circles.",
 "found": "The Free Reaches.",
-"loot": "Plunder."
+"loot": "Plunder.",
+"sprite": "Humanoid:9:3"
 },
 {
 "id": "space-era-creatures-sky-pirate-captain",
@@ -5805,7 +5951,8 @@
 ],
 "trait": "Every captain has a price on their head and a legend to protect.",
 "found": "The Free Reaches, Kordrane.",
-"loot": "A ship, if you can take it."
+"loot": "A ship, if you can take it.",
+"sprite": "Humanoid:9:4"
 },
 {
 "id": "space-era-creatures-asteroid-burrower",
@@ -5840,7 +5987,8 @@
 ],
 "trait": "Lives inside drifting rocks and mistakes hulls for food.",
 "found": "Asteroid belts.",
-"loot": "Ore."
+"loot": "Ore.",
+"sprite": "Pest:3:0"
 },
 {
 "id": "space-era-creatures-nebula-wraith",
@@ -5875,7 +6023,8 @@
 ],
 "trait": "A ghost of gas and lightning.",
 "found": "Nebulas.",
-"loot": "Charged dust (implement fuel)."
+"loot": "Charged dust (implement fuel).",
+"sprite": "Undead:4:2"
 },
 {
 "id": "space-era-creatures-nyxhollow-swarm",
@@ -5914,7 +6063,8 @@
 ],
 "trait": "Voidlings from Nyxhollow, where the swarms never thin.",
 "found": "Nyxhollow.",
-"loot": "Void dust."
+"loot": "Void dust.",
+"sprite": "Pest:0:0"
 },
 {
 "id": "space-era-creatures-star-whale",
@@ -5953,6 +6103,7 @@
 ],
 "trait": "Peaceful giants that swim between worlds. Sailors consider them good luck.",
 "found": "The open sky.",
-"loot": "Never hunted by anyone decent."
+"loot": "Never hunted by anyone decent.",
+"sprite": "Aquatic:1:3"
 }
 ]

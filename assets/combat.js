@@ -345,8 +345,10 @@
       var reach = mover && !c && (mover.x === null || mover.x === undefined || dist <= left);
       var z = el('button', { type: 'button', class: 'cb-zone' + (reach ? ' target' : ''), 'aria-label': 'Zone ' + label + (c ? ': ' + c.name : ', empty') }, [el('span', { class: 'lab', text: label })]);
       if (c) {
-        var tok = el('span', { class: 'cb-token ' + c.side + (R.sel === c.id ? ' sel' : '') + (cur && cur.id === c.id ? ' turn' : '') + (incap(c) ? ' down' : '') + (c.hidden ? ' hid' : ''), text: c.pic_url ? '' : initials(c.name) });
-        if (c.pic_url) tok.style.backgroundImage = 'url("' + c.pic_url.replace(/"/g, '') + '")';
+        var sp = (c.stats || {}).sprite;
+        var tok = el('span', { class: 'cb-token ' + c.side + (sp ? ' spr' : '') + (R.sel === c.id ? ' sel' : '') + (cur && cur.id === c.id ? ' turn' : '') + (incap(c) ? ' down' : '') + (c.hidden ? ' hid' : ''), text: sp || c.pic_url ? '' : initials(c.name) });
+        if (sp) tok.appendChild(spriteNode(sp, Math.max(32, Math.floor(size * 0.78 / 16) * 16)));
+        else if (c.pic_url) tok.style.backgroundImage = 'url("' + c.pic_url.replace(/"/g, '') + '")';
         z.appendChild(tok);
       }
       z.addEventListener('click', function () {
@@ -599,9 +601,20 @@
     var c = R.sel ? R.cs[R.sel] : current();
     if (!c) { box.appendChild(el('p', { class: 'center cv-muted', text: 'Click a name in the banner to see their card.' })); return; }
     var can = mineC(c), bdt = c.bdt || 1, cur = current();
-    var pic = el('div', { class: 'cb-portrait ' + c.side, text: c.pic_url ? '' : initials(c.name) });
+    var csp = (c.stats || {}).sprite;
+    var pic = el('div', { class: 'cb-portrait ' + c.side, text: c.pic_url || csp ? '' : initials(c.name) });
     if (c.pic_url) pic.style.backgroundImage = 'url("' + c.pic_url.replace(/"/g, '') + '")';
+    else if (csp) pic.appendChild(spriteNode(csp, 112));
     box.appendChild(pic);
+    if (can) box.appendChild(el('div', { class: 'center' }, [el('button', { class: 'act cb-mini', type: 'button', text: csp ? 'Change Sprite' : 'Choose a Sprite', onclick: function () {
+      pickSprite(csp, async function (spec) {
+        await upd(c, { stats: Object.assign({}, c.stats || {}, { sprite: spec }) });
+        if (c.character_id && c.owner === me.id) { // keep it with the character for every fight
+          var row = await db.from('characters').select('sheet').eq('id', c.character_id).single();
+          if (row.data) await db.from('characters').update({ sheet: Object.assign({}, row.data.sheet, { sprite: spec }) }).eq('id', c.character_id);
+        }
+      });
+    } })]));
     box.appendChild(el('h2', { class: 'px cb-card-name', text: c.name }));
     box.appendChild(el('p', { class: 'cb-sub center', text: (c.kind === 'pc' ? 'Played by ' + (R.players[c.owner] || '') : c.kind === 'summon' ? 'SumMonz of ' + (R.players[c.owner] || '') : 'NPC') + ' · ' + ({ party: 'Party', enemy: 'Enemy', neutral: 'Neutral' }[c.side]) + ' · Initiative ' + c.initiative + (cur && cur.id === c.id ? ' · Their turn' : '') + (c.hidden ? ' · Hidden from players' : '') }));
     if (incap(c)) box.appendChild(el('p', { class: 'cb-incap center', text: 'INCAPACITATED' }));
@@ -649,7 +662,9 @@
     await ensureForge();
     R.data = R.data || await fetch('../forge/data.json?v=1863d047').then(function (r) { return r.json(); });
     window.TerranaCharacter.load(R.data, row, { username: me.username, is_admin: !!me.is_admin });
-    return window.TerranaCharacter.combatKit();
+    var k = window.TerranaCharacter.combatKit();
+    if (row.sheet && row.sheet.sprite) k.sprite = row.sheet.sprite;
+    return k;
   }
   function fromKit(k) {
     return { ap: 3, boxes: k.boxes || { b: 7, l: 5, a: 3 }, initiative: k.initiative, bdt: k.bdt, mana: k.mana.pool, mana_max: k.mana.pool, mt: k.mana.mt, willpower: k.willpower, stats: k };
@@ -684,14 +699,53 @@
     var row = await must(db.from('characters').select('id, name, sheet').eq('id', c.character_id).single());
     var k = await kitFor(row);
     var f = fromKit(k);
-    await upd(c, { stats: Object.assign({}, k, { hurt: (c.stats || {}).hurt }), bdt: f.bdt, boxes: f.boxes, mana_max: f.mana_max, mt: f.mt, initiative: f.initiative, name: row.name });
+    await upd(c, { stats: Object.assign({}, k, { hurt: (c.stats || {}).hurt, sprite: k.sprite || (c.stats || {}).sprite, effects: (c.stats || {}).effects }), bdt: f.bdt, boxes: f.boxes, mana_max: f.mana_max, mt: f.mt, initiative: f.initiative, name: row.name });
   }
+  // ---------- sprites: DawnLike by DragonDePlatino (palette by DawnBringer), CC BY-SA 3.0 ----------
+  var SPR = null;
+  async function sprites() { if (!SPR) SPR = await fetch('../assets/sprites/sprites.json?v=287ffe56').then(function (r) { return r.json(); }); return SPR; }
+  function sheetOf(id) { return SPR ? SPR.sheets.filter(function (x) { return x.id === id; })[0] : null; }
+  // Two frames, swapped back and forth, for the bouncing idle
+  function spriteNode(spec, px) {
+    var p = String(spec).split(':'), sh = sheetOf(p[0]) || (p[0] === 'Reptile' ? { cols: 8, rows: 15 } : null);
+    var wrap = el('span', { class: 'cb-spr', style: 'width:' + px + 'px;height:' + px + 'px', 'aria-hidden': 'true' });
+    if (!sh) { if (!SPR) sprites().then(function () { drawAll(); }); return wrap; }
+    [0, 1].forEach(function (f) {
+      wrap.appendChild(el('span', { class: 'cb-spr-f f' + f, style: 'background-image:url(../assets/sprites/dawnlike/' + p[0] + f + '.png);background-size:' + (sh.cols * px) + 'px ' + (sh.rows * px) + 'px;background-position:-' + (+p[2] * px) + 'px -' + (+p[1] * px) + 'px' }));
+    });
+    return wrap;
+  }
+  function pickSprite(current, done) {
+    var d = dialog('Choose a Sprite');
+    var sel = el('select', { 'aria-label': 'Sprite group' });
+    var q = el('input', { type: 'search', placeholder: 'Search a group', 'aria-label': 'Search' });
+    var grid = el('div', { class: 'cb-sprgrid' });
+    d.body.appendChild(el('div', { class: 'cb-f' }, [el('div', { class: 'two' }, [sel, q]), grid, el('p', { class: 'cb-desc', text: 'Sprites: DawnLike by DragonDePlatino, palette by DawnBringer (CC BY-SA 3.0).' })]));
+    sprites().then(function (S) {
+      var cur = String(current || '').split(':')[0];
+      S.sheets.forEach(function (sh) { sel.appendChild(opt(sh.id, sh.label + ' (' + sh.cells.length + ')', sh.id === cur)); });
+      function draw() {
+        grid.textContent = '';
+        var t = q.value.trim().toLowerCase();
+        var cells = t === 'platino' ? [['Reptile', 12, 3]] : [];
+        if (!cells.length) S.sheets.filter(function (sh) { return t ? sh.label.toLowerCase().indexOf(t) >= 0 : sh.id === sel.value; }).forEach(function (sh) { sh.cells.forEach(function (rc) { cells.push([sh.id, rc[0], rc[1]]); }); });
+        cells.forEach(function (x) {
+          var spec = x.join(':');
+          grid.appendChild(el('button', { type: 'button', class: 'cb-sprbtn' + (spec === current ? ' on' : ''), 'aria-label': 'Sprite ' + spec, onclick: function () { d.close(); done(spec); } }, [spriteNode(spec, 48)]));
+        });
+      }
+      sel.addEventListener('change', function () { q.value = ''; draw(); }); q.addEventListener('input', draw); draw();
+    });
+    d.ok('Close', function () {});
+    d.open();
+  }
+
   // ---------- NPCs: pick from the Chapter 15 Bestiary, adjust, add ----------
   var BESTIARY = null;
   var RANKS = ['F', 'E', 'D', 'C', 'B', 'A', 'S', 'SS', 'SSS'];
   var RANK_STATS = { F: [4, 3, 3, [3, 2, 1], 3, 2], E: [6, 4, 4, [4, 3, 2], 6, 3], D: [8, 5, 5, [5, 4, 3], 9, 4], C: [10, 6, 6, [6, 5, 4], 12, 5], B: [12, 7, 7, [7, 6, 5], 15, 6],
     A: [14, 8, 8, [8, 7, 6], 18, 7], S: [16, 9, 9, [9, 8, 7], 21, 8], SS: [20, 12, 12, [12, 11, 10], 30, 12], SSS: [25, 15, 15, [15, 14, 13], 45, 15] };
-  async function bestiary() { if (!BESTIARY) BESTIARY = await fetch('bestiary.json?v=c9331b6c').then(function (r) { return r.json(); }); return BESTIARY; }
+  async function bestiary() { if (!BESTIARY) BESTIARY = await fetch('bestiary.json?v=40e559a0').then(function (r) { return r.json(); }); return BESTIARY; }
   function pickCreature(done) {
     var d = dialog('Choose from the Bestiary');
     var q = el('input', { type: 'search', placeholder: 'Search by name, type, or element', 'aria-label': 'Search the Bestiary' });
@@ -744,6 +798,9 @@
       pic: el('input', { type: 'url', maxlength: '500', placeholder: 'https:// (optional)' }), file: el('input', { type: 'file', accept: 'image/*' })
     };
     var chosen = el('p', { class: 'cb-desc', text: 'Pick a creature to fill everything in, or type your own. You can change any number before adding.' });
+    var npcSprite = null, sprPrev = el('span', { class: 'cb-sprprev' });
+    function drawSpr() { sprPrev.textContent = ''; if (npcSprite) sprPrev.appendChild(spriteNode(npcSprite, 48)); else sprPrev.appendChild(el('span', { class: 'cv-muted', text: 'None' })); }
+    drawSpr();
     function fill() {
       if (!picked) return;
       var c = picked, rank = c.rank, base = RANK_STATS[rank] || null;
@@ -757,6 +814,7 @@
       f.name.value = c.name; f.atk.value = atk; f.def.value = def; f.dmg.value = dmg; f.bdt.value = bdt;
       f.b.value = h.b || 0; f.l.value = h.l || 0; f.a.value = h.a || 1; f.mana.value = mana || 0; f.mt.value = mt || 0; f.move.value = c.move || 1;
       f.notes.value = (c.abilities || []).map(function (x) { return x.name + ': ' + x.text; }).concat(c.trait ? ['Trait: ' + c.trait] : []).concat(f.boss.checked && !/Boss/.test(c.section) ? ['Boss: two attacks a turn, immune to one condition.'] : []).join('\n');
+      if (c.sprite) { npcSprite = c.sprite; drawSpr(); }
       chosen.textContent = c.name + ', Rank ' + rank + '. ' + [c.type, c.size, c.elements].filter(Boolean).join(', ') + '.' + (c.loot ? ' Loot: ' + c.loot : '');
     }
     f.elite.addEventListener('change', fill); f.boss.addEventListener('change', fill);
@@ -769,7 +827,8 @@
       el('div', { class: 'three' }, [field('Bashing boxes', f.b), field('Lethal boxes', f.l), field('Aggravated boxes', f.a)]),
       el('div', { class: 'three' }, [field('BDT', f.bdt), field('Mana', f.mana), field('M/T', f.mt)]),
       field('Attacks, spells, and traits', f.notes),
-      el('div', { class: 'two' }, [field('Picture (upload)', f.file), field('Or a picture address', f.pic)]),
+      el('div', { class: 'cb-sprrow' }, [el('span', { class: 'cb-lab', text: 'Sprite on the map' }), sprPrev, el('button', { class: 'act cb-mini', type: 'button', text: 'Choose a Sprite', onclick: function () { pickSprite(npcSprite, function (spec) { npcSprite = spec; drawSpr(); }); } })]),
+      el('div', { class: 'two' }, [field('Portrait picture (upload)', f.file), field('Or a picture address', f.pic)]),
       el('label', { class: 'chk' }, [f.hidden, 'Hidden from players until revealed'])]));
     d.ok('Add', async function () {
       var n = Math.max(1, Math.min(12, +f.count.value || 1)), base = f.name.value.trim() || 'Enemy', rows = [];
@@ -778,7 +837,7 @@
       var abil = picked ? (picked.abilities || []) : [];
       for (var i = 0; i < n; i++) rows.push({ encounter_id: R.enc.id, owner: me.id, name: n > 1 ? base + ' ' + (i + 1) : base, kind: 'npc', side: f.side.value, ap: 3, initiative: +f.init.value || 0, bdt: +f.bdt.value || 1,
         boxes: { b: +f.b.value || 0, l: +f.l.value || 0, a: +f.a.value || 1 }, mana: +f.mana.value || 0, mana_max: +f.mana.value || 0, mt: +f.mt.value || 0, hidden: f.hidden.checked, pic_url: pic,
-        stats: { npc: true, attack: +f.atk.value || 0, defense: +f.def.value || 0, damage: +f.dmg.value || 0, move: +f.move.value || 1, notes: f.notes.value.trim(), regen: 1,
+        stats: { npc: true, sprite: npcSprite, attack: +f.atk.value || 0, defense: +f.def.value || 0, damage: +f.dmg.value || 0, move: +f.move.value || 1, notes: f.notes.value.trim(), regen: 1,
           creature: picked ? { id: picked.id, rank: picked.rank, type: picked.type, size: picked.size, elements: picked.elements, abilities: abil, trait: picked.trait || '' } : null } });
       await must(db.from('combatants').insert(rows));
       await refresh();
@@ -1070,6 +1129,7 @@
         el('section', { class: 'panel win', id: 'cb-loadout' })]),
       el('div', { class: 'cb-col' }, [el('section', { class: 'panel win cb-card', id: 'cb-card' }), el('section', { class: 'panel win', id: 'cb-log' })])
     ]));
+    await sprites().catch(function () {});
     await refresh();
     live();
     window.addEventListener('resize', function () { drawMap(); });
