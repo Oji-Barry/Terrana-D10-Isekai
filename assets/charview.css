@@ -196,3 +196,10 @@ details.cv-more > summary { cursor: pointer; color: var(--sky); font-weight: 700
 .cv-incap.on { border-style: solid; background: rgba(192, 107, 255, 0.15); }
 .cv-incap .cv-tb { flex-shrink: 0; }
 .cv-incap small { display: block; font-size: 12px; line-height: 1.35; }
+.cv-affects { display: grid; gap: 4px; margin-top: 8px; }
+.cv-affects h4 { margin: 4px 0 2px; }
+.cv-aff { display: flex; flex-wrap: wrap; gap: 2px 8px; align-items: baseline; padding: 4px 6px; border: 1px solid var(--line); border-radius: 4px; background: rgba(0, 0, 0, 0.25); min-height: 32px; font-size: 13px; }
+.cv-aff.auto { border-color: rgba(127, 209, 255, 0.5); }
+.cv-aff.auto span { color: var(--sky); }
+.cv-aff input { width: 100%; border: 0; background: none; color: var(--text); font: inherit; padding: 2px 0; }
+.cv-affects .act.small { justify-self: start; min-height: 30px; }

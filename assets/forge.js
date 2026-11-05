@@ -2139,11 +2139,12 @@
   }
   // Modifiers from worn gear and from attuned spells that are switched on
   function modifiers() {
-    var m = { attr: {}, ab: {}, dots: {}, bdt: 0, init: 0, move: 0, pool: 0, mt: 0, attack: 0, damage: 0, defense: 0, doubleBdt: false, moveX2: false, notes: [], held: 0, active: [], boxes: { b: 0, l: 0, a: 0 } };
+    var m = { attr: {}, ab: {}, dots: {}, bdt: 0, init: 0, move: 0, pool: 0, mt: 0, attack: 0, damage: 0, defense: 0, doubleBdt: false, moveX2: false, notes: [], held: 0, active: [], boxes: { b: 0, l: 0, a: 0 }, health: [] };
     function add(map, k, v) { map[k] = (map[k] || 0) + v; }
     wornList().forEach(function (it) {
       var b = Number(it.bonus) || 0; if (!b) return;
       var c = it.cat || '', w = it.which || '';
+      if (/^(Armor|Bashing boxes|Lethal boxes|Aggravated boxes)$/.test(c)) m.health.push({ name: it.name || 'Worn item', what: (b > 0 ? '+' : '') + b + ' ' + (c === 'Armor' ? 'Armor (BDT)' : c.replace(' boxes', ' box' + (Math.abs(b) === 1 ? '' : 'es'))) });
       if (c === 'Attribute' && w) add(m.attr, w, b);
       else if (c === 'Ability' && w) add(m.ab, w, b);
       else if ((c === 'Combat Style' || c === 'Magic') && w) add(m.dots, w, b);
@@ -2174,6 +2175,8 @@
       if (/double your normal movement/i.test(e)) { m.moveX2 = true; fx.push('flying at double movement'); }
       var hb, re = /(\d+|one|two|three) (?:extra |additional |more )?(Bashing|Lethal|Aggravated)(?: health)? box(?:es)?/ig, W = { one: 1, two: 2, three: 3 };
       while ((hb = re.exec(e))) { var nb = W[hb[1].toLowerCase()] || +hb[1]; m.boxes[hb[2][0].toLowerCase()] += nb; fx.push('+' + nb + ' ' + hb[2] + ' box' + (nb === 1 ? '' : 'es')); }
+      var hfx = fx.filter(function (f) { return /BDT|box/.test(f); });
+      if (hfx.length) m.health.push({ name: a.name, what: hfx.join(', ') + ' (attuned)' });
       m.active.push({ id: a.id, name: a.name, school: a.school, mana: a.mana, effects: fx, effect: e });
     });
     return m;
@@ -2239,6 +2242,14 @@
     // attuned spells that are on, and extra boxes the player adds by hand for anything else (heritage abilities, story rewards)
     var stH = (build.st_extra || {}).health || {}, mb = m.mods.boxes, hand = (EXTRA.tracks || {}).boxAdj || {};
     m.boxSources = { b: [], l: [], a: [] };
+    // Everything that changes Health or damage thresholds right now, by name
+    m.healthAffects = [];
+    var res = Number(meritVal('merits', 'Resilience')) || 0;
+    if (res) m.healthAffects.push({ name: 'Resilience', what: '+' + res + ' BDT (Merit)' });
+    [['Bonus Lethal Health', 'Lethal'], ['Bonus Aggravated Health', 'Aggravated']].forEach(function (x) { var n0 = boxN(meritVal('merits', x[0])); if (n0) m.healthAffects.push({ name: x[0], what: '+' + n0 + ' ' + x[1] + ' box' + (n0 === 1 ? '' : 'es') + ' (Merit)' }); });
+    [['bashing', 'Bashing'], ['lethal', 'Lethal'], ['aggravated', 'Aggravated']].forEach(function (x) { if (stH[x[0]]) m.healthAffects.push({ name: 'Storyteller', what: stH[x[0]] + ' ' + x[1] + ' boxes' }); });
+    m.healthAffects = m.healthAffects.concat(m.mods.health);
+    if (m.mods.doubleBdt) m.healthAffects.push({ name: 'Attuned spell', what: 'BDT doubled' });
     function src(k, n, what) { if (n) m.boxSources[k].push((n > 0 ? '+' : '') + n + ' ' + what); return n; }
     m.boxes = {
       b: Math.max(1, (stH.bashing || 7) + src('b', mb.b, 'from items and spells') + src('b', hand.b || 0, 'added by hand')),
