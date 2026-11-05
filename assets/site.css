@@ -469,3 +469,8 @@ button.act { cursor: pointer; font-family: var(--body); }
   .arcade-credits .ac-dots { display: none; }
   .arcade-credits .ac-name { text-align: center; }
 }
+.arcade-credits .ac-title { margin-bottom: 4px; }
+.arcade-credits .ac-count { color: #fff; letter-spacing: 0.15em; text-shadow: 0 0 6px rgba(255, 255, 255, 0.6); }
+.arcade-credits .ac-coin { color: #ff6b6b; font-size: 15px; letter-spacing: 0.25em; margin-bottom: 12px; text-shadow: 0 0 6px rgba(255, 107, 107, 0.7); animation: ac-blink 1.1s steps(1) infinite; }
+@keyframes ac-blink { 50% { opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .arcade-credits .ac-coin { animation: none; } }
