@@ -201,7 +201,11 @@
     var r = R.host ? await db.from('encounters').update({ state: s }).eq('id', R.enc.id) : await db.rpc('turn_update', { e: R.enc.id, patch: patch });
     if (r.error) { alert(oops(r.error)); refresh(); }
   }
-  async function markDone(extra) { var s = ST(), t = Object.assign({}, s.t, extra || {}); t.done = Object.assign({}, t.done); t.done[s.phase] = true; await saveState({ t: t }); }
+  async function markDone(extra) {
+    var s = ST(), t = Object.assign({}, s.t, extra || {}); t.done = Object.assign({}, t.done); t.done[s.phase] = true;
+    if (t.last && !(extra && 'last' in extra)) t.last = Object.assign({}, t.last, { wasDone: true }); // something else happened after the move, so undo keeps the phase locked
+    await saveState({ t: t });
+  }
   // Add a roll or note to the log now, without waiting for the live update
   async function addRoll(row) {
     var r = await must(db.from('rolls').insert(Object.assign({ encounter_id: R.enc.id, roller: me.id }, row)).select().single());
@@ -348,10 +352,10 @@
       z.addEventListener('click', function () {
         if (c) { R.sel = c.id; R.moving = mayMove(c) ? (R.moving === c.id ? null : c.id) : null; drawAll(); return; }
         if (!mover || !reach) return;
-        var placing = mover.x === null || mover.x === undefined;
+        var placing = mover.x === null || mover.x === undefined, fromX = mover.x, fromY = mover.y;
         R.moving = null;
         upd(mover, { x: x, y: y });
-        if (counted && !placing) { var t = Object.assign({}, ST().t); t.moved = (t.moved || 0) + dist; markDone({ moved: t.moved }); }
+        if (counted && !placing) { var t = Object.assign({}, ST().t); markDone({ moved: (t.moved || 0) + dist, last: { id: mover.id, x: fromX, y: fromY, dist: dist, phase: s.phase, wasDone: !!(t.done || {})[s.phase] } }); }
       });
       grid.appendChild(z);
     })(x, y);
@@ -453,6 +457,12 @@
       var left = moveLeft(c);
       box.appendChild(el('p', { class: 'cb-line' }, ['Movement left: ', el('b', { text: left + ' of ' + (moveOf(c) + (t.extra || 0)) }), ' zone' + (left === 1 ? '' : 's') + '. Pick your token, then a lit zone.']));
       if (!R.moving && left > 0 && c.x !== null && c.x !== undefined) box.appendChild(actBtn('Move ' + c.name, 'Lights up the zones you can reach', null, function () { R.sel = c.id; R.moving = c.id; drawAll(); }));
+      var lm = t.last;
+      if (lm && lm.id === c.id && lm.phase === i) box.appendChild(actBtn('Undo last move', 'Back to ' + String.fromCharCode(65 + lm.x) + (lm.y + 1) + ' and get ' + lm.dist + ' zone' + (lm.dist === 1 ? '' : 's') + ' back', null, async function () {
+        await upd(c, { x: lm.x, y: lm.y });
+        var t2 = Object.assign({}, ST().t); t2.moved = Math.max(0, (t2.moved || 0) - lm.dist); t2.last = null; t2.done = Object.assign({}, t2.done); if (!lm.wasDone) delete t2.done[i];
+        await saveState({ t: t2 });
+      }));
       var apKids = [[1, 1], [3, 2], [6, 3]].map(function (x) {
         return actBtn('Spend ' + x[0] + ' AP', '+' + x[1] + ' zone' + (x[1] === 1 ? '' : 's') + ' of movement', x[0] + ' AP', async function () {
           if ((c.ap || 0) < x[0]) { alert(c.name + ' holds ' + (c.ap || 0) + ' AP. Allies can give AP first.'); return; }
@@ -514,7 +524,10 @@
       var atk = t.attack ? R.rolls.filter(function (r) { return r.id === t.attack; })[0] : null;
       var dmg = atk ? R.rolls.filter(function (r) { return (r.detail || {}).kind === 'damage' && (r.detail || {}).of === atk.id; })[0] : null;
       if (!atk) { box.appendChild(el('p', { class: 'cb-line', text: 'No attack this turn. Click Damage to move on.' })); return; }
-      if (!dmg) box.appendChild(actBtn('Roll Damage', atk.label, null, function () { damageDialog(atk, function () { return markDone(); }); }));
+      var dr = R.rolls.filter(function (r) { return (r.detail || {}).vs === atk.id; })[0];
+      if (dr) box.appendChild(el('p', { class: 'cb-line', text: (dr.detail.hit ? 'Hit: ' + atk.successes + ' against ' + dr.successes + ', so ' + dr.detail.excess + ' carry to damage.' : 'Missed: ' + atk.successes + ' against ' + dr.successes + '.') }));
+      if (!dmg && dr && !dr.detail.hit) box.appendChild(el('p', { class: 'cb-line', text: 'No damage to roll. Click Damage to move on.' }));
+      else if (!dmg) box.appendChild(actBtn('Roll Damage', atk.label, null, function () { damageDialog(atk, function () { return markDone(); }); }));
       else box.appendChild(el('p', { class: 'cb-line', text: 'Damage rolled: ' + dmg.label + '. Apply it from the Roll Log, then click Damage.' }));
       return;
     }
@@ -907,15 +920,32 @@
       }
       var row = await addRoll({ combatant_id: c.id, label: a.label + (tgt ? ' at ' + tgt.name : ''), pool: n, dice: dice, successes: succ,
         detail: { kind: a.kind || 'roll', target: tgt ? tgt.id : null, setAside: +dmgMana.value || 0, mana: spend, ap: +ap.value || 0, wp: wp.checked, real: real.checked, damagePool: a.damagePool || 0, attacker: c.id } });
+      if ((a.kind || 'roll') === 'attack' && tgt && row) await autoDefend(row, tgt, spell);
       if (a.after) await a.after(row);
     });
     d.open();
   }
 
+  // The target's defense rolls automatically, so everyone sees at once whether the attack landed and by how much
+  function bestDefense(t, spell) {
+    var k = t.stats || {};
+    if (k.npc) return { name: 'Defense', total: k.defense || 0 };
+    var want = spell && spell.defense ? spell.defense.toLowerCase() : '';
+    var opts = (k.defenses || []).map(function (d) { return { name: d.name, total: evalPool(d.pool, k).total }; });
+    if (want) { var m = opts.filter(function (d) { return want.indexOf(d.name.toLowerCase().replace(/ defense$/, '')) >= 0 || want.indexOf(d.name.toLowerCase().split(' (')[0]) >= 0; }); if (m.length) opts = m; }
+    opts = opts.filter(function (d) { return !/notice/i.test(d.name) || /notice|perception/.test(want); });
+    return opts.sort(function (a, b) { return b.total - a.total; })[0] || { name: 'Defense', total: 0 };
+  }
+  async function autoDefend(atk, t, spell) {
+    var d = bestDefense(t, spell), pen = woundPenalty(t), n = Math.max(0, d.total - pen);
+    var dice = d10s(n), succ = successes(dice), ex = Math.max(0, atk.successes - succ);
+    await addRoll({ combatant_id: t.id, label: d.name + ' against ' + ((R.cs[atk.combatant_id] || {}).name || 'the attack') + (pen ? ' (wounds -' + pen + ')' : ''), pool: n, dice: dice, successes: succ,
+      detail: { kind: 'defense', vs: atk.id, auto: true, hit: atk.successes > succ, excess: ex } });
+  }
   function damageDialog(roll, after) {
     var c = R.cs[roll.combatant_id], det = roll.detail || {}, tgt = R.cs[det.target];
     var d = dialog('Roll Damage');
-    var defRoll = R.rolls.filter(function (r) { return r.created_at > roll.created_at && (r.detail || {}).kind === 'defense' && r.combatant_id === det.target; }).slice(-1)[0];
+    var defRoll = R.rolls.filter(function (r) { return (r.detail || {}).vs === roll.id; })[0] || R.rolls.filter(function (r) { return r.created_at > roll.created_at && (r.detail || {}).kind === 'defense' && r.combatant_id === det.target; }).slice(-1)[0];
     var def = num('dm-def', defRoll ? defRoll.successes : 0, 0, 60);
     var dpool = num('dm-pool', det.damagePool || 0, 0, 60);
     var bonus = num('dm-bonus', 0, -20, 40);
@@ -1001,6 +1031,7 @@
       if (det.mana) line.push('. ' + det.mana + ' mana spent' + (det.setAside ? ' (' + det.setAside + ' set aside for damage)' : ''));
       if (det.ap) line.push('. ' + det.ap + ' AP');
       if (det.wp) line.push('. 1 Willpower');
+      if (det.kind === 'defense' && det.vs) line.push(det.hit ? '. The attack lands, ' + det.excess + ' success' + (det.excess === 1 ? '' : 'es') + ' over the defense carry to damage.' : '. The defense holds: a miss.');
       if (det.kind === 'damage') {
         var t = R.cs[det.target];
         line.push('. Total damage ' + det.total + ' (' + det.excess + ' excess)');
@@ -1008,8 +1039,10 @@
       }
       li.appendChild(el('div', {}, line));
       var btns = el('div', { class: 'cb-bar', style: 'margin-top:4px' });
-      if (det.kind === 'attack' && c && mineC(c)) btns.appendChild(el('button', { class: 'act cb-mini', type: 'button', text: 'Roll Damage', onclick: function () { damageDialog(r); } }));
-      if (det.kind === 'attack' && det.target && R.cs[det.target] && R.cs[det.target].owner === me.id && R.cs[det.target].owner !== (c && c.owner)) {
+      var defR = R.rolls.filter(function (x) { return (x.detail || {}).vs === r.id; })[0];
+      if (det.kind === 'attack' && c && mineC(c) && !(defR && !defR.detail.hit)) btns.appendChild(el('button', { class: 'act cb-mini', type: 'button', text: 'Roll Damage', onclick: function () { damageDialog(r); } }));
+      var hasDef = R.rolls.some(function (x) { return (x.detail || {}).vs === r.id; });
+      if (det.kind === 'attack' && !hasDef && det.target && R.cs[det.target] && R.cs[det.target].owner === me.id && R.cs[det.target].owner !== (c && c.owner)) {
         btns.appendChild(el('button', { class: 'act cb-mini', type: 'button', text: 'Defend', onclick: function () { R.sel = det.target; drawAll(); $('cb-loadout').scrollIntoView({ behavior: 'smooth', block: 'start' }); } }));
       }
       var tg = R.cs[det.target];
