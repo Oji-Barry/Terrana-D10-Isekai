@@ -178,6 +178,21 @@
     rowNotes.push({ b: 'Bashing', l: 'Lethal', a: 'Aggravated' }[k] + ' boxes ' + (d > 0 ? '+1' : '-1') + ' by hand, now ' + (M.boxes[k] + d));
     queue({ tracks: t2 }); drawHead(); drawBody();
   }
+  // Named boxes for everything affecting Health: filled in from Merits, worn items, and attuned spells that are on,
+  // plus boxes to write in anything else (a heritage ability, a potion, a story reward)
+  function affectsBox(tr) {
+    var auto = M.healthAffects || [], notes = (tr.healthNotes || []).slice();
+    while (notes.length < 2) notes.push('');
+    var wrap = el('div', { class: 'cv-affects' }, [el('h4', { text: 'Affecting your Health' })]);
+    auto.forEach(function (x) { wrap.appendChild(el('div', { class: 'cv-aff auto' }, [el('b', { text: x.name }), el('span', { text: x.what })])); });
+    notes.forEach(function (v, i) {
+      var inp = el('input', { value: v, maxlength: '80', placeholder: 'Other item, spell, or ability', disabled: !mine, 'aria-label': 'Other thing affecting Health ' + (i + 1) });
+      inp.addEventListener('input', function () { var t2 = tracks(); var a2 = notes.slice(); a2[i] = inp.value; t2.healthNotes = a2; queue({ tracks: t2 }); });
+      wrap.appendChild(el('div', { class: 'cv-aff' }, [inp]));
+    });
+    if (mine) wrap.appendChild(el('button', { type: 'button', class: 'act small', text: 'Add Box', onclick: function () { var t2 = tracks(); t2.healthNotes = notes.concat(['']); queue({ tracks: t2 }); drawBody(); } }));
+    return wrap;
+  }
   function healthCard() {
     var tr = tracks(), hp = tr.health || {}, total = 0;
     var cols = el('div', { class: 'cv-health' });
@@ -209,7 +224,7 @@
         var t2 = tracks(); t2.incap = !t2.incap; rowNotes.push(t2.incap ? 'Incapacitated' : 'No longer Incapacitated'); queue({ tracks: t2 }); drawBody();
       } }),
       el('span', {}, [el('b', { text: 'Incapacitated' }), el('small', { class: 'cv-muted', text: 'All Aggravated boxes full, a hit landing in a full column, or your mana pool running dry. It fills itself for full Aggravated boxes and for running dry; clear it by hand when you recover.' })])]);
-    return card('Health', [cols, incBox, el('p', { class: 'cv-muted', style: 'margin:8px 0 0', text: 'Wound penalty: ' + (total ? '-' + total + ' dice' : 'none') + '. Only the last three boxes of each column carry a penalty, and penalties from different columns add together. BDT ' + M.combat.bdt + ', LDT ' + M.combat.bdt * 2 + ', ADT ' + M.combat.bdt * 3 + '. Click a box to mark it with an X. Merits, worn items (Improves: Bashing, Lethal, or Aggravated boxes), and attuned spells add boxes on their own; use + and - for anything else, like a heritage ability or a story reward.' })], '../rulebook/terms.html');
+    return card('Health', [cols, incBox, el('p', { class: 'cv-muted', style: 'margin:8px 0 0', text: 'Wound penalty: ' + (total ? '-' + total + ' dice' : 'none') + '. Penalties accumulate. BDT ' + M.combat.bdt + ', LDT ' + M.combat.bdt * 2 + ', ADT ' + M.combat.bdt * 3 + '. Click a box to mark it with an X.' }), affectsBox(tr)], '../rulebook/terms.html');
   }
 
   // ---------- tabs ----------
