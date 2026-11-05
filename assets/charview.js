@@ -200,7 +200,7 @@
       var n = M.boxes[k[0]], arr = (hp[k[0]] || []).slice(0, n);
       var filled = arr.filter(Boolean).length;
       if (filled) total += penFor(n, filled - 1);
-      var col = el('div', { class: 'cv-hcol', role: 'group', 'aria-label': k[1] + ' damage' }, [el('div', { class: 'cv-hhead', text: k[1] })]);
+      var col = el('div', { class: 'cv-hcol', role: 'group', 'aria-label': k[1] + ' damage' }, [el('div', { class: 'cv-hhead', text: k[1] }), el('div', { class: 'cv-hdt', title: { b: 'Bashing', l: 'Lethal', a: 'Aggravated' }[k[0]] + ' Damage Threshold', text: { b: 'BDT ', l: 'LDT ', a: 'ADT ' }[k[0]] + M.combat.bdt * { b: 1, l: 2, a: 3 }[k[0]] })]);
       for (var i = 0; i < n; i++) (function (i) {
         var pen = penFor(n, i);
         col.appendChild(el('div', { class: 'cv-hrow' }, [
@@ -221,7 +221,7 @@
       }
       cols.appendChild(col);
     });
-    return card('Health', [cols, el('p', { class: 'cv-muted', style: 'margin:8px 0 0', text: 'Wound penalty: ' + (total ? '-' + total + ' dice' : 'none') + '. Penalties accumulate. BDT ' + M.combat.bdt + ', LDT ' + M.combat.bdt * 2 + ', ADT ' + M.combat.bdt * 3 + '. Click a box to mark it with an X.' }), affectsBox(tr)], '../rulebook/terms.html');
+    return card('Health', [cols, el('p', { class: 'cv-muted', style: 'margin:8px 0 0', text: 'Wound penalty: ' + (total ? '-' + total + ' dice' : 'none') + '. Penalties accumulate. Click a box to mark it with an X.' }), affectsBox(tr)], '../rulebook/terms.html');
   }
 
   // ---------- tabs ----------

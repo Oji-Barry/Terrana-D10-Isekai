@@ -206,3 +206,4 @@ details.cv-more > summary { cursor: pointer; color: var(--sky); font-weight: 700
 .cv-hspace { height: 26px; }
 .cv-incrow { position: relative; }
 .cv-inclab { position: absolute; right: calc(100% + 4px); top: 50%; transform: translateY(-50%); font-size: 12px; font-weight: 800; color: #d9b3ff; white-space: nowrap; }
+.cv-hdt { font-family: var(--pixel); font-size: 13px; color: var(--text); margin: -2px 0 4px; }
