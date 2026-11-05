@@ -343,7 +343,7 @@
   async function ensureForge() {
     if (window.TerranaCharacter) return;
     window.FORGE_HEADLESS = true;
-    await loadScript('../assets/forge.js?v=63762387');
+    await loadScript('../assets/forge.js?v=fa6ce042');
     R.data = R.data || await fetch('../forge/data.json?v=1863d047').then(function (r) { return r.json(); });
   }
   async function kitFor(row) {
@@ -627,13 +627,25 @@
       box.appendChild(acts);
       return;
     }
-    var tabs = [['spells', 'Spellbook'], ['maneuvers', 'Maneuvers'], ['defense', 'Defense'], ['custom', 'Custom']];
+    var tabs = [['spells', 'Spellbook'], ['maneuvers', 'Maneuvers'], ['defense', 'Defense'], ['summons', 'Summons'], ['belt', 'Belt'], ['custom', 'Custom']];
+    var LO = kit.loadout || {};
+    // The Combat Loadout's prepared picks come first; "Show everything" lists all you know
+    function prepared(list, keys) {
+      keys = (keys || []).filter(Boolean);
+      if (!keys.length || R.showAll) return list || [];
+      return keys.map(function (k2) { return (list || []).filter(function (x) { return x.key === k2; })[0]; }).filter(Boolean);
+    }
+    function allToggle(keys) {
+      if (!(keys || []).filter(Boolean).length) return el('p', { class: 'cb-sub', text: 'Showing everything you know. Prepare up to 5 on the Combat Loadout tab of your character page.' });
+      return el('label', { class: 'chk cb-sub', style: 'display:flex;gap:6px;align-items:center;margin-bottom:6px' }, [el('input', { type: 'checkbox', checked: !!R.showAll, onchange: function (e) { R.showAll = e.target.checked; drawActions(); } }), 'Show everything I know, not just my prepared ' + (R.tab === 'spells' ? 'spells' : 'maneuvers')]);
+    }
     var tb = el('div', { class: 'cb-tabs', role: 'tablist' });
     tabs.forEach(function (t) { tb.appendChild(el('button', { class: 'cb-tab', type: 'button', role: 'tab', 'aria-selected': String(R.tab === t[0]), text: t[1], onclick: function () { R.tab = t[0]; drawActions(); } })); });
     box.appendChild(tb);
     var acts2 = el('div', { class: 'cb-acts' });
     if (R.tab === 'spells') {
-      (kit.spells || []).forEach(function (sp) {
+      acts2.appendChild(allToggle(LO.spells));
+      prepared(kit.spells, LO.spells).forEach(function (sp) {
         var p = evalPool(sp.pool, kit, sp);
         var attack = /attack/i.test(sp.type || '');
         acts2.appendChild(el('button', { class: 'cb-act', type: 'button', onclick: function () {
@@ -643,8 +655,13 @@
       });
       if (!acts2.children.length) acts2.appendChild(el('p', { class: 'cv-muted', text: 'No spells. Pick spells in the Forge (Step 11), then Refresh Stats.' }));
     } else if (R.tab === 'maneuvers') {
-      (kit.maneuvers || []).forEach(function (mv) {
+      acts2.appendChild(allToggle(LO.maneuvers));
+      var armed = {}; (kit.weapons || []).forEach(function (w) { var stn = (LO.weapons || {})[w.key] || ((kit.styles || []).length === 1 ? kit.styles[0].name : ''); if (stn) (armed[stn] = armed[stn] || []).push(w.name); });
+      var mlist = prepared(kit.maneuvers, LO.maneuvers);
+      if ((LO.maneuvers || []).filter(Boolean).length && !R.showAll) mlist = (kit.maneuvers || []).filter(function (m) { return m.rank === 0; }).concat(mlist.filter(function (m) { return m.rank !== 0; }));
+      mlist.forEach(function (mv) {
         var p = evalPool(mv.pool, kit);
+        if (mv.rank === 0 && armed[mv.style]) mv = Object.assign({}, mv, { name: 'Attack with ' + armed[mv.style].join(' or ') });
         acts2.appendChild(el('button', { class: 'cb-act', type: 'button', onclick: function () {
           rollDialog(c, { label: mv.name + (mv.rank ? '' : ' (' + mv.style + ')'), pool: p.total, parts: p.parts, unknown: p.unknown, kind: 'attack', desc: (mv.slot ? mv.slot + ', ' : '') + (mv.use || '') + '. ' + mv.text,
             link: mv.id ? '../rulebook/ch12.html#' + mv.id : null });
@@ -657,6 +674,24 @@
         acts2.appendChild(el('button', { class: 'cb-act', type: 'button', onclick: function () { rollDialog(c, { label: df.name, pool: p.total, parts: p.parts, unknown: p.unknown, kind: 'defense', targetable: false }); } },
           [el('span', {}, [el('b', { text: df.name }), el('small', { text: df.pool })]), el('span', { class: 'pool', text: p.total + 'd' })]));
       });
+    } else if (R.tab === 'summons') {
+      (kit.summons || []).forEach(function (sm) {
+        acts2.appendChild(el('button', { class: 'cb-act', type: 'button', onclick: function () { addRoll({ label: c.name + ' calls ' + sm.name + ' (' + sm.kind + ').', combatant_id: c.id, detail: { kind: 'note' } }); } },
+          [el('span', {}, [el('b', { text: sm.name }), el('small', { text: sm.kind + '. ' + (sm.text || '') })]), el('span', { class: 'pool', text: 'Call' })]));
+      });
+      if (!acts2.children.length) acts2.appendChild(el('p', { class: 'cv-muted', text: 'No familiar or SumMonz. Use Bring a Character to put one on the map.' }));
+    } else if (R.tab === 'belt') {
+      R.beltUsed = R.beltUsed || {};
+      var usedNow = R.beltUsed[c.id + ':' + (R.enc.state || {}).round] || 0;
+      (kit.belt || []).forEach(function (bi) {
+        var cost = usedNow === 0 ? 'free' : usedNow === 1 ? '1 AP' : '2 AP';
+        acts2.appendChild(el('button', { class: 'cb-act', type: 'button', onclick: function () {
+          var k2 = c.id + ':' + (R.enc.state || {}).round; R.beltUsed[k2] = (R.beltUsed[k2] || 0) + 1;
+          addRoll({ label: c.name + ' uses ' + bi.name + (bi.detail ? ' (' + bi.detail + ')' : '') + ' from the belt (' + cost + ').', combatant_id: c.id, detail: { kind: 'note' } });
+          drawActions();
+        } }, [el('span', {}, [el('b', { text: bi.slot + '. ' + bi.name }), el('small', { text: (bi.detail ? bi.detail + '. ' : '') + 'Next use this round: ' + cost })]), el('span', { class: 'pool', text: 'Use' })]));
+      });
+      if (!acts2.children.length) acts2.appendChild(el('p', { class: 'cv-muted', text: 'Nothing on your belt. Set it on your character page, Equipment and Notes tab, then Refresh Stats.' }));
     } else acts2.appendChild(customButton(c));
     box.appendChild(acts2);
     box.appendChild(el('p', { class: 'cb-sub', style: 'margin-top:8px', text: 'Initiative ' + (kit.initiative || c.initiative) + '. Move ' + (kit.move || 1) + ' zone' + ((kit.move || 1) === 1 ? '' : 's') + ' per turn. Wound penalty -' + woundPenalty(c) + '.' }));

@@ -22,7 +22,7 @@
   var forge = {};    // progress: { step, done: [], ok: [] }
   var step = 1;
   var XPS = { log: [], buys: [] }; // experience after creation: sheet.xp
-  var EXTRA = { gear: {}, money: null, attuned: {}, tracks: {} }; // sheet.gear, money, attuned, tracks (the character page)
+  var EXTRA = { gear: {}, money: null, attuned: {}, tracks: {}, loadout: {} }; // sheet.gear, money, attuned, tracks (the character page)
 
   // ---------- small helpers ----------
   function el(tag, attrs, kids) {
@@ -2390,6 +2390,18 @@
     k.bonus = { attack: md.attack, damage: md.damage, defense: md.defense };
     k.boxes = cm.boxes;
     k.willpower = statVal('Willpower');
+    // Keys for the Combat Loadout, plus summons, weapons, belt, and what the player prepared
+    k.spells.forEach(function (sp) { sp.key = sp.id || (sp.school + ':' + sp.name); });
+    k.maneuvers.forEach(function (mv) { mv.key = mv.id || (mv.style + ':' + mv.name); });
+    k.summons = cm.companions.map(function (c, i) { var f = c.c || {}; return { key: c.kind + ':' + (f.name || i), name: f.name || c.kind, kind: c.kind, text: c.text, forms: f.forms || {}, dots: c.dots || 0 }; });
+    var worn = (EXTRA.gear || {}).worn || {};
+    k.weapons = [['main_weapon', 'Main Weapon'], ['side_arm', 'Side Arm'], ['alt_weapons', 'Alt Weapons']].map(function (w) {
+      var it = worn[w[0]]; if (!it) return null; if (typeof it === 'string') it = { name: it };
+      return it.name ? { slot: w[1], key: w[0], name: it.name, bonus: Number(it.bonus) || 0, cat: it.cat || '', notes: it.notes || '' } : null;
+    }).filter(Boolean);
+    k.belt = ((EXTRA.gear || {}).belt || []).map(function (b, i) { return b ? { slot: i + 1, name: typeof b === 'string' ? b : (b.name || b.type || ''), type: b.type || '', detail: b.detail || '' } : null; }).filter(function (b) { return b && b.name; });
+    k.loadout = EXTRA.loadout || {};
+    k.styles = D.styles.filter(function (st) { return styleTotal(st.name); }).map(function (st) { return { name: st.name, primary: st.primary, secondary: st.secondary, dots: styleTotal(st.name) }; });
     return k;
   }
 
@@ -2401,7 +2413,7 @@
     forge = (row.sheet && row.sheet.forge) || { step: 1, done: [], ok: [] };
     XPS = (row.sheet && row.sheet.xp) || { log: [], buys: [] };
     var sh = row.sheet || {};
-    EXTRA = { gear: sh.gear || {}, money: sh.money || null, attuned: sh.attuned || {}, tracks: sh.tracks || {} };
+    EXTRA = { gear: sh.gear || {}, money: sh.money || null, attuned: sh.attuned || {}, tracks: sh.tracks || {}, loadout: sh.loadout || {} };
   }
   window.TerranaForgeView = function (data, row, player) { headlessLoad(data, row, player); return sheetView(); };
   // The website character page: a model to draw, plus XP actions that change build and xp.
@@ -2414,7 +2426,7 @@
     buy: function (offer, extra) { xpBuy(offer, extra); return characterModel(); },
     undo: function (id) { xpUndo(id); return characterModel(); },
     combosFor: function (school, r) { return combosFor(school, r); },
-    sheet: function () { return { build: build, xp: XPS, view: sheetView(), gear: EXTRA.gear, money: EXTRA.money || startMoney(), attuned: EXTRA.attuned, tracks: EXTRA.tracks }; },
+    sheet: function () { return { build: build, xp: XPS, view: sheetView(), gear: EXTRA.gear, money: EXTRA.money || startMoney(), attuned: EXTRA.attuned, tracks: EXTRA.tracks, loadout: EXTRA.loadout }; },
     setExtras: function (x) { Object.keys(x || {}).forEach(function (k) { EXTRA[k] = x[k]; }); return characterModel(); },
     combatKit: combatKit
   };

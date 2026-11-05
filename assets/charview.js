@@ -11,7 +11,7 @@
   var $ = function (id) { return document.getElementById(id); };
   var id = new URLSearchParams(location.search).get('id');
   var row = null, data = null, me = null, M = null, mine = false, tab = 'overview';
-  var TABS = [['overview', 'Overview'], ['traits', 'Attributes and Abilities'], ['styles', 'Combat Styles'], ['magic', 'Magic'],
+  var TABS = [['overview', 'Overview'], ['loadout', 'Combat Loadout'], ['traits', 'Attributes and Abilities'], ['styles', 'Combat Styles'], ['magic', 'Magic'],
     ['merits', 'Merits and Backgrounds'], ['companions', 'Companions'], ['gear', 'Equipment and Notes'], ['xp', 'Experience']];
   try { var saved = sessionStorage.getItem('cv-tab'); if (saved && TABS.some(function (t) { return t[0] === saved; })) tab = saved; } catch (e) {}
 
@@ -108,7 +108,7 @@
     var hist = ((row.sheet && row.sheet.history) || []).slice();
     (historyText || []).forEach(function (t) { hist.push({ d: new Date().toISOString(), text: t }); });
     if (hist.length > 400) hist = hist.slice(-400);
-    var sheet = Object.assign({}, row.sheet || {}, { build: s.build, xp: s.xp, view: s.view, gear: s.gear, money: s.money, attuned: s.attuned, tracks: s.tracks, history: hist });
+    var sheet = Object.assign({}, row.sheet || {}, { build: s.build, xp: s.xp, view: s.view, gear: s.gear, money: s.money, attuned: s.attuned, tracks: s.tracks, loadout: s.loadout, history: hist });
     var res = await db.from('characters').update({ sheet: sheet }).eq('id', id).select('sheet').single();
     if (res.error) throw res.error;
     row.sheet = res.data.sheet;
@@ -253,30 +253,33 @@
     var mp = M.mana.pool, mt = M.mana.mt, st = (M.tracks || {}).mana || {};
     var cur = st.cur === undefined || st.cur === null ? mp : Math.max(0, Math.min(mp, st.cur)), spent = st.spent || 0;
     var regen = M.mana.dots >= 10 ? 5 : M.mana.dots >= 9 ? 4 : M.mana.dots >= 7 ? 3 : M.mana.dots >= 4 ? 2 : 1;
-    var burned = st.burned || { b: 0, l: 0, a: 0 };
+    var burned = st.burned || { b: 0, l: 0, a: 0 }, marks = st.marks || { b: [], l: [], a: [] };
+    var NM = { b: 'Bashing', l: 'Lethal', a: 'Aggravated' };
+    function burnText(o) { return ['b', 'l', 'a'].filter(function (k) { return o[k]; }).map(function (k) { return o[k] + ' ' + NM[k]; }).join(' and '); }
     function save(c2, s2, keepBurn) {
-      var t2 = tracks(); var nb = keepBurn ? Object.assign({}, burned) : { b: 0, l: 0, a: 0 };
-      if (keepBurn) { // Mana Burn: damage by how far over M/T this turn (Chapter 11)
+      var t2 = tracks(), nb = { b: 0, l: 0, a: 0 }, nm = { b: [], l: [], a: [] };
+      if (keepBurn) { // Mana Burn: the damage for the final amount over M/T this turn (Chapter 11)
         var over = s2 - mt, want = over <= 0 ? {} : over === 1 ? { b: 1 } : over === 2 ? { l: 1 } : over === 3 ? { a: 1 } : over === 4 ? { a: 2 } : { a: 3 + (over - 5) };
-        var took = [];
+        t2.health = t2.health || {};
         ['b', 'l', 'a'].forEach(function (k) {
-          var add = Math.max(0, (want[k] || 0) - (nb[k] || 0));
-          if (!add) return;
-          nb[k] = (nb[k] || 0) + add;
-          t2.health = t2.health || {}; var arr = (t2.health[k] || []).slice(), n2 = M.boxes[k], left = add;
-          for (var i = 0; i < n2 && left; i++) if (!arr[i]) { arr[i] = true; left--; }
+          var arr = (t2.health[k] || []).slice(), n2 = M.boxes[k];
+          (marks[k] || []).forEach(function (i) { arr[i] = false; }); // this turn's earlier burn is replaced
+          var left = want[k] || 0;
+          for (var i = 0; i < n2 && left; i++) if (!arr[i]) { arr[i] = true; nm[k].push(i); left--; }
+          nb[k] = want[k] || 0;
           t2.health[k] = arr;
-          took.push(add + ' ' + { b: 'Bashing', l: 'Lethal', a: 'Aggravated' }[k]);
         });
-        if (took.length) {
+        if (burnText(nb) !== burnText(burned)) {
           var full = (t2.health.a || []).slice(0, M.boxes.a).filter(Boolean).length >= M.boxes.a;
           if (full) t2.incap = true;
-          rowNotes.push('Mana Burn (' + over + ' over M/T): took ' + took.join(' and ') + (nb.a ? '. Leaves a Mana Burn mark' : '') + (full ? '. All Aggravated boxes filled: incapacitated' : ''));
-          toast('Mana Burn: ' + took.join(' and ') + (full ? '. Incapacitated!' : ''), true);
+          if (burnText(nb)) {
+            rowNotes.push('Mana Burn this turn (' + over + ' over M/T): ' + burnText(nb) + (burnText(burned) ? ' (replaces ' + burnText(burned) + ')' : '') + (nb.a ? '. Leaves a Mana Burn mark' : '') + (full ? '. All Aggravated boxes filled: incapacitated' : ''));
+            toast('Mana Burn: ' + burnText(nb) + (full ? '. Incapacitated!' : ''), true);
+          } else rowNotes.push('Mana Burn this turn cleared');
         }
       }
       if (keepBurn && c2 <= 0 && cur > 0 && !t2.incap) { t2.incap = true; rowNotes.push('Incapacitated: mana pool ran dry'); toast('Mana pool empty: you drop unconscious (Incapacitated) until you recover mana', true); }
-      t2.mana = { cur: Math.max(0, Math.min(mp, c2)), spent: Math.max(0, s2), burned: nb }; queue({ tracks: t2 }); drawHead(); drawBody();
+      t2.mana = { cur: Math.max(0, Math.min(mp, c2)), spent: Math.max(0, s2), burned: keepBurn ? nb : { b: 0, l: 0, a: 0 }, marks: keepBurn ? nm : { b: [], l: [], a: [] } }; queue({ tracks: t2 }); drawHead(); drawBody();
     }
     var amt = el('input', { type: 'number', min: '1', max: '99', step: '1', value: '1', 'aria-label': 'How much mana', disabled: !mine });
     function n() { return Math.max(1, Math.floor(+amt.value || 1)); }
@@ -335,6 +338,70 @@
     [cCombat, cMana, cHealth, cWFS, cTrope, cHer, cVV, cLevel].forEach(function (x) { g.appendChild(x); });
     b.appendChild(g);
   };
+  // ---------- Combat Loadout: what you bring into a hosted fight ----------
+  var PREP = 5, EXTRA_SLOTS = 2;
+  function loadout() { return JSON.parse(JSON.stringify(window.TerranaCharacter.sheet().loadout || {})); }
+  DRAW.loadout = function (b) {
+    var K = window.TerranaCharacter.combatKit(), L = loadout();
+    function setL(fn) { var l2 = loadout(); fn(l2); queue({ loadout: l2 }); drawBody(); }
+    b.appendChild(el('p', { class: 'cv-muted center', text: 'This is what shows up for you in hosted combat. Prepare up to 5 maneuvers, 5 spells, and 5 summons before a fight; the dashed slots open only when an item or ability grants more. Everything else is copied from your other tabs.' }));
+    // At a glance
+    var st = M.tracks || {}, ap = st.ap || {}, mn = st.mana || {};
+    var cur = mn.cur === undefined || mn.cur === null ? M.mana.pool : mn.cur;
+    var g = el('div', { class: 'cv-glance' });
+    [['Action Points', (ap.held === undefined || ap.held === null ? 3 : ap.held) + ' / 3'], ['Initiative', M.combat.initiative], ['Movement', M.combat.move + ' zone' + (M.combat.move === 1 ? '' : 's')],
+      ['BDT / LDT / ADT', M.combat.bdt + ' / ' + M.combat.bdt * 2 + ' / ' + M.combat.bdt * 3], ['Mana', cur + ' / ' + M.mana.pool], ['Max Mana per Turn', M.mana.mt],
+      ['Willpower', (M.stats[0] || {}).dots], ['Wound Penalty', woundNow() ? '-' + woundNow() : 'None']].forEach(function (x) { g.appendChild(el('div', {}, [el('span', { text: x[0] }), el('b', { class: 'px', text: String(x[1]) })])); });
+    b.appendChild(card('At a Glance', [g, el('p', { class: 'cv-muted', style: 'margin:6px 0 0;font-size:13px', text: 'Track Health, Mana, and Action Points on the Overview tab or in the combat room.' })]));
+    var grid = el('div', { class: 'cv-grid', style: 'margin-top:14px' });
+    // Weapons
+    var wKids = [];
+    if (!K.weapons.length) wKids.push(el('p', { class: 'cv-muted', text: 'No weapons yet. Add them under Worn and Wielded on the Equipment and Notes tab.' }));
+    K.weapons.forEach(function (w) {
+      var sel = el('select', { disabled: !mine, 'aria-label': 'Style for ' + w.name }, [el('option', { value: '', text: K.styles.length ? 'Choose a Style...' : 'No Combat Styles' })]);
+      var chosen = (L.weapons || {})[w.key] || (K.styles.length === 1 ? K.styles[0].name : '');
+      K.styles.forEach(function (x) { var o = el('option', { value: x.name, text: x.name }); if (x.name === chosen) o.selected = true; sel.appendChild(o); });
+      sel.addEventListener('change', function () { setL(function (l2) { l2.weapons = l2.weapons || {}; l2.weapons[w.key] = sel.value; }); });
+      var sty = K.styles.filter(function (x) { return x.name === chosen; })[0];
+      wKids.push(el('div', { class: 'cv-lo-row' }, [el('div', { class: 'cv-lo-top' }, [el('b', { text: w.name }), el('span', { class: 'cv-tag', text: w.slot })]), sel,
+        sty ? el('small', { class: 'cv-muted', text: 'Attack: ' + poolText(sty.primary + ' + ' + sty.name + ' dots', sty.dots) + (w.cat === 'Attack' && w.bonus ? ', +' + w.bonus + ' from the weapon' : '') + (w.cat === 'Damage' && w.bonus ? '. Damage +' + w.bonus : '') }) : null,
+        w.notes ? el('small', { class: 'cv-muted', text: w.notes }) : null]));
+    });
+    grid.appendChild(card('Weapons', wKids, '../rulebook/ch14.html'));
+    // Prepared lists
+    function slots(title, key, items, label, info, href, emptyText) {
+      var kids = [], chosen = (L[key] || []).slice();
+      if (!items.length) { grid.appendChild(card(title, [el('p', { class: 'cv-muted', text: emptyText })], href)); return; }
+      for (var i = 0; i < PREP + EXTRA_SLOTS; i++) (function (i) {
+        var sel = el('select', { disabled: !mine, 'aria-label': title + ' slot ' + (i + 1), class: i >= PREP ? 'extra' : '' }, [el('option', { value: '', text: i >= PREP ? 'Extra slot (item or ability)' : 'Empty' })]);
+        items.forEach(function (it) {
+          var o = el('option', { value: it.key, text: label(it) });
+          if (chosen[i] === it.key) o.selected = true; else if (chosen.indexOf(it.key) >= 0) o.disabled = true;
+          sel.appendChild(o);
+        });
+        sel.addEventListener('change', function () { setL(function (l2) { var a2 = (l2[key] || []).slice(); a2[i] = sel.value; while (a2.length && !a2[a2.length - 1]) a2.pop(); l2[key] = a2; }); });
+        var it = items.filter(function (x) { return x.key === chosen[i]; })[0];
+        kids.push(el('div', { class: 'cv-lo-row' + (i >= PREP ? ' extra' : '') }, [el('span', { class: 'cv-lo-n', text: String(i + 1) }), el('div', { class: 'cv-lo-body' }, [sel, it ? el('small', { class: 'cv-muted', text: info(it) }) : null])]));
+      })(i);
+      grid.appendChild(card(title, kids, href));
+    }
+    slots('Combat Maneuvers', 'maneuvers', K.maneuvers, function (m) { return m.name + ' (' + m.style + (m.rank ? ', Rank ' + m.rank : '') + ')'; },
+      function (m) { return 'Roll ' + poolText(m.pool + ' dots', (K.dots || {})[m.style] || 0) + '. ' + (m.use ? m.use + '. ' : '') + m.text; }, '../rulebook/ch12.html', 'No Combat Styles yet.');
+    slots('Spells', 'spells', K.spells, function (sp) { return sp.name + ' (' + sp.school + ' ' + sp.rank + ', ' + (sp.costText || sp.cost) + ' mana)'; },
+      function (sp) { return [sp.speed, sp.type, sp.range].filter(Boolean).join('. ') + (sp.pool ? '. Roll ' + poolText(sp.pool, (K.dots || {})[sp.school] || 0) : '') + (sp.defense ? '. Defense: ' + sp.defense : '') + '. ' + brief(sp.effect); }, '../rulebook/ch13.html', 'No spells yet. Pick them in the Forge or buy them with XP.');
+    slots('Summons', 'summons', K.summons, function (x) { return x.name + ' (' + x.kind + ')'; },
+      function (x) { return x.text || ''; }, '../rulebook/ch13.html#the-disciplines-of-circle-magic-summoning-magic', 'No familiar or SumMonz yet.');
+    // Belt and defenses, copied
+    grid.appendChild(card('Belt', K.belt.length ? K.belt.map(function (x) { return row2(x.slot + '. ' + x.name, x.detail || null, el('span', { class: 'cv-muted', text: x.slot === 1 ? 'free' : x.slot === 2 ? '1 AP' : x.slot === 3 ? '2 AP' : 'extra' })); })
+      : [el('p', { class: 'cv-muted', text: 'Nothing on your belt. Set it on the Equipment and Notes tab.' })], '../rulebook/ch14.html'));
+    grid.appendChild(card('Defenses', K.defenses.map(function (d) { return row2(d.name, poolText(d.pool, 0), null); }), '../rulebook/terms.html'));
+    b.appendChild(grid);
+  };
+  function woundNow() {
+    var hp = ((M.tracks || {}).health) || {}, t = 0;
+    ['b', 'l', 'a'].forEach(function (k) { var n = M.boxes[k], f = (hp[k] || []).slice(0, n).filter(Boolean).length; if (f > n - 3 && f > 0) t += [1, 2, 4][f - (n - 3) - 1]; });
+    return t;
+  }
   DRAW.traits = function (b) {
     b.appendChild(el('h2', { class: 'px', style: 'margin-top:0', text: 'Attributes' }));
     var g = el('div', { class: 'cv-grid3' });
@@ -460,10 +527,9 @@
     (k.ranks || []).forEach(function (r) {
       if (r.def) grid.appendChild(powerCard(r.rank, r.title, 'Default', r.def, k.page, k.dots));
       r.picks.forEach(function (p) { grid.appendChild(powerCard(r.rank, r.title, p.opt || 'Spell', p, k.page, k.dots, k.page === 'ch8' && !(p.cost || p.speed))); });
-      (r.combos || []).forEach(function (c) { grid.appendChild(powerCard(r.rank, r.title, 'Combination', Object.assign({}, c, { name: c.name + ' (' + c.schools.join(' + ') + ')' }), 'ch13', k.dots)); });
     });
     if (grid.children.length) b.appendChild(grid);
-    else if (k.dots && !k.tribal) b.appendChild(el('p', { class: 'cv-muted center' }, ['No spells picked for these dots yet. ', mine ? el('a', { href: '../forge/index.html?id=' + encodeURIComponent(id), text: 'Pick them in the Forge' }) : null]));
+    else if (k.dots && !k.tribal && !(k.ranks || []).some(function (r) { return r.combos && r.combos.length; })) b.appendChild(el('p', { class: 'cv-muted center' }, ['No spells picked for these dots yet. ', mine ? el('a', { href: '../forge/index.html?id=' + encodeURIComponent(id), text: 'Pick them in the Forge' }) : null]));
   }
   DRAW.magic = function (b) {
     b.appendChild(el('p', { class: 'cv-msg', id: 'cv-msg', role: 'alert' }));
@@ -484,6 +550,24 @@
       }
       knowledgeBlock(b, k);
     });
+    // Combination spells get their own section, grouped by how many schools they combine
+    var seen = {}, combos = [];
+    M.knowledges.concat(M.vpowers || []).forEach(function (k) { (k.ranks || []).forEach(function (r) { (r.combos || []).forEach(function (c) { if (!seen[c.id || c.name]) { seen[c.id || c.name] = 1; combos.push(c); } }); }); });
+    if (combos.length) {
+      b.appendChild(groupHead('Combination Spells', 'Spells that blend schools. Each needs equal dots in every school it combines.', null, '../rulebook/ch13.html'));
+      var WORD = { 2: 'Two', 3: 'Three', 4: 'Four', 5: 'Five', 6: 'Six', 7: 'Seven' };
+      var bySize = {};
+      combos.forEach(function (c) { var n = (c.schools || []).length || 2; (bySize[n] = bySize[n] || []).push(c); });
+      Object.keys(bySize).map(Number).sort(function (x, y) { return x - y; }).forEach(function (n) {
+        b.appendChild(el('h3', { class: 'px cv-combo-h', text: (WORD[n] || n) + '-School Combinations' }));
+        var grid = el('div', { class: 'cv-cards' });
+        bySize[n].sort(function (x, y) { return (x.dots || 0) - (y.dots || 0) || x.name.localeCompare(y.name); }).forEach(function (c) {
+          var lowest = Math.min.apply(null, (c.schools || []).map(function (sc) { var kk = M.knowledges.filter(function (k) { return k.name === sc || k.name === sc + ' Magic'; })[0]; return kk ? kk.dots : 0; }));
+          grid.appendChild(powerCard(c.dots || '', c.schools.join(' + '), 'Combination', c, 'ch13', isFinite(lowest) ? lowest : 0));
+        });
+        b.appendChild(grid);
+      });
+    }
   };
   // Dots that change in the story: - and + beside them, noted in History
   var KNAME = { bg: 'Background', merit: 'Merit', flaw: 'Flaw', guild: 'Guild' };
@@ -812,7 +896,7 @@
     mine = !!me && me.id === row.owner;
     if (!row.sheet || !row.sheet.build) { $('cv-loading').textContent = 'This character has not been made in the Forge yet.'; return; }
     window.FORGE_HEADLESS = true;
-    await loadScript('../assets/forge.js?v=63762387');
+    await loadScript('../assets/forge.js?v=fa6ce042');
     data = await fetch('../forge/data.json?v=1863d047').then(function (r) { return r.json(); });
     var owner = mine ? me : (await db.from('profiles').select('username').eq('id', row.owner).maybeSingle()).data || {};
     M = window.TerranaCharacter.load(data, row, { username: owner.username || '', is_admin: !!(me && me.is_admin) });
