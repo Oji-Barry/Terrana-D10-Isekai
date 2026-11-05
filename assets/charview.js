@@ -190,7 +190,9 @@
         var pen = penFor(n, i);
         col.appendChild(el('div', { class: 'cv-hrow' }, [
           el('button', { type: 'button', class: 'cv-tb hb ' + k[0] + (arr[i] ? ' x' : ''), disabled: !mine, 'aria-label': k[1] + ' box ' + (i + 1) + (pen ? ' (-' + pen + ')' : '') + (arr[i] ? ': damaged' : ''), text: arr[i] ? '✕' : '',
-            onclick: function () { var t2 = tracks(); t2.health = t2.health || {}; var a2 = (t2.health[k[0]] || []).slice(); a2[i] = !a2[i]; t2.health[k[0]] = a2; queue({ tracks: t2 }); drawBody(); } }),
+            onclick: function () { var t2 = tracks(); t2.health = t2.health || {}; var a2 = (t2.health[k[0]] || []).slice(); a2[i] = !a2[i]; t2.health[k[0]] = a2;
+              if (k[0] === 'a' && a2[i] && !t2.incap && a2.slice(0, n).filter(Boolean).length >= n) { t2.incap = true; rowNotes.push('Incapacitated: every Aggravated box is full'); toast('Incapacitated: every Aggravated box is full', true); }
+              queue({ tracks: t2 }); drawBody(); } }),
           el('span', { class: 'cv-hpen' + (pen ? '' : ' none'), text: pen ? '-' + pen : '' })]));
       })(i);
       var srcs = (M.boxSources || {})[k[0]] || [];
@@ -201,7 +203,13 @@
         el('button', { type: 'button', text: '+', 'aria-label': 'One more ' + k[1] + ' box', onclick: function () { adjBox(k[0], 1); } })]));
       cols.appendChild(col);
     });
-    return card('Health', [cols, el('p', { class: 'cv-muted', style: 'margin:8px 0 0', text: 'Wound penalty: ' + (total ? '-' + total + ' dice' : 'none') + '. Only the last three boxes of each column carry a penalty, and penalties from different columns add together. BDT ' + M.combat.bdt + ', LDT ' + M.combat.bdt * 2 + ', ADT ' + M.combat.bdt * 3 + '. Click a box to mark it with an X. Merits, worn items (Improves: Bashing, Lethal, or Aggravated boxes), and attuned spells add boxes on their own; use + and - for anything else, like a heritage ability or a story reward.' })], '../rulebook/terms.html');
+    var inc = !!tr.incap;
+    var incBox = el('div', { class: 'cv-incap' + (inc ? ' on' : '') }, [
+      el('button', { type: 'button', class: 'cv-tb hb a' + (inc ? ' x' : ''), disabled: !mine, 'aria-pressed': String(inc), 'aria-label': 'Incapacitated', text: inc ? '\u2715' : '', onclick: function () {
+        var t2 = tracks(); t2.incap = !t2.incap; rowNotes.push(t2.incap ? 'Incapacitated' : 'No longer Incapacitated'); queue({ tracks: t2 }); drawBody();
+      } }),
+      el('span', {}, [el('b', { text: 'Incapacitated' }), el('small', { class: 'cv-muted', text: 'All Aggravated boxes full, a hit landing in a full column, or your mana pool running dry. It fills itself for full Aggravated boxes and for running dry; clear it by hand when you recover.' })])]);
+    return card('Health', [cols, incBox, el('p', { class: 'cv-muted', style: 'margin:8px 0 0', text: 'Wound penalty: ' + (total ? '-' + total + ' dice' : 'none') + '. Only the last three boxes of each column carry a penalty, and penalties from different columns add together. BDT ' + M.combat.bdt + ', LDT ' + M.combat.bdt * 2 + ', ADT ' + M.combat.bdt * 3 + '. Click a box to mark it with an X. Merits, worn items (Improves: Bashing, Lethal, or Aggravated boxes), and attuned spells add boxes on their own; use + and - for anything else, like a heritage ability or a story reward.' })], '../rulebook/terms.html');
   }
 
   // ---------- tabs ----------
@@ -250,10 +258,12 @@
         });
         if (took.length) {
           var full = (t2.health.a || []).slice(0, M.boxes.a).filter(Boolean).length >= M.boxes.a;
+          if (full) t2.incap = true;
           rowNotes.push('Mana Burn (' + over + ' over M/T): took ' + took.join(' and ') + (nb.a ? '. Leaves a Mana Burn mark' : '') + (full ? '. All Aggravated boxes filled: incapacitated' : ''));
           toast('Mana Burn: ' + took.join(' and ') + (full ? '. Incapacitated!' : ''), true);
         }
       }
+      if (keepBurn && c2 <= 0 && cur > 0 && !t2.incap) { t2.incap = true; rowNotes.push('Incapacitated: mana pool ran dry'); toast('Mana pool empty: you drop unconscious (Incapacitated) until you recover mana', true); }
       t2.mana = { cur: Math.max(0, Math.min(mp, c2)), spent: Math.max(0, s2), burned: nb }; queue({ tracks: t2 }); drawHead(); drawBody();
     }
     var amt = el('input', { type: 'number', min: '1', max: '99', step: '1', value: '1', 'aria-label': 'How much mana', disabled: !mine });
