@@ -326,14 +326,14 @@
     var cMana = (card('Mana', [manaTracker(),
       row2('Mana', 'Powers all magic', buyDots(M.mana.dots, 10, 'mana', '')),
       row2('Mana Pool', 'All magic (' + M.mana.magicDots + ': Magic, Circle Magic, and every Magical Knowledge dot) x Mana', el('span', { class: 'px', text: String(M.mana.pool) })),
-      row2('Max Mana per Turn', 'Fortitude + Mana' + (M.mana.arcane ? ', minus Arcane Enhancements' : '') + (M.mana.held ? ', minus ' + M.mana.held + ' attuned (' + M.mana.mtFull + ' without)' : ''), el('span', { class: 'px', text: String(M.mana.mt) }))
+      row2('Max Mana per Turn', 'Fortitude + Mana' + (M.mods.resilience ? ' (Fortitude includes Resilience)' : '') + (M.mana.arcane ? ', minus Arcane Enhancements' : '') + (M.mana.held ? ', minus ' + M.mana.held + ' attuned (' + M.mana.mtFull + ' without)' : ''), el('span', { class: 'px', text: String(M.mana.mt) }))
     ].concat(att.length ? [el('h4', { text: 'Attuned now' })].concat(att) : [el('p', { class: 'cv-muted', style: 'margin:6px 0 0', text: M.attunables.length ? 'Nothing attuned. Switch attuned spells on in the Magic tab.' : '' })]), '../rulebook/ch11.html'));
     var c = M.combat;
     var cCombat = (card('Combat', [
       apTracker(),
       row2('Initiative', 'Dexterity + Perception' + (M.mods.init ? plus(M.mods.init) + ' from gear' : ''), el('span', { class: 'px', text: String(c.initiative) })),
       row2('Movement', 'Zones per turn, from Dexterity' + (M.mods.move ? ', with gear and attuned spells' : ''), el('span', { class: 'px', text: String(c.move) })),
-      row2('BDT', 'Fortitude + Resilience + Armor', el('span', { class: 'px', text: String(c.bdt) })),
+      row2('BDT', 'Fortitude + Armor' + (M.mods.resilience ? ' (Fortitude includes ' + M.mods.resilience + ' Resilience)' : ''), el('span', { class: 'px', text: String(c.bdt) })),
       row2('LDT / ADT', 'BDT x2 / BDT x3', el('span', { class: 'px', text: (c.bdt * 2) + ' / ' + (c.bdt * 3) })),
       c.attack || c.damage || c.defense ? row2('From gear', ['Attack' + plus(c.attack), 'Damage' + plus(c.damage), 'Defense' + plus(c.defense)].join(', '), null) : null
     ], '../rulebook/terms.html'));
@@ -347,7 +347,7 @@
     M.attrs.forEach(function (c) {
       g.appendChild(card(c.col + (c.num ? ' (' + c.num + ')' : ''), [c.des ? el('p', { class: 'cv-muted', text: c.des }) : null].concat(c.list.map(function (a) {
         var bon = M.mods.attr[a.name] || 0;
-        return row2(link(attrLink(a.name), a.name), [a.innate ? 'Innate Attribute' : '', bon ? plus(bon).trim() + ' from gear or magic' : ''].filter(Boolean).join('. ') || null, buyDots(a.dots, 7, 'attr', a.name));
+        return row2(link(attrLink(a.name), a.name), [a.innate ? 'Innate Attribute' : '', bon ? plus(bon).trim() + ' from Merits, gear, or magic' : ''].filter(Boolean).join('. ') || null, buyDots(a.dots, 7, 'attr', a.name));
       })), '../rulebook/ch6.html#attributes'));
     });
     b.appendChild(g);

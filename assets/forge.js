@@ -2141,6 +2141,9 @@
   function modifiers() {
     var m = { attr: {}, ab: {}, dots: {}, bdt: 0, init: 0, move: 0, pool: 0, mt: 0, attack: 0, damage: 0, defense: 0, doubleBdt: false, moveX2: false, notes: [], held: 0, active: [], boxes: { b: 0, l: 0, a: 0 }, health: [] };
     function add(map, k, v) { map[k] = (map[k] || 0) + v; }
+    // Resilience adds to Fortitude everywhere Fortitude is used (rolls, BDT, Max Mana per Turn)
+    var resil = Number(meritVal('merits', 'Resilience')) || 0;
+    if (resil) { add(m.attr, 'Fortitude', resil); m.resilience = resil; }
     wornList().forEach(function (it) {
       var b = Number(it.bonus) || 0; if (!b) return;
       var c = it.cat || '', w = it.which || '';
@@ -2226,7 +2229,7 @@
     var mtBase = A('Fortitude') + manaTotal() + md.mt - arcane;
     var allDots = allMagicDots() + (md.ab.Magic || 0) + (md.ab['Circle Magic'] || 0);
     m.mana = { dots: manaTotal(), magicDots: allDots, pool: allDots * manaTotal() + md.pool, mtFull: mtBase, mt: Math.max(0, mtBase - md.held), held: md.held, attuned: md.active, arcane: arcane };
-    var bdt = A('Fortitude') + Number(meritVal('merits', 'Resilience') || 0) + md.bdt;
+    var bdt = A('Fortitude') + md.bdt;
     if (md.doubleBdt) bdt *= 2;
     var mv = moveZones(A('Dexterity')) + md.move;
     m.combat = { initiative: A('Dexterity') + A('Perception') + md.init, move: md.moveX2 ? mv * 2 : mv, bdt: bdt, attack: md.attack, damage: md.damage, defense: md.defense };
@@ -2245,7 +2248,7 @@
     // Everything that changes Health or damage thresholds right now, by name
     m.healthAffects = [];
     var res = Number(meritVal('merits', 'Resilience')) || 0;
-    if (res) m.healthAffects.push({ name: 'Resilience', what: '+' + res + ' BDT (Merit)' });
+    if (res) m.healthAffects.push({ name: 'Resilience', what: '+' + res + ' Fortitude, so +' + res + ' BDT (Merit)' });
     [['Bonus Lethal Health', 'Lethal'], ['Bonus Aggravated Health', 'Aggravated']].forEach(function (x) { var n0 = boxN(meritVal('merits', x[0])); if (n0) m.healthAffects.push({ name: x[0], what: '+' + n0 + ' ' + x[1] + ' box' + (n0 === 1 ? '' : 'es') + ' (Merit)' }); });
     [['bashing', 'Bashing'], ['lethal', 'Lethal'], ['aggravated', 'Aggravated']].forEach(function (x) { if (stH[x[0]]) m.healthAffects.push({ name: 'Storyteller', what: stH[x[0]] + ' ' + x[1] + ' boxes' }); });
     m.healthAffects = m.healthAffects.concat(m.mods.health);
