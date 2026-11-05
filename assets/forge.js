@@ -847,10 +847,17 @@
   };
 
   // ---------- Step 8: Backgrounds ----------
+  // Dots changed in the story from the character page (not creation choices): sheet.tracks.story
+  function storyAdj(kind, n) { return ((((EXTRA.tracks || {}).story || {})[kind]) || {})[n] || 0; }
   function bgVal(n) {
     var v = (build.backgrounds || {})[n];
-    if (v === undefined) return n === 'Resources' ? 1 : 0;
-    return v;
+    if (v === undefined) v = n === 'Resources' ? 1 : 0;
+    return Math.max(0, v + storyAdj('bg', n));
+  }
+  function meritVal(kind, n) {
+    var v = (build[kind] || {})[n];
+    if (v === undefined || v === null || v === '' || isNaN(Number(v))) return v;
+    return Math.max(0, Number(v) + storyAdj(kind === 'merits' ? 'merit' : 'flaw', n));
   }
   var PEOPLE_BGS = ['Allies', 'Contacts', 'Fixer', 'Mentor', 'Retainers'];
   function bgSpent() {
@@ -2202,7 +2209,7 @@
       }),
       past_life: build.pl_occupation || build.pl_job || '',
       styles: [], knowledges: [], combos: [],
-      merits: [], flaws: [], backgrounds: [], guilds: (build.guilds || []).filter(function (g) { return g && g.name; }),
+      merits: [], flaws: [], backgrounds: [], guilds: (build.guilds || []).filter(function (g) { return g && g.name; }).map(function (g) { return Object.assign({}, g, { dots: Math.max(0, (Number(g.dots) || 0) + storyAdj('guild', g.name)) }); }),
       companions: [],
       xp: { earned: xpEarned(), spent: xpSpent(), log: (XPS.log || []).slice(), buys: (XPS.buys || []).slice() },
       st: !!(me && me.is_admin),
@@ -2212,11 +2219,11 @@
     m.xp.unspent = m.xp.earned - m.xp.spent;
     var md = modifiers();
     function A(n) { return attrTotal(n) + (md.attr[n] || 0); }
-    var arcane = Number((build.merits || {})['Arcane Enhancements']) || 0;
+    var arcane = Number(meritVal('merits', 'Arcane Enhancements')) || 0;
     var mtBase = A('Fortitude') + manaTotal() + md.mt - arcane;
     var allDots = allMagicDots() + (md.ab.Magic || 0) + (md.ab['Circle Magic'] || 0);
     m.mana = { dots: manaTotal(), magicDots: allDots, pool: allDots * manaTotal() + md.pool, mtFull: mtBase, mt: Math.max(0, mtBase - md.held), held: md.held, attuned: md.active, arcane: arcane };
-    var bdt = A('Fortitude') + Number((build.merits || {}).Resilience || 0) + md.bdt;
+    var bdt = A('Fortitude') + Number(meritVal('merits', 'Resilience') || 0) + md.bdt;
     if (md.doubleBdt) bdt *= 2;
     var mv = moveZones(A('Dexterity')) + md.move;
     m.combat = { initiative: A('Dexterity') + A('Perception') + md.init, move: md.moveX2 ? mv * 2 : mv, bdt: bdt, attack: md.attack, damage: md.damage, defense: md.defense };
@@ -2235,8 +2242,8 @@
     function src(k, n, what) { if (n) m.boxSources[k].push((n > 0 ? '+' : '') + n + ' ' + what); return n; }
     m.boxes = {
       b: Math.max(1, (stH.bashing || 7) + src('b', mb.b, 'from items and spells') + src('b', hand.b || 0, 'added by hand')),
-      l: Math.max(1, (stH.lethal || 5) + src('l', boxN(mer['Bonus Lethal Health']), 'Bonus Lethal Health') + src('l', mb.l, 'from items and spells') + src('l', hand.l || 0, 'added by hand')),
-      a: Math.max(1, (stH.aggravated || 3) + src('a', boxN(mer['Bonus Aggravated Health']), 'Bonus Aggravated Health') + src('a', mb.a, 'from items and spells') + src('a', hand.a || 0, 'added by hand'))
+      l: Math.max(1, (stH.lethal || 5) + src('l', boxN(meritVal('merits', 'Bonus Lethal Health')), 'Bonus Lethal Health') + src('l', mb.l, 'from items and spells') + src('l', hand.l || 0, 'added by hand')),
+      a: Math.max(1, (stH.aggravated || 3) + src('a', boxN(meritVal('merits', 'Bonus Aggravated Health')), 'Bonus Aggravated Health') + src('a', mb.a, 'from items and spells') + src('a', hand.a || 0, 'added by hand'))
     };
     D.styles.forEach(function (st) {
       var t = styleTotal(st.name); if (!t) return;
@@ -2285,16 +2292,17 @@
     D.backgrounds.forEach(function (b) { var v = bgVal(b.name); if (v) m.backgrounds.push({ name: b.name, dots: v, link: b.link, what: b.what, who: ((build.bg_names || {})[b.name] || '').trim() }); });
     [['merits', D.merits, m.merits], ['flaws', D.flaws, m.flaws]].forEach(function (g) {
       Object.keys(build[g[0]] || {}).forEach(function (n) {
-        var x = byName(g[1], n) || {}, val = build[g[0]][n], opt = null;
+        var x = byName(g[1], n) || {}, val = meritVal(g[0], n), opt = null;
         if (x.options && String(val).charAt(0) === 'n') opt = x.options[Number(String(val).slice(1))];
         if (!opt && (x.points || x.cost || {}).options && String(val).charAt(0) === 'n') opt = (x.points || x.cost).options[Number(String(val).slice(1))];
         var note = ((build.flaw_notes || {})[n] || (build.merit_notes || {})[n] || '').trim();
-        var item = { name: n, value: val, link: x.link, group: x.group, cost: (x.cost || x.points || {}).text || '', option: opt, note: note, text: x.text || '' };
+        var ck = x.cost || x.points || {};
+        var item = { name: n, adjustable: ck.kind === 'per_dot' && !opt, max: ck.max || 5, value: val, link: x.link, group: x.group, cost: (x.cost || x.points || {}).text || '', option: opt, note: note, text: x.text || '' };
         if (n === 'Familiar Bond' && build.familiar && companionText(build.familiar)) item.note = 'Familiar: ' + companionText(build.familiar) + (note ? '. ' + note : '');
         g[2].push(item);
       });
     });
-    if ((build.merits || {})['Familiar Bond'] && build.familiar) m.companions.push({ kind: 'Familiar', c: build.familiar, text: companionText(build.familiar), dots: Number(build.merits['Familiar Bond']) || 1 });
+    if ((build.merits || {})['Familiar Bond'] && build.familiar) m.companions.push({ kind: 'Familiar', c: build.familiar, text: companionText(build.familiar), dots: Number(meritVal('merits', 'Familiar Bond')) || 1 });
     if (knowTotal('Summoning Magic') && build.starter_summon) m.companions.push({ kind: build.starter_summon.kind === 'spirit' ? 'SumMonz (Spirit)' : 'SumMonz (Fiend)', c: build.starter_summon, text: companionText(build.starter_summon), summoning: knowTotal('Summoning Magic') });
     m.offers = xpOffers();
     return m;

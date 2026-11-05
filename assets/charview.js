@@ -65,7 +65,10 @@
 
   // ---------- saving: a moment after the last change, then a quick "Saved" ----------
   var pending = null, timer = null, saving = false, again = false;
+  var holdUntil = 0;
   function toast(text, bad) {
+    if (!bad && Date.now() < holdUntil) return;
+    if (bad) holdUntil = Date.now() + 3500;
     var t = $('cv-toast');
     if (!t) { t = el('div', { id: 'cv-toast', class: 'cv-toast', role: 'status', 'aria-live': 'polite' }); document.body.appendChild(t); }
     t.textContent = text; t.classList.toggle('err', !!bad); t.classList.add('show');
@@ -203,12 +206,56 @@
 
   // ---------- tabs ----------
   var DRAW = {};
+  // Action Points held and used this turn
+  function apTracker() {
+    var st = (M.tracks || {}).ap || {}, held = st.held || 0, used = st.used || 0;
+    function save(h2, u2) { var t2 = tracks(); t2.ap = { held: Math.max(0, h2), used: Math.max(0, u2) }; queue({ tracks: t2 }); drawBody(); }
+    function bar(v, max, cls) { var w = el('div', { class: 'cv-bar ' + cls }); w.appendChild(el('span', { style: 'width:' + Math.min(100, v / max * 100) + '%' })); return w; }
+    var btn = function (t, f, title, off) { return el('button', { type: 'button', class: 'act small', text: t, title: title || null, disabled: !mine || off, onclick: f }); };
+    function spend(n) { if (n > held) return toast('Only ' + held + ' AP held. Ask an ally to share AP first.', true); if (used + n > 6) return toast('No one uses more than 6 AP in a turn.', true); save(held - n, used + n); }
+    return el('div', { class: 'cv-manatrack' }, [
+      el('div', { class: 'cv-mt-row' }, [el('span', { class: 'nm', text: 'Action Points held' }), el('span', { class: 'px', text: held + ' / 3' })]), bar(held, 3, 'pool'),
+      el('div', { class: 'cv-mt-row' }, [el('span', { class: 'nm', text: 'Used this turn' }), el('span', { class: 'px', text: used + ' / 6' })]), bar(used, 6, 'turn'),
+      mine ? el('div', { class: 'cv-mt-btns' }, [
+        btn('Spend 1 (+1)', function () { spend(1); }, '+1 die or 1 extra zone'),
+        btn('Spend 3 (+2)', function () { spend(3); }, '+2 dice or 2 extra zones'),
+        btn('Spend 6 (+3)', function () { spend(6); }, '+3 dice or 3 extra zones'),
+        btn('Upkeep +1', function () { save(Math.min(3, held + 1), 0); }, 'Start of your turn: regain 1 AP (up to 3 held) and start a new turn'),
+        btn('Upkeep +2 (hurt)', function () { save(Math.min(3, held + 2), 0); }, 'You took damage since your last turn: regain 2 AP'),
+        btn('Ally gives 1', function () { save(held + 1, used); }, 'Shared AP from an ally, at no action cost'),
+        btn('Give 1', function () { save(held - 1, used); }, 'Share 1 AP with an ally', held < 1),
+        btn('New Turn', function () { save(Math.min(3, held), 0); }, 'Reset what you used this turn')]) : null,
+      mine ? el('p', { class: 'cv-muted cv-mt-hint', text: 'Spend 1, 3, or 6 AP for +1, +2, or +3 dice, or 1, 2, or 3 extra zones. Hold up to 3; allies can share, but no one uses more than 6 in a turn.' }) : null
+    ]);
+  }
   // Mana on hand and mana spent this turn, kept between visits
   function manaTracker() {
     var mp = M.mana.pool, mt = M.mana.mt, st = (M.tracks || {}).mana || {};
     var cur = st.cur === undefined || st.cur === null ? mp : Math.max(0, Math.min(mp, st.cur)), spent = st.spent || 0;
     var regen = M.mana.dots >= 10 ? 5 : M.mana.dots >= 9 ? 4 : M.mana.dots >= 7 ? 3 : M.mana.dots >= 4 ? 2 : 1;
-    function save(c2, s2) { var t2 = tracks(); t2.mana = { cur: Math.max(0, Math.min(mp, c2)), spent: Math.max(0, s2) }; queue({ tracks: t2 }); drawHead(); drawBody(); }
+    var burned = st.burned || { b: 0, l: 0, a: 0 };
+    function save(c2, s2, keepBurn) {
+      var t2 = tracks(); var nb = keepBurn ? Object.assign({}, burned) : { b: 0, l: 0, a: 0 };
+      if (keepBurn) { // Mana Burn: damage by how far over M/T this turn (Chapter 11)
+        var over = s2 - mt, want = over <= 0 ? {} : over === 1 ? { b: 1 } : over === 2 ? { l: 1 } : over === 3 ? { a: 1 } : over === 4 ? { a: 2 } : { a: 3 + (over - 5) };
+        var took = [];
+        ['b', 'l', 'a'].forEach(function (k) {
+          var add = Math.max(0, (want[k] || 0) - (nb[k] || 0));
+          if (!add) return;
+          nb[k] = (nb[k] || 0) + add;
+          t2.health = t2.health || {}; var arr = (t2.health[k] || []).slice(), n2 = M.boxes[k], left = add;
+          for (var i = 0; i < n2 && left; i++) if (!arr[i]) { arr[i] = true; left--; }
+          t2.health[k] = arr;
+          took.push(add + ' ' + { b: 'Bashing', l: 'Lethal', a: 'Aggravated' }[k]);
+        });
+        if (took.length) {
+          var full = (t2.health.a || []).slice(0, M.boxes.a).filter(Boolean).length >= M.boxes.a;
+          rowNotes.push('Mana Burn (' + over + ' over M/T): took ' + took.join(' and ') + (nb.a ? '. Leaves a Mana Burn mark' : '') + (full ? '. All Aggravated boxes filled: incapacitated' : ''));
+          toast('Mana Burn: ' + took.join(' and ') + (full ? '. Incapacitated!' : ''), true);
+        }
+      }
+      t2.mana = { cur: Math.max(0, Math.min(mp, c2)), spent: Math.max(0, s2), burned: nb }; queue({ tracks: t2 }); drawHead(); drawBody();
+    }
     var amt = el('input', { type: 'number', min: '1', max: '99', step: '1', value: '1', 'aria-label': 'How much mana', disabled: !mine });
     function n() { return Math.max(1, Math.floor(+amt.value || 1)); }
     var burn = spent > mt ? spent - mt : 0;
@@ -217,10 +264,10 @@
     return el('div', { class: 'cv-manatrack' }, [
       el('div', { class: 'cv-mt-row' }, [el('span', { class: 'nm', text: 'Mana on hand' }), el('span', { class: 'px', text: cur + ' / ' + mp })]), bar(cur, mp, 'pool'),
       el('div', { class: 'cv-mt-row' }, [el('span', { class: 'nm', text: 'Spent this turn' }), el('span', { class: 'px' + (burn ? ' cv-burn' : ''), text: spent + ' / ' + mt })]), bar(spent, mt, 'turn' + (burn ? ' over' : '')),
-      burn ? el('p', { class: 'cv-msg err', text: 'Mana Burn: ' + burn + ' over your M/T this turn. Every mana over the limit burns (Chapter 11).' }) : null,
+      burn ? el('p', { class: 'cv-msg err', text: 'Mana Burn: ' + burn + ' over your M/T this turn. Damage taken this turn: ' + ['b', 'l', 'a'].filter(function (k) { return burned[k]; }).map(function (k) { return burned[k] + ' ' + { b: 'Bashing', l: 'Lethal', a: 'Aggravated' }[k]; }).join(', ') + '. It is marked on your Health boxes.' }) : null,
       mine ? el('div', { class: 'cv-mt-btns' }, [amt,
-        btn('Spend', function () { save(cur - n(), spent + Math.min(n(), cur)); }, 'Take it from your pool and count it toward this turn'),
-        btn('Regain', function () { save(cur + n(), spent); }, 'Add it back to your pool (crystals, potions, spells)'),
+        btn('Spend', function () { save(cur - n(), spent + Math.min(n(), cur), true); }, 'Take it from your pool and count it toward this turn'),
+        btn('Regain', function () { save(cur + n(), spent, true); }, 'Add it back to your pool (crystals, potions, spells)'),
         btn('Upkeep +' + regen, function () { save(cur + regen, 0); }, 'Start of your turn: regain mana for your Mana dots and reset what you spent this turn. Took damage? Regain 1 more.'),
         btn('New Turn', function () { save(cur, 0); }, 'Reset what you spent this turn without regaining'),
         btn('Full', function () { save(mp, 0); }, 'Refill the pool, after a long rest')]) : null,
@@ -258,7 +305,7 @@
     ].concat(att.length ? [el('h4', { text: 'Attuned now' })].concat(att) : [el('p', { class: 'cv-muted', style: 'margin:6px 0 0', text: M.attunables.length ? 'Nothing attuned. Switch attuned spells on in the Magic tab.' : '' })]), '../rulebook/ch11.html'));
     var c = M.combat;
     var cCombat = (card('Combat', [
-      row2('Action Points', 'Hold up to 3, use up to 6 in a turn. Regain 1 at Upkeep, 2 if you took damage.', el('span', { class: 'px', text: '3 / 6' })),
+      apTracker(),
       row2('Initiative', 'Dexterity + Perception' + (M.mods.init ? plus(M.mods.init) + ' from gear' : ''), el('span', { class: 'px', text: String(c.initiative) })),
       row2('Movement', 'Zones per turn, from Dexterity' + (M.mods.move ? ', with gear and attuned spells' : ''), el('span', { class: 'px', text: String(c.move) })),
       row2('BDT', 'Fortitude + Resilience + Armor', el('span', { class: 'px', text: String(c.bdt) })),
@@ -419,12 +466,28 @@
       knowledgeBlock(b, k);
     });
   };
+  // Dots that change in the story: - and + beside them, noted in History
+  var KNAME = { bg: 'Background', merit: 'Merit', flaw: 'Flaw', guild: 'Guild' };
+  function adjDots(kind, name, val, max) {
+    var d = dots(val, Math.max(max, val));
+    if (!mine) return d;
+    function go(delta) {
+      var nv = val + delta; if (nv < 0 || nv > max) return;
+      var t2 = tracks(); t2.story = Object.assign({}, t2.story || {}); t2.story[kind] = Object.assign({}, t2.story[kind] || {});
+      t2.story[kind][name] = (t2.story[kind][name] || 0) + delta;
+      rowNotes.push(KNAME[kind] + ' ' + name + ': ' + val + ' to ' + nv + ' (story)');
+      queue({ tracks: t2 }); drawHead(); drawBody();
+    }
+    return el('span', { class: 'cv-adj' }, [el('button', { type: 'button', text: '-', disabled: val <= 0, 'aria-label': 'Lower ' + name, onclick: function () { go(-1); } }), d,
+      el('button', { type: 'button', text: '+', disabled: val >= max, 'aria-label': 'Raise ' + name, onclick: function () { go(1); } })]);
+  }
   DRAW.merits = function (b) {
     var g;
     function mf(x) {
       var sub = [x.option ? x.option.name : '', x.note].filter(Boolean).join('. ');
-      var n = Number(x.value);
-      return el('div', { class: 'cv-mf' }, [row2(link(x.link, x.name), sub || null, isFinite(n) && n > 0 && n <= 10 ? dots(n, Math.max(n, 3)) : null),
+      var n = Number(x.value), kind = M.flaws.indexOf(x) >= 0 ? 'flaw' : 'merit';
+      var right = x.adjustable && isFinite(n) ? adjDots(kind, x.name, n, x.max) : isFinite(n) && n > 0 && n <= 10 ? dots(n, Math.max(n, 3)) : null;
+      return el('div', { class: 'cv-mf' }, [row2(link(x.link, x.name), sub || null, right),
         el('p', { class: 'cv-muted', style: 'font-size:14px;margin:2px 0 6px', text: brief((x.option && x.option.text) || x.text || '') })]);
     }
     var none = function (t) { return [el('p', { class: 'cv-muted', text: t })]; };
@@ -434,9 +497,9 @@
     var bgs = M.backgrounds.slice().sort(function (a, b2) { return (a.name === 'Resources' ? -1 : 0) - (b2.name === 'Resources' ? -1 : 0); });
     if (!bgs.some(function (x) { return x.name === 'Resources'; })) bgs.unshift({ name: 'Resources', dots: 0, link: '../rulebook/ch10.html', what: 'Your lifestyle and income.' });
     var res = bgs.shift();
-    var bgList = el('div', { class: 'cv-bg2' }, bgs.map(function (x) { return row2(link(x.link, x.name), x.who ? x.who : x.what, dots(x.dots)); }));
-    var right = card('Backgrounds', [row2(link(res.link, res.name), res.what || null, dots(res.dots)), moneyBox(), el('h4', { text: 'Other Backgrounds' }), bgs.length ? bgList : none('No other Backgrounds.'),
-      el('h4', { text: 'Guilds' })].concat(M.guilds.length ? [el('div', { class: 'cv-bg2' }, M.guilds.map(function (x) { return row2(x.name, null, dots(x.dots || 0)); }))] : none('No guilds.')), '../rulebook/ch10.html');
+    var bgList = el('div', { class: 'cv-bg2' }, bgs.map(function (x) { return row2(link(x.link, x.name), x.who ? x.who : x.what, adjDots('bg', x.name, x.dots, 7)); }));
+    var right = card('Backgrounds', [row2(link(res.link, res.name), res.what || null, adjDots('bg', res.name, res.dots, 7)), moneyBox(), mine ? el('p', { class: 'cv-muted', style: 'font-size:13px;margin:4px 0 0', text: 'Use - and + when something in the story changes a dot. Every change is noted in History. Creation choices stay as made in the Forge.' }) : null, el('h4', { text: 'Other Backgrounds' }), bgs.length ? bgList : none('No other Backgrounds.'),
+      el('h4', { text: 'Guilds' })].concat(M.guilds.length ? [el('div', { class: 'cv-bg2' }, M.guilds.map(function (x) { return row2(x.name, null, adjDots('guild', x.name, x.dots || 0, 7)); }))] : none('No guilds.')), '../rulebook/ch10.html');
     right.classList.add('cv-span2');
     g = el('div', { class: 'cv-grid3' }, [left, right]);
     b.appendChild(g);
