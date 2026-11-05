@@ -72,52 +72,83 @@
 
   // ---------- list page ----------
   async function listPage(main) {
-    if (!me) {
-      main.appendChild(el('section', { class: 'panel win' }, [el('h1', { text: 'Combat' }), el('p', { class: 'center', text: 'Log in to host or join a fight.' }),
-        el('div', { class: 'button-row center-row' }, [el('a', { class: 'act primary', href: '../account/index.html?next=combat/index.html', text: 'Log In' })])]));
-      return;
-    }
     main.appendChild(el('section', { class: 'panel win' }, [el('h1', { text: 'Combat' }),
-      el('p', { class: 'center', text: 'Host a fight as the Storyteller, or join one with the code your Storyteller gives you. Everyone sees the map, turn order, health, and every roll live.' })]));
-    // Join
-    var code = el('input', { id: 'join-code', maxlength: '6', autocomplete: 'off', placeholder: 'ABC123', style: 'text-transform:uppercase' });
-    var jf = el('form', { class: 'cb-f' }, [field('Join code', code), el('div', {}, [el('button', { class: 'act primary', type: 'submit', text: 'Join' })]), el('p', { class: 'cb-msg', id: 'join-msg', role: 'alert' })]);
-    jf.addEventListener('submit', async function (ev) {
-      ev.preventDefault();
-      try { var r = await db.rpc('join_encounter', { join_code: code.value.trim() }); if (r.error) throw r.error; location.href = 'room.html?id=' + encodeURIComponent(r.data); }
-      catch (e) { say('join-msg', oops(e)); }
-    });
+      el('p', { class: 'center', text: 'Host a fight as the Storyteller, or tap an active fight to join it. Public fights let anyone in; private ones need the code from their Storyteller. Everyone sees the map, turn order, health, and every roll live.' })]));
     // Host
-    var nm = el('input', { id: 'enc-name', maxlength: '80', placeholder: 'Goblin Ambush' });
-    var size = el('select', { id: 'enc-size' }, [opt('5x7', '5 x 7 zones'), opt('6x8', '6 x 8 zones', true), opt('7x9', '7 x 9 zones'), opt('10x10', '10 x 10 zones'), opt('custom', 'Custom...')]);
-    var cols = num('enc-cols', 8, 3, 20), rows = num('enc-rows', 8, 3, 20);
-    var custom = el('div', { class: 'two', hidden: true }, [field('Columns', cols), field('Rows', rows)]);
-    size.addEventListener('change', function () { custom.hidden = size.value !== 'custom'; });
-    var theme = el('select', { id: 'enc-theme' }, [opt('dark', 'Dark', true), opt('light', 'Light')]);
-    var hf = el('form', { class: 'cb-f' }, [field('Encounter name', nm), el('div', { class: 'two' }, [field('Map size', size), field('Map look', theme)]), custom,
-      el('div', {}, [el('button', { class: 'act primary', type: 'submit', text: 'Start Encounter' })]), el('p', { class: 'cb-msg', id: 'host-msg', role: 'alert' })]);
-    hf.addEventListener('submit', async function (ev) {
-      ev.preventDefault();
-      var n = nm.value.trim() || 'Encounter';
-      var c = 6, r = 8;
-      if (size.value === 'custom') { c = Math.max(3, Math.min(20, +cols.value || 8)); r = Math.max(3, Math.min(20, +rows.value || 8)); }
-      else { var p = size.value.split('x'); c = +p[0]; r = +p[1]; }
-      try {
-        var row = await must(db.from('encounters').insert({ host: me.id, name: n, map: { cols: c, rows: r, theme: theme.value } }).select().single());
-        location.href = 'room.html?id=' + encodeURIComponent(row.id);
-      } catch (e) { say('host-msg', oops(e)); }
-    });
-    main.appendChild(el('div', { class: 'cv-grid', style: 'display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px' }, [
-      el('section', { class: 'panel win' }, [el('h2', { text: 'Join a Fight' }), jf]),
-      el('section', { class: 'panel win' }, [el('h2', { text: 'Host a Fight' }), hf])]));
+    var hostBox;
+    if (me) {
+      var nm = el('input', { id: 'enc-name', maxlength: '80', placeholder: 'Goblin Ambush' });
+      var vis = el('div', { class: 'cb-vis', role: 'radiogroup', 'aria-label': 'Who can join' }, [
+        el('label', {}, [el('input', { type: 'radio', name: 'enc-vis', value: 'public', checked: true }), el('span', {}, [el('b', { text: 'Public' }), el('small', { text: 'Anyone can tap it to join.' })])]),
+        el('label', {}, [el('input', { type: 'radio', name: 'enc-vis', value: 'private' }), el('span', {}, [el('b', { text: 'Private' }), el('small', { text: 'Players need your join code.' })])])]);
+      var size = el('select', { id: 'enc-size' }, [opt('5x7', '5 x 7 zones'), opt('6x8', '6 x 8 zones', true), opt('7x9', '7 x 9 zones'), opt('10x10', '10 x 10 zones'), opt('custom', 'Custom...')]);
+      var cols = num('enc-cols', 8, 3, 20), rows = num('enc-rows', 8, 3, 20);
+      var custom = el('div', { class: 'two', hidden: true }, [field('Columns', cols), field('Rows', rows)]);
+      size.addEventListener('change', function () { custom.hidden = size.value !== 'custom'; });
+      var theme = el('select', { id: 'enc-theme' }, [opt('dark', 'Dark', true), opt('light', 'Light')]);
+      var hf = el('form', { class: 'cb-f' }, [field('Encounter name', nm), vis, el('div', { class: 'two' }, [field('Map size', size), field('Map look', theme)]), custom,
+        el('div', {}, [el('button', { class: 'act primary', type: 'submit', text: 'Start Encounter' })]), el('p', { class: 'cb-msg', id: 'host-msg', role: 'alert' })]);
+      hf.addEventListener('submit', async function (ev) {
+        ev.preventDefault();
+        var n = nm.value.trim() || 'Encounter';
+        var c = 6, r = 8;
+        if (size.value === 'custom') { c = Math.max(3, Math.min(20, +cols.value || 8)); r = Math.max(3, Math.min(20, +rows.value || 8)); }
+        else { var p = size.value.split('x'); c = +p[0]; r = +p[1]; }
+        var pub = (hf.querySelector('input[name=enc-vis]:checked') || {}).value !== 'private';
+        try {
+          var row = await must(db.from('encounters').insert({ host: me.id, name: n, public: pub, map: { cols: c, rows: r, theme: theme.value } }).select().single());
+          location.href = 'room.html?id=' + encodeURIComponent(row.id);
+        } catch (e) { say('host-msg', oops(e)); }
+      });
+      hostBox = el('section', { class: 'panel win' }, [el('h2', { text: 'Host a Fight' }), hf]);
+    } else hostBox = el('section', { class: 'panel win' }, [el('h2', { text: 'Host a Fight' }), el('p', { class: 'center', text: 'Log in to host or join a fight.' }),
+      el('div', { class: 'button-row center-row' }, [el('a', { class: 'act primary', href: '../account/index.html?next=combat/index.html', text: 'Log In' })])]);
+    // Active fights
+    var tiles = el('div', { class: 'cb-tiles', 'aria-live': 'polite' });
+    var code = el('input', { id: 'join-code', maxlength: '6', autocomplete: 'off', placeholder: 'ABC123', style: 'text-transform:uppercase', 'aria-label': 'Join code' });
+    async function joinCode(v, msgId) {
+      try { var r = await db.rpc('join_encounter', { join_code: v }); if (r.error) throw r.error; location.href = 'room.html?id=' + encodeURIComponent(r.data); }
+      catch (e) { say(msgId, oops(e)); }
+    }
+    var jf = el('form', { class: 'cb-codebar' }, [el('label', { for: 'join-code', text: 'Have a code?' }), code, el('button', { class: 'act', type: 'submit', text: 'Join', disabled: !me })]);
+    jf.addEventListener('submit', function (ev) { ev.preventDefault(); joinCode(code.value.trim(), 'join-msg'); });
+    async function drawTiles() {
+      var r = await db.rpc('list_encounters');
+      if (r.error) throw r.error;
+      tiles.textContent = '';
+      (r.data || []).forEach(function (e, i) {
+        var msg = 'tile-msg-' + i;
+        var t = el('div', { class: 'cb-tile' + (e.is_public ? ' pub' : ' priv') + (e.mine ? ' mine' : '') });
+        var codeIn = el('input', { maxlength: '6', placeholder: 'Code', autocomplete: 'off', style: 'text-transform:uppercase', 'aria-label': 'Code for ' + e.name });
+        var codeRow = el('form', { class: 'cb-tile-code', hidden: true }, [codeIn, el('button', { class: 'act small primary', type: 'submit', text: 'Enter' })]);
+        codeRow.addEventListener('submit', function (ev) { ev.preventDefault(); joinCode(codeIn.value.trim(), msg); });
+        var btn = el('button', { type: 'button', class: 'cb-tile-btn', 'aria-label': (e.mine ? 'Open ' : 'Join ') + e.name, onclick: async function () {
+          if (!me) { location.href = '../account/index.html?next=combat/index.html'; return; }
+          if (e.mine) { location.href = 'room.html?id=' + encodeURIComponent(e.id); return; }
+          if (!e.is_public) { codeRow.hidden = false; codeIn.focus(); return; }
+          try { var j = await db.rpc('join_public_encounter', { e: e.id }); if (j.error) throw j.error; location.href = 'room.html?id=' + encodeURIComponent(j.data); }
+          catch (er) { say(msg, oops(er)); }
+        } }, [el('img', { src: '../assets/icons/crossed-swords.svg', alt: '', class: 'cb-tile-icon' }), el('b', { text: e.name }),
+          el('small', { text: 'Storyteller: ' + (e.host_name || '?') }), el('small', { text: e.players + ' player' + (e.players === 1 ? '' : 's') + ' joined' }),
+          el('span', { class: 'cb-tile-tag', text: e.mine ? 'You are in' : e.is_public ? 'Public' : 'Private: code' })]);
+        t.appendChild(btn); t.appendChild(codeRow); t.appendChild(el('p', { class: 'cb-msg', id: msg, role: 'alert' }));
+        tiles.appendChild(t);
+      });
+      if (!tiles.children.length) tiles.appendChild(el('p', { class: 'center cv-muted', text: 'No fights going right now. Host one!' }));
+    }
+    main.appendChild(el('div', { class: 'cb-listgrid' }, [hostBox,
+      el('section', { class: 'panel win' }, [el('h2', { text: 'Active Fights' }), tiles, jf, el('p', { class: 'cb-msg', id: 'join-msg', role: 'alert' })])]));
+    await drawTiles();
+    setInterval(function () { if (!document.hidden && !tiles.querySelector('.cb-tile-code:not([hidden])')) drawTiles().catch(function () {}); }, 15000);
+    if (!me) return;
     // Mine
-    var hosted = await must(db.from('encounters').select('id, name, code, created_at, host').eq('host', me.id).order('created_at', { ascending: false }));
+    var hosted = await must(db.from('encounters').select('id, name, code, created_at, host, open, public').eq('host', me.id).order('created_at', { ascending: false }));
     var joined = await must(db.from('encounter_players').select('encounter_id').eq('player', me.id));
     var jids = joined.map(function (j) { return j.encounter_id; }).filter(function (x) { return !hosted.some(function (h) { return h.id === x; }); });
     var jenc = jids.length ? await must(db.from('encounters').select('id, name, code, created_at, host').in('id', jids)) : [];
     var list = el('ul', { class: 'cb-encs' });
     hosted.concat(jenc).forEach(function (e) {
-      list.appendChild(el('li', {}, [el('span', {}, [el('strong', { text: e.name }), ' ', el('span', { class: 'cv-muted', text: e.host === me.id ? '(you host, code ' + e.code + ')' : '(joined)' })]),
+      list.appendChild(el('li', {}, [el('span', {}, [el('strong', { text: e.name }), ' ', el('span', { class: 'cv-muted', text: e.host === me.id ? '(you host, ' + (e.public ? 'public' : 'private') + ', code ' + e.code + (e.open ? '' : ', joining closed') + ')' : '(joined)' })]),
         el('a', { class: 'act primary', href: 'room.html?id=' + encodeURIComponent(e.id), text: 'Open' })]));
     });
     main.appendChild(el('section', { class: 'panel win' }, [el('h2', { text: 'Your Encounters' }), list.children.length ? list : el('p', { class: 'center cv-muted', text: 'None yet.' })]));
@@ -193,6 +224,7 @@
       bar.appendChild(el('button', { class: 'act', type: 'button', text: 'Add NPC', onclick: npcDialog }));
       bar.appendChild(el('button', { class: 'act', type: 'button', text: 'Map', onclick: mapDialog }));
       bar.appendChild(el('button', { class: 'act', type: 'button', text: R.enc.open ? 'Close Joining' : 'Open Joining', onclick: function () { db.from('encounters').update({ open: !R.enc.open }).eq('id', R.enc.id).then(refresh); } }));
+      bar.appendChild(el('button', { class: 'act', type: 'button', text: R.enc.public ? 'Make Private' : 'Make Public', title: R.enc.public ? 'Players will need the join code' : 'Anyone can join from the Combat page', onclick: function () { db.from('encounters').update({ public: !R.enc.public }).eq('id', R.enc.id).then(refresh); } }));
       bar.appendChild(el('button', { class: 'act', type: 'button', text: 'End', onclick: async function () {
         if (!confirm('End this encounter for everyone? Its map, combatants, and log are deleted.')) return;
         await db.from('encounters').delete().eq('id', R.enc.id); location.href = 'index.html';
