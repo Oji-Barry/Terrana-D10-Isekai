@@ -125,7 +125,7 @@ details.cv-more > summary { cursor: pointer; color: var(--sky); font-weight: 700
 
 /* Worn and wielded */
 .cv-worn { display: grid; gap: 6px; }
-.cv-worn-h, .cv-worn-r { display: grid; grid-template-columns: 110px minmax(0, 2fr) 70px minmax(0, 1.6fr) minmax(0, 2fr); gap: 6px; align-items: center; }
+.cv-worn-h, .cv-worn-r { display: grid; grid-template-columns: 110px minmax(0, 2fr) 70px minmax(0, 1.3fr) minmax(0, 1.3fr) minmax(0, 2fr); gap: 6px; align-items: center; }
 .cv-worn-h span { font-size: 12px; color: var(--gold); font-weight: 700; text-transform: uppercase; }
 .cv-worn-slot { font-weight: 700; font-size: 14px; }
 .cv-worn input, .cv-worn select, .cv-belt input, .cv-belt select { width: 100%; min-height: 34px; padding: 4px 6px; border: 1px solid var(--line); border-radius: 4px; background: rgba(0, 0, 0, 0.35); color: var(--text); font: inherit; font-size: 14px; }

@@ -616,30 +616,33 @@
     gear = gearCopy();
     b.appendChild(el('p', { class: 'cv-muted center', text: mine ? 'Everything here saves on its own a moment after you stop typing.' : '' }));
     // Worn and wielded: item, bonus, what it improves, which one, notes
-    var wt = el('div', { class: 'cv-worn' }, [el('div', { class: 'cv-worn-h' }, ['Slot', 'Item', 'Bonus', 'Improves', 'Notes'].map(function (t) { return el('span', { text: t }); }))]);
+    var wt = el('div', { class: 'cv-worn' }, [el('div', { class: 'cv-worn-h' }, ['Slot', 'Item', 'Bonus', 'Improves', 'Which one', 'Notes'].map(function (t) { return el('span', { text: t }); }))]);
     SLOTS.forEach(function (s2) {
       var it = gear.worn[s2[0]] = gear.worn[s2[0]] || {};
       var nm = el('input', { value: it.name || '', maxlength: '80', placeholder: 'Nothing', disabled: !mine, 'aria-label': s2[1] + ' item' });
       var bonus = el('input', { type: 'number', step: '1', min: '-10', max: '10', value: it.bonus ? String(it.bonus) : '', placeholder: '+0', disabled: !mine, 'aria-label': s2[1] + ' bonus' });
-      // One list: plain choices, then every Attribute, Ability, Combat Style, and Magic by name
       var cat = el('select', { disabled: !mine, 'aria-label': s2[1] + ' improves' });
-      var curV = (it.cat || '') + (whichOptions(it.cat) ? '|' + (it.which || '') : '');
-      CATS.filter(function (c) { return !whichOptions(c) && c !== 'Other'; }).forEach(function (c) { var o = el('option', { value: c, text: c || 'Nothing' }); if (curV === c) o.selected = true; cat.appendChild(o); });
-      ['Attribute', 'Ability', 'Combat Style', 'Magic'].forEach(function (c) {
-        var opts = whichOptions(c) || []; if (!opts.length) return;
-        var g = el('optgroup', { label: c });
-        opts.forEach(function (w) { var o = el('option', { value: c + '|' + w, text: w }); if (curV === c + '|' + w) o.selected = true; g.appendChild(o); });
-        cat.appendChild(g);
-      });
-      var oth = el('option', { value: 'Other', text: 'Other (say what in Notes)' }); if (it.cat === 'Other') oth.selected = true; cat.appendChild(oth);
+      CATS.forEach(function (c) { var o = el('option', { value: c, text: c || 'Nothing' }); if ((it.cat || '') === c) o.selected = true; cat.appendChild(o); });
+      var whichWrap = el('span', {});
+      function drawWhich() {
+        whichWrap.textContent = '';
+        var opts = whichOptions(cat.value);
+        var w;
+        if (opts) { w = el('select', { disabled: !mine, 'aria-label': s2[1] + ' which' }, [el('option', { value: '', text: 'Choose...' })]); opts.forEach(function (o) { var op = el('option', { value: o, text: o }); if (it.which === o) op.selected = true; w.appendChild(op); }); }
+        else w = el('input', { value: it.which || '', maxlength: '60', placeholder: cat.value === 'Other' ? 'What it affects' : '', disabled: !mine || !cat.value || cat.value !== 'Other', 'aria-label': s2[1] + ' which' });
+        w.addEventListener('change', function () { it.which = w.value; changed(); });
+        w.addEventListener('input', function () { it.which = w.value; changed(); });
+        whichWrap.appendChild(w);
+      }
+      drawWhich();
       var note = el('input', { value: it.notes || '', maxlength: '120', placeholder: 'Rating, quirks', disabled: !mine, 'aria-label': s2[1] + ' notes' });
       nm.addEventListener('input', function () { it.name = nm.value; changed(); });
       bonus.addEventListener('input', function () { it.bonus = Number(bonus.value) || 0; changed(); });
-      cat.addEventListener('change', function () { var v = cat.value.split('|'); it.cat = v[0]; it.which = v[1] || ''; changed(); });
+      cat.addEventListener('change', function () { it.cat = cat.value; it.which = ''; drawWhich(); changed(); });
       note.addEventListener('input', function () { it.notes = note.value; changed(); });
-      wt.appendChild(el('div', { class: 'cv-worn-r' }, [el('span', { class: 'cv-worn-slot', text: s2[1] }), nm, bonus, cat, note]));
+      wt.appendChild(el('div', { class: 'cv-worn-r' }, [el('span', { class: 'cv-worn-slot', text: s2[1] }), nm, bonus, cat, whichWrap, note]));
     });
-    b.appendChild(card('Worn and Wielded', [el('p', { class: 'cv-muted', text: 'Gloves, bracers, and rings go on the arm they are worn on. Carry at most 3 weapons and wield 2. Bonus is the number and Improves is what it raises; Attributes, Abilities, Styles, and Magic are listed by name. Bonuses show up on the other tabs, and Armor adds to your BDT.' }), wt], '../rulebook/ch14.html'));
+    b.appendChild(card('Worn and Wielded', [el('p', { class: 'cv-muted', text: 'Gloves, bracers, and rings go on the arm they are worn on. Carry at most 3 weapons and wield 2. Bonus is the number, Improves is what kind of thing it raises, and Which one names the exact trait when that kind has more than one (a +1 Attribute item needs to know it is Intelligence, say). Armor, Attack, Damage, Defense, Initiative, Movement, and the Mana choices need no Which one. Bonuses show up on the other tabs, and Armor adds to your BDT.' }), wt], '../rulebook/ch14.html'));
     // Belt
     var belt = el('div', { class: 'cv-belt' });
     for (var i = 0; i < 7; i++) (function (i) {
