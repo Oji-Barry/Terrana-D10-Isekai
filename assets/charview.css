@@ -203,3 +203,6 @@ details.cv-more > summary { cursor: pointer; color: var(--sky); font-weight: 700
 .cv-aff.auto span { color: var(--sky); }
 .cv-aff input { width: 100%; border: 0; background: none; color: var(--text); font: inherit; padding: 2px 0; }
 .cv-affects .act.small { justify-self: start; min-height: 30px; }
+.cv-hspace { height: 26px; }
+.cv-incrow { position: relative; }
+.cv-inclab { position: absolute; right: calc(100% + 4px); top: 50%; transform: translateY(-50%); font-size: 12px; font-weight: 800; color: #d9b3ff; white-space: nowrap; }

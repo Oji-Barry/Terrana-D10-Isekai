@@ -210,21 +210,18 @@
               queue({ tracks: t2 }); drawBody(); } }),
           el('span', { class: 'cv-hpen' + (pen ? '' : ' none'), text: pen ? '-' + pen : '' })]));
       })(i);
-      var srcs = (M.boxSources || {})[k[0]] || [];
-      col.appendChild(el('div', { class: 'cv-hcount', text: n + ' boxes' }));
-      if (srcs.length) col.appendChild(el('div', { class: 'cv-hsrc', text: srcs.join(', ') }));
-      if (mine) col.appendChild(el('div', { class: 'cv-hadj' }, [
-        el('button', { type: 'button', text: '-', 'aria-label': 'One less ' + k[1] + ' box', onclick: function () { adjBox(k[0], -1); } }),
-        el('button', { type: 'button', text: '+', 'aria-label': 'One more ' + k[1] + ' box', onclick: function () { adjBox(k[0], 1); } })]));
+      if (k[0] === 'a') {
+        // Incap sits under the Aggravated boxes, level with the last Bashing box
+        var nb = M.boxes.b, inc = !!tr.incap;
+        for (var r = n; r < nb - 1; r++) col.appendChild(el('div', { class: 'cv-hrow cv-hspace' }));
+        col.appendChild(el('div', { class: 'cv-hrow cv-incrow' }, [el('span', { class: 'cv-inclab', text: 'Incap' }),
+          el('button', { type: 'button', class: 'cv-tb hb a' + (inc ? ' x' : ''), disabled: !mine, 'aria-pressed': String(inc), 'aria-label': 'Incapacitated', text: inc ? '\u2715' : '', onclick: function () {
+            var t2 = tracks(); t2.incap = !t2.incap; rowNotes.push(t2.incap ? 'Incapacitated' : 'No longer Incapacitated'); queue({ tracks: t2 }); drawBody();
+          } }), el('span', { class: 'cv-hpen none' })]));
+      }
       cols.appendChild(col);
     });
-    var inc = !!tr.incap;
-    var incBox = el('div', { class: 'cv-incap' + (inc ? ' on' : '') }, [
-      el('button', { type: 'button', class: 'cv-tb hb a' + (inc ? ' x' : ''), disabled: !mine, 'aria-pressed': String(inc), 'aria-label': 'Incapacitated', text: inc ? '\u2715' : '', onclick: function () {
-        var t2 = tracks(); t2.incap = !t2.incap; rowNotes.push(t2.incap ? 'Incapacitated' : 'No longer Incapacitated'); queue({ tracks: t2 }); drawBody();
-      } }),
-      el('span', {}, [el('b', { text: 'Incapacitated' }), el('small', { class: 'cv-muted', text: 'All Aggravated boxes full, a hit landing in a full column, or your mana pool running dry. It fills itself for full Aggravated boxes and for running dry; clear it by hand when you recover.' })])]);
-    return card('Health', [cols, incBox, el('p', { class: 'cv-muted', style: 'margin:8px 0 0', text: 'Wound penalty: ' + (total ? '-' + total + ' dice' : 'none') + '. Penalties accumulate. BDT ' + M.combat.bdt + ', LDT ' + M.combat.bdt * 2 + ', ADT ' + M.combat.bdt * 3 + '. Click a box to mark it with an X.' }), affectsBox(tr)], '../rulebook/terms.html');
+    return card('Health', [cols, el('p', { class: 'cv-muted', style: 'margin:8px 0 0', text: 'Wound penalty: ' + (total ? '-' + total + ' dice' : 'none') + '. Penalties accumulate. BDT ' + M.combat.bdt + ', LDT ' + M.combat.bdt * 2 + ', ADT ' + M.combat.bdt * 3 + '. Click a box to mark it with an X.' }), affectsBox(tr)], '../rulebook/terms.html');
   }
 
   // ---------- tabs ----------
