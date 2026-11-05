@@ -1,0 +1,5958 @@
+[
+{
+"id": "slimes-slime",
+"name": "Slime",
+"section": "Slimes",
+"rank": "F",
+"tags": [
+"Slime",
+"Small",
+"None"
+],
+"type": "Slime",
+"size": "Small",
+"elements": "None",
+"attack": 4,
+"defense": 4,
+"damage": 3,
+"move": 1,
+"bdt": 3,
+"mana": 3,
+"mt": 2,
+"health": {
+"b": 3,
+"l": 2,
+"a": 1
+},
+"abilities": [
+{
+"name": "Engulf (melee)",
+"text": "Kinetic damage. On a hit the target is Rooted until it beats the slime's attack successes with Strength + Athletics."
+}
+],
+"trait": "Splits in two when hit by a blade but not destroyed; each half is an F rank slime with half its boxes.",
+"found": "Sewers, dungeon floors 1 to 10, damp fields.",
+"loot": "Slime jelly (alchemy ingredient)."
+},
+{
+"id": "slimes-water-slime",
+"name": "Water Slime",
+"section": "Slimes",
+"rank": "E",
+"tags": [
+"Slime",
+"Small",
+"Water"
+],
+"type": "Slime",
+"size": "Small",
+"elements": "Water",
+"attack": 6,
+"defense": 6,
+"damage": 4,
+"move": 1,
+"bdt": 4,
+"mana": 6,
+"mt": 3,
+"health": {
+"b": 4,
+"l": 3,
+"a": 2
+},
+"abilities": [
+{
+"name": "Water Bolt",
+"text": "Casts the Water Rank 1 spell."
+},
+{
+"name": "Douse (melee)",
+"text": "Kinetic damage and ends the Burning condition on anything it touches."
+}
+],
+"trait": "Takes half damage from Fire attacks, rounded down.",
+"found": "Rivers, rain-soaked caves, the Flooded Caverns.",
+"loot": "Clear slime core (Small Mana Crystal)."
+},
+{
+"id": "slimes-acid-slime",
+"name": "Acid Slime",
+"section": "Slimes",
+"rank": "E",
+"tags": [
+"Slime",
+"Small",
+"Water"
+],
+"type": "Slime",
+"size": "Small",
+"elements": "Water",
+"attack": 6,
+"defense": 6,
+"damage": 4,
+"move": 1,
+"bdt": 4,
+"mana": 6,
+"mt": 3,
+"health": {
+"b": 4,
+"l": 3,
+"a": 2
+},
+"abilities": [
+{
+"name": "Acid Touch (melee)",
+"text": "Acid damage. On a hit, the target's armor loses 1 Armor until repaired."
+}
+],
+"trait": "Weapons that hit it lose 1 Rating for the scene unless cleaned.",
+"found": "Garbage pits, alchemy lab drains, dungeon floors 6 to 20.",
+"loot": "Acid sac (alchemy, E rank)."
+},
+{
+"id": "slimes-poison-slime",
+"name": "Poison Slime",
+"section": "Slimes",
+"rank": "D",
+"tags": [
+"Slime",
+"Small",
+"Water, Nature"
+],
+"type": "Slime",
+"size": "Small",
+"elements": "Water, Nature",
+"attack": 8,
+"defense": 8,
+"damage": 5,
+"move": 1,
+"bdt": 5,
+"mana": 9,
+"mt": 4,
+"health": {
+"b": 5,
+"l": 4,
+"a": 3
+},
+"abilities": [
+{
+"name": "Venom Splash",
+"text": "Ranged, line of sight. Poison damage and the Poisoned condition."
+},
+{
+"name": "Engulf (melee)",
+"text": "As a Slime."
+}
+],
+"trait": "Anything that bites or swallows it is Poisoned.",
+"found": "Swamps, the Fungal Grotto.",
+"loot": "Venom core (antidote ingredient)."
+},
+{
+"id": "slimes-magma-slime",
+"name": "Magma Slime",
+"section": "Slimes",
+"rank": "D",
+"tags": [
+"Slime",
+"Small",
+"Fire, Earth"
+],
+"type": "Slime",
+"size": "Small",
+"elements": "Fire, Earth",
+"attack": 8,
+"defense": 8,
+"damage": 5,
+"move": 1,
+"bdt": 5,
+"mana": 9,
+"mt": 4,
+"health": {
+"b": 5,
+"l": 4,
+"a": 3
+},
+"abilities": [
+{
+"name": "Magma Glob",
+"text": "Ranged, line of sight. Burning damage and the Burning condition."
+},
+{
+"name": "Molten Body",
+"text": "Anyone who hits it with an unarmed attack takes burning damage equal to its Damage pool."
+}
+],
+"trait": "Leaves a trail of burning ground (Burning Ground, Fire Rank 2) where it moves.",
+"found": "Volcanic Fields, the Forge Depths.",
+"loot": "Ember core (D rank fire focus material)."
+},
+{
+"id": "slimes-metal-slime",
+"name": "Metal Slime",
+"section": "Slimes",
+"rank": "C",
+"tags": [
+"Slime",
+"Small",
+"Earth"
+],
+"type": "Slime",
+"size": "Small",
+"elements": "Earth",
+"attack": 10,
+"defense": 10,
+"damage": 6,
+"move": 1,
+"bdt": 6,
+"mana": 12,
+"mt": 5,
+"health": {
+"b": 6,
+"l": 5,
+"a": 4
+},
+"abilities": [
+{
+"name": "Steel Ram (melee)",
+"text": "Kinetic damage."
+},
+{
+"name": "Flee",
+"text": "As a Reaction when hit, move 2 zones."
+}
+],
+"trait": "Its BDT is doubled, and it tries to run from every fight. Defeating one is worth bragging about.",
+"found": "Rare, anywhere in the Grand Dungeon.",
+"loot": "Metal slime alloy (B rank weapon material, worth 1 Large Gold)."
+},
+{
+"id": "slimes-great-slime",
+"name": "Great Slime",
+"section": "Slimes",
+"rank": "C",
+"tags": [
+"Slime",
+"Large (2x2)",
+"Water"
+],
+"type": "Slime",
+"size": "Large (2x2)",
+"elements": "Water",
+"attack": 10,
+"defense": 10,
+"damage": 6,
+"move": 1,
+"bdt": 7,
+"mana": 12,
+"mt": 5,
+"health": {
+"b": 8,
+"l": 7,
+"a": 6
+},
+"abilities": [
+{
+"name": "Engulf (melee)",
+"text": "Kinetic damage, and a target it hits is pulled inside: Rooted, and takes the slime's Damage pool again each Upkeep until it escapes with Strength + Athletics."
+},
+{
+"name": "Split Off",
+"text": "Once per scene, spend 3 mana to release two Slimes."
+}
+],
+"trait": "Dozens of slimes merged into one. It is slow but almost impossible to push.",
+"found": "Deep sewers, dungeon floors 10 to 30.",
+"loot": "Great slime core (Mana Crystal)."
+},
+{
+"id": "slimes-slime-swarm",
+"name": "Slime Swarm",
+"section": "Slimes",
+"rank": "E",
+"tags": [
+"Slime, Swarm",
+"Large (2x2)",
+"Varies"
+],
+"type": "Slime, Swarm",
+"size": "Large (2x2)",
+"elements": "Varies",
+"attack": 6,
+"defense": 6,
+"damage": 4,
+"move": 1,
+"bdt": 5,
+"mana": 6,
+"mt": 3,
+"health": {
+"b": 6,
+"l": 5,
+"a": 4
+},
+"abilities": [
+{
+"name": "Smother (melee)",
+"text": "Kinetic damage to everyone in adjacent zones; each defends separately."
+}
+],
+"trait": "A swarm of tiny slimes that counts as one creature filling a 2x2 area. Area attacks deal +2 damage to it.",
+"found": "Anywhere slimes gather.",
+"loot": "Slime jelly by the bucket."
+},
+{
+"id": "beasts-and-wild-fiends-giant-rat",
+"name": "Giant Rat",
+"section": "Beasts and Wild Fiends",
+"rank": "F",
+"tags": [
+"Beast",
+"Small",
+"None"
+],
+"type": "Beast",
+"size": "Small",
+"elements": "None",
+"attack": 4,
+"defense": 4,
+"damage": 3,
+"move": 1,
+"bdt": 3,
+"mana": 3,
+"mt": 2,
+"health": {
+"b": 3,
+"l": 2,
+"a": 1
+},
+"abilities": [
+{
+"name": "Bite (melee)",
+"text": "Piercing damage. On a hit roll 1d10; on a 1 the target catches a fever (-1 die on physical rolls until healed)."
+}
+],
+"trait": "Usually found in packs of 3 to 6.",
+"found": "Sewers, cellars, dungeon floors 1 to 4.",
+"loot": "Rat pelts (worth Small Copper)."
+},
+{
+"id": "beasts-and-wild-fiends-horned-rabbit",
+"name": "Horned Rabbit",
+"section": "Beasts and Wild Fiends",
+"rank": "F",
+"tags": [
+"Beast",
+"Small",
+"None"
+],
+"type": "Beast",
+"size": "Small",
+"elements": "None",
+"attack": 4,
+"defense": 4,
+"damage": 3,
+"move": 1,
+"bdt": 3,
+"mana": 3,
+"mt": 2,
+"health": {
+"b": 3,
+"l": 2,
+"a": 1
+},
+"abilities": [
+{
+"name": "Horn Charge",
+"text": "Move up to 2 zones in a straight line and attack. Piercing damage."
+}
+],
+"trait": "Harmless until startled, then very fast.",
+"found": "Fields and forests across the Central Continent.",
+"loot": "Horn and meat (worth Large Copper)."
+},
+{
+"id": "beasts-and-wild-fiends-acid-wolf",
+"name": "Acid Wolf",
+"section": "Beasts and Wild Fiends",
+"rank": "E",
+"tags": [
+"Beast",
+"Medium",
+"Water"
+],
+"type": "Beast",
+"size": "Medium",
+"elements": "Water",
+"attack": 6,
+"defense": 6,
+"damage": 4,
+"move": 1,
+"bdt": 4,
+"mana": 6,
+"mt": 3,
+"health": {
+"b": 4,
+"l": 3,
+"a": 2
+},
+"abilities": [
+{
+"name": "Bite (melee)",
+"text": "Piercing damage."
+},
+{
+"name": "Acid Spit",
+"text": "Ranged, line of sight. Acid damage; the target's armor loses 1 Armor until repaired."
+}
+],
+"trait": "Hunts in packs of 4 to 8 that circle and spit before closing in.",
+"found": "Demon Continent plains and wastes.",
+"loot": "Acid glands (alchemy)."
+},
+{
+"id": "beasts-and-wild-fiends-assault-dog",
+"name": "Assault Dog",
+"section": "Beasts and Wild Fiends",
+"rank": "E",
+"tags": [
+"Beast",
+"Medium",
+"None"
+],
+"type": "Beast",
+"size": "Medium",
+"elements": "None",
+"attack": 6,
+"defense": 6,
+"damage": 4,
+"move": 2,
+"bdt": 4,
+"mana": 6,
+"mt": 3,
+"health": {
+"b": 4,
+"l": 3,
+"a": 2
+},
+"abilities": [
+{
+"name": "Pack Bite (melee)",
+"text": "Piercing damage, +2 dice if another Assault Dog is adjacent to the target."
+}
+],
+"trait": "Packs of 5 to 10 that never stop chasing. Movement 2.",
+"found": "Demon Continent, Begaritt fringes.",
+"loot": "Hides."
+},
+{
+"id": "beasts-and-wild-fiends-pax-coyote",
+"name": "Pax Coyote",
+"section": "Beasts and Wild Fiends",
+"rank": "D",
+"tags": [
+"Beast",
+"Medium",
+"Air"
+],
+"type": "Beast",
+"size": "Medium",
+"elements": "Air",
+"attack": 8,
+"defense": 8,
+"damage": 5,
+"move": 2,
+"bdt": 5,
+"mana": 9,
+"mt": 4,
+"health": {
+"b": 5,
+"l": 4,
+"a": 3
+},
+"abilities": [
+{
+"name": "Howl",
+"text": "Every enemy who hears it rolls Composure + Presence against its Attack; those who fail suffer -2 dice on their next turn."
+},
+{
+"name": "Bite (melee)",
+"text": "Piercing damage."
+}
+],
+"trait": "Packs follow a single alpha. Kill the alpha and the pack scatters.",
+"found": "Demon Continent grasslands.",
+"loot": "Pelts, fangs."
+},
+{
+"id": "beasts-and-wild-fiends-cave-crawler",
+"name": "Cave Crawler",
+"section": "Beasts and Wild Fiends",
+"rank": "E",
+"tags": [
+"Beast",
+"Medium",
+"Earth"
+],
+"type": "Beast",
+"size": "Medium",
+"elements": "Earth",
+"attack": 6,
+"defense": 6,
+"damage": 4,
+"move": 1,
+"bdt": 4,
+"mana": 6,
+"mt": 3,
+"health": {
+"b": 4,
+"l": 3,
+"a": 2
+},
+"abilities": [
+{
+"name": "Mandibles (melee)",
+"text": "Slashing damage."
+},
+{
+"name": "Ceiling Drop",
+"text": "Attacks from above with +2 dice the first time it strikes in a fight."
+}
+],
+"trait": "Climbs on walls and ceilings as easily as floors.",
+"found": "The Fungal Grotto, mines, caves.",
+"loot": "Chitin plates."
+},
+{
+"id": "beasts-and-wild-fiends-dire-boar",
+"name": "Dire Boar",
+"section": "Beasts and Wild Fiends",
+"rank": "D",
+"tags": [
+"Beast",
+"Large (2x2)",
+"None"
+],
+"type": "Beast",
+"size": "Large (2x2)",
+"elements": "None",
+"attack": 8,
+"defense": 8,
+"damage": 5,
+"move": 1,
+"bdt": 6,
+"mana": 9,
+"mt": 4,
+"health": {
+"b": 7,
+"l": 6,
+"a": 5
+},
+"abilities": [
+{
+"name": "Gore",
+"text": "Move up to 2 zones in a straight line and attack. Piercing damage; the target is knocked Prone."
+}
+],
+"trait": "Keeps charging even when Incapacitated once: it gets one last Gore before it falls.",
+"found": "Forests of the Central and Milis continents.",
+"loot": "Tusks, a lot of meat."
+},
+{
+"id": "beasts-and-wild-fiends-giant-spider",
+"name": "Giant Spider",
+"section": "Beasts and Wild Fiends",
+"rank": "D",
+"tags": [
+"Beast",
+"Large (2x2)",
+"Nature"
+],
+"type": "Beast",
+"size": "Large (2x2)",
+"elements": "Nature",
+"attack": 8,
+"defense": 8,
+"damage": 5,
+"move": 1,
+"bdt": 6,
+"mana": 9,
+"mt": 4,
+"health": {
+"b": 7,
+"l": 6,
+"a": 5
+},
+"abilities": [
+{
+"name": "Bite (melee)",
+"text": "Piercing damage and the Poisoned condition."
+},
+{
+"name": "Web",
+"text": "Ranged, line of sight. The target is Rooted until it beats the spider's Attack successes with Strength + Athletics."
+}
+],
+"trait": "Ignores Difficult Terrain made of webs and can walk on walls.",
+"found": "Dark forests, the Catacombs, abandoned mines.",
+"loot": "Spider silk (Crafts material)."
+},
+{
+"id": "beasts-and-wild-fiends-hellhound",
+"name": "Hellhound",
+"section": "Beasts and Wild Fiends",
+"rank": "C",
+"tags": [
+"Beast",
+"Medium",
+"Fire"
+],
+"type": "Beast",
+"size": "Medium",
+"elements": "Fire",
+"attack": 10,
+"defense": 10,
+"damage": 6,
+"move": 2,
+"bdt": 6,
+"mana": 12,
+"mt": 5,
+"health": {
+"b": 6,
+"l": 5,
+"a": 4
+},
+"abilities": [
+{
+"name": "Fire Breath",
+"text": "Casts the Fire Rank 3 spell."
+},
+{
+"name": "Bite (melee)",
+"text": "Piercing damage and the Burning condition."
+}
+],
+"trait": "Immune to Burning. Hunts in pairs.",
+"found": "The Infernal Halls, volcanic regions of the Demon Continent.",
+"loot": "Ember fang (C rank fire focus material)."
+},
+{
+"id": "beasts-and-wild-fiends-forest-bear",
+"name": "Forest Bear",
+"section": "Beasts and Wild Fiends",
+"rank": "C",
+"tags": [
+"Beast",
+"Large (2x2)",
+"None"
+],
+"type": "Beast",
+"size": "Large (2x2)",
+"elements": "None",
+"attack": 10,
+"defense": 10,
+"damage": 6,
+"move": 1,
+"bdt": 7,
+"mana": 12,
+"mt": 5,
+"health": {
+"b": 8,
+"l": 7,
+"a": 6
+},
+"abilities": [
+{
+"name": "Maul (melee)",
+"text": "Slashing damage. Two attacks against the same target each turn."
+},
+{
+"name": "Roar",
+"text": "Enemies in adjacent zones resist with Composure + Presence or suffer -2 dice on their next attack."
+}
+],
+"trait": "Fiercely protective of cubs.",
+"found": "Every major forest.",
+"loot": "Pelt, claws."
+},
+{
+"id": "beasts-and-wild-fiends-rock-turtle",
+"name": "Rock Turtle",
+"section": "Beasts and Wild Fiends",
+"rank": "C",
+"tags": [
+"Beast",
+"Large (2x2)",
+"Earth"
+],
+"type": "Beast",
+"size": "Large (2x2)",
+"elements": "Earth",
+"attack": 10,
+"defense": 10,
+"damage": 6,
+"move": 1,
+"bdt": 7,
+"mana": 12,
+"mt": 5,
+"health": {
+"b": 8,
+"l": 7,
+"a": 6
+},
+"abilities": [
+{
+"name": "Shell Slam (melee)",
+"text": "Kinetic damage and the target is knocked Prone."
+},
+{
+"name": "Stone Shell",
+"text": "As a Reaction, +3 BDT until its next turn."
+}
+],
+"trait": "Nearly unbreakable from the front; its underside has half the BDT. Prized for its meat.",
+"found": "Demon Continent wastes and rivers.",
+"loot": "Shell plates (C rank armor material), meat for a whole village."
+},
+{
+"id": "beasts-and-wild-fiends-thunderbird",
+"name": "Thunderbird",
+"section": "Beasts and Wild Fiends",
+"rank": "B",
+"tags": [
+"Beast",
+"Large (2x2)",
+"Air, Fire"
+],
+"type": "Beast",
+"size": "Large (2x2)",
+"elements": "Air, Fire",
+"attack": 12,
+"defense": 12,
+"damage": 7,
+"move": 4,
+"bdt": 8,
+"mana": 15,
+"mt": 6,
+"health": {
+"b": 9,
+"l": 8,
+"a": 7
+},
+"abilities": [
+{
+"name": "Lightning Dive",
+"text": "Moves up to 4 zones and attacks. Electric damage."
+},
+{
+"name": "Storm Call",
+"text": "Casts Thunderstorm (Fire + Water + Air + Nature) once per scene."
+}
+],
+"trait": "Flies at double movement. Lives inside storm clouds.",
+"found": "Mountain peaks, the Canopy Wilds.",
+"loot": "Storm feathers (B rank Air focus material)."
+},
+{
+"id": "beasts-and-wild-fiends-griffon",
+"name": "Griffon",
+"section": "Beasts and Wild Fiends",
+"rank": "B",
+"tags": [
+"Beast",
+"Large (2x2)",
+"Air"
+],
+"type": "Beast",
+"size": "Large (2x2)",
+"elements": "Air",
+"attack": 12,
+"defense": 12,
+"damage": 7,
+"move": 4,
+"bdt": 8,
+"mana": 15,
+"mt": 6,
+"health": {
+"b": 9,
+"l": 8,
+"a": 7
+},
+"abilities": [
+{
+"name": "Talons (melee)",
+"text": "Slashing damage."
+},
+{
+"name": "Snatch and Drop",
+"text": "On a hit against a Medium or smaller target, carry it up 2 zones and drop it for falling damage."
+}
+],
+"trait": "Flies at double movement. Can be tamed as a mount by a patient rider.",
+"found": "Cliffs of the Central Continent, Asura mountains.",
+"loot": "Feathers, eggs (worth a Small Gold to a breeder)."
+},
+{
+"id": "beasts-and-wild-fiends-manticore",
+"name": "Manticore",
+"section": "Beasts and Wild Fiends",
+"rank": "B",
+"tags": [
+"Beast",
+"Large (2x2)",
+"Nature, Shade"
+],
+"type": "Beast",
+"size": "Large (2x2)",
+"elements": "Nature, Shade",
+"attack": 12,
+"defense": 12,
+"damage": 7,
+"move": 1,
+"bdt": 8,
+"mana": 15,
+"mt": 6,
+"health": {
+"b": 9,
+"l": 8,
+"a": 7
+},
+"abilities": [
+{
+"name": "Tail Volley",
+"text": "Ranged, line of sight. Roll once against up to 3 targets; piercing damage and the Poisoned condition."
+},
+{
+"name": "Maul (melee)",
+"text": "Slashing damage."
+}
+],
+"trait": "Speaks a little and enjoys taunting its prey.",
+"found": "Begaritt desert, ruins.",
+"loot": "Tail spines (B rank arrowheads)."
+},
+{
+"id": "beasts-and-wild-fiends-basilisk",
+"name": "Basilisk",
+"section": "Beasts and Wild Fiends",
+"rank": "B",
+"tags": [
+"Beast",
+"Large (2x2)",
+"Earth, Shade"
+],
+"type": "Beast",
+"size": "Large (2x2)",
+"elements": "Earth, Shade",
+"attack": 12,
+"defense": 12,
+"damage": 7,
+"move": 1,
+"bdt": 8,
+"mana": 15,
+"mt": 6,
+"health": {
+"b": 9,
+"l": 8,
+"a": 7
+},
+"abilities": [
+{
+"name": "Petrifying Gaze",
+"text": "Every enemy who can see it resists with Wisdom + Composure; one that fails is Rooted as its legs turn to stone, and if it fails again next turn it is turned to stone (Petrify, Earth + Nature + Bright + Shade)."
+},
+{
+"name": "Bite (melee)",
+"text": "Piercing damage."
+}
+],
+"trait": "Looking away or using a mirror gives -2 dice to attack it but immunity to the gaze.",
+"found": "Deep caves, the Crystal Mines.",
+"loot": "Basilisk eye (A rank artifact material)."
+},
+{
+"id": "beasts-and-wild-fiends-terminate-boa",
+"name": "Terminate Boa",
+"section": "Beasts and Wild Fiends",
+"rank": "B",
+"tags": [
+"Beast",
+"Huge (3x3)",
+"Nature"
+],
+"type": "Beast",
+"size": "Huge (3x3)",
+"elements": "Nature",
+"attack": 12,
+"defense": 12,
+"damage": 7,
+"move": 1,
+"bdt": 9,
+"mana": 15,
+"mt": 6,
+"health": {
+"b": 11,
+"l": 10,
+"a": 9
+},
+"abilities": [
+{
+"name": "Constrict (melee)",
+"text": "Crushing damage; the target is Rooted and takes the Damage pool again each Upkeep until it breaks free with Strength + Athletics."
+},
+{
+"name": "Swallow",
+"text": "A Rooted Medium target at 0 Bashing boxes left is swallowed whole."
+}
+],
+"trait": "Hides in tall grass and trees; first attack each fight gets +3 dice.",
+"found": "Demon Continent jungles and rivers.",
+"loot": "Snakeskin (B rank armor material)."
+},
+{
+"id": "beasts-and-wild-fiends-chimera",
+"name": "Chimera",
+"section": "Beasts and Wild Fiends",
+"rank": "A",
+"tags": [
+"Beast",
+"Large (2x2)",
+"Fire, Nature, Air"
+],
+"type": "Beast",
+"size": "Large (2x2)",
+"elements": "Fire, Nature, Air",
+"attack": 14,
+"defense": 14,
+"damage": 8,
+"move": 1,
+"bdt": 9,
+"mana": 18,
+"mt": 7,
+"health": {
+"b": 10,
+"l": 9,
+"a": 8
+},
+"abilities": [
+{
+"name": "Three Heads",
+"text": "Three attacks a turn: lion bite (piercing), goat horns (kinetic), serpent tail (piercing and Poisoned)."
+},
+{
+"name": "Fire Breath",
+"text": "Casts Fireball (Fire Rank 5) once per scene."
+}
+],
+"trait": "Each head can be targeted separately (one third of its boxes each); losing a head loses that attack.",
+"found": "Fighting pits, the Ironwood Colosseum, Demon Continent wilds.",
+"loot": "Chimera heart (A rank alchemy)."
+},
+{
+"id": "beasts-and-wild-fiends-behemoth",
+"name": "Behemoth",
+"section": "Beasts and Wild Fiends",
+"rank": "S",
+"tags": [
+"Beast",
+"Gargantuan (4x4)",
+"Earth"
+],
+"type": "Beast",
+"size": "Gargantuan (4x4)",
+"elements": "Earth",
+"attack": 16,
+"defense": 16,
+"damage": 9,
+"move": 1,
+"bdt": 12,
+"mana": 21,
+"mt": 8,
+"health": {
+"b": 15,
+"l": 14,
+"a": 13
+},
+"abilities": [
+{
+"name": "Trample",
+"text": "Moves up to 3 zones; everything in its path defends or takes kinetic damage and is knocked Prone."
+},
+{
+"name": "Tremor Roar",
+"text": "Casts Earthquake (Earth Rank 5)."
+},
+{
+"name": "Horn Gore (melee)",
+"text": "Kinetic damage, +3 dice against structures."
+}
+],
+"trait": "Fills a 4x4 area. Town Rapan is built inside the ribs of one.",
+"found": "Deep in the Demon Continent; one every few generations.",
+"loot": "Bones for a town, hide for an army."
+},
+{
+"id": "plants-and-fungi-mandrake",
+"name": "Mandrake",
+"section": "Plants and Fungi",
+"rank": "E",
+"tags": [
+"Plant",
+"Small",
+"Nature"
+],
+"type": "Plant",
+"size": "Small",
+"elements": "Nature",
+"attack": 6,
+"defense": 6,
+"damage": 4,
+"move": 1,
+"bdt": 4,
+"mana": 6,
+"mt": 3,
+"health": {
+"b": 4,
+"l": 3,
+"a": 2
+},
+"abilities": [
+{
+"name": "Scream",
+"text": "Every creature in adjacent zones resists with Composure + Endurance; those who fail lose their next action."
+}
+],
+"trait": "Pulling it from the ground triggers the scream automatically.",
+"found": "Old gardens, witches' plots.",
+"loot": "Mandrake root (alchemy, worth a Small Silver)."
+},
+{
+"id": "plants-and-fungi-myconid-scout",
+"name": "Myconid Scout",
+"section": "Plants and Fungi",
+"rank": "E",
+"tags": [
+"Fungus",
+"Medium",
+"Nature"
+],
+"type": "Fungus",
+"size": "Medium",
+"elements": "Nature",
+"attack": 6,
+"defense": 6,
+"damage": 4,
+"move": 1,
+"bdt": 4,
+"mana": 6,
+"mt": 3,
+"health": {
+"b": 4,
+"l": 3,
+"a": 2
+},
+"abilities": [
+{
+"name": "Spore Burst",
+"text": "Casts the Nature Rank 2 spell."
+},
+{
+"name": "Club (melee)",
+"text": "Kinetic damage."
+}
+],
+"trait": "Myconids talk with spores; anyone caught in a cloud hears their thoughts as a buzzing.",
+"found": "The Fungal Grotto.",
+"loot": "Glowcap mushrooms."
+},
+{
+"id": "plants-and-fungi-carnivorous-vine",
+"name": "Carnivorous Vine",
+"section": "Plants and Fungi",
+"rank": "D",
+"tags": [
+"Plant",
+"Large (2x2)",
+"Nature"
+],
+"type": "Plant",
+"size": "Large (2x2)",
+"elements": "Nature",
+"attack": 8,
+"defense": 8,
+"damage": 5,
+"move": 1,
+"bdt": 6,
+"mana": 9,
+"mt": 4,
+"health": {
+"b": 7,
+"l": 6,
+"a": 5
+},
+"abilities": [
+{
+"name": "Vine Whip",
+"text": "Casts the Nature Rank 2 spell."
+},
+{
+"name": "Digest",
+"text": "A Rooted target takes acid damage each Upkeep."
+}
+],
+"trait": "Looks like a normal hedge until it moves.",
+"found": "Canopy Wilds, Milis forests.",
+"loot": "Sap (alchemy)."
+},
+{
+"id": "plants-and-fungi-treant",
+"name": "Treant",
+"section": "Plants and Fungi",
+"rank": "C",
+"tags": [
+"Plant",
+"Large (2x2)",
+"Nature, Earth"
+],
+"type": "Plant",
+"size": "Large (2x2)",
+"elements": "Nature, Earth",
+"attack": 10,
+"defense": 10,
+"damage": 6,
+"move": 1,
+"bdt": 7,
+"mana": 12,
+"mt": 5,
+"health": {
+"b": 8,
+"l": 7,
+"a": 6
+},
+"abilities": [
+{
+"name": "Branch Slam (melee)",
+"text": "Kinetic damage and the target is knocked back one zone."
+},
+{
+"name": "Entangle",
+"text": "Casts the Nature Rank 1 spell on everyone in adjacent zones."
+}
+],
+"trait": "Takes double damage from Fire attacks. Many are old enough to talk, slowly.",
+"found": "Old forests on every continent.",
+"loot": "Living wood (B rank staff material)."
+},
+{
+"id": "plants-and-fungi-spore-mother",
+"name": "Spore Mother",
+"section": "Plants and Fungi",
+"rank": "B",
+"tags": [
+"Fungus",
+"Huge (3x3)",
+"Nature, Shade"
+],
+"type": "Fungus",
+"size": "Huge (3x3)",
+"elements": "Nature, Shade",
+"attack": 12,
+"defense": 12,
+"damage": 7,
+"move": 1,
+"bdt": 9,
+"mana": 15,
+"mt": 6,
+"health": {
+"b": 11,
+"l": 10,
+"a": 9
+},
+"abilities": [
+{
+"name": "Spore Cloud",
+"text": "Casts Miasma Bloom (Air + Nature + Shade)."
+},
+{
+"name": "Spawn",
+"text": "Once per turn, a Myconid Scout grows from the floor in an adjacent zone."
+}
+],
+"trait": "Rooted in place. Burning it ends the spawning.",
+"found": "Heart of the Fungal Grotto.",
+"loot": "Mother spore (A rank alchemy)."
+},
+{
+"id": "bestial-demonfolk-kobold-scout",
+"name": "Kobold Scout",
+"section": "Bestial Demonfolk",
+"rank": "F",
+"tags": [
+"Bestial Demonfolk",
+"Small",
+"None"
+],
+"type": "Bestial Demonfolk",
+"size": "Small",
+"elements": "None",
+"attack": 4,
+"defense": 4,
+"damage": 3,
+"move": 1,
+"bdt": 3,
+"mana": 3,
+"mt": 2,
+"health": {
+"b": 3,
+"l": 2,
+"a": 1
+},
+"abilities": [
+{
+"name": "Spear (melee)",
+"text": "Piercing damage."
+},
+{
+"name": "Scent Track",
+"text": "Adds 3 dice to Awareness rolls to track by smell."
+}
+],
+"trait": "Kobolds are canine and loyal to their pack; a scout that spots a party runs to fetch the rest.",
+"found": "Demon Continent hills and mines, the Upper Halls.",
+"loot": "Coins, a small blade."
+},
+{
+"id": "bestial-demonfolk-kobold-packmaster",
+"name": "Kobold Packmaster",
+"section": "Bestial Demonfolk",
+"rank": "D",
+"tags": [
+"Bestial Demonfolk",
+"Medium",
+"None"
+],
+"type": "Bestial Demonfolk",
+"size": "Medium",
+"elements": "None",
+"attack": 8,
+"defense": 8,
+"damage": 5,
+"move": 1,
+"bdt": 5,
+"mana": 9,
+"mt": 4,
+"health": {
+"b": 5,
+"l": 4,
+"a": 3
+},
+"abilities": [
+{
+"name": "Rally Bark",
+"text": "Allies who hear it add 1 die to attacks this turn."
+},
+{
+"name": "Glaive (melee, Reach)",
+"text": "Slashing damage."
+}
+],
+"trait": "Leads 4 to 6 Kobold Scouts.",
+"found": "Demon Continent.",
+"loot": "D rank weapon."
+},
+{
+"id": "bestial-demonfolk-orc-warrior",
+"name": "Orc Warrior",
+"section": "Bestial Demonfolk",
+"rank": "E",
+"tags": [
+"Bestial Demonfolk",
+"Medium",
+"None"
+],
+"type": "Bestial Demonfolk",
+"size": "Medium",
+"elements": "None",
+"attack": 6,
+"defense": 6,
+"damage": 4,
+"move": 1,
+"bdt": 4,
+"mana": 6,
+"mt": 3,
+"health": {
+"b": 4,
+"l": 3,
+"a": 2
+},
+"abilities": [
+{
+"name": "Great Cleaver (melee)",
+"text": "Slashing damage."
+},
+{
+"name": "Tusk Charge",
+"text": "Move 2 zones in a line and attack with +1 die."
+}
+],
+"trait": "Orcs are pigfolk: hearty, loud, and fond of a good meal and a good fight. Most serve Raja Iblis Baglahagla.",
+"found": "Northwest Demon Continent, mercenary companies.",
+"loot": "E rank weapon, rations."
+},
+{
+"id": "bestial-demonfolk-orc-shaman",
+"name": "Orc Shaman",
+"section": "Bestial Demonfolk",
+"rank": "D",
+"tags": [
+"Bestial Demonfolk",
+"Medium",
+"Earth, Fire"
+],
+"type": "Bestial Demonfolk",
+"size": "Medium",
+"elements": "Earth, Fire",
+"attack": 8,
+"defense": 8,
+"damage": 5,
+"move": 1,
+"bdt": 5,
+"mana": 9,
+"mt": 4,
+"health": {
+"b": 5,
+"l": 4,
+"a": 3
+},
+"abilities": [
+{
+"name": "Stone Spike",
+"text": "Casts the Earth Rank 3 spell."
+},
+{
+"name": "War Chant",
+"text": "Allies in sight add 1 die to damage this turn."
+}
+],
+"trait": "Usually travels with a band of Orc Warriors.",
+"found": "Orc domains.",
+"loot": "Bone charms, a D rank focus."
+},
+{
+"id": "bestial-demonfolk-orc-warlord",
+"name": "Orc Warlord",
+"section": "Bestial Demonfolk",
+"rank": "B",
+"tags": [
+"Bestial Demonfolk",
+"Large (2x2)",
+"Earth"
+],
+"type": "Bestial Demonfolk",
+"size": "Large (2x2)",
+"elements": "Earth",
+"attack": 12,
+"defense": 12,
+"damage": 7,
+"move": 1,
+"bdt": 8,
+"mana": 15,
+"mt": 6,
+"health": {
+"b": 9,
+"l": 8,
+"a": 7
+},
+"abilities": [
+{
+"name": "Greataxe (melee)",
+"text": "Slashing damage; two attacks a turn."
+},
+{
+"name": "Iron Body",
+"text": "Casts the Battle Aura Rank 2 spell."
+}
+],
+"trait": "Commands a war band of 10 or more. Respects anyone who beats them in a fair duel.",
+"found": "Orc domains.",
+"loot": "B rank weapon, war banner."
+},
+{
+"id": "bestial-demonfolk-lizardman-warrior",
+"name": "Lizardman Warrior",
+"section": "Bestial Demonfolk",
+"rank": "D",
+"tags": [
+"Bestial Demonfolk",
+"Medium",
+"Water"
+],
+"type": "Bestial Demonfolk",
+"size": "Medium",
+"elements": "Water",
+"attack": 8,
+"defense": 8,
+"damage": 5,
+"move": 1,
+"bdt": 5,
+"mana": 9,
+"mt": 4,
+"health": {
+"b": 5,
+"l": 4,
+"a": 3
+},
+"abilities": [
+{
+"name": "Spear and Shield (melee)",
+"text": "Piercing damage."
+},
+{
+"name": "Tail Sweep",
+"text": "Every enemy in adjacent zones defends or is knocked Prone."
+}
+],
+"trait": "Swims as well as it walks. Slows in the cold (-1 die).",
+"found": "Demon Continent marshes, rivers.",
+"loot": "Scale shield."
+},
+{
+"id": "bestial-demonfolk-lizardman-shaman",
+"name": "Lizardman Shaman",
+"section": "Bestial Demonfolk",
+"rank": "C",
+"tags": [
+"Bestial Demonfolk",
+"Medium",
+"Water, Nature"
+],
+"type": "Bestial Demonfolk",
+"size": "Medium",
+"elements": "Water, Nature",
+"attack": 10,
+"defense": 10,
+"damage": 6,
+"move": 1,
+"bdt": 6,
+"mana": 12,
+"mt": 5,
+"health": {
+"b": 6,
+"l": 5,
+"a": 4
+},
+"abilities": [
+{
+"name": "Venom",
+"text": "Casts Venom (Water + Shade)."
+},
+{
+"name": "Quagmire",
+"text": "Casts Quagmire (Water + Earth)."
+}
+],
+"trait": "Keeper of the tribe's old songs.",
+"found": "Marsh villages.",
+"loot": "Shaman staff (C rank focus: Water)."
+},
+{
+"id": "bestial-demonfolk-bugfolk-drone",
+"name": "Bugfolk Drone",
+"section": "Bestial Demonfolk",
+"rank": "E",
+"tags": [
+"Bestial Demonfolk",
+"Medium",
+"Earth"
+],
+"type": "Bestial Demonfolk",
+"size": "Medium",
+"elements": "Earth",
+"attack": 6,
+"defense": 6,
+"damage": 4,
+"move": 1,
+"bdt": 4,
+"mana": 6,
+"mt": 3,
+"health": {
+"b": 4,
+"l": 3,
+"a": 2
+},
+"abilities": [
+{
+"name": "Mandibles (melee)",
+"text": "Slashing damage."
+},
+{
+"name": "Hive Signal",
+"text": "Every drone within 3 zones knows where the drone's target is."
+}
+],
+"trait": "Ant-like workers and soldiers. They fight as one.",
+"found": "Hive mounds in the Demon Continent.",
+"loot": "Chitin."
+},
+{
+"id": "bestial-demonfolk-mantis-blade",
+"name": "Mantis Blade",
+"section": "Bestial Demonfolk",
+"rank": "C",
+"tags": [
+"Bestial Demonfolk",
+"Medium",
+"Air"
+],
+"type": "Bestial Demonfolk",
+"size": "Medium",
+"elements": "Air",
+"attack": 10,
+"defense": 10,
+"damage": 6,
+"move": 1,
+"bdt": 6,
+"mana": 12,
+"mt": 5,
+"health": {
+"b": 6,
+"l": 5,
+"a": 4
+},
+"abilities": [
+{
+"name": "Twin Scythes (melee)",
+"text": "Slashing damage; two attacks a turn."
+},
+{
+"name": "Leap",
+"text": "Moves 3 zones in a single jump."
+}
+],
+"trait": "Duelists of the bugfolk. Bow before attacking.",
+"found": "Hives, mercenary companies.",
+"loot": "Mantis blades (C rank short blades)."
+},
+{
+"id": "bestial-demonfolk-hive-queen",
+"name": "Hive Queen",
+"section": "Bestial Demonfolk",
+"rank": "A",
+"tags": [
+"Bestial Demonfolk",
+"Huge (3x3)",
+"Earth, Nature"
+],
+"type": "Bestial Demonfolk",
+"size": "Huge (3x3)",
+"elements": "Earth, Nature",
+"attack": 14,
+"defense": 14,
+"damage": 8,
+"move": 1,
+"bdt": 10,
+"mana": 18,
+"mt": 7,
+"health": {
+"b": 12,
+"l": 11,
+"a": 10
+},
+"abilities": [
+{
+"name": "Brood Call",
+"text": "Once per turn, 2 Bugfolk Drones arrive in adjacent zones."
+},
+{
+"name": "Acid Spray",
+"text": "Ranged, line of sight. Roll once against up to 3 targets; acid damage."
+},
+{
+"name": "Hive Mind",
+"text": "All bugfolk in sight add 1 die to every roll."
+}
+],
+"trait": "Never leaves the hive. The drones fight to the last for her.",
+"found": "The heart of a hive.",
+"loot": "Royal jelly (A rank alchemy, worth a Large Gold)."
+},
+{
+"id": "monster-peoples-goblin",
+"name": "Goblin",
+"section": "Monster Peoples",
+"rank": "F",
+"tags": [
+"Gremlinesque",
+"Small",
+"None"
+],
+"type": "Gremlinesque",
+"size": "Small",
+"elements": "None",
+"attack": 4,
+"defense": 4,
+"damage": 3,
+"move": 1,
+"bdt": 3,
+"mana": 3,
+"mt": 2,
+"health": {
+"b": 3,
+"l": 2,
+"a": 1
+},
+"abilities": [
+{
+"name": "Shiv (melee)",
+"text": "Piercing damage."
+},
+{
+"name": "Dirty Trick",
+"text": "Throws sand or a gadget: the target suffers -2 dice on its next roll."
+}
+],
+"trait": "Clever, quick, and fond of anything with moving parts.",
+"found": "The Upper Halls, Monsera workshops.",
+"loot": "Gadget scraps, coins."
+},
+{
+"id": "monster-peoples-goblin-tinkerer",
+"name": "Goblin Tinkerer",
+"section": "Monster Peoples",
+"rank": "E",
+"tags": [
+"Gremlinesque",
+"Small",
+"Fire"
+],
+"type": "Gremlinesque",
+"size": "Small",
+"elements": "Fire",
+"attack": 6,
+"defense": 6,
+"damage": 4,
+"move": 1,
+"bdt": 4,
+"mana": 6,
+"mt": 3,
+"health": {
+"b": 4,
+"l": 3,
+"a": 2
+},
+"abilities": [
+{
+"name": "Boom Jar",
+"text": "Thrown, up to double Strength in zones. Burning damage to everyone in the target zone."
+},
+{
+"name": "Turret",
+"text": "Once per scene, places a clockwork crossbow that attacks each turn with its Attack pool."
+}
+],
+"trait": "Never fights fair and never apologizes.",
+"found": "Workshops, the Gearworks.",
+"loot": "Clockwork parts, an implement."
+},
+{
+"id": "monster-peoples-ogre",
+"name": "Ogre",
+"section": "Monster Peoples",
+"rank": "C",
+"tags": [
+"Ogre",
+"Large (2x2)",
+"None"
+],
+"type": "Ogre",
+"size": "Large (2x2)",
+"elements": "None",
+"attack": 10,
+"defense": 10,
+"damage": 6,
+"move": 1,
+"bdt": 7,
+"mana": 12,
+"mt": 5,
+"health": {
+"b": 8,
+"l": 7,
+"a": 6
+},
+"abilities": [
+{
+"name": "Club (melee)",
+"text": "Kinetic damage and the target is knocked back one zone."
+},
+{
+"name": "Grab and Throw",
+"text": "On a hit against a Medium or smaller target, throw it 2 zones."
+}
+],
+"trait": "Ogres left the Demon Continent long ago because they prefer peace. Calm and gentle until a friend is hurt.",
+"found": "The Ogre Islands, Monsera.",
+"loot": "C rank club."
+},
+{
+"id": "monster-peoples-troll",
+"name": "Troll",
+"section": "Monster Peoples",
+"rank": "C",
+"tags": [
+"Brute",
+"Large (2x2)",
+"Earth"
+],
+"type": "Brute",
+"size": "Large (2x2)",
+"elements": "Earth",
+"attack": 10,
+"defense": 10,
+"damage": 6,
+"move": 1,
+"bdt": 7,
+"mana": 12,
+"mt": 5,
+"health": {
+"b": 8,
+"l": 7,
+"a": 6
+},
+"abilities": [
+{
+"name": "Claws (melee)",
+"text": "Slashing damage; two attacks a turn."
+},
+{
+"name": "Regenerate",
+"text": "Neutralizes 2 Bashing each Upkeep unless it took burning or acid damage since its last turn."
+}
+],
+"trait": "Hard to kill and easy to anger.",
+"found": "Bridges, mountains, the Upper Halls.",
+"loot": "Troll blood (regeneration potion ingredient)."
+},
+{
+"id": "monster-peoples-minotaur",
+"name": "Minotaur",
+"section": "Monster Peoples",
+"rank": "B",
+"tags": [
+"Brute",
+"Large (2x2)",
+"Earth"
+],
+"type": "Brute",
+"size": "Large (2x2)",
+"elements": "Earth",
+"attack": 12,
+"defense": 12,
+"damage": 7,
+"move": 1,
+"bdt": 8,
+"mana": 15,
+"mt": 6,
+"health": {
+"b": 9,
+"l": 8,
+"a": 7
+},
+"abilities": [
+{
+"name": "Greataxe (melee)",
+"text": "Slashing damage."
+},
+{
+"name": "Bull Rush",
+"text": "Move 3 zones in a line; everything in the way defends or is knocked Prone."
+}
+],
+"trait": "Never lost in a maze; always knows the way to its target.",
+"found": "Labyrinths, Monsera's infrastructure division.",
+"loot": "B rank axe."
+},
+{
+"id": "constructs-and-automatons-automaton-servitor",
+"name": "Automaton Servitor",
+"section": "Constructs and Automatons",
+"rank": "E",
+"tags": [
+"Construct",
+"Medium",
+"None"
+],
+"type": "Construct",
+"size": "Medium",
+"elements": "None",
+"attack": 6,
+"defense": 6,
+"damage": 4,
+"move": 1,
+"bdt": 4,
+"mana": 6,
+"mt": 3,
+"health": {
+"b": 4,
+"l": 3,
+"a": 2
+},
+"abilities": [
+{
+"name": "Tool Arm (melee)",
+"text": "Kinetic damage."
+},
+{
+"name": "Repair",
+"text": "Neutralizes 1 Bashing on another construct in an adjacent zone."
+}
+],
+"trait": "Household and factory automatons. Most are harmless unless their orders change.",
+"found": "Monsera homes, factories, the Gearworks.",
+"loot": "Clockwork core (implement part)."
+},
+{
+"id": "constructs-and-automatons-living-armor",
+"name": "Living Armor",
+"section": "Constructs and Automatons",
+"rank": "D",
+"tags": [
+"Construct",
+"Medium",
+"Shade"
+],
+"type": "Construct",
+"size": "Medium",
+"elements": "Shade",
+"attack": 8,
+"defense": 8,
+"damage": 5,
+"move": 1,
+"bdt": 5,
+"mana": 9,
+"mt": 4,
+"health": {
+"b": 5,
+"l": 4,
+"a": 3
+},
+"abilities": [
+{
+"name": "Sword (melee)",
+"text": "Slashing damage."
+},
+{
+"name": "Empty Shell",
+"text": "Hits that strike a gap (excess successes of 3 or more) only deal half damage."
+}
+],
+"trait": "A suit of armor animated by a lingering will.",
+"found": "Castles, the Catacombs.",
+"loot": "D rank armor."
+},
+{
+"id": "constructs-and-automatons-mud-golem",
+"name": "Mud Golem",
+"section": "Constructs and Automatons",
+"rank": "D",
+"tags": [
+"Construct",
+"Large (2x2)",
+"Earth, Water"
+],
+"type": "Construct",
+"size": "Large (2x2)",
+"elements": "Earth, Water",
+"attack": 8,
+"defense": 8,
+"damage": 5,
+"move": 1,
+"bdt": 6,
+"mana": 9,
+"mt": 4,
+"health": {
+"b": 7,
+"l": 6,
+"a": 5
+},
+"abilities": [
+{
+"name": "Mud Slam (melee)",
+"text": "Kinetic damage and the target is Rooted until the end of its next turn."
+}
+],
+"trait": "Reforms after being destroyed unless its core is removed.",
+"found": "Swamps, the work sites of earth mages.",
+"loot": "Golem core (Small Mana Crystal)."
+},
+{
+"id": "constructs-and-automatons-clockwork-sentinel",
+"name": "Clockwork Sentinel",
+"section": "Constructs and Automatons",
+"rank": "C",
+"tags": [
+"Construct",
+"Medium",
+"Earth"
+],
+"type": "Construct",
+"size": "Medium",
+"elements": "Earth",
+"attack": 10,
+"defense": 10,
+"damage": 6,
+"move": 1,
+"bdt": 6,
+"mana": 12,
+"mt": 5,
+"health": {
+"b": 6,
+"l": 5,
+"a": 4
+},
+"abilities": [
+{
+"name": "Halberd (melee, Reach)",
+"text": "Slashing damage."
+},
+{
+"name": "Alarm",
+"text": "Every construct on the floor knows where intruders are."
+}
+],
+"trait": "Guards one door forever.",
+"found": "Vaults, the Gearworks.",
+"loot": "Gears, a C rank halberd."
+},
+{
+"id": "constructs-and-automatons-automaton-duelist",
+"name": "Automaton Duelist",
+"section": "Constructs and Automatons",
+"rank": "C",
+"tags": [
+"Construct",
+"Medium",
+"Air"
+],
+"type": "Construct",
+"size": "Medium",
+"elements": "Air",
+"attack": 10,
+"defense": 10,
+"damage": 6,
+"move": 1,
+"bdt": 6,
+"mana": 12,
+"mt": 5,
+"health": {
+"b": 6,
+"l": 5,
+"a": 4
+},
+"abilities": [
+{
+"name": "Rapier (melee)",
+"text": "Piercing damage; two attacks a turn."
+},
+{
+"name": "Learned Style",
+"text": "Copies the Combat Style of the last enemy that hit it, adding 1 die to its attacks."
+}
+],
+"trait": "Built for sport. Some have fought thousands of bouts.",
+"found": "Nite City arenas, noble estates.",
+"loot": "Duelist core (C rank)."
+},
+{
+"id": "constructs-and-automatons-stone-golem",
+"name": "Stone Golem",
+"section": "Constructs and Automatons",
+"rank": "C",
+"tags": [
+"Construct",
+"Large (2x2)",
+"Earth"
+],
+"type": "Construct",
+"size": "Large (2x2)",
+"elements": "Earth",
+"attack": 10,
+"defense": 10,
+"damage": 6,
+"move": 1,
+"bdt": 7,
+"mana": 12,
+"mt": 5,
+"health": {
+"b": 8,
+"l": 7,
+"a": 6
+},
+"abilities": [
+{
+"name": "Stone Fist (melee)",
+"text": "Kinetic damage."
+},
+{
+"name": "Stoneskin",
+"text": "Casts the Earth Rank 5 spell on itself once per fight."
+}
+],
+"trait": "Slow and relentless. Movement 1.",
+"found": "Ruins, temples.",
+"loot": "Golem core (Mana Crystal)."
+},
+{
+"id": "constructs-and-automatons-iron-golem",
+"name": "Iron Golem",
+"section": "Constructs and Automatons",
+"rank": "B",
+"tags": [
+"Construct",
+"Large (2x2)",
+"Earth, Fire"
+],
+"type": "Construct",
+"size": "Large (2x2)",
+"elements": "Earth, Fire",
+"attack": 12,
+"defense": 12,
+"damage": 7,
+"move": 1,
+"bdt": 8,
+"mana": 15,
+"mt": 6,
+"health": {
+"b": 9,
+"l": 8,
+"a": 7
+},
+"abilities": [
+{
+"name": "Iron Fist (melee)",
+"text": "Kinetic damage; two attacks a turn."
+},
+{
+"name": "Furnace Vent",
+"text": "Every creature in adjacent zones takes burning damage equal to its Damage pool."
+}
+],
+"trait": "Immune to Poisoned and Chilled.",
+"found": "Dwarven halls, the Forge Depths.",
+"loot": "Iron golem core (Large Mana Crystal)."
+},
+{
+"id": "constructs-and-automatons-war-automaton",
+"name": "War Automaton",
+"section": "Constructs and Automatons",
+"rank": "B",
+"tags": [
+"Construct",
+"Huge (3x3)",
+"Fire, Earth"
+],
+"type": "Construct",
+"size": "Huge (3x3)",
+"elements": "Fire, Earth",
+"attack": 12,
+"defense": 12,
+"damage": 7,
+"move": 1,
+"bdt": 9,
+"mana": 15,
+"mt": 6,
+"health": {
+"b": 11,
+"l": 10,
+"a": 9
+},
+"abilities": [
+{
+"name": "Cannon Arm",
+"text": "Ranged, line of sight. Kinetic damage to the target zone and adjacent zones."
+},
+{
+"name": "Stomp (melee)",
+"text": "Kinetic damage and knocked Prone."
+}
+],
+"trait": "Built for the God Wars or the Kaiju lines. Some still wander with old orders.",
+"found": "Battlefields, the Old Rail Tunnels.",
+"loot": "War core (A rank implement part)."
+},
+{
+"id": "constructs-and-automatons-mana-construct",
+"name": "Mana Construct",
+"section": "Constructs and Automatons",
+"rank": "A",
+"tags": [
+"Construct",
+"Large (2x2)",
+"Varies"
+],
+"type": "Construct",
+"size": "Large (2x2)",
+"elements": "Varies",
+"attack": 14,
+"defense": 14,
+"damage": 8,
+"move": 1,
+"bdt": 9,
+"mana": 18,
+"mt": 7,
+"health": {
+"b": 10,
+"l": 9,
+"a": 8
+},
+"abilities": [
+{
+"name": "Spell Absorption",
+"text": "When a spell hits it, roll its Defense; each success cancels 1 damage and gives it 1 mana."
+},
+{
+"name": "Discharge",
+"text": "Spends stored mana to cast any single-school spell of rank 5 or lower that hit it this fight."
+}
+],
+"trait": "Built by the Mages Guild to test, and to punish, spellcasters.",
+"found": "Mages Guild vaults, the Arcane Laboratories.",
+"loot": "Construct heart (A rank artifact material)."
+},
+{
+"id": "undead-skeleton",
+"name": "Skeleton",
+"section": "Undead",
+"rank": "F",
+"tags": [
+"Undead",
+"Medium",
+"Shade"
+],
+"type": "Undead",
+"size": "Medium",
+"elements": "Shade",
+"attack": 4,
+"defense": 4,
+"damage": 3,
+"move": 1,
+"bdt": 3,
+"mana": 3,
+"mt": 2,
+"health": {
+"b": 3,
+"l": 2,
+"a": 1
+},
+"abilities": [
+{
+"name": "Rusty Blade (melee)",
+"text": "Slashing damage."
+}
+],
+"trait": "Takes half damage from piercing attacks, rounded down.",
+"found": "Catacombs, battlefields.",
+"loot": "Bones, rusty gear."
+},
+{
+"id": "undead-zombie",
+"name": "Zombie",
+"section": "Undead",
+"rank": "F",
+"tags": [
+"Undead",
+"Medium",
+"Shade"
+],
+"type": "Undead",
+"size": "Medium",
+"elements": "Shade",
+"attack": 4,
+"defense": 4,
+"damage": 3,
+"move": 1,
+"bdt": 3,
+"mana": 3,
+"mt": 2,
+"health": {
+"b": 3,
+"l": 2,
+"a": 1
+},
+"abilities": [
+{
+"name": "Grab and Bite (melee)",
+"text": "Piercing damage, and the target is Rooted until it beats the zombie's attack with Strength + Athletics."
+}
+],
+"trait": "Keeps coming. Stands back up once unless its head is destroyed.",
+"found": "Graveyards, plague towns.",
+"loot": "None worth keeping."
+},
+{
+"id": "undead-ghoul",
+"name": "Ghoul",
+"section": "Undead",
+"rank": "E",
+"tags": [
+"Undead",
+"Medium",
+"Shade"
+],
+"type": "Undead",
+"size": "Medium",
+"elements": "Shade",
+"attack": 6,
+"defense": 6,
+"damage": 4,
+"move": 2,
+"bdt": 4,
+"mana": 6,
+"mt": 3,
+"health": {
+"b": 4,
+"l": 3,
+"a": 2
+},
+"abilities": [
+{
+"name": "Claws (melee)",
+"text": "Slashing damage; the target resists with Fortitude + Endurance or loses its next action to paralysis."
+}
+],
+"trait": "Eats the dead. Fast and clever.",
+"found": "Catacombs, old battlefields.",
+"loot": "Ghoul nails (alchemy)."
+},
+{
+"id": "undead-ghost",
+"name": "Ghost",
+"section": "Undead",
+"rank": "D",
+"tags": [
+"Undead",
+"Medium",
+"Shade"
+],
+"type": "Undead",
+"size": "Medium",
+"elements": "Shade",
+"attack": 8,
+"defense": 8,
+"damage": 5,
+"move": 1,
+"bdt": 5,
+"mana": 9,
+"mt": 4,
+"health": {
+"b": 5,
+"l": 4,
+"a": 3
+},
+"abilities": [
+{
+"name": "Chilling Touch (melee)",
+"text": "Cold damage; ignores Armor."
+},
+{
+"name": "Haunt",
+"text": "Forces a Sanity roll on everyone who sees it for the first time."
+}
+],
+"trait": "Incorporeal: nothing physical touches it except magic, silver, and Bright-imbued weapons (Chapter 8).",
+"found": "Haunted houses, Funayurei waters, the Catacombs.",
+"loot": "Ectoplasm (alchemy)."
+},
+{
+"id": "undead-wraith",
+"name": "Wraith",
+"section": "Undead",
+"rank": "C",
+"tags": [
+"Undead",
+"Medium",
+"Shade"
+],
+"type": "Undead",
+"size": "Medium",
+"elements": "Shade",
+"attack": 10,
+"defense": 10,
+"damage": 6,
+"move": 1,
+"bdt": 6,
+"mana": 12,
+"mt": 5,
+"health": {
+"b": 6,
+"l": 5,
+"a": 4
+},
+"abilities": [
+{
+"name": "Mana Drain",
+"text": "Casts Mass Drain (Shade Rank 5) once per scene."
+},
+{
+"name": "Soul Touch (melee)",
+"text": "Cold damage; ignores Armor."
+}
+],
+"trait": "Incorporeal. Feeds on mana.",
+"found": "Ruins, the Thinning Halls.",
+"loot": "Wraith essence (B rank Shade focus material)."
+},
+{
+"id": "undead-dullahan",
+"name": "Dullahan",
+"section": "Undead",
+"rank": "B",
+"tags": [
+"Undead",
+"Large (2x2)",
+"Shade"
+],
+"type": "Undead",
+"size": "Large (2x2)",
+"elements": "Shade",
+"attack": 12,
+"defense": 12,
+"damage": 7,
+"move": 1,
+"bdt": 8,
+"mana": 15,
+"mt": 6,
+"health": {
+"b": 9,
+"l": 8,
+"a": 7
+},
+"abilities": [
+{
+"name": "Headless Charge",
+"text": "Rides 3 zones and attacks. Slashing damage."
+},
+{
+"name": "Wail",
+"text": "Everyone who hears it makes a Sanity roll."
+}
+],
+"trait": "A headless knight on a headless horse. It carries its head and sees through its eyes.",
+"found": "The Shaded Isles, haunted roads.",
+"loot": "Black armor (B rank)."
+},
+{
+"id": "undead-death-knight",
+"name": "Death Knight",
+"section": "Undead",
+"rank": "A",
+"tags": [
+"Undead",
+"Medium",
+"Shade"
+],
+"type": "Undead",
+"size": "Medium",
+"elements": "Shade",
+"attack": 14,
+"defense": 14,
+"damage": 8,
+"move": 1,
+"bdt": 8,
+"mana": 18,
+"mt": 7,
+"health": {
+"b": 8,
+"l": 7,
+"a": 6
+},
+"abilities": [
+{
+"name": "Cursed Sword (melee)",
+"text": "Slashing damage; two attacks a turn."
+},
+{
+"name": "Shadowflame",
+"text": "Casts Shadowflame (Fire + Shade)."
+},
+{
+"name": "Command Dead",
+"text": "Undead in sight add 2 dice to attacks."
+}
+],
+"trait": "A fallen knight raised with its skill intact.",
+"found": "Fallen castles, the Silent Necropolis.",
+"loot": "A rank sword, often cursed."
+},
+{
+"id": "undead-vampire",
+"name": "Vampire",
+"section": "Undead",
+"rank": "C",
+"tags": [
+"Undead (Vampire)",
+"Medium",
+"Shade"
+],
+"type": "Undead (Vampire)",
+"size": "Medium",
+"elements": "Shade",
+"attack": 10,
+"defense": 10,
+"damage": 6,
+"move": 1,
+"bdt": 6,
+"mana": 12,
+"mt": 5,
+"health": {
+"b": 6,
+"l": 5,
+"a": 4
+},
+"abilities": [
+{
+"name": "Bite (melee)",
+"text": "Piercing damage; on a hit it drinks, gaining 1 mana and neutralizing 1 Bashing."
+},
+{
+"name": "Blood Bolt",
+"text": "Casts the Blood Sorcery Rank 3 power (Chapter 8)."
+},
+{
+"name": "Blur",
+"text": "Casts the Celerity Rank 2 power."
+}
+],
+"trait": "Vampires are a heritage (Chapter 8), and most are citizens like anyone else. This entry is for the ones who hunt. Each has a Compulsion tied to one of its scales.",
+"found": "Cities at night, old manors, the Shaded Isles.",
+"loot": "Whatever its victims carried."
+},
+{
+"id": "undead-vampire-lord",
+"name": "Vampire Lord",
+"section": "Undead",
+"rank": "A",
+"tags": [
+"Undead (Vampire)",
+"Medium",
+"Shade"
+],
+"type": "Undead (Vampire)",
+"size": "Medium",
+"elements": "Shade",
+"attack": 14,
+"defense": 14,
+"damage": 8,
+"move": 1,
+"bdt": 8,
+"mana": 18,
+"mt": 7,
+"health": {
+"b": 8,
+"l": 7,
+"a": 6
+},
+"abilities": [
+{
+"name": "Hemorrhage",
+"text": "Casts the Blood Sorcery Rank 6 power."
+},
+{
+"name": "Command",
+"text": "A Dominion power: one target in sight resists with Wisdom + Composure or obeys a simple order on its turn."
+},
+{
+"name": "Second Strike",
+"text": "Casts the Celerity Rank 4 power; two attacks a turn."
+}
+],
+"trait": "An old vampire with a house of lesser vampires and human servants. Rarely fights its own battles until it has to.",
+"found": "Noble manors, the Shaded Isles.",
+"loot": "An A rank heirloom, a house's secrets."
+},
+{
+"id": "undead-vampire-queen",
+"name": "Vampire Queen",
+"section": "Undead",
+"rank": "S",
+"tags": [
+"Undead (Vampire)",
+"Medium",
+"Shade, Water"
+],
+"type": "Undead (Vampire)",
+"size": "Medium",
+"elements": "Shade, Water",
+"attack": 16,
+"defense": 16,
+"damage": 9,
+"move": 1,
+"bdt": 9,
+"mana": 21,
+"mt": 8,
+"health": {
+"b": 9,
+"l": 8,
+"a": 7
+},
+"abilities": [
+{
+"name": "Crimson Tide",
+"text": "Casts the Blood Sorcery Rank 7 power."
+},
+{
+"name": "Exsanguinate",
+"text": "Casts the Blood Sorcery Rank 7 power on one target."
+},
+{
+"name": "Dominion of the Court",
+"text": "Every vampire in sight adds 2 dice to every roll, and every enemy resists with Wisdom + Composure or loses its next action."
+},
+{
+"name": "Undying",
+"text": "Neutralizes 2 Bashing and 1 Lethal each Upkeep while she has mana."
+}
+],
+"trait": "The ruler of a vampire court, often centuries old. Her compulsion is the only weakness most of her enemies ever find.",
+"found": "The deepest courts of the Shaded Isles.",
+"loot": "An S rank artifact and a court's worth of debts."
+},
+{
+"id": "undead-lich",
+"name": "Lich",
+"section": "Undead",
+"rank": "S",
+"tags": [
+"Undead",
+"Medium",
+"Shade, Water"
+],
+"type": "Undead",
+"size": "Medium",
+"elements": "Shade, Water",
+"attack": 16,
+"defense": 16,
+"damage": 9,
+"move": 1,
+"bdt": 9,
+"mana": 21,
+"mt": 8,
+"health": {
+"b": 9,
+"l": 8,
+"a": 7
+},
+"abilities": [
+{
+"name": "Black Pulse",
+"text": "Casts the Shade Rank 6 spell."
+},
+{
+"name": "Animate Dead",
+"text": "Casts the Shade Rank 5 spell."
+},
+{
+"name": "Black Blizzard",
+"text": "Casts Black Blizzard (Fire + Water + Air + Shade) once per scene."
+}
+],
+"trait": "Its soul is bound to a phylactery. Destroy the phylactery or it returns in a month.",
+"found": "Hidden towers, the deepest catacombs.",
+"loot": "Phylactery, spellbooks, S rank focus."
+},
+{
+"id": "undead-bone-dragon",
+"name": "Bone Dragon",
+"section": "Undead",
+"rank": "S",
+"tags": [
+"Undead",
+"Huge (3x3)",
+"Shade"
+],
+"type": "Undead",
+"size": "Huge (3x3)",
+"elements": "Shade",
+"attack": 16,
+"defense": 16,
+"damage": 9,
+"move": 3,
+"bdt": 11,
+"mana": 21,
+"mt": 8,
+"health": {
+"b": 13,
+"l": 12,
+"a": 11
+},
+"abilities": [
+{
+"name": "Deathbreath",
+"text": "Ranged, a cone 3 zones long. Cold damage and everyone hit makes a Sanity roll."
+},
+{
+"name": "Claws and Tail",
+"text": "Two melee attacks a turn; slashing damage."
+}
+],
+"trait": "A dragon raised by a lich. Flies at double movement, if its wings still hold.",
+"found": "Dragon graveyards, a lich's lair.",
+"loot": "Dragon bone (S rank weapon material)."
+},
+{
+"id": "dragons-fire-drake",
+"name": "Fire Drake",
+"section": "Dragons",
+"rank": "C",
+"tags": [
+"Dragon",
+"Large (2x2)",
+"Fire"
+],
+"type": "Dragon",
+"size": "Large (2x2)",
+"elements": "Fire",
+"attack": 10,
+"defense": 10,
+"damage": 6,
+"move": 2,
+"bdt": 7,
+"mana": 12,
+"mt": 5,
+"health": {
+"b": 8,
+"l": 7,
+"a": 6
+},
+"abilities": [
+{
+"name": "Fire Breath",
+"text": "Casts the Fire Rank 3 spell."
+},
+{
+"name": "Bite (melee)",
+"text": "Piercing damage."
+}
+],
+"trait": "Wingless and quick. Immune to Burning.",
+"found": "Volcanic Fields, Red Wyrm foothills.",
+"loot": "Drake scales (C rank armor)."
+},
+{
+"id": "dragons-frost-drake",
+"name": "Frost Drake",
+"section": "Dragons",
+"rank": "C",
+"tags": [
+"Dragon",
+"Large (2x2)",
+"Water, Air"
+],
+"type": "Dragon",
+"size": "Large (2x2)",
+"elements": "Water, Air",
+"attack": 10,
+"defense": 10,
+"damage": 6,
+"move": 2,
+"bdt": 7,
+"mana": 12,
+"mt": 5,
+"health": {
+"b": 8,
+"l": 7,
+"a": 6
+},
+"abilities": [
+{
+"name": "Frost Breath",
+"text": "Casts Frost Lance (Water Rank 3) as a cone 2 zones long; everyone hit is Chilled."
+},
+{
+"name": "Bite (melee)",
+"text": "Piercing damage."
+}
+],
+"trait": "Wingless and sure-footed on ice. Immune to Chilled.",
+"found": "Snowfields, northern mountains, frozen caves.",
+"loot": "Drake scales (C rank armor)."
+},
+{
+"id": "dragons-wyvern",
+"name": "Wyvern",
+"section": "Dragons",
+"rank": "C",
+"tags": [
+"Dragon",
+"Large (2x2)",
+"Air, Nature"
+],
+"type": "Dragon",
+"size": "Large (2x2)",
+"elements": "Air, Nature",
+"attack": 10,
+"defense": 10,
+"damage": 6,
+"move": 4,
+"bdt": 7,
+"mana": 12,
+"mt": 5,
+"health": {
+"b": 8,
+"l": 7,
+"a": 6
+},
+"abilities": [
+{
+"name": "Tail Stinger",
+"text": "Piercing damage and the Poisoned condition."
+},
+{
+"name": "Dive",
+"text": "Moves 4 zones and attacks with +2 dice."
+}
+],
+"trait": "Two legs, two wings, a bad temper. Flies at double movement.",
+"found": "Cliffs and peaks everywhere.",
+"loot": "Wyvern venom, hide."
+},
+{
+"id": "dragons-earth-dragon",
+"name": "Earth Dragon",
+"section": "Dragons",
+"rank": "B",
+"tags": [
+"Dragon",
+"Huge (3x3)",
+"Earth"
+],
+"type": "Dragon",
+"size": "Huge (3x3)",
+"elements": "Earth",
+"attack": 12,
+"defense": 12,
+"damage": 7,
+"move": 1,
+"bdt": 9,
+"mana": 15,
+"mt": 6,
+"health": {
+"b": 11,
+"l": 10,
+"a": 9
+},
+"abilities": [
+{
+"name": "Burrow",
+"text": "Moves through earth and stone as if it were air, 2 zones per turn, and bursts out under a target with +3 dice."
+},
+{
+"name": "Crushing Bite (melee)",
+"text": "Crushing damage."
+},
+{
+"name": "Rock Barrage",
+"text": "Casts the Earth Rank 2 spell at everyone in adjacent zones."
+}
+],
+"trait": "Wingless, enormous, and found in deep valleys where they lie still for years. Gives off tremors before it attacks.",
+"found": "Earth Dragon valleys of the Central Continent.",
+"loot": "Earth dragon scale (A rank armor material)."
+},
+{
+"id": "dragons-red-wyrm",
+"name": "Red Wyrm",
+"section": "Dragons",
+"rank": "A",
+"tags": [
+"Dragon",
+"Large (2x2)",
+"Fire, Air"
+],
+"type": "Dragon",
+"size": "Large (2x2)",
+"elements": "Fire, Air",
+"attack": 14,
+"defense": 14,
+"damage": 8,
+"move": 4,
+"bdt": 9,
+"mana": 18,
+"mt": 7,
+"health": {
+"b": 10,
+"l": 9,
+"a": 8
+},
+"abilities": [
+{
+"name": "Flame Breath",
+"text": "Casts Rain of Fire (Fire Rank 6)."
+},
+{
+"name": "Claws (melee)",
+"text": "Slashing damage; two attacks a turn."
+},
+{
+"name": "Flock",
+"text": "Red Wyrms hunt in groups; each adjacent wyrm adds 1 die to the others' attacks."
+}
+],
+"trait": "Flies at double movement. The Red Wyrm Mountains are home to hundreds, and the passes are only safe in large caravans.",
+"found": "The Red Wyrm Mountains.",
+"loot": "Red wyrm scale (A rank), wyrm heart (S rank alchemy)."
+},
+{
+"id": "dragons-blue-wyrm",
+"name": "Blue Wyrm",
+"section": "Dragons",
+"rank": "A",
+"tags": [
+"Dragon",
+"Large (2x2)",
+"Water, Air"
+],
+"type": "Dragon",
+"size": "Large (2x2)",
+"elements": "Water, Air",
+"attack": 14,
+"defense": 14,
+"damage": 8,
+"move": 4,
+"bdt": 9,
+"mana": 18,
+"mt": 7,
+"health": {
+"b": 10,
+"l": 9,
+"a": 8
+},
+"abilities": [
+{
+"name": "Frost Breath",
+"text": "Casts Blizzard (Water Rank 6)."
+},
+{
+"name": "Tail Lash (melee)",
+"text": "Kinetic damage, knocked back 2 zones."
+}
+],
+"trait": "Swims as well as it flies. Lives on cold coasts and sea cliffs.",
+"found": "Northern coasts, the Ringus Sea.",
+"loot": "Blue scale (A rank), frost gland."
+},
+{
+"id": "dragons-storm-wyrm",
+"name": "Storm Wyrm",
+"section": "Dragons",
+"rank": "A",
+"tags": [
+"Dragon",
+"Large (2x2)",
+"Air, Fire"
+],
+"type": "Dragon",
+"size": "Large (2x2)",
+"elements": "Air, Fire",
+"attack": 14,
+"defense": 14,
+"damage": 8,
+"move": 4,
+"bdt": 9,
+"mana": 18,
+"mt": 7,
+"health": {
+"b": 10,
+"l": 9,
+"a": 8
+},
+"abilities": [
+{
+"name": "Lightning Breath",
+"text": "Casts Plasma (Fire + Air) as a line 4 zones long."
+},
+{
+"name": "Wing Gale",
+"text": "Casts Shearing Gale (Air Rank 5)."
+}
+],
+"trait": "Rides the edge of thunderstorms.",
+"found": "High peaks, storm seas.",
+"loot": "Storm scale (A rank)."
+},
+{
+"id": "dragons-dark-dragon",
+"name": "Dark Dragon",
+"section": "Dragons",
+"rank": "S",
+"tags": [
+"Dragon",
+"Huge (3x3)",
+"Shade, Fire"
+],
+"type": "Dragon",
+"size": "Huge (3x3)",
+"elements": "Shade, Fire",
+"attack": 16,
+"defense": 16,
+"damage": 9,
+"move": 4,
+"bdt": 11,
+"mana": 21,
+"mt": 8,
+"health": {
+"b": 13,
+"l": 12,
+"a": 11
+},
+"abilities": [
+{
+"name": "Shadowflame Breath",
+"text": "Casts Convergent Flame (Fire + Bright + Shade) as darkfire, or Shadowflame (Fire + Shade) as a cone."
+},
+{
+"name": "Claws (melee)",
+"text": "Slashing damage; two attacks a turn."
+},
+{
+"name": "Dread Aura",
+"text": "Enemies within 2 zones make a Sanity roll at the start of the fight."
+}
+],
+"trait": "A dark dragon is often seen flying over Gaslow, Atoferatofe's domain. Whether it serves her or simply likes the bog is a matter of debate.",
+"found": "Gaslow, the eastern Demon Continent.",
+"loot": "Dark scale (S rank)."
+},
+{
+"id": "dragons-elder-dragon",
+"name": "Elder Dragon",
+"section": "Dragons",
+"rank": "S",
+"tags": [
+"Dragon",
+"Huge (3x3)",
+"Any two"
+],
+"type": "Dragon",
+"size": "Huge (3x3)",
+"elements": "Any two",
+"attack": 16,
+"defense": 16,
+"damage": 9,
+"move": 4,
+"bdt": 11,
+"mana": 21,
+"mt": 8,
+"health": {
+"b": 13,
+"l": 12,
+"a": 11
+},
+"abilities": [
+{
+"name": "Breath",
+"text": "Casts any rank 7 spell of either of its elements."
+},
+{
+"name": "Claws, Wings, Tail",
+"text": "Three attacks a turn: slashing, kinetic, kinetic."
+},
+{
+"name": "Scales",
+"text": "Takes half damage from spells, rounded down."
+}
+],
+"trait": "Old, clever, and greedy. Most can speak and some will bargain.",
+"found": "Remote mountains and islands.",
+"loot": "A hoard. Scales worth a fortune."
+},
+{
+"id": "dragons-ancient-dragon",
+"name": "Ancient Dragon",
+"section": "Dragons",
+"rank": "SS",
+"tags": [
+"Dragon (sentient)",
+"Gargantuan (4x4)",
+"Any three"
+],
+"type": "Dragon (sentient)",
+"size": "Gargantuan (4x4)",
+"elements": "Any three",
+"attack": 20,
+"defense": 20,
+"damage": 12,
+"move": 5,
+"bdt": 15,
+"mana": 30,
+"mt": 12,
+"health": {
+"b": 18,
+"l": 17,
+"a": 16
+},
+"abilities": [
+{
+"name": "Sovereign Breath",
+"text": "Casts a five-school combination spell made of its elements, such as Primordial Storm."
+},
+{
+"name": "Claws, Wings, Tail, Bite",
+"text": "Four attacks a turn."
+},
+{
+"name": "Ancient Scales",
+"text": "Takes half damage from spells, rounded down."
+}
+],
+"trait": "Ancient Dragons are not beasts. They are people with their own goals, kingdoms, and grudges, as old as nations. Fighting one is a story arc, not an encounter. Vaelthrax, the Slime King's companion, is the most famous.",
+"found": "Wherever they choose.",
+"loot": "Whatever they allow you to take."
+},
+{
+"id": "sea-and-freshwater-grindylow",
+"name": "Grindylow",
+"section": "Sea and Freshwater",
+"rank": "E",
+"tags": [
+"Aquatic",
+"Small",
+"Water"
+],
+"type": "Aquatic",
+"size": "Small",
+"elements": "Water",
+"attack": 6,
+"defense": 6,
+"damage": 4,
+"move": 1,
+"bdt": 4,
+"mana": 6,
+"mt": 3,
+"health": {
+"b": 4,
+"l": 3,
+"a": 2
+},
+"abilities": [
+{
+"name": "Grasping Fingers (melee)",
+"text": "Kinetic damage; the target is pulled one zone deeper into the water."
+}
+],
+"trait": "Pale lake goblins with long, strong fingers. They drag swimmers down in groups.",
+"found": "Lakes, ponds, the Flooded Caverns.",
+"loot": "None."
+},
+{
+"id": "sea-and-freshwater-kappa",
+"name": "Kappa",
+"section": "Sea and Freshwater",
+"rank": "D",
+"tags": [
+"Aquatic",
+"Medium",
+"Water"
+],
+"type": "Aquatic",
+"size": "Medium",
+"elements": "Water",
+"attack": 8,
+"defense": 8,
+"damage": 5,
+"move": 1,
+"bdt": 5,
+"mana": 9,
+"mt": 4,
+"health": {
+"b": 5,
+"l": 4,
+"a": 3
+},
+"abilities": [
+{
+"name": "Sumo Grapple (melee)",
+"text": "Kinetic damage and the target is knocked Prone."
+},
+{
+"name": "Water Jet",
+"text": "Casts the Water Rank 2 spell."
+}
+],
+"trait": "Turtle-shelled river folk with a water-filled dish on their heads. Bowing politely makes them bow back, spilling the water: they lose all their dice until they refill it. They love cucumbers and keep their promises.",
+"found": "Rivers and ponds of the eastern isles.",
+"loot": "Kappa medicine (heals as Basic healing, PHP 2)."
+},
+{
+"id": "sea-and-freshwater-funayurei",
+"name": "Funayurei",
+"section": "Sea and Freshwater",
+"rank": "D",
+"tags": [
+"Undead, Aquatic",
+"Medium",
+"Water, Shade"
+],
+"type": "Undead, Aquatic",
+"size": "Medium",
+"elements": "Water, Shade",
+"attack": 8,
+"defense": 8,
+"damage": 5,
+"move": 1,
+"bdt": 5,
+"mana": 9,
+"mt": 4,
+"health": {
+"b": 5,
+"l": 4,
+"a": 3
+},
+"abilities": [
+{
+"name": "Ladle",
+"text": "Fills a boat with water: each use, the boat takes kinetic damage to its Hull."
+},
+{
+"name": "Drowning Grip (melee)",
+"text": "Cold damage; ignores Armor."
+}
+],
+"trait": "Ghosts of drowned sailors. Giving them a ladle with no bottom keeps them busy until dawn.",
+"found": "Foggy seas at night.",
+"loot": "Ectoplasm."
+},
+{
+"id": "sea-and-freshwater-deep-raider",
+"name": "Deep Raider",
+"section": "Sea and Freshwater",
+"rank": "D",
+"tags": [
+"Aquatic",
+"Medium",
+"Water"
+],
+"type": "Aquatic",
+"size": "Medium",
+"elements": "Water",
+"attack": 8,
+"defense": 8,
+"damage": 5,
+"move": 1,
+"bdt": 5,
+"mana": 9,
+"mt": 4,
+"health": {
+"b": 5,
+"l": 4,
+"a": 3
+},
+"abilities": [
+{
+"name": "Trident (melee)",
+"text": "Piercing damage."
+},
+{
+"name": "Ink Cloud",
+"text": "Casts Mist (Fire + Water) as an ink cloud underwater."
+}
+],
+"trait": "Fish-headed raiders from the dark water. Not to be confused with Fishfolk citizens (Chapter 8), who resent the comparison.",
+"found": "Reefs, sunken ships.",
+"loot": "Pearls, coral knives."
+},
+{
+"id": "sea-and-freshwater-giant-crab",
+"name": "Giant Crab",
+"section": "Sea and Freshwater",
+"rank": "D",
+"tags": [
+"Aquatic",
+"Large (2x2)",
+"Water, Earth"
+],
+"type": "Aquatic",
+"size": "Large (2x2)",
+"elements": "Water, Earth",
+"attack": 8,
+"defense": 8,
+"damage": 5,
+"move": 1,
+"bdt": 6,
+"mana": 9,
+"mt": 4,
+"health": {
+"b": 7,
+"l": 6,
+"a": 5
+},
+"abilities": [
+{
+"name": "Pincers (melee)",
+"text": "Crushing damage; the target is Rooted until it breaks free."
+}
+],
+"trait": "Its shell gives +2 BDT against attacks from the front.",
+"found": "Beaches and tidepools.",
+"loot": "Crab meat, shell (D rank shield material)."
+},
+{
+"id": "sea-and-freshwater-kelpie",
+"name": "Kelpie",
+"section": "Sea and Freshwater",
+"rank": "C",
+"tags": [
+"Aquatic",
+"Large (2x2)",
+"Water"
+],
+"type": "Aquatic",
+"size": "Large (2x2)",
+"elements": "Water",
+"attack": 10,
+"defense": 10,
+"damage": 6,
+"move": 3,
+"bdt": 7,
+"mana": 12,
+"mt": 5,
+"health": {
+"b": 8,
+"l": 7,
+"a": 6
+},
+"abilities": [
+{
+"name": "Enchanting Mane",
+"text": "Anyone who touches it is stuck fast and is dragged into deep water on its next turn."
+},
+{
+"name": "Water Jet",
+"text": "Casts the Water Rank 2 spell."
+},
+{
+"name": "Hooves (melee)",
+"text": "Kinetic damage."
+}
+],
+"trait": "A water horse that looks like a lost pony. A bridle made with its true name tames it.",
+"found": "Lochs, rivers, lakes.",
+"loot": "Kelpie hair (C rank focus material: Water)."
+},
+{
+"id": "sea-and-freshwater-siren",
+"name": "Siren",
+"section": "Sea and Freshwater",
+"rank": "C",
+"tags": [
+"Aquatic",
+"Medium",
+"Water, Air"
+],
+"type": "Aquatic",
+"size": "Medium",
+"elements": "Water, Air",
+"attack": 10,
+"defense": 10,
+"damage": 6,
+"move": 1,
+"bdt": 6,
+"mana": 12,
+"mt": 5,
+"health": {
+"b": 6,
+"l": 5,
+"a": 4
+},
+"abilities": [
+{
+"name": "Song",
+"text": "Everyone who hears it resists with Composure + Insight or must move one zone toward her on their turn."
+},
+{
+"name": "Claws (melee)",
+"text": "Slashing damage."
+}
+],
+"trait": "Covering your ears gives -2 dice to Awareness but immunity to the song.",
+"found": "Rocky coasts, the Tide Ruins.",
+"loot": "Siren scale."
+},
+{
+"id": "sea-and-freshwater-sea-serpent",
+"name": "Sea Serpent",
+"section": "Sea and Freshwater",
+"rank": "B",
+"tags": [
+"Aquatic",
+"Huge (3x3)",
+"Water"
+],
+"type": "Aquatic",
+"size": "Huge (3x3)",
+"elements": "Water",
+"attack": 12,
+"defense": 12,
+"damage": 7,
+"move": 1,
+"bdt": 9,
+"mana": 15,
+"mt": 6,
+"health": {
+"b": 11,
+"l": 10,
+"a": 9
+},
+"abilities": [
+{
+"name": "Coil (melee)",
+"text": "Crushing damage to a ship's Hull or a creature."
+},
+{
+"name": "Tidal Pull",
+"text": "Casts the Water Rank 5 spell."
+}
+],
+"trait": "Can wrap a corvette and drag it under.",
+"found": "Open seas.",
+"loot": "Serpent scales (B rank)."
+},
+{
+"id": "sea-and-freshwater-umibozu",
+"name": "Umibozu",
+"section": "Sea and Freshwater",
+"rank": "A",
+"tags": [
+"Aquatic, Spirit",
+"Huge (3x3)",
+"Water, Shade"
+],
+"type": "Aquatic, Spirit",
+"size": "Huge (3x3)",
+"elements": "Water, Shade",
+"attack": 14,
+"defense": 14,
+"damage": 8,
+"move": 1,
+"bdt": 10,
+"mana": 18,
+"mt": 7,
+"health": {
+"b": 12,
+"l": 11,
+"a": 10
+},
+"abilities": [
+{
+"name": "Rising Dark",
+"text": "Appears beside a ship in calm water; the crew makes a Sanity roll."
+},
+{
+"name": "Swamp the Deck",
+"text": "Casts Deluge (Water Rank 7) on a ship."
+},
+{
+"name": "Demand",
+"text": "Asks for a barrel. Giving it a barrel with no bottom ends the encounter."
+}
+],
+"trait": "A vast black shape with pale eyes that rises out of a calm sea. Rarely fought, often survived by good manners.",
+"found": "Calm seas at night.",
+"loot": "None."
+},
+{
+"id": "sea-and-freshwater-kraken",
+"name": "Kraken",
+"section": "Sea and Freshwater",
+"rank": "A",
+"tags": [
+"Aquatic",
+"Gargantuan (4x4)",
+"Water"
+],
+"type": "Aquatic",
+"size": "Gargantuan (4x4)",
+"elements": "Water",
+"attack": 14,
+"defense": 14,
+"damage": 8,
+"move": 1,
+"bdt": 11,
+"mana": 18,
+"mt": 7,
+"health": {
+"b": 14,
+"l": 13,
+"a": 12
+},
+"abilities": [
+{
+"name": "Tentacles",
+"text": "Four attacks a turn against creatures or a ship's Hull; crushing damage."
+},
+{
+"name": "Ink",
+"text": "Casts Mist (Fire + Water); everyone in it is blinded."
+}
+],
+"trait": "Each tentacle has its own boxes (a quarter of the total); cut one off and it loses an attack.",
+"found": "Deep ocean, the Coral Throne.",
+"loot": "Kraken ink (A rank alchemy)."
+},
+{
+"id": "sea-and-freshwater-leviathan",
+"name": "Leviathan",
+"section": "Sea and Freshwater",
+"rank": "SS",
+"tags": [
+"Sea Monster",
+"Gargantuan (4x4)",
+"Water"
+],
+"type": "Sea Monster",
+"size": "Gargantuan (4x4)",
+"elements": "Water",
+"attack": 20,
+"defense": 20,
+"damage": 12,
+"move": 1,
+"bdt": 15,
+"mana": 30,
+"mt": 12,
+"health": {
+"b": 18,
+"l": 17,
+"a": 16
+},
+"abilities": [
+{
+"name": "Drowned World",
+"text": "Casts Drowned World (Water + Air + Earth + Nature + Shade)."
+},
+{
+"name": "Swallow Ship",
+"text": "Swallows a ship up to frigate size."
+},
+{
+"name": "Whirlpool",
+"text": "Every ship within 6 zones is pulled 2 zones toward it each turn."
+}
+],
+"trait": "A creature from the oldest stories. It has been seen twice in recorded history.",
+"found": "The deepest ocean.",
+"loot": "Legend."
+},
+{
+"id": "fey-of-the-dreeming-and-the-seeming-pixie",
+"name": "Pixie",
+"section": "Fey of the Dreeming and the Seeming",
+"rank": "E",
+"tags": [
+"Fey (Dreeming)",
+"Tiny",
+"Air, Nature"
+],
+"type": "Fey (Dreeming)",
+"size": "Tiny",
+"elements": "Air, Nature",
+"attack": 6,
+"defense": 6,
+"damage": 4,
+"move": 3,
+"bdt": 4,
+"mana": 6,
+"mt": 3,
+"health": {
+"b": 4,
+"l": 3,
+"a": 2
+},
+"abilities": [
+{
+"name": "Pixie Dust",
+"text": "Casts Decrease Weight (Air + Bright + Shade) on an ally, or a prank: the target suffers -2 dice on its next roll."
+},
+{
+"name": "Glamour",
+"text": "Becomes invisible until it attacks."
+}
+],
+"trait": "Tiny, playful, and easily offended. Flies at double movement.",
+"found": "Flower meadows, the Dreeming.",
+"loot": "Pixie dust (alchemy)."
+},
+{
+"id": "fey-of-the-dreeming-and-the-seeming-will-o-wisp",
+"name": "Will-o'-Wisp",
+"section": "Fey of the Dreeming and the Seeming",
+"rank": "E",
+"tags": [
+"Fey (Dreeming)",
+"Tiny",
+"Bright"
+],
+"type": "Fey (Dreeming)",
+"size": "Tiny",
+"elements": "Bright",
+"attack": 6,
+"defense": 6,
+"damage": 4,
+"move": 2,
+"bdt": 4,
+"mana": 6,
+"mt": 3,
+"health": {
+"b": 4,
+"l": 3,
+"a": 2
+},
+"abilities": [
+{
+"name": "Lure",
+"text": "Anyone following it resists with Wisdom + Insight or follows it off the path."
+}
+],
+"trait": "Leads lost travelers somewhere, not always where they meant to go.",
+"found": "Bogs, foggy roads.",
+"loot": "Wisp light (Glow implement part)."
+},
+{
+"id": "fey-of-the-dreeming-and-the-seeming-dream-stag",
+"name": "Dream Stag",
+"section": "Fey of the Dreeming and the Seeming",
+"rank": "C",
+"tags": [
+"Fey (Dreeming)",
+"Large (2x2)",
+"Nature, Bright"
+],
+"type": "Fey (Dreeming)",
+"size": "Large (2x2)",
+"elements": "Nature, Bright",
+"attack": 10,
+"defense": 10,
+"damage": 6,
+"move": 3,
+"bdt": 7,
+"mana": 12,
+"mt": 5,
+"health": {
+"b": 8,
+"l": 7,
+"a": 6
+},
+"abilities": [
+{
+"name": "Antler Charge",
+"text": "Move 3 zones and attack; kinetic damage."
+},
+{
+"name": "Mending Bloom",
+"text": "Casts Mending Bloom (Nature + Bright) on a creature it trusts."
+}
+],
+"trait": "A white stag that appears to people who need a reason to keep going.",
+"found": "Old forests, the Dreeming.",
+"loot": "Never taken; it gives a blessing instead."
+},
+{
+"id": "fey-of-the-dreeming-and-the-seeming-kitsune-trickster",
+"name": "Kitsune Trickster",
+"section": "Fey of the Dreeming and the Seeming",
+"rank": "C",
+"tags": [
+"Fey (Dreeming)",
+"Medium",
+"Fire, Bright"
+],
+"type": "Fey (Dreeming)",
+"size": "Medium",
+"elements": "Fire, Bright",
+"attack": 10,
+"defense": 10,
+"damage": 6,
+"move": 1,
+"bdt": 6,
+"mana": 12,
+"mt": 5,
+"health": {
+"b": 6,
+"l": 5,
+"a": 4
+},
+"abilities": [
+{
+"name": "Foxfire",
+"text": "Casts Radiant Flame (Fire + Bright)."
+},
+{
+"name": "Illusion",
+"text": "Casts Mirror Mist (Water + Air + Bright + Shade) once per scene."
+}
+],
+"trait": "A fox spirit with more than one tail. Loves riddles, fried tofu, and embarrassing the proud.",
+"found": "Shrines, the eastern isles, the Dreeming.",
+"loot": "A tail-hair charm (C rank Fire focus)."
+},
+{
+"id": "fey-of-the-dreeming-and-the-seeming-nightmare-imp",
+"name": "Nightmare Imp",
+"section": "Fey of the Dreeming and the Seeming",
+"rank": "E",
+"tags": [
+"Fey (Seeming)",
+"Small",
+"Shade"
+],
+"type": "Fey (Seeming)",
+"size": "Small",
+"elements": "Shade",
+"attack": 6,
+"defense": 6,
+"damage": 4,
+"move": 2,
+"bdt": 4,
+"mana": 6,
+"mt": 3,
+"health": {
+"b": 4,
+"l": 3,
+"a": 2
+},
+"abilities": [
+{
+"name": "Nightmare Bite (melee)",
+"text": "Piercing damage; the target makes a Sanity roll."
+},
+{
+"name": "Vanish",
+"text": "Becomes invisible in darkness."
+}
+],
+"trait": "Rides sleepers' chests and feeds on their fear.",
+"found": "Bedrooms, the Seeming.",
+"loot": "Nightmare dust."
+},
+{
+"id": "fey-of-the-dreeming-and-the-seeming-redcap",
+"name": "Redcap",
+"section": "Fey of the Dreeming and the Seeming",
+"rank": "D",
+"tags": [
+"Fey (Seeming)",
+"Small",
+"Shade, Earth"
+],
+"type": "Fey (Seeming)",
+"size": "Small",
+"elements": "Shade, Earth",
+"attack": 8,
+"defense": 8,
+"damage": 5,
+"move": 1,
+"bdt": 5,
+"mana": 9,
+"mt": 4,
+"health": {
+"b": 5,
+"l": 4,
+"a": 3
+},
+"abilities": [
+{
+"name": "Pike (melee, Reach)",
+"text": "Piercing damage. Every hit reddens its cap and adds 1 die to its next attack."
+},
+{
+"name": "Iron Boots",
+"text": "Cannot be knocked Prone or moved."
+}
+],
+"trait": "Murderous goblin-like fey. Reading scripture aloud, or a cross of iron, makes it flee.",
+"found": "Ruined towers, the Seeming.",
+"loot": "Bloodied cap (cursed)."
+},
+{
+"id": "fey-of-the-dreeming-and-the-seeming-bogeyman",
+"name": "Bogeyman",
+"section": "Fey of the Dreeming and the Seeming",
+"rank": "B",
+"tags": [
+"Fey (Seeming)",
+"Medium",
+"Shade"
+],
+"type": "Fey (Seeming)",
+"size": "Medium",
+"elements": "Shade",
+"attack": 12,
+"defense": 12,
+"damage": 7,
+"move": 1,
+"bdt": 7,
+"mana": 15,
+"mt": 6,
+"health": {
+"b": 7,
+"l": 6,
+"a": 5
+},
+"abilities": [
+{
+"name": "From the Dark",
+"text": "Steps from any shadow to any other shadow in sight."
+},
+{
+"name": "Terror",
+"text": "Casts Fog of Dread (Shade Rank 3); everyone in it makes a Sanity roll."
+},
+{
+"name": "Claws (melee)",
+"text": "Slashing damage."
+}
+],
+"trait": "Made from every child's fear of the closet. Bright light hurts it: +2 dice to attacks against it in a lit zone.",
+"found": "Under beds, closets, the Seeming.",
+"loot": "None."
+},
+{
+"id": "fey-of-the-dreeming-and-the-seeming-hag-of-the-seeming",
+"name": "Hag of the Seeming",
+"section": "Fey of the Dreeming and the Seeming",
+"rank": "A",
+"tags": [
+"Fey (Seeming)",
+"Medium",
+"Shade, Nature"
+],
+"type": "Fey (Seeming)",
+"size": "Medium",
+"elements": "Shade, Nature",
+"attack": 14,
+"defense": 14,
+"damage": 8,
+"move": 1,
+"bdt": 8,
+"mana": 18,
+"mt": 7,
+"health": {
+"b": 8,
+"l": 7,
+"a": 6
+},
+"abilities": [
+{
+"name": "Curse",
+"text": "Casts Cursed Roots (Earth + Nature + Shade)."
+},
+{
+"name": "Bargain",
+"text": "Offers a deal; refusing costs nothing, accepting always costs more than it seems."
+},
+{
+"name": "Plague Fog",
+"text": "Casts Plague Fog (Water + Air + Nature + Shade) once per scene."
+}
+],
+"trait": "Hags trade in names, years, and memories.",
+"found": "Swamp cottages, crossroads, the Seeming.",
+"loot": "A bargained item, always cursed."
+},
+{
+"id": "the-void-voidling-mite",
+"name": "Voidling Mite",
+"section": "The Void",
+"rank": "E",
+"tags": [
+"Void, Swarm",
+"Large (2x2)",
+"Shade"
+],
+"type": "Void, Swarm",
+"size": "Large (2x2)",
+"elements": "Shade",
+"attack": 6,
+"defense": 6,
+"damage": 4,
+"move": 1,
+"bdt": 5,
+"mana": 6,
+"mt": 3,
+"health": {
+"b": 6,
+"l": 5,
+"a": 4
+},
+"abilities": [
+{
+"name": "Feed",
+"text": "Every creature in adjacent zones loses 1 mana; one with no mana takes cold damage instead."
+}
+],
+"trait": "A swarm of small, wrong shapes. Area attacks deal +2 damage to it.",
+"found": "Near Void openings, Nyxhollow.",
+"loot": "Void dust (dangerous alchemy)."
+},
+{
+"id": "the-void-voidling-stalker",
+"name": "Voidling Stalker",
+"section": "The Void",
+"rank": "C",
+"tags": [
+"Void",
+"Medium",
+"Shade"
+],
+"type": "Void",
+"size": "Medium",
+"elements": "Shade",
+"attack": 10,
+"defense": 10,
+"damage": 6,
+"move": 1,
+"bdt": 6,
+"mana": 12,
+"mt": 5,
+"health": {
+"b": 6,
+"l": 5,
+"a": 4
+},
+"abilities": [
+{
+"name": "Phase Strike",
+"text": "Teleports up to 3 zones and attacks; slashing damage that ignores Armor."
+},
+{
+"name": "Mana Hunger",
+"text": "Adds 2 dice to attacks against whoever has the most mana."
+}
+],
+"trait": "Seeing one for the first time forces a Sanity roll.",
+"found": "Void openings, the Thinning Halls.",
+"loot": "Void shard (A rank artifact material)."
+},
+{
+"id": "the-void-void-maw",
+"name": "Void Maw",
+"section": "The Void",
+"rank": "B",
+"tags": [
+"Void",
+"Large (2x2)",
+"Shade"
+],
+"type": "Void",
+"size": "Large (2x2)",
+"elements": "Shade",
+"attack": 12,
+"defense": 12,
+"damage": 7,
+"move": 1,
+"bdt": 8,
+"mana": 15,
+"mt": 6,
+"health": {
+"b": 9,
+"l": 8,
+"a": 7
+},
+"abilities": [
+{
+"name": "Devour (melee)",
+"text": "Piercing damage; the target loses mana equal to the damage boxes it marks."
+},
+{
+"name": "Pull",
+"text": "Every creature within 3 zones is pulled one zone toward it each Upkeep."
+}
+],
+"trait": "A mouth with nothing behind it.",
+"found": "Void openings.",
+"loot": "Void core."
+},
+{
+"id": "the-void-voidling-horror",
+"name": "Voidling Horror",
+"section": "The Void",
+"rank": "A",
+"tags": [
+"Void",
+"Huge (3x3)",
+"Shade"
+],
+"type": "Void",
+"size": "Huge (3x3)",
+"elements": "Shade",
+"attack": 14,
+"defense": 14,
+"damage": 8,
+"move": 1,
+"bdt": 10,
+"mana": 18,
+"mt": 7,
+"health": {
+"b": 12,
+"l": 11,
+"a": 10
+},
+"abilities": [
+{
+"name": "Unmake",
+"text": "Casts Soul Drain (Shade Rank 7)."
+},
+{
+"name": "Tendrils",
+"text": "Three attacks a turn; cold damage."
+},
+{
+"name": "Wrongness",
+"text": "Everyone in sight makes a Sanity roll each turn."
+}
+],
+"trait": "What comes through when a Void opening tears wide.",
+"found": "Major Void breaches.",
+"loot": "Void heart (S rank, cursed)."
+},
+{
+"id": "the-void-void-leviathan",
+"name": "Void Leviathan",
+"section": "The Void",
+"rank": "S",
+"tags": [
+"Void, Kaiju",
+"Gargantuan (4x4)",
+"Shade, Water"
+],
+"type": "Void, Kaiju",
+"size": "Gargantuan (4x4)",
+"elements": "Shade, Water",
+"attack": 16,
+"defense": 16,
+"damage": 9,
+"move": 1,
+"bdt": 12,
+"mana": 21,
+"mt": 8,
+"health": {
+"b": 15,
+"l": 14,
+"a": 13
+},
+"abilities": [
+{
+"name": "Black Tide",
+"text": "Casts Black Blizzard (Fire + Water + Air + Shade) as a wave."
+},
+{
+"name": "Swallow Mana",
+"text": "Every creature in sight loses mana equal to the Leviathan's rank each turn."
+}
+],
+"trait": "A Void creature large enough to swim between worlds.",
+"found": "The Outer Dark, deep Void breaches.",
+"loot": "Legend."
+},
+{
+"id": "the-void-void-kaiju",
+"name": "Void Kaiju",
+"section": "The Void",
+"rank": "S",
+"tags": [
+"Void, Kaiju",
+"Gargantuan (4x4)",
+"Shade, Water, Earth"
+],
+"type": "Void, Kaiju",
+"size": "Gargantuan (4x4)",
+"elements": "Shade, Water, Earth",
+"attack": 16,
+"defense": 16,
+"damage": 9,
+"move": 1,
+"bdt": 12,
+"mana": 21,
+"mt": 8,
+"health": {
+"b": 15,
+"l": 14,
+"a": 13
+},
+"abilities": [
+{
+"name": "Tidal Smash",
+"text": "Casts Monsoon (Water + Air + Earth + Nature)."
+},
+{
+"name": "Stomp and Crush",
+"text": "Two attacks a turn against everything in a 2x2 area; kinetic damage."
+},
+{
+"name": "Armored Hide",
+"text": "Takes half damage from anything without Armor or Magic Penetration."
+},
+{
+"name": "Wrongness",
+"text": "Everyone who sees it makes a Sanity roll."
+}
+],
+"trait": "The smallest of the Kaiju, and still an S rank threat. About once a year one breaks out of the Rift at the center of the Ringus Sea, and the HRC and the Titans meet it before it reaches a shore (Chapter 3).",
+"found": "The Rift in the Ringus Sea, other Void breaches.",
+"loot": "A Kaiju core: worth a King's Gold to the right buyer."
+},
+{
+"id": "the-void-giant-void-kaiju",
+"name": "Giant Void Kaiju",
+"section": "The Void",
+"rank": "SSS",
+"tags": [
+"Void, Kaiju",
+"Colossal (5x5)",
+"Shade, any"
+],
+"type": "Void, Kaiju",
+"size": "Colossal (5x5)",
+"elements": "Shade, any",
+"attack": 25,
+"defense": 25,
+"damage": 15,
+"move": 1,
+"bdt": 19,
+"mana": 45,
+"mt": 15,
+"health": {
+"b": 23,
+"l": 22,
+"a": 21
+},
+"abilities": [
+{
+"name": "Nightfall",
+"text": "Casts Nightfall (Fire + Water + Air + Earth + Nature + Shade)."
+},
+{
+"name": "Crush",
+"text": "Four attacks a turn against everything in a 5x5 area."
+},
+{
+"name": "Wrongness",
+"text": "Everyone within sight makes a Sanity roll every turn, at -2 dice."
+},
+{
+"name": "Endless",
+"text": "Takes half damage from everything that is not a combination spell or an S rank weapon."
+}
+],
+"trait": "The worst thing the Void has ever sent. Nations, the HRC, and the Titans together have stopped one only twice.",
+"found": "Catastrophic Void breaches.",
+"loot": "A continent's worth of salvage, if anything survives."
+},
+{
+"id": "people-bandit",
+"name": "Bandit",
+"section": "People",
+"rank": "F",
+"tags": [
+"Person",
+"Medium",
+"None"
+],
+"type": "Person",
+"size": "Medium",
+"elements": "None",
+"attack": 4,
+"defense": 4,
+"damage": 3,
+"move": 1,
+"bdt": 3,
+"mana": 3,
+"mt": 2,
+"health": {
+"b": 3,
+"l": 2,
+"a": 1
+},
+"abilities": [
+{
+"name": "Short Sword (melee)",
+"text": "Slashing damage."
+},
+{
+"name": "Crossbow",
+"text": "Ranged, line of sight. Piercing damage, Reload (1)."
+}
+],
+"trait": "Runs when half the gang is down.",
+"found": "Roads, Breakwater alleys.",
+"loot": "A few coins."
+},
+{
+"id": "people-thug",
+"name": "Thug",
+"section": "People",
+"rank": "E",
+"tags": [
+"Person",
+"Medium",
+"None"
+],
+"type": "Person",
+"size": "Medium",
+"elements": "None",
+"attack": 6,
+"defense": 6,
+"damage": 4,
+"move": 1,
+"bdt": 4,
+"mana": 6,
+"mt": 3,
+"health": {
+"b": 4,
+"l": 3,
+"a": 2
+},
+"abilities": [
+{
+"name": "Club (melee)",
+"text": "Kinetic damage."
+},
+{
+"name": "Gang Up",
+"text": "+2 dice when another thug is adjacent to the target."
+}
+],
+"trait": "Usually works for someone worse.",
+"found": "Nite City back streets.",
+"loot": "Coins, a debt ledger."
+},
+{
+"id": "people-city-guard",
+"name": "City Guard",
+"section": "People",
+"rank": "D",
+"tags": [
+"Person",
+"Medium",
+"None"
+],
+"type": "Person",
+"size": "Medium",
+"elements": "None",
+"attack": 8,
+"defense": 8,
+"damage": 5,
+"move": 1,
+"bdt": 5,
+"mana": 9,
+"mt": 4,
+"health": {
+"b": 5,
+"l": 4,
+"a": 3
+},
+"abilities": [
+{
+"name": "Spear (melee, Reach)",
+"text": "Piercing damage."
+},
+{
+"name": "Whistle",
+"text": "Calls 1d10 more guards over the next 3 turns."
+}
+],
+"trait": "Would rather arrest you than kill you.",
+"found": "Every city.",
+"loot": "D rank spear, a badge."
+},
+{
+"id": "people-mercenary",
+"name": "Mercenary",
+"section": "People",
+"rank": "D",
+"tags": [
+"Person",
+"Medium",
+"None"
+],
+"type": "Person",
+"size": "Medium",
+"elements": "None",
+"attack": 8,
+"defense": 8,
+"damage": 5,
+"move": 1,
+"bdt": 5,
+"mana": 9,
+"mt": 4,
+"health": {
+"b": 5,
+"l": 4,
+"a": 3
+},
+"abilities": [
+{
+"name": "Weapon (melee or ranged)",
+"text": "Damage by weapon type."
+},
+{
+"name": "Professional",
+"text": "Retreats if the pay stops being worth it."
+}
+],
+"trait": "Members of the Mercenaries Guild in space, or freelancers on Terrana.",
+"found": "Everywhere money is.",
+"loot": "D rank weapon, a contract."
+},
+{
+"id": "people-veteran-delver",
+"name": "Veteran Delver",
+"section": "People",
+"rank": "C",
+"tags": [
+"Person",
+"Medium",
+"Any one"
+],
+"type": "Person",
+"size": "Medium",
+"elements": "Any one",
+"attack": 10,
+"defense": 10,
+"damage": 6,
+"move": 1,
+"bdt": 6,
+"mana": 12,
+"mt": 5,
+"health": {
+"b": 6,
+"l": 5,
+"a": 4
+},
+"abilities": [
+{
+"name": "Signature Weapon (melee)",
+"text": "Damage by weapon type, two attacks a turn."
+},
+{
+"name": "School Spell",
+"text": "Casts one rank 3 spell of its school."
+}
+],
+"trait": "Has been to the fortieth floor and has the scars.",
+"found": "The Grand Dungeon, guild halls.",
+"loot": "C rank gear."
+},
+{
+"id": "people-knight",
+"name": "Knight",
+"section": "People",
+"rank": "C",
+"tags": [
+"Person",
+"Medium",
+"None"
+],
+"type": "Person",
+"size": "Medium",
+"elements": "None",
+"attack": 10,
+"defense": 10,
+"damage": 6,
+"move": 1,
+"bdt": 6,
+"mana": 12,
+"mt": 5,
+"health": {
+"b": 6,
+"l": 5,
+"a": 4
+},
+"abilities": [
+{
+"name": "Longsword (melee)",
+"text": "Slashing damage."
+},
+{
+"name": "Shield Wall",
+"text": "Allies in adjacent zones add 1 to BDT."
+}
+],
+"trait": "Sworn to a house or a crown.",
+"found": "Noble estates, Asura, Milishion.",
+"loot": "C rank armor and sword."
+},
+{
+"id": "people-battle-mage",
+"name": "Battle Mage",
+"section": "People",
+"rank": "C",
+"tags": [
+"Person",
+"Medium",
+"Any two"
+],
+"type": "Person",
+"size": "Medium",
+"elements": "Any two",
+"attack": 10,
+"defense": 10,
+"damage": 6,
+"move": 1,
+"bdt": 6,
+"mana": 12,
+"mt": 5,
+"health": {
+"b": 6,
+"l": 5,
+"a": 4
+},
+"abilities": [
+{
+"name": "Bolt",
+"text": "Casts a rank 2 spell of either school."
+},
+{
+"name": "Combination",
+"text": "Casts a two-school combination spell of its schools once per scene."
+}
+],
+"trait": "Usually trained at Monsera University.",
+"found": "Guilds, armies, universities.",
+"loot": "C rank focus."
+},
+{
+"id": "people-assassin",
+"name": "Assassin",
+"section": "People",
+"rank": "B",
+"tags": [
+"Person",
+"Medium",
+"Shade"
+],
+"type": "Person",
+"size": "Medium",
+"elements": "Shade",
+"attack": 12,
+"defense": 12,
+"damage": 7,
+"move": 1,
+"bdt": 7,
+"mana": 15,
+"mt": 6,
+"health": {
+"b": 7,
+"l": 6,
+"a": 5
+},
+"abilities": [
+{
+"name": "Poisoned Blade (melee)",
+"text": "Piercing damage and the Poisoned condition; +3 dice against a target that has not acted yet this fight."
+},
+{
+"name": "Shadow Step",
+"text": "Casts the Shade Rank 4 spell."
+}
+],
+"trait": "Works for the Shaded Isles, a noble house, or the highest bidder.",
+"found": "Anywhere.",
+"loot": "B rank daggers, poisons."
+},
+{
+"id": "people-necromancer",
+"name": "Necromancer",
+"section": "People",
+"rank": "B",
+"tags": [
+"Person",
+"Medium",
+"Shade"
+],
+"type": "Person",
+"size": "Medium",
+"elements": "Shade",
+"attack": 12,
+"defense": 12,
+"damage": 7,
+"move": 1,
+"bdt": 7,
+"mana": 15,
+"mt": 6,
+"health": {
+"b": 7,
+"l": 6,
+"a": 5
+},
+"abilities": [
+{
+"name": "Animate Dead",
+"text": "Casts the Shade Rank 5 spell."
+},
+{
+"name": "Corruption Bolt",
+"text": "Casts the Shade Rank 2 spell."
+}
+],
+"trait": "Rarely alone: usually surrounded by 3 to 6 Skeletons or Zombies.",
+"found": "Graveyards, hidden labs.",
+"loot": "B rank Shade focus."
+},
+{
+"id": "people-sword-saint",
+"name": "Sword Saint",
+"section": "People",
+"rank": "A",
+"tags": [
+"Person",
+"Medium",
+"None"
+],
+"type": "Person",
+"size": "Medium",
+"elements": "None",
+"attack": 14,
+"defense": 14,
+"damage": 8,
+"move": 1,
+"bdt": 8,
+"mana": 18,
+"mt": 7,
+"health": {
+"b": 8,
+"l": 7,
+"a": 6
+},
+"abilities": [
+{
+"name": "Saint's Cut (melee)",
+"text": "Slashing damage; three attacks a turn."
+},
+{
+"name": "Counter",
+"text": "When its defense beats an attack, it strikes back with the same roll (Chapter 12)."
+}
+],
+"trait": "A Saint rank master of a Combat Style. The Sword God's schools produce a handful a generation.",
+"found": "Sword dojos, the Asura capital.",
+"loot": "A rank sword."
+},
+{
+"id": "the-immortal-demon-kings-empress-kishirika-kishirisu",
+"name": "Empress Kishirika Kishirisu",
+"section": "The Immortal Demon Kings",
+"rank": "C",
+"tags": [
+"Immortal Demon King",
+"Small",
+"None"
+],
+"type": "Immortal Demon King",
+"size": "Small",
+"elements": "None",
+"attack": 10,
+"defense": 10,
+"damage": 6,
+"move": 1,
+"bdt": 6,
+"mana": 12,
+"mt": 5,
+"health": {
+"b": 6,
+"l": 5,
+"a": 4
+},
+"abilities": [
+{
+"name": "Magic Eyes",
+"text": "Her eyes see anything she chooses: lies, futures, distant places. She knows what every enemy in sight is about to do (+5 dice to defense rolls)."
+},
+{
+"name": "Gift an Eye",
+"text": "Grants a Magic Eye (Chapter 9) to someone who helped her."
+}
+],
+"trait": "The Demon Empress is famously weak in a fight, famously hungry, and famously generous to whoever feeds her. She has died and reincarnated at least five times. Rank C is her fighting strength, not her importance.",
+"found": "Wherever she wandered off to this time.",
+"loot": "A Magic Eye, if she likes you."
+},
+{
+"id": "the-immortal-demon-kings-badigadi-the-fighting-god",
+"name": "Badigadi, the Fighting God",
+"section": "The Immortal Demon Kings",
+"rank": "SS",
+"tags": [
+"Immortal Demon King",
+"Large (2x2)",
+"Battle Aura"
+],
+"type": "Immortal Demon King",
+"size": "Large (2x2)",
+"elements": "Battle Aura",
+"attack": 20,
+"defense": 20,
+"damage": 12,
+"move": 1,
+"bdt": 13,
+"mana": 30,
+"mt": 12,
+"health": {
+"b": 14,
+"l": 13,
+"a": 12
+},
+"abilities": [
+{
+"name": "Six Arms",
+"text": "Six attacks a turn, kinetic damage. He laughs through all of them."
+},
+{
+"name": "Undying Flesh",
+"text": "Neutralizes all Bashing and Lethal damage each Upkeep, and regrows anything lost by the next scene. Only sealing him stops him."
+},
+{
+"name": "Fighting God",
+"text": "Wearing his legendary armor, his Attack pool rises by 5 and he casts Omega Burst (Battle Aura Rank 7) at will."
+}
+],
+"trait": "Six-armed, loud, and delighted by a good fight or a good party. He has little magical aptitude and needs none. He is the husband of Kishirika and one of the few beings the Slime King treats as a peer.",
+"found": "Biegoya, in the far northeast, or wherever the wine is.",
+"loot": "His respect."
+},
+{
+"id": "the-immortal-demon-kings-atoferatofe-ryback",
+"name": "Atoferatofe Ryback",
+"section": "The Immortal Demon Kings",
+"rank": "SS",
+"tags": [
+"Immortal Demon King",
+"Medium",
+"Battle Aura"
+],
+"type": "Immortal Demon King",
+"size": "Medium",
+"elements": "Battle Aura",
+"attack": 20,
+"defense": 20,
+"damage": 12,
+"move": 1,
+"bdt": 12,
+"mana": 30,
+"mt": 12,
+"health": {
+"b": 12,
+"l": 11,
+"a": 10
+},
+"abilities": [
+{
+"name": "Demon Sword (melee)",
+"text": "Slashing damage; four attacks a turn."
+},
+{
+"name": "Undying Flesh",
+"text": "As Badigadi."
+},
+{
+"name": "Conscription",
+"text": "Anyone she defeats becomes her disciple, whether they like it or not."
+}
+],
+"trait": "Badigadi's sister: enormously strong, very loud, and not interested in nuance. She kidnaps foreign royalty and challenges every strong warrior she hears of. Her black-armored Imperial Guard follow her everywhere.",
+"found": "Gaslow, a dark bog in the east, under the shadow of a dark dragon.",
+"loot": "Disciple papers."
+},
+{
+"id": "the-immortal-demon-kings-atofes-imperial-guard",
+"name": "Atofe's Imperial Guard",
+"section": "The Immortal Demon Kings",
+"rank": "B",
+"tags": [
+"Person (Immortal Mix)",
+"Medium",
+"Battle Aura"
+],
+"type": "Person (Immortal Mix)",
+"size": "Medium",
+"elements": "Battle Aura",
+"attack": 12,
+"defense": 12,
+"damage": 7,
+"move": 1,
+"bdt": 7,
+"mana": 15,
+"mt": 6,
+"health": {
+"b": 7,
+"l": 6,
+"a": 5
+},
+"abilities": [
+{
+"name": "Black Blade (melee)",
+"text": "Slashing damage; two attacks a turn."
+},
+{
+"name": "Formation",
+"text": "Each guard adjacent to another adds 1 to its BDT."
+}
+],
+"trait": "Black-armored disciples, nearly all of them former challengers who lost.",
+"found": "Gaslow, or wherever Atofe goes.",
+"loot": "B rank black armor."
+},
+{
+"id": "the-immortal-demon-kings-necross-lacross",
+"name": "Necross Lacross",
+"section": "The Immortal Demon Kings",
+"rank": "SS",
+"tags": [
+"Immortal Demon King",
+"Large (2x2)",
+"Fire, Water, Air, Earth, Nature"
+],
+"type": "Immortal Demon King",
+"size": "Large (2x2)",
+"elements": "Fire, Water, Air, Earth, Nature",
+"attack": 20,
+"defense": 20,
+"damage": 12,
+"move": 1,
+"bdt": 13,
+"mana": 30,
+"mt": 12,
+"health": {
+"b": 14,
+"l": 13,
+"a": 12
+},
+"abilities": [
+{
+"name": "Five Elements",
+"text": "Casts Primordial Storm (Fire + Water + Air + Earth + Nature), or any spell of the five elemental schools."
+},
+{
+"name": "Strongest Fortress",
+"text": "In his fortress, every ally adds 2 to BDT and he sees every corridor."
+},
+{
+"name": "Undying Flesh",
+"text": "As Badigadi."
+}
+],
+"trait": "The Five Elements Demon King, a tactician of the God Wars, father of Badigadi and Atoferatofe, and the one who brought Kishirika to Terrana. He built the strongest fortress on the Demon Continent and rules from its heart.",
+"found": "The heart of the Demon Continent.",
+"loot": "Strategy, if he deigns to share it."
+},
+{
+"id": "the-immortal-demon-kings-the-earth-god",
+"name": "The Earth God",
+"section": "The Immortal Demon Kings",
+"rank": "SS",
+"tags": [
+"Immortal Demon King",
+"Small",
+"Earth, Nature"
+],
+"type": "Immortal Demon King",
+"size": "Small",
+"elements": "Earth, Nature",
+"attack": 20,
+"defense": 20,
+"damage": 12,
+"move": 1,
+"bdt": 12,
+"mana": 30,
+"mt": 12,
+"health": {
+"b": 12,
+"l": 11,
+"a": 10
+},
+"abilities": [
+{
+"name": "Redesign",
+"text": "Changes the terrain of up to 10 zones each turn: walls, pits, rivers, stairs."
+},
+{
+"name": "Continental Shift",
+"text": "Casts the Earth Rank 7 spell."
+},
+{
+"name": "Creative Director",
+"text": "Inside the Grand Dungeon, she can teleport anyone on any floor to any other floor."
+}
+],
+"trait": "A fairy-type Immortal Demon King who co-owns the Grand Dungeon with the Slime King and redesigns its floors on a whim. Fighting her in her dungeon is a very bad idea.",
+"found": "The Grand Dungeon.",
+"loot": "A new floor named after you, if she is amused."
+},
+{
+"id": "the-immortal-demon-kings-beethove-tovetha",
+"name": "Beethove Tovetha",
+"section": "The Immortal Demon Kings",
+"rank": "S",
+"tags": [
+"Immortal Demon King",
+"Huge (3x3)",
+"Water, Shade"
+],
+"type": "Immortal Demon King",
+"size": "Huge (3x3)",
+"elements": "Water, Shade",
+"attack": 16,
+"defense": 16,
+"damage": 9,
+"move": 1,
+"bdt": 11,
+"mana": 21,
+"mt": 8,
+"health": {
+"b": 13,
+"l": 12,
+"a": 11
+},
+"abilities": [
+{
+"name": "Ink Tentacles",
+"text": "Four attacks a turn; kinetic damage, and every hit records the target's memories in ink."
+},
+{
+"name": "Library",
+"text": "Knows everything ever written. Adds 5 dice to any Intelligence roll."
+}
+],
+"trait": "A monstrous black slime-octopus who rules the Library Labyrinth and records every piece of written lore in the world.",
+"found": "The Library Labyrinth, in the north.",
+"loot": "A book you were looking for."
+},
+{
+"id": "the-immortal-demon-kings-raja-iblis-baglahagla",
+"name": "Raja Iblis Baglahagla",
+"section": "The Immortal Demon Kings",
+"rank": "S",
+"tags": [
+"Immortal Demon King",
+"Large (2x2)",
+"Earth, Fire"
+],
+"type": "Immortal Demon King",
+"size": "Large (2x2)",
+"elements": "Earth, Fire",
+"attack": 16,
+"defense": 16,
+"damage": 9,
+"move": 1,
+"bdt": 10,
+"mana": 21,
+"mt": 8,
+"health": {
+"b": 11,
+"l": 10,
+"a": 9
+},
+"abilities": [
+{
+"name": "King's Cleaver (melee)",
+"text": "Slashing damage; three attacks a turn."
+},
+{
+"name": "Royal Feast",
+"text": "Every orc in sight neutralizes 1 Bashing and adds 1 die to attacks this turn."
+}
+],
+"trait": "The pig-like King of the Orcs, ruler of the northwest. Judges a guest by their appetite.",
+"found": "The northwestern domain.",
+"loot": "A seat at his table."
+},
+{
+"id": "the-immortal-demon-kings-vita-the-abyssal-king",
+"name": "Vita, the Abyssal King",
+"section": "The Immortal Demon Kings",
+"rank": "A",
+"tags": [
+"Immortal Demon King",
+"Small",
+"Water, Shade"
+],
+"type": "Immortal Demon King",
+"size": "Small",
+"elements": "Water, Shade",
+"attack": 14,
+"defense": 14,
+"damage": 8,
+"move": 1,
+"bdt": 8,
+"mana": 18,
+"mt": 7,
+"health": {
+"b": 8,
+"l": 7,
+"a": 6
+},
+"abilities": [
+{
+"name": "Possession",
+"text": "A creature that ingests Vita resists with Wisdom + Composure each turn; on a failure Vita controls its body and floods its mind with visions."
+},
+{
+"name": "Split",
+"text": "Can exist in many drops at once."
+}
+],
+"trait": "A parasitic blue slime-demon. Its rank is low because it rarely fights with its own body; the body it is wearing decides how dangerous it is.",
+"found": "The western domain, or inside anyone.",
+"loot": "Nothing you want to keep."
+},
+{
+"id": "the-immortal-demon-kings-lynebyne-the-stone-king",
+"name": "Lynebyne, the Stone King",
+"section": "The Immortal Demon Kings",
+"rank": "S",
+"tags": [
+"Immortal Demon King",
+"Huge (3x3)",
+"Earth"
+],
+"type": "Immortal Demon King",
+"size": "Huge (3x3)",
+"elements": "Earth",
+"attack": 16,
+"defense": 16,
+"damage": 9,
+"move": 1,
+"bdt": 11,
+"mana": 21,
+"mt": 8,
+"health": {
+"b": 13,
+"l": 12,
+"a": 11
+},
+"abilities": [
+{
+"name": "Stone Fortress",
+"text": "Casts the Earth Rank 6 spell."
+},
+{
+"name": "Petrify",
+"text": "Casts Petrify (Earth + Nature + Bright + Shade)."
+},
+{
+"name": "Stone Body",
+"text": "Takes half damage from everything but Air and Nature attacks."
+}
+],
+"trait": "The ruler of the southwest, as patient as the mountains.",
+"found": "The southwestern domain.",
+"loot": "Stone that never breaks."
+},
+{
+"id": "the-immortal-demon-kings-samedynomedy-demon-king-of-light",
+"name": "Samedynomedy, Demon King of Light",
+"section": "The Immortal Demon Kings",
+"rank": "S",
+"tags": [
+"Immortal Demon King",
+"Medium",
+"Bright"
+],
+"type": "Immortal Demon King",
+"size": "Medium",
+"elements": "Bright",
+"attack": 16,
+"defense": 16,
+"damage": 9,
+"move": 1,
+"bdt": 9,
+"mana": 21,
+"mt": 8,
+"health": {
+"b": 9,
+"l": 8,
+"a": 7
+},
+"abilities": [
+{
+"name": "Final Light",
+"text": "Casts the Bright Rank 7 spell."
+},
+{
+"name": "Radiance",
+"text": "Undead and Void creatures within 3 zones take radiant damage each Upkeep."
+}
+],
+"trait": "Ruler of the south, whose domain is never truly dark.",
+"found": "The southern domain.",
+"loot": "Light that keeps voidlings away."
+},
+{
+"id": "the-immortal-demon-kings-patorsetor-the-enchantress-demon-king",
+"name": "Patorsetor, the Enchantress Demon King",
+"section": "The Immortal Demon Kings",
+"rank": "S",
+"tags": [
+"Immortal Demon King",
+"Medium",
+"Water, Bright, Shade"
+],
+"type": "Immortal Demon King",
+"size": "Medium",
+"elements": "Water, Bright, Shade",
+"attack": 16,
+"defense": 16,
+"damage": 9,
+"move": 1,
+"bdt": 9,
+"mana": 21,
+"mt": 8,
+"health": {
+"b": 9,
+"l": 8,
+"a": 7
+},
+"abilities": [
+{
+"name": "Enchant",
+"text": "Every enemy in sight resists with Wisdom + Composure or fights for her this turn."
+},
+{
+"name": "Mirror Mist",
+"text": "Casts Mirror Mist (Water + Air + Bright + Shade)."
+}
+],
+"trait": "Ruler of the southeastern coast, whose court is full of people who do not remember arriving.",
+"found": "The southeastern coast.",
+"loot": "An invitation you should refuse."
+},
+{
+"id": "the-immortal-demon-kings-qeblaqabla-the-evil-demon-king",
+"name": "Qeblaqabla, the Evil Demon King",
+"section": "The Immortal Demon Kings",
+"rank": "S",
+"tags": [
+"Immortal Demon King",
+"Medium",
+"Shade"
+],
+"type": "Immortal Demon King",
+"size": "Medium",
+"elements": "Shade",
+"attack": 16,
+"defense": 16,
+"damage": 9,
+"move": 1,
+"bdt": 9,
+"mana": 21,
+"mt": 8,
+"health": {
+"b": 9,
+"l": 8,
+"a": 7
+},
+"abilities": [
+{
+"name": "Black Rain",
+"text": "Casts Black Pulse (Shade Rank 6) as a rain of black liquid across 3x3 zones."
+},
+{
+"name": "Corrode",
+"text": "Anything it touches loses 1 Rating or 1 Armor."
+}
+],
+"trait": "A floating orb leaking black liquid, ruling the continent's southern end.",
+"found": "The southern end of the Demon Continent.",
+"loot": "Corroded relics."
+},
+{
+"id": "grand-dungeon-bosses-warchief-gruk-ironmaw",
+"name": "Warchief Gruk Ironmaw",
+"section": "Grand Dungeon Bosses",
+"rank": "D",
+"tags": [
+"Gremlinesque (Goblin)",
+"Medium",
+"None",
+"Boss"
+],
+"type": "Gremlinesque (Goblin)",
+"size": "Medium",
+"elements": "None",
+"attack": 8,
+"defense": 8,
+"damage": 5,
+"move": 1,
+"bdt": 5,
+"mana": 9,
+"mt": 4,
+"health": {
+"b": 10,
+"l": 8,
+"a": 6
+},
+"abilities": [
+{
+"name": "Cleaver (melee)",
+"text": "Slashing damage."
+},
+{
+"name": "Warband",
+"text": "Arrives with 6 Goblins; each turn Gruk shouts, they add 1 die to attacks."
+}
+],
+"trait": "Thirty years on the job. Respects a fair fight.",
+"found": "Floor 4.",
+"loot": "D rank cleaver, a handshake."
+},
+{
+"id": "grand-dungeon-bosses-the-grand-beastmaster",
+"name": "The Grand Beastmaster",
+"section": "Grand Dungeon Bosses",
+"rank": "C",
+"tags": [
+"Bestial Demonfolk (Orc)",
+"Medium",
+"Earth",
+"Boss"
+],
+"type": "Bestial Demonfolk (Orc)",
+"size": "Medium",
+"elements": "Earth",
+"attack": 10,
+"defense": 10,
+"damage": 6,
+"move": 1,
+"bdt": 6,
+"mana": 12,
+"mt": 5,
+"health": {
+"b": 12,
+"l": 10,
+"a": 8
+},
+"abilities": [
+{
+"name": "Whip (melee, Reach)",
+"text": "Slashing damage."
+},
+{
+"name": "Command Beast",
+"text": "Its Chimera (see Beasts) acts twice this turn."
+}
+],
+"trait": "Fights beside a multi-headed Chimera in the Ironwood Colosseum while the stands bet on the outcome.",
+"found": "Floor 10.",
+"loot": "C rank whip, betting slips."
+},
+{
+"id": "grand-dungeon-bosses-asterion-of-the-maze",
+"name": "Asterion of the Maze",
+"section": "Grand Dungeon Bosses",
+"rank": "C",
+"tags": [
+"Brute (Minotaur)",
+"Large (2x2)",
+"Earth",
+"Boss"
+],
+"type": "Brute (Minotaur)",
+"size": "Large (2x2)",
+"elements": "Earth",
+"attack": 10,
+"defense": 10,
+"damage": 6,
+"move": 1,
+"bdt": 7,
+"mana": 12,
+"mt": 5,
+"health": {
+"b": 16,
+"l": 14,
+"a": 12
+},
+"abilities": [
+{
+"name": "Labrys (melee)",
+"text": "Slashing damage."
+},
+{
+"name": "Hunter's Ear",
+"text": "Always knows where every enemy on the floor is."
+}
+],
+"trait": "Waits at the Labyrinth's final gate.",
+"found": "Floor 14.",
+"loot": "C rank axe, a map that is always wrong."
+},
+{
+"id": "grand-dungeon-bosses-the-chrono-goliath",
+"name": "The Chrono-Goliath",
+"section": "Grand Dungeon Bosses",
+"rank": "B",
+"tags": [
+"Construct",
+"Huge (3x3)",
+"Earth, Fire",
+"Boss"
+],
+"type": "Construct",
+"size": "Huge (3x3)",
+"elements": "Earth, Fire",
+"attack": 12,
+"defense": 12,
+"damage": 7,
+"move": 1,
+"bdt": 9,
+"mana": 15,
+"mt": 6,
+"health": {
+"b": 22,
+"l": 20,
+"a": 18
+},
+"abilities": [
+{
+"name": "Gear Crush (melee)",
+"text": "Kinetic damage."
+},
+{
+"name": "Shift the Floor",
+"text": "Changes the speed of the floor's machinery: platforms move 1 zone and steam pipes burst (burning damage) each turn."
+}
+],
+"trait": "The Shattered Clockwork, built by the Makers Guild long ago.",
+"found": "Floor 20.",
+"loot": "B rank clockwork core."
+},
+{
+"id": "grand-dungeon-bosses-skyrend-the-storm-alpha",
+"name": "Skyrend, the Storm Alpha",
+"section": "Grand Dungeon Bosses",
+"rank": "B",
+"tags": [
+"Beast (Thunderbird)",
+"Large (2x2)",
+"Air, Fire",
+"Boss"
+],
+"type": "Beast (Thunderbird)",
+"size": "Large (2x2)",
+"elements": "Air, Fire",
+"attack": 12,
+"defense": 12,
+"damage": 7,
+"move": 4,
+"bdt": 8,
+"mana": 15,
+"mt": 6,
+"health": {
+"b": 18,
+"l": 16,
+"a": 14
+},
+"abilities": [
+{
+"name": "Lightning Dive",
+"text": "Moves 4 zones and attacks; electric damage, and the target is knocked off any branch."
+},
+{
+"name": "Thunderstorm",
+"text": "Casts Thunderstorm (Fire + Water + Air + Nature)."
+}
+],
+"trait": "Rules the Canopy Wilds.",
+"found": "Floor 24.",
+"loot": "Storm feathers."
+},
+{
+"id": "grand-dungeon-bosses-the-kraken-vanguard",
+"name": "The Kraken Vanguard",
+"section": "Grand Dungeon Bosses",
+"rank": "B",
+"tags": [
+"Fishfolk Champion",
+"Large (2x2)",
+"Water",
+"Boss"
+],
+"type": "Fishfolk Champion",
+"size": "Large (2x2)",
+"elements": "Water",
+"attack": 12,
+"defense": 12,
+"damage": 7,
+"move": 1,
+"bdt": 8,
+"mana": 15,
+"mt": 6,
+"health": {
+"b": 18,
+"l": 16,
+"a": 14
+},
+"abilities": [
+{
+"name": "Sweeping Trident (melee, Reach)",
+"text": "Piercing damage to everyone in adjacent zones."
+},
+{
+"name": "Current",
+"text": "Every enemy is pushed 1 zone each Upkeep."
+}
+],
+"trait": "A Seafolk champion under contract with the Navigators Guild.",
+"found": "Floor 30.",
+"loot": "B rank trident."
+},
+{
+"id": "grand-dungeon-bosses-the-iron-juggernaut",
+"name": "The Iron Juggernaut",
+"section": "Grand Dungeon Bosses",
+"rank": "B",
+"tags": [
+"Construct",
+"Huge (3x3)",
+"Earth, Fire",
+"Boss"
+],
+"type": "Construct",
+"size": "Huge (3x3)",
+"elements": "Earth, Fire",
+"attack": 12,
+"defense": 12,
+"damage": 7,
+"move": 1,
+"bdt": 9,
+"mana": 15,
+"mt": 6,
+"health": {
+"b": 22,
+"l": 20,
+"a": 18
+},
+"abilities": [
+{
+"name": "Ram",
+"text": "Moves 2 zones in a line and attacks; kinetic damage."
+},
+{
+"name": "Front Plate",
+"text": "Its BDT doubles against attacks from the front."
+}
+],
+"trait": "A walking furnace built to clear cave-ins.",
+"found": "Floor 34.",
+"loot": "Furnace core."
+},
+{
+"id": "grand-dungeon-bosses-the-doppler-matriarch",
+"name": "The Doppler Matriarch",
+"section": "Grand Dungeon Bosses",
+"rank": "A",
+"tags": [
+"Devil",
+"Medium",
+"Water, Air, Bright, Shade",
+"Boss"
+],
+"type": "Devil",
+"size": "Medium",
+"elements": "Water, Air, Bright, Shade",
+"attack": 14,
+"defense": 14,
+"damage": 8,
+"move": 1,
+"bdt": 8,
+"mana": 18,
+"mt": 7,
+"health": {
+"b": 16,
+"l": 14,
+"a": 12
+},
+"abilities": [
+{
+"name": "Mirror Copies",
+"text": "Creates a solid copy of each party member with their stats and abilities."
+},
+{
+"name": "Mirror Mist",
+"text": "Casts Mirror Mist (Water + Air + Bright + Shade)."
+}
+],
+"trait": "A high-tier devil illusionist from Nite City.",
+"found": "Floor 40.",
+"loot": "A rank mirror shard."
+},
+{
+"id": "grand-dungeon-bosses-mother-maelis-the-siren-matron",
+"name": "Mother Maelis, the Siren Matron",
+"section": "Grand Dungeon Bosses",
+"rank": "A",
+"tags": [
+"Aquatic (Siren)",
+"Medium",
+"Water, Air",
+"Boss"
+],
+"type": "Aquatic (Siren)",
+"size": "Medium",
+"elements": "Water, Air",
+"attack": 14,
+"defense": 14,
+"damage": 8,
+"move": 1,
+"bdt": 8,
+"mana": 18,
+"mt": 7,
+"health": {
+"b": 16,
+"l": 14,
+"a": 12
+},
+"abilities": [
+{
+"name": "Matron's Song",
+"text": "Every enemy resists with Composure + Insight or moves 2 zones toward the rising water."
+},
+{
+"name": "Tempest",
+"text": "Casts Tempest (Water + Air)."
+}
+],
+"trait": "The eldest of the ruins' sirens.",
+"found": "Floor 44.",
+"loot": "Siren pearl (A rank Water focus)."
+},
+{
+"id": "grand-dungeon-bosses-cindermaw-the-magma-wyrm",
+"name": "Cindermaw, the Magma Wyrm",
+"section": "Grand Dungeon Bosses",
+"rank": "A",
+"tags": [
+"Dragon",
+"Huge (3x3)",
+"Fire, Earth",
+"Boss"
+],
+"type": "Dragon",
+"size": "Huge (3x3)",
+"elements": "Fire, Earth",
+"attack": 14,
+"defense": 14,
+"damage": 8,
+"move": 1,
+"bdt": 10,
+"mana": 18,
+"mt": 7,
+"health": {
+"b": 24,
+"l": 22,
+"a": 20
+},
+"abilities": [
+{
+"name": "Magma Breath",
+"text": "Casts Lava (Fire + Earth + Nature)."
+},
+{
+"name": "Melt the Arena",
+"text": "Each turn, one zone of the platform melts away."
+}
+],
+"trait": "A wild fire drake fused with experimental company machinery.",
+"found": "Floor 50.",
+"loot": "A rank scale."
+},
+{
+"id": "grand-dungeon-bosses-the-rune-sentinel",
+"name": "The Rune Sentinel",
+"section": "Grand Dungeon Bosses",
+"rank": "A",
+"tags": [
+"Construct",
+"Large (2x2)",
+"Bright, Shade",
+"Boss"
+],
+"type": "Construct",
+"size": "Large (2x2)",
+"elements": "Bright, Shade",
+"attack": 14,
+"defense": 14,
+"damage": 8,
+"move": 1,
+"bdt": 9,
+"mana": 18,
+"mt": 7,
+"health": {
+"b": 20,
+"l": 18,
+"a": 16
+},
+"abilities": [
+{
+"name": "Rune Blast",
+"text": "Casts Disruption (Bright + Shade)."
+},
+{
+"name": "Riddles",
+"text": "Asks three questions before the fight; each answered well costs it a Boss template benefit."
+}
+],
+"trait": "An ancient guardian covered in shifting runes.",
+"found": "Floor 54.",
+"loot": "Rune plate."
+},
+{
+"id": "grand-dungeon-bosses-the-dullahan-overseer",
+"name": "The Dullahan Overseer",
+"section": "Grand Dungeon Bosses",
+"rank": "A",
+"tags": [
+"Undead",
+"Large (2x2)",
+"Shade",
+"Boss"
+],
+"type": "Undead",
+"size": "Large (2x2)",
+"elements": "Shade",
+"attack": 14,
+"defense": 14,
+"damage": 8,
+"move": 1,
+"bdt": 9,
+"mana": 18,
+"mt": 7,
+"health": {
+"b": 20,
+"l": 18,
+"a": 16
+},
+"abilities": [
+{
+"name": "Wall Walk",
+"text": "Steps through walls to cut off retreat."
+},
+{
+"name": "Deadly Wail",
+"text": "Everyone makes a Sanity roll and resists with Fortitude + Endurance or loses their next action."
+}
+],
+"trait": "An ancient knight representing the noble houses of the Shaded Isles.",
+"found": "Floor 60.",
+"loot": "A rank black armor."
+},
+{
+"id": "grand-dungeon-bosses-conductor-kessler",
+"name": "Conductor Kessler",
+"section": "Grand Dungeon Bosses",
+"rank": "S",
+"tags": [
+"Undead",
+"Medium",
+"Shade, Fire",
+"Boss"
+],
+"type": "Undead",
+"size": "Medium",
+"elements": "Shade, Fire",
+"attack": 16,
+"defense": 16,
+"damage": 9,
+"move": 1,
+"bdt": 9,
+"mana": 21,
+"mt": 8,
+"health": {
+"b": 18,
+"l": 16,
+"a": 14
+},
+"abilities": [
+{
+"name": "Last Train",
+"text": "The ghost train charges through a line of zones; kinetic damage to everyone in it."
+},
+{
+"name": "Ticket, Please",
+"text": "Anyone without a valid ticket suffers -2 dice on all rolls."
+}
+],
+"trait": "Insists every passenger present a valid ticket. Bring one.",
+"found": "Floor 64.",
+"loot": "A golden ticket."
+},
+{
+"id": "grand-dungeon-bosses-warden-arcanum",
+"name": "Warden Arcanum",
+"section": "Grand Dungeon Bosses",
+"rank": "S",
+"tags": [
+"Construct",
+"Large (2x2)",
+"Varies",
+"Boss"
+],
+"type": "Construct",
+"size": "Large (2x2)",
+"elements": "Varies",
+"attack": 16,
+"defense": 16,
+"damage": 9,
+"move": 1,
+"bdt": 10,
+"mana": 21,
+"mt": 8,
+"health": {
+"b": 22,
+"l": 20,
+"a": 18
+},
+"abilities": [
+{
+"name": "Absorb",
+"text": "Any single-school spell that hits it is absorbed and adds 2 dice to its next attack."
+},
+{
+"name": "Circuit Lightning",
+"text": "Casts Thunderstorm (Fire + Water + Air + Nature)."
+}
+],
+"trait": "An advanced defense construct from the Mages Guild. Physical attacks and combination spells are the way through.",
+"found": "Floor 70.",
+"loot": "S rank construct heart."
+},
+{
+"id": "grand-dungeon-bosses-the-crystal-basilisk",
+"name": "The Crystal Basilisk",
+"section": "Grand Dungeon Bosses",
+"rank": "S",
+"tags": [
+"Beast (Basilisk)",
+"Large (2x2)",
+"Earth, Shade",
+"Boss"
+],
+"type": "Beast (Basilisk)",
+"size": "Large (2x2)",
+"elements": "Earth, Shade",
+"attack": 16,
+"defense": 16,
+"damage": 9,
+"move": 1,
+"bdt": 10,
+"mana": 21,
+"mt": 8,
+"health": {
+"b": 22,
+"l": 20,
+"a": 18
+},
+"abilities": [
+{
+"name": "Crystal Gaze",
+"text": "As a Basilisk's gaze, but flesh turns to crystal."
+},
+{
+"name": "Shard Burst",
+"text": "Casts Glass Shards (Fire + Air + Earth)."
+}
+],
+"trait": "Its hide is a living crystal lattice.",
+"found": "Floor 74.",
+"loot": "Living crystal (S rank)."
+},
+{
+"id": "grand-dungeon-bosses-the-rift-stalker",
+"name": "The Rift Stalker",
+"section": "Grand Dungeon Bosses",
+"rank": "S",
+"tags": [
+"Void",
+"Large (2x2)",
+"Shade",
+"Boss"
+],
+"type": "Void",
+"size": "Large (2x2)",
+"elements": "Shade",
+"attack": 16,
+"defense": 16,
+"damage": 9,
+"move": 1,
+"bdt": 10,
+"mana": 21,
+"mt": 8,
+"health": {
+"b": 22,
+"l": 20,
+"a": 18
+},
+"abilities": [
+{
+"name": "Phase Hunt",
+"text": "Teleports anywhere on the ledge and attacks; slashing damage that ignores Armor."
+},
+{
+"name": "Void Wind",
+"text": "Every enemy is pulled one zone toward the edge each Upkeep."
+}
+],
+"trait": "A real multi-dimensional predator, held on this floor by magic barriers.",
+"found": "Floor 80.",
+"loot": "Void shard (S rank)."
+},
+{
+"id": "grand-dungeon-bosses-the-monk-of-a-thousand-steps",
+"name": "The Monk of a Thousand Steps",
+"section": "Grand Dungeon Bosses",
+"rank": "S",
+"tags": [
+"Ogre",
+"Large (2x2)",
+"Battle Aura",
+"Boss"
+],
+"type": "Ogre",
+"size": "Large (2x2)",
+"elements": "Battle Aura",
+"attack": 16,
+"defense": 16,
+"damage": 9,
+"move": 1,
+"bdt": 10,
+"mana": 21,
+"mt": 8,
+"health": {
+"b": 22,
+"l": 20,
+"a": 18
+},
+"abilities": [
+{
+"name": "Thousand Fists (melee)",
+"text": "Kinetic damage; four attacks a turn."
+},
+{
+"name": "Aura Ascendant",
+"text": "Casts the Battle Aura Rank 7 spell."
+},
+{
+"name": "Tireless",
+"text": "Never suffers wound penalties."
+}
+],
+"trait": "A silent ogre who fights unarmed and will not let a party pass until they prove themselves.",
+"found": "Floor 84.",
+"loot": "His nod."
+},
+{
+"id": "grand-dungeon-bosses-the-devil-prince-defiler",
+"name": "The Devil Prince Defiler",
+"section": "Grand Dungeon Bosses",
+"rank": "S",
+"tags": [
+"Devil",
+"Medium",
+"Fire, Shade",
+"Boss"
+],
+"type": "Devil",
+"size": "Medium",
+"elements": "Fire, Shade",
+"attack": 16,
+"defense": 16,
+"damage": 9,
+"move": 1,
+"bdt": 9,
+"mana": 21,
+"mt": 8,
+"health": {
+"b": 18,
+"l": 16,
+"a": 14
+},
+"abilities": [
+{
+"name": "Hellfire Blade (melee)",
+"text": "Slashing damage and the Burning condition."
+},
+{
+"name": "Hellfire",
+"text": "Casts Shadowflame (Fire + Shade) or Black Lightning (Fire + Air + Nature + Shade)."
+}
+],
+"trait": "An exile from the Hell Dungeon and a true spellsword, under contract to the Earth God.",
+"found": "Floor 90.",
+"loot": "S rank blade."
+},
+{
+"id": "grand-dungeon-bosses-vaelthrax",
+"name": "Vaelthrax",
+"section": "Grand Dungeon Bosses",
+"rank": "SS",
+"tags": [
+"Ancient Dragon",
+"Gargantuan (4x4)",
+"Fire, Earth, Air",
+"Boss"
+],
+"type": "Ancient Dragon",
+"size": "Gargantuan (4x4)",
+"elements": "Fire, Earth, Air",
+"attack": 20,
+"defense": 20,
+"damage": 12,
+"move": 5,
+"bdt": 15,
+"mana": 30,
+"mt": 12,
+"health": {
+"b": 36,
+"l": 34,
+"a": 32
+},
+"abilities": [
+{
+"name": "Ancient Breath",
+"text": "Casts Sunfall (Fire + Water + Air + Earth + Bright)."
+},
+{
+"name": "Claws, Wings, Tail, Bite",
+"text": "Four attacks a turn."
+},
+{
+"name": "Undefeated",
+"text": "Near-total immunity to magic: spells deal only a quarter of their damage, rounded down."
+}
+],
+"trait": "The Slime King's legendary companion and the final boss. No gimmicks: only immense strength, near-total immunity to magic, and devastating breath. No party has beaten it.",
+"found": "Floor 100.",
+"loot": "The record books."
+},
+{
+"id": "space-era-creatures-sky-pirate",
+"name": "Sky Pirate",
+"section": "Space Era Creatures",
+"rank": "D",
+"tags": [
+"Person",
+"Medium",
+"Air"
+],
+"type": "Person",
+"size": "Medium",
+"elements": "Air",
+"attack": 8,
+"defense": 8,
+"damage": 5,
+"move": 1,
+"bdt": 5,
+"mana": 9,
+"mt": 4,
+"health": {
+"b": 5,
+"l": 4,
+"a": 3
+},
+"abilities": [
+{
+"name": "Cutlass (melee)",
+"text": "Slashing damage."
+},
+{
+"name": "Boarding Hook",
+"text": "Swings 3 zones from ship to ship and attacks."
+}
+],
+"trait": "Crews wooden warships driven by Air Magic circles.",
+"found": "The Free Reaches.",
+"loot": "Plunder."
+},
+{
+"id": "space-era-creatures-sky-pirate-captain",
+"name": "Sky Pirate Captain",
+"section": "Space Era Creatures",
+"rank": "B",
+"tags": [
+"Person",
+"Medium",
+"Air, Fire"
+],
+"type": "Person",
+"size": "Medium",
+"elements": "Air, Fire",
+"attack": 12,
+"defense": 12,
+"damage": 7,
+"move": 1,
+"bdt": 7,
+"mana": 15,
+"mt": 6,
+"health": {
+"b": 7,
+"l": 6,
+"a": 5
+},
+"abilities": [
+{
+"name": "Blaster and Cutlass",
+"text": "One melee and one ranged attack a turn."
+},
+{
+"name": "Broadside",
+"text": "Orders the ship's guns: every enemy ship in sight takes kinetic damage to its Hull."
+}
+],
+"trait": "Every captain has a price on their head and a legend to protect.",
+"found": "The Free Reaches, Kordrane.",
+"loot": "A ship, if you can take it."
+},
+{
+"id": "space-era-creatures-asteroid-burrower",
+"name": "Asteroid Burrower",
+"section": "Space Era Creatures",
+"rank": "C",
+"tags": [
+"Beast",
+"Large (2x2)",
+"Earth"
+],
+"type": "Beast",
+"size": "Large (2x2)",
+"elements": "Earth",
+"attack": 10,
+"defense": 10,
+"damage": 6,
+"move": 1,
+"bdt": 7,
+"mana": 12,
+"mt": 5,
+"health": {
+"b": 8,
+"l": 7,
+"a": 6
+},
+"abilities": [
+{
+"name": "Drill Bite (melee)",
+"text": "Piercing damage, double against a ship's Hull."
+}
+],
+"trait": "Lives inside drifting rocks and mistakes hulls for food.",
+"found": "Asteroid belts.",
+"loot": "Ore."
+},
+{
+"id": "space-era-creatures-nebula-wraith",
+"name": "Nebula Wraith",
+"section": "Space Era Creatures",
+"rank": "C",
+"tags": [
+"Spirit",
+"Large (2x2)",
+"Air, Shade"
+],
+"type": "Spirit",
+"size": "Large (2x2)",
+"elements": "Air, Shade",
+"attack": 10,
+"defense": 10,
+"damage": 6,
+"move": 1,
+"bdt": 7,
+"mana": 12,
+"mt": 5,
+"health": {
+"b": 8,
+"l": 7,
+"a": 6
+},
+"abilities": [
+{
+"name": "Static Touch",
+"text": "Electric damage; a ship it touches loses one crew station for a turn."
+}
+],
+"trait": "A ghost of gas and lightning.",
+"found": "Nebulas.",
+"loot": "Charged dust (implement fuel)."
+},
+{
+"id": "space-era-creatures-nyxhollow-swarm",
+"name": "Nyxhollow Swarm",
+"section": "Space Era Creatures",
+"rank": "C",
+"tags": [
+"Void, Swarm",
+"Huge (3x3)",
+"Shade"
+],
+"type": "Void, Swarm",
+"size": "Huge (3x3)",
+"elements": "Shade",
+"attack": 10,
+"defense": 10,
+"damage": 6,
+"move": 1,
+"bdt": 8,
+"mana": 12,
+"mt": 5,
+"health": {
+"b": 10,
+"l": 9,
+"a": 8
+},
+"abilities": [
+{
+"name": "Feed",
+"text": "Every creature within 2 zones loses 2 mana."
+},
+{
+"name": "Wrongness",
+"text": "Sanity roll at first sight."
+}
+],
+"trait": "Voidlings from Nyxhollow, where the swarms never thin.",
+"found": "Nyxhollow.",
+"loot": "Void dust."
+},
+{
+"id": "space-era-creatures-star-whale",
+"name": "Star Whale",
+"section": "Space Era Creatures",
+"rank": "B",
+"tags": [
+"Beast",
+"Gargantuan (4x4)",
+"Air, Bright"
+],
+"type": "Beast",
+"size": "Gargantuan (4x4)",
+"elements": "Air, Bright",
+"attack": 12,
+"defense": 12,
+"damage": 7,
+"move": 1,
+"bdt": 10,
+"mana": 15,
+"mt": 6,
+"health": {
+"b": 13,
+"l": 12,
+"a": 11
+},
+"abilities": [
+{
+"name": "Song",
+"text": "Every creature that hears it neutralizes 1 Bashing and loses all fear conditions."
+},
+{
+"name": "Tail Slap",
+"text": "Kinetic damage to a ship's Hull, if provoked."
+}
+],
+"trait": "Peaceful giants that swim between worlds. Sailors consider them good luck.",
+"found": "The open sky.",
+"loot": "Never hunted by anyone decent."
+}
+]

@@ -139,3 +139,24 @@
 .cb-tile-code .act.small { min-width: 0; width: auto; padding: 0 8px; flex: 0 0 auto; }
 .cb-tile-code input { width: 0; }
 .cb-tile-icon { filter: brightness(0) invert(1) sepia(1) saturate(4) hue-rotate(5deg) drop-shadow(0 0 4px rgba(255, 215, 106, 0.5)); }
+
+/* Tokens: portrait tiles with vaporwave rims (cyan for the party, hot pink for enemies) */
+.cb-token { width: 86%; height: 86%; border-radius: 8px; border: 2px solid transparent; color: #f3f6ff; font-family: var(--pixel); font-size: 15px; font-weight: 400; letter-spacing: 0.04em;
+  background-color: #12163f; background-image: linear-gradient(160deg, rgba(255, 255, 255, 0.08), rgba(0, 0, 0, 0.35)); background-size: cover; background-position: center top; text-shadow: 0 1px 2px #000; }
+.cb-token[style*="background-image"] { background-color: #0b0e2a; }
+.cb-token.party { background-color: #0f2a44; border-color: #00f0ff; box-shadow: 0 0 6px #00f0ff, 0 0 14px rgba(0, 240, 255, 0.45), inset 0 0 8px rgba(0, 240, 255, 0.35); }
+.cb-token.enemy { background-color: #3a0f2e; border-color: #ff3ea5; box-shadow: 0 0 6px #ff3ea5, 0 0 14px rgba(255, 62, 165, 0.45), inset 0 0 8px rgba(255, 62, 165, 0.35); }
+.cb-token.neutral { background-color: #2c2448; border-color: #c9a0ff; box-shadow: 0 0 6px #c9a0ff, inset 0 0 8px rgba(201, 160, 255, 0.3); }
+.cb-token.sel { outline: 2px solid var(--gold); outline-offset: 2px; }
+@keyframes cb-pulse { 50% { transform: translateY(-3px); filter: brightness(1.25); } }
+.cb-token.turn { animation: cb-pulse 0.9s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) { .cb-token.turn { animation: none; outline: 3px solid var(--gold); } }
+.cb-side.party { background: #00f0ff; } .cb-side.enemy { background: #ff3ea5; } .cb-side.neutral { background: #c9a0ff; }
+/* Bestiary picker */
+.cb-best { max-height: 55vh; overflow: auto; display: grid; gap: 4px; padding-right: 4px; }
+.cb-best-row { display: grid; grid-template-columns: 40px minmax(0, 1fr) auto; gap: 8px; align-items: center; text-align: left; padding: 6px 8px; border: 1px solid var(--line); border-radius: 5px; background: rgba(0, 0, 0, 0.25); color: var(--text); font: inherit; cursor: pointer; }
+.cb-best-row:hover, .cb-best-row:focus-visible { border-color: var(--gold); outline: none; }
+.cb-best-row small { display: block; color: var(--text-muted); font-size: 12px; }
+.cb-best-rank { font-family: var(--pixel); color: var(--gold); font-size: 16px; text-align: center; }
+.cb-best-num { font-size: 12px; color: var(--sky); white-space: nowrap; }
+.cb-dialog textarea { width: 100%; min-height: 70px; padding: 6px 8px; border: 2px solid var(--line); border-radius: 5px; background: rgba(0, 0, 0, 0.35); color: var(--text); font: inherit; }
