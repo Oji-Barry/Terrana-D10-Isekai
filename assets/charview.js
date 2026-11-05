@@ -244,7 +244,6 @@
         btn('Upkeep +2 (hurt)', function () { save(Math.min(3, held + 2), 0); }, 'You took damage since your last turn: regain 2 AP'),
         btn('Ally gives 1', function () { save(held + 1, used); }, 'Shared AP from an ally, at no action cost'),
         btn('Give 1', function () { save(held - 1, used); }, 'Share 1 AP with an ally', held < 1),
-        btn('New Turn', function () { save(Math.min(3, held), 0); }, 'Reset what you used this turn'),
         btn('Refill', function () { save(3, 0); }, 'Back to 3 held, for a new fight')]) : null,
       mine ? el('p', { class: 'cv-muted cv-mt-hint', text: 'Spend 1, 3, or 6 AP for +1, +2, or +3 dice, or 1, 2, or 3 extra zones. Hold up to 3; allies can share, but no one uses more than 6 in a turn.' }) : null
     ]);
@@ -291,8 +290,7 @@
       mine ? el('div', { class: 'cv-mt-btns' }, [amt,
         btn('Spend', function () { save(cur - n(), spent + Math.min(n(), cur), true); }, 'Take it from your pool and count it toward this turn'),
         btn('Regain', function () { save(cur + n(), spent, true); }, 'Add it back to your pool (crystals, potions, spells)'),
-        btn('Upkeep +' + regen, function () { save(cur + regen, 0); }, 'Start of your turn: regain mana for your Mana dots and reset what you spent this turn. Took damage? Regain 1 more.'),
-        btn('New Turn', function () { save(cur, 0); }, 'Reset what you spent this turn without regaining'),
+        btn('Upkeep +' + regen, function () { save(cur + regen, 0); }, 'Start of your turn: regain mana for your Mana dots and start counting this turn fresh. Took damage? Regain 1 more.'),
         btn('Full', function () { save(mp, 0); }, 'Refill the pool, after a long rest')]) : null,
       mine ? el('p', { class: 'cv-muted cv-mt-hint', text: 'Upkeep regains ' + regen + ' for ' + M.mana.dots + ' Mana dot' + (M.mana.dots === 1 ? '' : 's') + ' (1 more if you took damage) and starts a new turn.' }) : null
     ]);
@@ -331,8 +329,6 @@
       apTracker(),
       row2('Initiative', 'Dexterity + Perception' + (M.mods.init ? plus(M.mods.init) + ' from gear' : ''), el('span', { class: 'px', text: String(c.initiative) })),
       row2('Movement', 'Zones per turn, from Dexterity' + (M.mods.move ? ', with gear and attuned spells' : ''), el('span', { class: 'px', text: String(c.move) })),
-      row2('BDT', 'Fortitude + Armor' + (M.mods.resilience ? ' (Fortitude includes ' + M.mods.resilience + ' Resilience)' : ''), el('span', { class: 'px', text: String(c.bdt) })),
-      row2('LDT / ADT', 'BDT x2 / BDT x3', el('span', { class: 'px', text: (c.bdt * 2) + ' / ' + (c.bdt * 3) })),
       c.attack || c.damage || c.defense ? row2('From gear', ['Attack' + plus(c.attack), 'Damage' + plus(c.damage), 'Defense' + plus(c.defense)].join(', '), null) : null
     ], '../rulebook/terms.html'));
     var cLevel = (card('Level ' + M.level, M.levelParts.map(function (p) { return row2(p[0], null, el('span', { class: 'px', text: String(p[1]) })); }).concat([el('p', { class: 'cv-muted', text: 'Merits, Flaws, Backgrounds, Willpower, Fate, and Sanity do not count.' })]), '../rulebook/ch6.html#calculating-character-level'));
