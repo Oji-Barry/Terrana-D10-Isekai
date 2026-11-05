@@ -812,8 +812,8 @@
     mine = !!me && me.id === row.owner;
     if (!row.sheet || !row.sheet.build) { $('cv-loading').textContent = 'This character has not been made in the Forge yet.'; return; }
     window.FORGE_HEADLESS = true;
-    await loadScript('../assets/forge.js');
-    data = await fetch('../forge/data.json').then(function (r) { return r.json(); });
+    await loadScript('../assets/forge.js?v=63762387');
+    data = await fetch('../forge/data.json?v=1863d047').then(function (r) { return r.json(); });
     var owner = mine ? me : (await db.from('profiles').select('username').eq('id', row.owner).maybeSingle()).data || {};
     M = window.TerranaCharacter.load(data, row, { username: owner.username || '', is_admin: !!(me && me.is_admin) });
     document.title = M.name + ' | Jimothy’s D10 Isekai JRPG';

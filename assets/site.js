@@ -394,7 +394,7 @@
   if (document.querySelector('.site-nav a.login') && !hasScript('assets/auth.js')) {
     window.addEventListener('load', function () {
       (hasScript('vendor/supabase-') ? Promise.resolve() : loadScript(root + 'vendor/supabase-2.118.0.js'))
-        .then(function () { return loadScript(root + 'assets/auth.js'); })
+        .then(function () { return loadScript(root + 'assets/auth.js?v=69bd903b'); })
         .catch(function () {});
     });
   }
