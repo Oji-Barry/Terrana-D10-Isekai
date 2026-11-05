@@ -561,7 +561,7 @@
       Object.keys(bySize).map(Number).sort(function (x, y) { return x - y; }).forEach(function (n) {
         b.appendChild(el('h3', { class: 'px cv-combo-h', text: (WORD[n] || n) + '-School Combinations' }));
         var grid = el('div', { class: 'cv-cards' });
-        bySize[n].sort(function (x, y) { return (x.dots || 0) - (y.dots || 0) || x.name.localeCompare(y.name); }).forEach(function (c) {
+        bySize[n].sort(function (x, y) { return x.name.localeCompare(y.name); }).forEach(function (c) {
           var lowest = Math.min.apply(null, (c.schools || []).map(function (sc) { var kk = M.knowledges.filter(function (k) { return k.name === sc || k.name === sc + ' Magic'; })[0]; return kk ? kk.dots : 0; }));
           grid.appendChild(powerCard(c.dots || '', c.schools.join(' + '), 'Combination', c, 'ch13', isFinite(lowest) ? lowest : 0));
         });
