@@ -353,7 +353,7 @@
     return window.TerranaCharacter.combatKit();
   }
   function fromKit(k) {
-    return { initiative: k.initiative, bdt: k.bdt, mana: k.mana.pool, mana_max: k.mana.pool, mt: k.mana.mt, willpower: k.willpower, stats: k };
+    return { ap: 3, boxes: k.boxes || { b: 7, l: 5, a: 3 }, initiative: k.initiative, bdt: k.bdt, mana: k.mana.pool, mana_max: k.mana.pool, mt: k.mana.mt, willpower: k.willpower, stats: k };
   }
   async function bringDialog() {
     var chars = await must(db.from('characters').select('id, name, sheet').eq('owner', me.id).order('created_at', { ascending: true }));
@@ -372,7 +372,7 @@
       await must(db.from('combatants').insert(Object.assign({ encounter_id: R.enc.id, owner: me.id, character_id: row.id, name: row.name, kind: 'pc', side: 'party' }, fromKit(k))));
       if (summon.checked) {
         var b = row.sheet.build, comp = (b.starter_summon && b.starter_summon.name) ? b.starter_summon : b.familiar;
-        if (comp) await must(db.from('combatants').insert({ encounter_id: R.enc.id, owner: me.id, name: comp.name || 'SumMonz', kind: 'summon', side: 'party', initiative: k.initiative, bdt: 3,
+        if (comp) await must(db.from('combatants').insert({ encounter_id: R.enc.id, owner: me.id, name: comp.name || 'SumMonz', kind: 'summon', side: 'party', ap: 3, initiative: k.initiative, bdt: 3,
           boxes: { b: 3, l: 2, a: 1 }, mana: 3, mana_max: 3, mt: 2, stats: { npc: true, attack: 4, defense: 4, damage: 3, regen: 1, notes: 'Rank F: Attack 4, Defense 4, Damage 3, BDT 3, Health 3 / 2 / 1, Mana 3, M/T 2, Move 1' } }));
       }
       await refresh();
@@ -404,7 +404,7 @@
       el('p', { class: 'cb-desc', text: 'Rank F creatures: Attack 4, Defense 4, Damage 3, BDT 3, Health 3 / 2 / 1 (Chapter 15 has the Bestiary).' })]));
     d.ok('Add', async function () {
       var n = Math.max(1, Math.min(12, +f.count.value || 1)), base = f.name.value.trim() || 'Enemy', rows = [];
-      for (var i = 0; i < n; i++) rows.push({ encounter_id: R.enc.id, owner: me.id, name: n > 1 ? base + ' ' + (i + 1) : base, kind: 'npc', side: f.side.value, initiative: +f.init.value || 0, bdt: +f.bdt.value || 1,
+      for (var i = 0; i < n; i++) rows.push({ encounter_id: R.enc.id, owner: me.id, name: n > 1 ? base + ' ' + (i + 1) : base, kind: 'npc', side: f.side.value, ap: 3, initiative: +f.init.value || 0, bdt: +f.bdt.value || 1,
         boxes: { b: +f.b.value || 0, l: +f.l.value || 0, a: +f.a.value || 1 }, mana: +f.mana.value || 0, mana_max: +f.mana.value || 0, mt: +f.mt.value || 0, hidden: f.hidden.checked,
         stats: { npc: true, attack: +f.atk.value || 0, defense: +f.def.value || 0, damage: +f.dmg.value || 0, notes: f.notes.value.trim(), regen: 1 } });
       await must(db.from('combatants').insert(rows));
