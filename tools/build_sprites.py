@@ -19,7 +19,7 @@ for f in sorted(os.listdir(D)):
         for c in range(w // 16):
             if name == 'Reptile' and (r >= 13 or (r, c) == (12, 3)): continue  # the artist's note, and Platino (hidden)
             if im.crop((c * 16, r * 16, c * 16 + 16, r * 16 + 16)).getbbox(): cells.append([r, c])
-    out['sheets'].append({'id': name, 'label': NICE.get(name, name), 'cols': w // 16, 'rows': h // 16, 'cells': cells})
+    out['sheets'].append({'id': name, 'label': NICE.get(name, name), 'cols': w // 16, 'rows': h // 16, 'h': h / 16, 'cells': cells})
 out['sheets'].sort(key=lambda s: ['Player', 'Humanoid'].index(s['id']) if s['id'] in ('Player', 'Humanoid') else 9)
 json.dump(out, open(os.path.join(ROOT, 'assets', 'sprites', 'sprites.json'), 'w'), separators=(',', ':'))
 print(sum(len(s['cells']) for s in out['sheets']), 'sprites')
