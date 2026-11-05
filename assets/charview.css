@@ -192,3 +192,7 @@ details.cv-more > summary { cursor: pointer; color: var(--sky); font-weight: 700
 .cv-adj { display: inline-flex; align-items: center; gap: 6px; flex-shrink: 0; }
 .cv-adj button { width: 24px; height: 24px; padding: 0; border-radius: 4px; border: 1px solid var(--line); background: rgba(0, 0, 0, 0.3); color: var(--text); cursor: pointer; font-weight: 800; line-height: 1; }
 .cv-adj button[disabled] { opacity: 0.35; cursor: default; }
+.cv-incap { display: flex; gap: 10px; align-items: flex-start; margin-top: 10px; padding: 8px; border: 1px dashed rgba(192, 107, 255, 0.6); border-radius: 6px; }
+.cv-incap.on { border-style: solid; background: rgba(192, 107, 255, 0.15); }
+.cv-incap .cv-tb { flex-shrink: 0; }
+.cv-incap small { display: block; font-size: 12px; line-height: 1.35; }
