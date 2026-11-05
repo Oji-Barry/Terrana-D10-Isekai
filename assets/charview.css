@@ -14,7 +14,7 @@
 
 .cv-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; }
 .cv-card { border: 1px solid var(--line); border-radius: 6px; padding: 12px 14px; background: rgba(0, 0, 0, 0.18); min-width: 0; }
-.cv-card h3 { margin: 0 0 8px; text-align: left; font-size: 18px; }
+.cv-card h3 { margin: 0 0 8px; text-align: center; font-size: 18px; }
 .cv-card h4 { margin: 10px 0 4px; color: var(--sky); font-size: 15px; }
 .cv-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 4px 0; border-bottom: 1px solid rgba(233, 237, 248, 0.1); }
 .cv-row:last-child { border-bottom: 0; }
