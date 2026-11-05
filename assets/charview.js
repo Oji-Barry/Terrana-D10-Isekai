@@ -203,12 +203,36 @@
 
   // ---------- tabs ----------
   var DRAW = {};
+  // Mana on hand and mana spent this turn, kept between visits
+  function manaTracker() {
+    var mp = M.mana.pool, mt = M.mana.mt, st = (M.tracks || {}).mana || {};
+    var cur = st.cur === undefined || st.cur === null ? mp : Math.max(0, Math.min(mp, st.cur)), spent = st.spent || 0;
+    var regen = M.mana.dots >= 10 ? 5 : M.mana.dots >= 9 ? 4 : M.mana.dots >= 7 ? 3 : M.mana.dots >= 4 ? 2 : 1;
+    function save(c2, s2) { var t2 = tracks(); t2.mana = { cur: Math.max(0, Math.min(mp, c2)), spent: Math.max(0, s2) }; queue({ tracks: t2 }); drawHead(); drawBody(); }
+    var amt = el('input', { type: 'number', min: '1', max: '99', step: '1', value: '1', 'aria-label': 'How much mana', disabled: !mine });
+    function n() { return Math.max(1, Math.floor(+amt.value || 1)); }
+    var burn = spent > mt ? spent - mt : 0;
+    function bar(v, max, cls) { var w = el('div', { class: 'cv-bar ' + cls }); w.appendChild(el('span', { style: 'width:' + (max ? Math.min(100, v / max * 100) : 0) + '%' })); return w; }
+    var btn = function (t, f, title) { return el('button', { type: 'button', class: 'act small', text: t, title: title || null, disabled: !mine, onclick: f }); };
+    return el('div', { class: 'cv-manatrack' }, [
+      el('div', { class: 'cv-mt-row' }, [el('span', { class: 'nm', text: 'Mana on hand' }), el('span', { class: 'px', text: cur + ' / ' + mp })]), bar(cur, mp, 'pool'),
+      el('div', { class: 'cv-mt-row' }, [el('span', { class: 'nm', text: 'Spent this turn' }), el('span', { class: 'px' + (burn ? ' cv-burn' : ''), text: spent + ' / ' + mt })]), bar(spent, mt, 'turn' + (burn ? ' over' : '')),
+      burn ? el('p', { class: 'cv-msg err', text: 'Mana Burn: ' + burn + ' over your M/T this turn. Every mana over the limit burns (Chapter 11).' }) : null,
+      mine ? el('div', { class: 'cv-mt-btns' }, [amt,
+        btn('Spend', function () { save(cur - n(), spent + Math.min(n(), cur)); }, 'Take it from your pool and count it toward this turn'),
+        btn('Regain', function () { save(cur + n(), spent); }, 'Add it back to your pool (crystals, potions, spells)'),
+        btn('Upkeep +' + regen, function () { save(cur + regen, 0); }, 'Start of your turn: regain mana for your Mana dots and reset what you spent this turn. Took damage? Regain 1 more.'),
+        btn('New Turn', function () { save(cur, 0); }, 'Reset what you spent this turn without regaining'),
+        btn('Full', function () { save(mp, 0); }, 'Refill the pool, after a long rest')]) : null,
+      mine ? el('p', { class: 'cv-muted cv-mt-hint', text: 'Upkeep regains ' + regen + ' for ' + M.mana.dots + ' Mana dot' + (M.mana.dots === 1 ? '' : 's') + ' (1 more if you took damage) and starts a new turn.' }) : null
+    ]);
+  }
   DRAW.overview = function (b) {
     var g = el('div', { class: 'cv-grid' });
     var t = M.trope;
-    g.appendChild(card('Trope', t ? [row2(t.name, t.group + ' Trope', null), el('p', { class: 'cv-muted' }, ['Boon: ' + t.boon + '. Bane: ' + t.bane + '. ', link(t.link, 'Read the Trope')])] : [el('p', { class: 'cv-muted', text: 'No Trope picked.' })]));
+    var cTrope = (card('Trope', t ? [row2(t.name, t.group + ' Trope', null), el('p', { class: 'cv-muted' }, ['Boon: ' + t.boon + '. Bane: ' + t.bane + '. ', link(t.link, 'Read the Trope')])] : [el('p', { class: 'cv-muted', text: 'No Trope picked.' })]));
     var h = M.heritage;
-    g.appendChild(card('Heritage', h ? [
+    var cHer = (card('Heritage', h ? [
       row2(h.name, h.rare ? 'Rare heritage' : 'Common heritage', null),
       h.innate ? row2('Innate Attribute', h.innate, null) : null,
       h.innate_flaw ? row2('Innate Flaw', h.innate_flaw, null) : null,
@@ -220,20 +244,20 @@
     var sc = M.scales.map(function (s) {
       return row2(s.name, s.pos + (s.side ? ' (' + s.side + ')' : '') + (s.drive ? '. Drive: ' + s.drive : ''), s.high ? el('span', { class: 'cv-tag gold', text: 'High' }) : null);
     });
-    g.appendChild(card('Virtues and Vices', sc, '../rulebook/ch7.html'));
-    g.appendChild(card('Willpower, Fate, Sanity', M.stats.map(function (s) {
+    var cVV = (card('Virtues and Vices', sc, '../rulebook/ch7.html'));
+    var cWFS = (card('Willpower, Fate, Sanity', M.stats.map(function (s) {
       return el('div', { class: 'cv-row cv-wfs' }, [el('div', { class: 'cv-wfs-top' }, [link('../rulebook/ch11.html#' + slug(s.name), s.name), dots(s.dots, 10)]),
         triRow(s.name.toLowerCase(), s.name), el('small', { class: 'cv-muted', text: s.used })]);
     }).concat([el('p', { class: 'cv-muted', style: 'margin:6px 0 0', text: 'Click a box once for a check, twice for an X, a third time to clear it. Checks (gains) fill from the left and X’s (losses) from the right. When all 10 are checks you gain a dot, and when all 10 are X’s you lose one: a button appears to do it and clear the row.' })]), '../rulebook/ch11.html'));
-    g.appendChild(healthCard());
+    var cHealth = healthCard();
     var att = M.mana.attuned.map(function (a) { return row2(a.name + ' (' + a.school + ')', (a.effects.length ? a.effects.join(', ') : brief(a.effect)), el('span', { class: 'px', text: a.mana + ' held' })); });
-    g.appendChild(card('Mana', [
+    var cMana = (card('Mana', [manaTracker(),
       row2('Mana', 'Powers all magic', buyDots(M.mana.dots, 10, 'mana', '')),
       row2('Mana Pool', 'All magic (' + M.mana.magicDots + ': Magic, Circle Magic, and every Magical Knowledge dot) x Mana', el('span', { class: 'px', text: String(M.mana.pool) })),
       row2('Max Mana per Turn', 'Fortitude + Mana' + (M.mana.arcane ? ', minus Arcane Enhancements' : '') + (M.mana.held ? ', minus ' + M.mana.held + ' attuned (' + M.mana.mtFull + ' without)' : ''), el('span', { class: 'px', text: String(M.mana.mt) }))
     ].concat(att.length ? [el('h4', { text: 'Attuned now' })].concat(att) : [el('p', { class: 'cv-muted', style: 'margin:6px 0 0', text: M.attunables.length ? 'Nothing attuned. Switch attuned spells on in the Magic tab.' : '' })]), '../rulebook/ch11.html'));
     var c = M.combat;
-    g.appendChild(card('Combat', [
+    var cCombat = (card('Combat', [
       row2('Action Points', 'Hold up to 3, use up to 6 in a turn. Regain 1 at Upkeep, 2 if you took damage.', el('span', { class: 'px', text: '3 / 6' })),
       row2('Initiative', 'Dexterity + Perception' + (M.mods.init ? plus(M.mods.init) + ' from gear' : ''), el('span', { class: 'px', text: String(c.initiative) })),
       row2('Movement', 'Zones per turn, from Dexterity' + (M.mods.move ? ', with gear and attuned spells' : ''), el('span', { class: 'px', text: String(c.move) })),
@@ -241,7 +265,8 @@
       row2('LDT / ADT', 'BDT x2 / BDT x3', el('span', { class: 'px', text: (c.bdt * 2) + ' / ' + (c.bdt * 3) })),
       c.attack || c.damage || c.defense ? row2('From gear', ['Attack' + plus(c.attack), 'Damage' + plus(c.damage), 'Defense' + plus(c.defense)].join(', '), null) : null
     ], '../rulebook/terms.html'));
-    g.appendChild(card('Level ' + M.level, M.levelParts.map(function (p) { return row2(p[0], null, el('span', { class: 'px', text: String(p[1]) })); }).concat([el('p', { class: 'cv-muted', text: 'Merits, Flaws, Backgrounds, Willpower, Fate, and Sanity do not count.' })]), '../rulebook/ch6.html#calculating-character-level'));
+    var cLevel = (card('Level ' + M.level, M.levelParts.map(function (p) { return row2(p[0], null, el('span', { class: 'px', text: String(p[1]) })); }).concat([el('p', { class: 'cv-muted', text: 'Merits, Flaws, Backgrounds, Willpower, Fate, and Sanity do not count.' })]), '../rulebook/ch6.html#calculating-character-level'));
+    [cCombat, cMana, cHealth, cWFS, cTrope, cHer, cVV, cLevel].forEach(function (x) { g.appendChild(x); });
     b.appendChild(g);
   };
   DRAW.traits = function (b) {
