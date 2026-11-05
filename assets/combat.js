@@ -703,15 +703,15 @@
   }
   // ---------- sprites: DawnLike by DragonDePlatino (palette by DawnBringer), CC BY-SA 3.0 ----------
   var SPR = null;
-  async function sprites() { if (!SPR) SPR = await fetch('../assets/sprites/sprites.json?v=287ffe56').then(function (r) { return r.json(); }); return SPR; }
+  async function sprites() { if (!SPR) SPR = await fetch('../assets/sprites/sprites.json?v=f1fb7495').then(function (r) { return r.json(); }); return SPR; }
   function sheetOf(id) { return SPR ? SPR.sheets.filter(function (x) { return x.id === id; })[0] : null; }
   // Two frames, swapped back and forth, for the bouncing idle
   function spriteNode(spec, px) {
-    var p = String(spec).split(':'), sh = sheetOf(p[0]) || (p[0] === 'Reptile' ? { cols: 8, rows: 15 } : null);
+    var p = String(spec).split(':'), sh = sheetOf(p[0]) || (p[0] === 'Reptile' ? { cols: 8, rows: 15, h: 15.5 } : null);
     var wrap = el('span', { class: 'cb-spr', style: 'width:' + px + 'px;height:' + px + 'px', 'aria-hidden': 'true' });
     if (!sh) { if (!SPR) sprites().then(function () { drawAll(); }); return wrap; }
     [0, 1].forEach(function (f) {
-      wrap.appendChild(el('span', { class: 'cb-spr-f f' + f, style: 'background-image:url(../assets/sprites/dawnlike/' + p[0] + f + '.png);background-size:' + (sh.cols * px) + 'px ' + (sh.rows * px) + 'px;background-position:-' + (+p[2] * px) + 'px -' + (+p[1] * px) + 'px' }));
+      wrap.appendChild(el('span', { class: 'cb-spr-f f' + f, style: 'background-image:url(../assets/sprites/dawnlike/' + p[0] + f + '.png);background-size:' + (sh.cols * px) + 'px ' + ((sh.h || sh.rows) * px) + 'px;background-position:-' + (+p[2] * px) + 'px -' + (+p[1] * px) + 'px' }));
     });
     return wrap;
   }
