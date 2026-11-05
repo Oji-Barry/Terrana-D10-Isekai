@@ -11,6 +11,7 @@ create table public.encounters (
   map        jsonb not null default '{"cols": 5, "rows": 7, "theme": "dark"}'::jsonb,
   state      jsonb not null default '{"round": 1, "turn": 0, "order": []}'::jsonb,
   open       boolean not null default true,
+  public     boolean not null default false, -- public: anyone can join from the list; private: needs the code
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
@@ -116,6 +117,49 @@ end;
 $$;
 revoke all on function public.join_encounter(text) from public, anon;
 grant execute on function public.join_encounter(text) to authenticated;
+
+-- Every open fight for the Combat page list, without the join codes
+create function public.list_encounters()
+returns table (id uuid, name text, host_name text, is_public boolean, players int, mine boolean, created_at timestamptz)
+language sql
+stable
+security definer
+set search_path = ''
+as $$
+  select e.id, e.name, coalesce(p.username, ''), e.public,
+         (select count(*)::int from public.encounter_players ep where ep.encounter_id = e.id),
+         (e.host = (select auth.uid()) or exists (select 1 from public.encounter_players ep where ep.encounter_id = e.id and ep.player = (select auth.uid()))),
+         e.created_at
+  from public.encounters e
+  left join public.profiles p on p.id = e.host
+  where e.open
+  order by e.created_at desc
+  limit 100;
+$$;
+revoke all on function public.list_encounters() from public;
+grant execute on function public.list_encounters() to anon, authenticated;
+
+-- Join a public fight from the list (private fights need join_encounter with the code)
+create function public.join_public_encounter(e uuid)
+returns uuid
+language plpgsql
+security definer
+set search_path = ''
+as $$
+begin
+  if auth.uid() is null then
+    raise exception 'Log in to join.' using errcode = '42501';
+  end if;
+  if not exists (select 1 from public.encounters where id = e and open and public) then
+    if exists (select 1 from public.encounters where id = e and host = auth.uid()) then return e; end if;
+    raise exception 'That fight is private, or no longer open. Ask the Storyteller for its code.' using errcode = 'P0001';
+  end if;
+  insert into public.encounter_players (encounter_id, player) values (e, auth.uid()) on conflict do nothing;
+  return e;
+end;
+$$;
+revoke all on function public.join_public_encounter(uuid) from public, anon;
+grant execute on function public.join_public_encounter(uuid) to authenticated;
 
 -- COMBATANTS ----------------------------------------------------------
 create table public.combatants (
