@@ -155,22 +155,53 @@
   }
 
   // ---------- room ----------
-  var R = { enc: null, players: {}, cs: {}, rolls: [], host: false, sel: null, tab: 'spells', moving: null, data: null };
+  var R = { enc: null, players: {}, cs: {}, rolls: [], host: false, sel: null, moving: null, data: null, open: {}, pay: {} };
   var CONDS = ['Bleeding', 'Blinded', 'Burning', 'Chilled', 'Exhausted', 'Grappled', 'Petrified', 'Poisoned', 'Prone', 'Rooted'];
+  var PHASES = [
+    ['Upkeep', 'Regain AP and mana, pay upkeep for anything still running, and resolve Burning, Bleeding, and Poisoned.'],
+    ['Planning', 'Lock in what you want to do this turn.'],
+    ['Move or Use Item', 'Move up to your Movement, use a belt item, or both. AP buys extra zones or items.'],
+    ['Action', 'Make an attack or cast a spell from what you prepared.'],
+    ['Damage', 'Roll damage for a hit and mark it on the target.'],
+    ['Move or Use Item', 'Use whatever Movement and items you have left.'],
+    ['Ending', 'End-of-turn effects resolve, then the next turn begins.']];
   function mineC(c) { return c && (c.owner === me.id || R.host); }
   function list() { return Object.keys(R.cs).map(function (k) { return R.cs[k]; }); }
+  function ST() {
+    var s = Object.assign({ round: 1, turn: 0, order: [], started: false, mode: 'initiative', first: 'party', phase: 0 }, R.enc.state || {});
+    s.t = Object.assign({ moved: 0, extra: 0, items: 0, done: {}, attack: null }, s.t || {});
+    return s;
+  }
+  function byInit(a, b) { return b.initiative - a.initiative || a.name.localeCompare(b.name); }
+  function computeOrder(mode, first) {
+    var all = list().slice().sort(byInit);
+    if (mode !== 'team') return all.map(function (c) { return c.id; });
+    var party = all.filter(function (c) { return c.side === 'party'; }), foes = all.filter(function (c) { return c.side !== 'party'; });
+    return (first === 'enemy' ? foes.concat(party) : party.concat(foes)).map(function (c) { return c.id; });
+  }
   function order() {
-    var o = ((R.enc.state || {}).order || []).filter(function (id) { return R.cs[id]; });
-    var rest = list().filter(function (c) { return o.indexOf(c.id) < 0; }).sort(function (a, b) { return b.initiative - a.initiative || a.name.localeCompare(b.name); });
+    var o = ST().order.filter(function (id) { return R.cs[id]; });
+    var rest = list().filter(function (c) { return o.indexOf(c.id) < 0; }).sort(byInit);
     return o.map(function (id) { return R.cs[id]; }).concat(rest);
   }
-  function current() { var o = ((R.enc.state || {}).order || []).filter(function (id) { return R.cs[id]; }); var t = (R.enc.state || {}).turn || 0; return o.length ? R.cs[o[t % o.length]] : null; }
+  function current() { var s = ST(); if (!s.started) return null; var o = s.order.filter(function (id) { return R.cs[id]; }); return o.length ? R.cs[o[s.turn % o.length]] : null; }
+  function canControl() { var c = current(); return !!c && (R.host || c.owner === me.id); }
+  function moveOf(c) { var k = c.stats || {}; return k.move || 1; }
+  function moveLeft(c) { var t = ST().t; return Math.max(0, moveOf(c) + (t.extra || 0) - (t.moved || 0)); }
   async function upd(c, patch) {
     Object.assign(c, patch);
     drawAll();
     var r = await db.from('combatants').update(patch).eq('id', c.id);
     if (r.error) { alert(oops(r.error)); refresh(); }
   }
+  // Turn state lives on the encounter. The Storyteller writes it directly; the player whose turn it is goes through turn_update.
+  async function saveState(patch) {
+    var s = Object.assign(ST(), patch);
+    R.enc.state = s; drawAll();
+    var r = R.host ? await db.from('encounters').update({ state: s }).eq('id', R.enc.id) : await db.rpc('turn_update', { e: R.enc.id, patch: patch });
+    if (r.error) { alert(oops(r.error)); refresh(); }
+  }
+  async function markDone(extra) { var s = ST(), t = Object.assign({}, s.t, extra || {}); t.done = Object.assign({}, t.done); t.done[s.phase] = true; await saveState({ t: t }); }
   // Add a roll or note to the log now, without waiting for the live update
   async function addRoll(row) {
     var r = await must(db.from('rolls').insert(Object.assign({ encounter_id: R.enc.id, roller: me.id }, row)).select().single());
@@ -210,21 +241,23 @@
     setInterval(function () { if (!document.hidden && !document.querySelector('dialog[open]')) refresh().catch(function () {}); }, 20000);
   }
 
-  function drawAll() { drawTop(); drawMap(); drawTracker(); drawActions(); drawLog(); }
+  function drawAll() { drawTop(); drawBanner(); drawMap(); drawPhases(); drawLoadout(); drawCard(); drawLog(); }
 
+  // ---------- top box ----------
   function drawTop() {
     var t = $('cb-top'); t.textContent = '';
-    var st = R.enc.state || {}, cur = current();
+    var s = ST(), cur = current();
     t.appendChild(el('div', {}, [el('h1', { class: 'px', text: R.enc.name }),
-      el('div', { class: 'cb-sub' }, ['Storyteller: ' + (R.players[R.enc.host] || '') + '. Join code ', el('span', { class: 'cb-code', text: R.enc.code })])]));
-    var bar = el('div', { class: 'cb-bar' }, [el('span', { class: 'cb-round', text: 'Round ' + (st.round || 1) + (cur ? ': ' + cur.name + '’s turn' : '') })]);
+      el('div', { class: 'cb-sub' }, ['Storyteller: ' + (R.players[R.enc.host] || '') + '. ' + (R.enc.public ? 'Public fight' : 'Private fight') + '. Join code ', el('span', { class: 'cb-code', text: R.enc.code })])]));
+    var status = s.started ? 'Round ' + s.round + ': ' + (cur ? cur.name + '’s turn, ' + PHASES[s.phase][0] + ' Phase' : 'nobody left in the order') : s.order.length ? 'Turn order is set. Ready to start.' : 'Setting up: bring characters, add NPCs, then set the turn order.';
+    var bar = el('div', { class: 'cb-bar' }, [el('span', { class: 'cb-round', text: status })]);
     if (R.host) {
-      bar.appendChild(el('button', { class: 'act', type: 'button', text: 'Set Turn Order', onclick: setOrder }));
-      bar.appendChild(el('button', { class: 'act primary', type: 'button', text: 'Next Turn', onclick: nextTurn }));
+      if (!s.started) bar.appendChild(el('button', { class: 'act primary', type: 'button', text: 'Start Combat', disabled: !s.order.length, title: s.order.length ? null : 'Set the turn order first', onclick: startCombat }));
+      else bar.appendChild(el('button', { class: 'act', type: 'button', text: 'Stop Combat', title: 'Back to setup; health and positions stay', onclick: function () { saveState({ started: false, phase: 0, t: {} }); } }));
       bar.appendChild(el('button', { class: 'act', type: 'button', text: 'Add NPC', onclick: npcDialog }));
       bar.appendChild(el('button', { class: 'act', type: 'button', text: 'Map', onclick: mapDialog }));
       bar.appendChild(el('button', { class: 'act', type: 'button', text: R.enc.open ? 'Close Joining' : 'Open Joining', onclick: function () { db.from('encounters').update({ open: !R.enc.open }).eq('id', R.enc.id).then(refresh); } }));
-      bar.appendChild(el('button', { class: 'act', type: 'button', text: R.enc.public ? 'Make Private' : 'Make Public', title: R.enc.public ? 'Players will need the join code' : 'Anyone can join from the Combat page', onclick: function () { db.from('encounters').update({ public: !R.enc.public }).eq('id', R.enc.id).then(refresh); } }));
+      bar.appendChild(el('button', { class: 'act', type: 'button', text: R.enc.public ? 'Make Private' : 'Make Public', onclick: function () { db.from('encounters').update({ public: !R.enc.public }).eq('id', R.enc.id).then(refresh); } }));
       bar.appendChild(el('button', { class: 'act', type: 'button', text: 'End', onclick: async function () {
         if (!confirm('End this encounter for everyone? Its map, combatants, and log are deleted.')) return;
         await db.from('encounters').delete().eq('id', R.enc.id); location.href = 'index.html';
@@ -240,48 +273,304 @@
     bar.appendChild(el('button', { class: 'act', type: 'button', text: 'Bring a Character', onclick: bringDialog }));
     t.appendChild(bar);
   }
+  async function startCombat() {
+    var s = ST(); if (!s.order.length) return;
+    await saveState({ started: true, round: 1, turn: 0, phase: 0, t: {} });
+    var first = current();
+    await note('Combat starts. Round 1: ' + (first ? first.name : '') + ' goes first.');
+  }
 
+  // ---------- banner of names ----------
+  function drawBanner() {
+    var b = $('cb-banner'); b.textContent = '';
+    var s = ST(), cur = current();
+    var names = el('div', { class: 'cb-names', role: 'list' });
+    order().forEach(function (c, i) {
+      var inOrder = s.order.indexOf(c.id) >= 0;
+      names.appendChild(el('button', { type: 'button', role: 'listitem', class: 'cb-chip ' + c.side + (cur && cur.id === c.id ? ' turn' : '') + (R.sel === c.id ? ' sel' : '') + (incap(c) ? ' down' : '') + (inOrder ? '' : ' new'),
+        title: 'Initiative ' + c.initiative + (inOrder ? '' : '. Not in the turn order yet'), onclick: function () { R.sel = c.id; R.moving = (c.x === null || c.x === undefined) && mayMove(c) ? c.id : null; drawAll(); } },
+        [s.order.length && inOrder ? el('span', { class: 'cb-chip-n', text: String(s.order.indexOf(c.id) + 1) }) : null, c.name]));
+    });
+    if (!names.children.length) names.appendChild(el('span', { class: 'cv-muted', text: 'Nobody here yet. Bring a character, or the Storyteller can add NPCs.' }));
+    b.appendChild(names);
+    if (R.host) b.appendChild(el('button', { class: 'act primary cb-orderbtn', type: 'button', text: s.order.length ? 'Reset Turn Order' : 'Set Turn Order', onclick: orderDialog }));
+  }
+  function orderDialog() {
+    var s = ST();
+    var d = dialog('Set Turn Order');
+    var mode = el('div', { class: 'cb-vis' }, [
+      el('label', {}, [el('input', { type: 'radio', name: 'ord', value: 'initiative', checked: s.mode !== 'team' }), el('span', {}, [el('b', { text: 'Strict Initiative' }), el('small', { text: 'Everyone mixed together, highest Initiative first.' })])]),
+      el('label', {}, [el('input', { type: 'radio', name: 'ord', value: 'team', checked: s.mode === 'team' }), el('span', {}, [el('b', { text: 'By Team' }), el('small', { text: 'One side takes all its turns, then the other. Initiative orders each side.' })])])]);
+    var first = el('select', { id: 'ord-first' }, [opt('party', 'Players first', s.first !== 'enemy'), opt('enemy', 'Enemies first', s.first === 'enemy')]);
+    var inits = el('div', { class: 'cb-inits' });
+    list().sort(byInit).forEach(function (c) {
+      var inp = el('input', { type: 'number', value: String(c.initiative), min: '0', max: '60', 'aria-label': 'Initiative for ' + c.name, 'data-id': c.id });
+      inits.appendChild(el('label', {}, [el('span', { class: 'cb-side ' + c.side }), el('span', { text: c.name }), inp]));
+    });
+    d.body.appendChild(el('div', { class: 'cb-f' }, [mode, field('If by team, who goes first', first), el('h3', { class: 'px', text: 'Initiative' }), inits,
+      el('p', { class: 'cb-desc', text: 'Characters use Dexterity + Perception. Change any number before setting the order.' })]));
+    d.ok('Set Order', async function () {
+      var ups = [];
+      inits.querySelectorAll('input').forEach(function (inp) { var c = R.cs[inp.getAttribute('data-id')], v = +inp.value || 0; if (c && c.initiative !== v) { c.initiative = v; ups.push(db.from('combatants').update({ initiative: v }).eq('id', c.id)); } });
+      await Promise.all(ups);
+      var m = (d.el.querySelector('input[name=ord]:checked') || {}).value || 'initiative';
+      var o = computeOrder(m, first.value);
+      var patch = { order: o, mode: m, first: first.value };
+      if (s.started) { var cur = current(); patch.turn = Math.max(0, o.indexOf(cur ? cur.id : '')); }
+      else { patch.turn = 0; patch.phase = 0; patch.t = {}; }
+      await saveState(patch);
+      await note('Turn order set (' + (m === 'team' ? 'by team, ' + (first.value === 'enemy' ? 'enemies' : 'players') + ' first' : 'strict Initiative') + '): ' + o.map(function (id) { return R.cs[id].name; }).join(', ') + '.');
+    });
+    d.open();
+  }
+
+  // ---------- arena ----------
   function drawMap() {
     var m = R.enc.map || {}, cols = m.cols || 6, rows = m.rows || 8;
     var wrap = $('cb-map'); wrap.textContent = '';
-    var size = Math.max(40, Math.min(72, Math.floor((wrap.clientWidth - 40) / cols) - 3));
+    var size = Math.max(36, Math.min(72, Math.floor((wrap.clientWidth - 30) / cols) - 3));
     var grid = el('div', { class: 'cb-map ' + (m.theme === 'light' ? 'light' : 'dark'), role: 'grid', 'aria-label': 'Battle map, ' + cols + ' by ' + rows + ' zones', style: 'grid-template-columns:repeat(' + cols + ', var(--z));--z:' + size + 'px' });
     var at = {}; list().forEach(function (c) { if (c.x !== null && c.x !== undefined && c.y !== null) at[c.x + ',' + c.y] = c; });
-    var cur = current(), mover = R.moving ? R.cs[R.moving] : null;
+    var s = ST(), cur = current(), mover = R.moving ? R.cs[R.moving] : null;
+    var counted = !!(mover && s.started && cur && mover.id === cur.id && (s.phase === 2 || s.phase === 5));
+    var left = mover ? (counted ? moveLeft(mover) : 99) : 0;
     for (var y = 0; y < rows; y++) for (var x = 0; x < cols; x++) (function (x, y) {
       var c = at[x + ',' + y];
       var label = String.fromCharCode(65 + x) + (y + 1);
-      var z = el('button', { type: 'button', class: 'cb-zone' + (mover && !c ? ' target' : ''), 'aria-label': 'Zone ' + label + (c ? ': ' + c.name : ', empty') }, [el('span', { class: 'lab', text: label })]);
+      var dist = mover && mover.x !== null && mover.x !== undefined ? Math.max(Math.abs(x - mover.x), Math.abs(y - mover.y)) : 0;
+      var reach = mover && !c && (mover.x === null || mover.x === undefined || dist <= left);
+      var z = el('button', { type: 'button', class: 'cb-zone' + (reach ? ' target' : ''), 'aria-label': 'Zone ' + label + (c ? ': ' + c.name : ', empty') }, [el('span', { class: 'lab', text: label })]);
       if (c) {
         var tok = el('span', { class: 'cb-token ' + c.side + (R.sel === c.id ? ' sel' : '') + (cur && cur.id === c.id ? ' turn' : '') + (incap(c) ? ' down' : '') + (c.hidden ? ' hid' : ''), text: c.pic_url ? '' : initials(c.name) });
         if (c.pic_url) tok.style.backgroundImage = 'url("' + c.pic_url.replace(/"/g, '') + '")';
         z.appendChild(tok);
       }
       z.addEventListener('click', function () {
-        if (c) { R.sel = c.id; R.moving = mineC(c) ? c.id : null; drawAll(); return; }
-        if (mover && mineC(mover)) { R.moving = null; upd(mover, { x: x, y: y }); }
+        if (c) { R.sel = c.id; R.moving = mayMove(c) ? (R.moving === c.id ? null : c.id) : null; drawAll(); return; }
+        if (!mover || !reach) return;
+        var placing = mover.x === null || mover.x === undefined;
+        R.moving = null;
+        upd(mover, { x: x, y: y });
+        if (counted && !placing) { var t = Object.assign({}, ST().t); t.moved = (t.moved || 0) + dist; markDone({ moved: t.moved }); }
       });
       grid.appendChild(z);
     })(x, y);
     wrap.appendChild(grid);
-    var hint = mover ? 'Moving ' + mover.name + ': pick an empty zone. Pick the token again to cancel.' : 'Pick your token, then an empty zone, to move it.';
+    var hint;
+    if (mover) hint = counted ? 'Moving ' + mover.name + ': ' + left + ' zone' + (left === 1 ? '' : 's') + ' left this turn (diagonals count as 1). Pick a lit zone.' : 'Placing ' + mover.name + ': pick any empty zone.';
+    else if (!s.started) hint = 'Setup: pick your token, then any empty zone, to place it.';
+    else if (canControl() && (s.phase === 2 || s.phase === 5)) hint = 'Pick ' + cur.name + ', then a lit zone, to move.';
+    else hint = 'Tokens move during the Move or Use Item phases.';
     var unplaced = list().filter(function (c) { return (c.x === null || c.x === undefined) && mineC(c); });
-    wrap.appendChild(el('p', { class: 'cb-maphint', text: hint + (unplaced.length ? ' Not on the map yet: ' + unplaced.map(function (c) { return c.name; }).join(', ') + ' (pick it in the list, then a zone).' : '') }));
+    wrap.appendChild(el('p', { class: 'cb-maphint', text: hint + (unplaced.length ? ' Not on the map yet: ' + unplaced.map(function (c) { return c.name; }).join(', ') + '.' : '') }));
+  }
+  // Who may move a token right now
+  function mayMove(c) {
+    var s = ST(), cur = current();
+    if (!mineC(c)) return false;
+    if (!s.started || c.x === null || c.x === undefined) return true;   // setup, or placing a newcomer
+    if (R.host && (!cur || c.id !== cur.id)) return true;              // the Storyteller can reposition anyone else
+    return !!cur && c.id === cur.id && canControl() && (s.phase === 2 || s.phase === 5) && moveLeft(c) > 0;
   }
   function initials(n) { return n.split(/\s+/).map(function (w) { return w.charAt(0); }).join('').slice(0, 3).toUpperCase(); }
 
-  function boxesRow(c, k, label) {
+  // ---------- phase buttons, down the right side of the arena ----------
+  function drawPhases() {
+    var box = $('cb-phases'); box.textContent = '';
+    var s = ST(), cur = current(), ctl = canControl();
+    box.appendChild(el('h3', { class: 'px', text: s.started && cur ? cur.name : 'Phases' }));
+    if (!s.started) { box.appendChild(el('p', { class: 'cb-desc', text: 'The phases light up once the Storyteller starts combat.' })); }
+    PHASES.forEach(function (p, i) {
+      var isCur = s.started && i === s.phase, isPrev = s.started && i === s.phase - 1;
+      var back = isPrev && !s.t.done[s.phase];
+      var btn = el('button', { type: 'button', class: 'cb-phase' + (isCur ? ' cur' : '') + (s.started && i < s.phase ? ' past' : ''), disabled: !ctl || !(isCur || back),
+        'aria-expanded': String(isCur), title: isCur ? 'Click when you are finished with this phase' : back ? 'Go back to this phase' : null,
+        onclick: function () { if (isCur) finishPhase(); else if (back) saveState({ phase: i }); } },
+        [el('span', { class: 'cb-phase-n', text: String(i + 1) }), el('span', { text: p[0] }), isCur ? el('span', { class: 'cb-phase-done', text: ctl ? 'Done' : '' }) : null]);
+      box.appendChild(btn);
+      if (isCur && cur) {
+        var opts = el('div', { class: 'cb-phase-opts' });
+        opts.appendChild(el('p', { class: 'cb-desc', text: p[1] }));
+        if (ctl) phaseOptions(i, cur, opts); else opts.appendChild(el('p', { class: 'cb-desc', text: 'Waiting for ' + cur.name + (cur.owner === R.enc.host ? '' : ' (' + (R.players[cur.owner] || 'their player') + ')') + '.' }));
+        box.appendChild(opts);
+      }
+    });
+  }
+  async function finishPhase() {
+    var s = ST(), c = current(); if (!c) return;
+    if (s.phase === 0) await doUpkeep(c);
+    if (s.phase === 6) return endTurn();
+    await saveState({ phase: s.phase + 1 });
+  }
+  async function endTurn() {
+    var s = ST();
+    var o = R.host ? s.order.filter(function (id) { return R.cs[id]; }) : s.order;
+    if (!o.length) return;
+    var turn = (s.turn + 1) % o.length, round = s.round + (s.turn + 1 >= o.length ? 1 : 0);
+    var patch = { turn: turn, round: round, phase: 0, t: {} }; if (R.host) patch.order = o;
+    await saveState(patch);
+    var c = current();
+    await note('Round ' + round + ': ' + (c ? c.name : '') + '’s turn.' + (c && incap(c) ? ' ' + c.name + ' is Incapacitated.' : ''));
+  }
+  function regenOf(c) { var k = c.stats || {}; return (k.mana && k.mana.regen) || k.regen || 1; }
+  async function doUpkeep(c) {
+    var k = c.stats || {}, effects = (k.effects || []).slice(), paid = 0, kept = [], dropped = [];
+    effects.forEach(function (e, i) { var pay = R.pay[c.id + ':' + i] !== false; if (pay) { paid += e.upkeep || 0; kept.push(e); } else dropped.push(e.name); });
+    var mana = Math.max(0, Math.min(c.mana_max || 0, (c.mana || 0) + regenOf(c)) - paid);
+    var patch = { ap: Math.min(3, (c.ap || 0) + (k.hurt ? 2 : 1)), mana: mana, stats: Object.assign({}, k, { hurt: false, effects: kept }) };
+    await upd(c, patch);
+    R.pay = {};
+    await note(c.name + ' Upkeep: AP ' + patch.ap + ', mana ' + mana + (paid ? ' (paid ' + paid + ' upkeep)' : '') + (dropped.length ? '. Ended: ' + dropped.join(', ') : '') + '.');
+  }
+  function actBtn(label, sub, right, fn, disabled) {
+    return el('button', { class: 'cb-act', type: 'button', disabled: !!disabled, onclick: fn }, [el('span', {}, [el('b', { text: label }), sub ? el('small', { text: sub }) : null]), right ? el('span', { class: 'pool', text: right }) : null]);
+  }
+  function group(title, key, kids) {
+    var open = !!R.open[key];
+    var g = el('div', { class: 'cb-group' });
+    g.appendChild(el('button', { type: 'button', class: 'cb-group-h', 'aria-expanded': String(open), onclick: function () { R.open[key] = !open; drawPhases(); } }, [title, el('span', { text: open ? '−' : '+' })]));
+    if (open) g.appendChild(el('div', { class: 'cb-group-b' }, kids));
+    return g;
+  }
+  function prepared(list, keys) { keys = (keys || []).filter(Boolean); return keys.map(function (k2) { return (list || []).filter(function (x) { return x.key === k2; })[0]; }).filter(Boolean); }
+  function phaseOptions(i, c, box) {
+    var s = ST(), kit = c.stats || {}, t = s.t;
+    if (i === 0) {
+      var hurt = kit.hurt ? 2 : 1;
+      box.appendChild(el('p', { class: 'cb-line', text: 'When you click Upkeep: +' + hurt + ' AP' + (kit.hurt ? ' (you were hurt)' : '') + ' up to 3, and +' + regenOf(c) + ' mana.' }));
+      (kit.effects || []).forEach(function (e, j) {
+        var key = c.id + ':' + j, pay = R.pay[key] !== false;
+        box.appendChild(el('label', { class: 'chk cb-line' }, [el('input', { type: 'checkbox', checked: pay, onchange: function (ev) { R.pay[key] = ev.target.checked; } }), 'Pay ' + (e.upkeep || 0) + ' mana to keep ' + e.name + ' running']));
+      });
+      (c.conditions || []).filter(function (x) { return ['Bleeding', 'Burning', 'Poisoned'].indexOf(x) >= 0; }).forEach(function (cd) {
+        var pool = kit.npc ? (kit.defense || 0) : ((kit.attrs || {}).Fortitude || 0) + ((kit.abilities || {}).Endurance || 0);
+        box.appendChild(actBtn('Roll for ' + cd, 'Fortitude + Endurance against the effect’s rating', pool + 'd', function () { rollDialog(c, { label: c.name + ' resists ' + cd, pool: pool, parts: [['Fortitude + Endurance', pool]], kind: 'roll', targetable: false }); }));
+      });
+      return;
+    }
+    if (i === 1) { box.appendChild(el('p', { class: 'cb-line', text: 'Say what you plan to do. Click Planning when everyone is ready.' })); return; }
+    if (i === 2 || i === 5) {
+      var left = moveLeft(c);
+      box.appendChild(el('p', { class: 'cb-line' }, ['Movement left: ', el('b', { text: left + ' of ' + (moveOf(c) + (t.extra || 0)) }), ' zone' + (left === 1 ? '' : 's') + '. Pick your token, then a lit zone.']));
+      if (!R.moving && left > 0 && c.x !== null && c.x !== undefined) box.appendChild(actBtn('Move ' + c.name, 'Lights up the zones you can reach', null, function () { R.sel = c.id; R.moving = c.id; drawAll(); }));
+      var apKids = [[1, 1], [3, 2], [6, 3]].map(function (x) {
+        return actBtn('Spend ' + x[0] + ' AP', '+' + x[1] + ' zone' + (x[1] === 1 ? '' : 's') + ' of movement', x[0] + ' AP', async function () {
+          if ((c.ap || 0) < x[0]) { alert(c.name + ' holds ' + (c.ap || 0) + ' AP. Allies can give AP first.'); return; }
+          await upd(c, { ap: c.ap - x[0] });
+          await markDone({ extra: (t.extra || 0) + x[1] });
+          await note(c.name + ' spends ' + x[0] + ' AP for ' + x[1] + ' more zone' + (x[1] === 1 ? '' : 's') + ' of movement.');
+        }, (c.ap || 0) < x[0]);
+      });
+      box.appendChild(group('Spend AP to move farther (' + (c.ap || 0) + ' AP held)', 'apmove', apKids));
+      var cost = t.items === 0 ? 0 : t.items === 1 ? 1 : 2;
+      var items = (kit.belt || []).map(function (bi) {
+        return actBtn(bi.slot + '. ' + bi.name, bi.detail || '', cost ? cost + ' AP' : 'free', async function () {
+          if (cost && (c.ap || 0) < cost) { alert('This item costs ' + cost + ' AP and ' + c.name + ' holds ' + (c.ap || 0) + '.'); return; }
+          if (cost) await upd(c, { ap: c.ap - cost });
+          await markDone({ items: (t.items || 0) + 1 });
+          await addRoll({ label: c.name + ' uses ' + bi.name + (bi.detail ? ' (' + bi.detail + ')' : '') + ' from the belt (' + (cost ? cost + ' AP' : 'free') + ').', combatant_id: c.id, detail: { kind: 'note' } });
+        });
+      });
+      box.appendChild(group('Use an item (next one: ' + (cost ? cost + ' AP' : 'free') + ')', 'items', items.length ? items : [el('p', { class: 'cb-desc', text: kit.npc ? 'NPCs have no belt.' : 'Nothing on the belt. Set it on the character page, then Refresh Stats.' })]));
+      return;
+    }
+    if (i === 3) {
+      if (t.done[3]) { box.appendChild(el('p', { class: 'cb-line', text: 'Action taken. Click Action to move on to Damage.' })); return; }
+      var after = function (r) { return markDone({ attack: r && (r.detail || {}).kind === 'attack' ? r.id : null }); };
+      if (kit.npc) {
+        var npcActs = ((kit.creature || {}).abilities || []).map(function (ab) {
+          var isAtk = /melee|ranged|damage|casts|breath|bolt|bite|claw|strike|slam/i.test(ab.name + ' ' + ab.text);
+          return actBtn(ab.name, ab.text, String(kit.attack || 0), function () { rollDialog(c, { label: c.name + ': ' + ab.name, pool: kit.attack || 0, parts: [['Attack pool', kit.attack || 0]], kind: isAtk ? 'attack' : 'roll', damagePool: kit.damage || 0, targetable: isAtk, desc: ab.text, after: after }); });
+        });
+        npcActs.push(actBtn('Basic attack', 'Attack pool against a target’s defense', String(kit.attack || 0), function () { rollDialog(c, { label: c.name + ': Attack', pool: kit.attack || 0, parts: [['Attack pool', kit.attack || 0]], kind: 'attack', damagePool: kit.damage || 0, after: after }); }));
+        box.appendChild(group('Attack', 'atk', npcActs));
+        box.appendChild(group('Other', 'other', [customButton(c, after)]));
+        return;
+      }
+      var LO = kit.loadout || {}, mv = prepared(kit.maneuvers, LO.maneuvers), sp = prepared(kit.spells, LO.spells);
+      var armed = {}; (kit.weapons || []).forEach(function (w) { var stn = (LO.weapons || {})[w.key] || ((kit.styles || []).length === 1 ? kit.styles[0].name : ''); if (stn) (armed[stn] = armed[stn] || []).push(w.name); });
+      var atkKids = (kit.maneuvers || []).filter(function (m) { return m.rank === 0; }).map(function (m) {
+        var p = evalPool(m.pool, kit);
+        return actBtn(armed[m.style] ? 'Attack with ' + armed[m.style].join(' or ') : 'Attack (' + m.style + ')', m.style, p.total + 'd', function () { rollDialog(c, { label: (armed[m.style] ? 'Attack with ' + armed[m.style][0] : 'Attack') + ' (' + m.style + ')', pool: p.total, parts: p.parts, unknown: p.unknown, kind: 'attack', after: after }); });
+      }).concat(mv.map(function (m) {
+        var p = evalPool(m.pool, kit);
+        return actBtn(m.name, m.style + ' Rank ' + m.rank + '. ' + m.text, p.total + 'd', function () { rollDialog(c, { label: m.name, pool: p.total, parts: p.parts, unknown: p.unknown, kind: 'attack', desc: m.text, link: m.id ? '../rulebook/ch12.html#' + m.id : null, after: after }); });
+      }));
+      if (!(kit.maneuvers || []).length) atkKids.push(el('p', { class: 'cb-desc', text: 'No Combat Styles.' }));
+      else if (!mv.length) atkKids.push(el('p', { class: 'cb-desc' }, ['No maneuvers prepared. ', loadoutLink(c), ', then Refresh Stats.']));
+      box.appendChild(group('Attack', 'atk', atkKids));
+      var spKids = sp.map(function (x) {
+        var p = evalPool(x.pool, kit, x), attack = /attack/i.test(x.type || '');
+        return actBtn(x.name, x.school + ' Rank ' + x.rank + '. ' + (x.costText || x.cost) + ' mana. ' + (x.type || ''), p.total + 'd', function () {
+          rollDialog(c, { label: x.name, pool: p.total, parts: p.parts, unknown: p.unknown, spell: x, kind: attack ? 'attack' : 'roll', desc: [x.type, x.range, x.defense ? 'Defense: ' + x.defense : ''].filter(Boolean).join('. ') + '. ' + (x.effect || ''), link: x.id ? '../rulebook/' + (x.page || 'ch13') + '.html#' + x.id : null, after: after });
+        });
+      });
+      if (!sp.length) spKids.push(el('p', { class: 'cb-desc' }, [(kit.spells || []).length ? 'No spells prepared. ' : 'No spells known. ', (kit.spells || []).length ? loadoutLink(c) : null, (kit.spells || []).length ? ', then Refresh Stats.' : '']));
+      box.appendChild(group('Cast a Spell', 'spell', spKids));
+      box.appendChild(group('Other', 'other', [customButton(c, after)]));
+      return;
+    }
+    if (i === 4) {
+      var atk = t.attack ? R.rolls.filter(function (r) { return r.id === t.attack; })[0] : null;
+      var dmg = atk ? R.rolls.filter(function (r) { return (r.detail || {}).kind === 'damage' && (r.detail || {}).of === atk.id; })[0] : null;
+      if (!atk) { box.appendChild(el('p', { class: 'cb-line', text: 'No attack this turn. Click Damage to move on.' })); return; }
+      if (!dmg) box.appendChild(actBtn('Roll Damage', atk.label, null, function () { damageDialog(atk, function () { return markDone(); }); }));
+      else box.appendChild(el('p', { class: 'cb-line', text: 'Damage rolled: ' + dmg.label + '. Apply it from the Roll Log, then click Damage.' }));
+      return;
+    }
+    if (i === 6) {
+      var nxt = (function () { var o = s.order.filter(function (id) { return R.cs[id]; }); return o.length ? R.cs[o[(s.turn + 1) % o.length]] : null; })();
+      box.appendChild(el('p', { class: 'cb-line', text: 'Resolve anything that ends this turn. Click Ending to pass the turn' + (nxt ? ' to ' + nxt.name : '') + '.' }));
+    }
+  }
+  function loadoutLink(c) {
+    return c.character_id && c.owner === me.id ? el('a', { href: '../characters/view.html?id=' + encodeURIComponent(c.character_id), target: '_blank', rel: 'noopener', text: 'Prepare some on the Combat Loadout tab' }) : 'Their player prepares them on the Combat Loadout tab';
+  }
+
+  // ---------- loadout box (only the player and the Storyteller) ----------
+  function drawLoadout() {
+    var box = $('cb-loadout'); box.textContent = '';
+    var c = R.sel ? R.cs[R.sel] : current();
+    if (!c) { box.appendChild(el('h2', { class: 'px', text: 'Combat Loadout' })); box.appendChild(el('p', { class: 'center cv-muted', text: 'Click a name in the banner to see their loadout.' })); return; }
+    box.appendChild(el('h2', { class: 'px', text: c.name + '’s Loadout' }));
+    if (!mineC(c)) { box.appendChild(el('p', { class: 'center cv-muted', text: 'Only ' + (c.kind === 'npc' ? 'the Storyteller' : (R.players[c.owner] || 'their player') + ' and the Storyteller') + ' can see this loadout.' })); return; }
+    var kit = c.stats || {}, LO = kit.loadout || {};
+    var g = el('div', { class: 'cb-lo' });
+    if (kit.npc) {
+      g.appendChild(loCard('Stats', [loRow('Attack / Defense', (kit.attack || 0) + ' / ' + (kit.defense || 0)), loRow('Damage', String(kit.damage || 0)), loRow('Move', String(kit.move || 1)), kit.creature ? loRow('Rank', kit.creature.rank + ', ' + [kit.creature.type, kit.creature.size, kit.creature.elements].filter(Boolean).join(', ')) : null]));
+      g.appendChild(loCard('Attacks and Traits', ((kit.creature || {}).abilities || []).map(function (ab) { return loRow(ab.name, ab.text); }).concat(kit.creature && kit.creature.trait ? [loRow('Trait', kit.creature.trait)] : []).concat(!kit.creature && kit.notes ? [el('p', { class: 'cb-desc', text: kit.notes })] : [])));
+      g.appendChild(loCard('Defend', [actBtn('Defense roll', 'Use when attacked', String(kit.defense || 0), function () { rollDialog(c, { label: c.name + ': Defense', pool: kit.defense || 0, parts: [['Defense pool', kit.defense || 0]], kind: 'defense', targetable: false }); })]));
+    } else {
+      var armed = (kit.weapons || []).map(function (w) { var stn = (LO.weapons || {})[w.key] || ((kit.styles || []).length === 1 ? kit.styles[0].name : ''); return loRow(w.name, w.slot + (stn ? ', ' + stn : '') + (w.bonus ? ', +' + w.bonus + ' ' + (w.cat || '') : '')); });
+      g.appendChild(loCard('Weapons', armed.length ? armed : [el('p', { class: 'cb-desc', text: 'No weapons.' })]));
+      g.appendChild(loCard('Prepared Maneuvers', prepared(kit.maneuvers, LO.maneuvers).map(function (m) { return loRow(m.name, m.style + ' Rank ' + m.rank + '. ' + m.text); }).concat(!(LO.maneuvers || []).filter(Boolean).length ? [el('p', { class: 'cb-desc' }, ['None prepared. ', loadoutLink(c), '.'])] : [])));
+      g.appendChild(loCard('Prepared Spells', prepared(kit.spells, LO.spells).map(function (x) { return loRow(x.name, x.school + ' ' + x.rank + ', ' + (x.costText || x.cost) + ' mana. ' + [x.type, x.range].filter(Boolean).join('. ')); }).concat(!(LO.spells || []).filter(Boolean).length ? [el('p', { class: 'cb-desc' }, ['None prepared.'])] : [])));
+      g.appendChild(loCard('Summons', prepared(kit.summons, LO.summons).map(function (x) { return loRow(x.name, x.kind + '. ' + (x.text || '')); }).concat(!(LO.summons || []).filter(Boolean).length ? [el('p', { class: 'cb-desc', text: 'None prepared.' })] : [])));
+      g.appendChild(loCard('Belt', (kit.belt || []).map(function (b) { return loRow(b.slot + '. ' + b.name, b.detail || ''); }).concat(!(kit.belt || []).length ? [el('p', { class: 'cb-desc', text: 'Empty.' })] : [])));
+      g.appendChild(loCard('Defend', (kit.defenses || []).map(function (df) {
+        var p = evalPool(df.pool, kit);
+        return actBtn(df.name, df.pool, p.total + 'd', function () { rollDialog(c, { label: df.name, pool: p.total, parts: p.parts, unknown: p.unknown, kind: 'defense', targetable: false }); });
+      })));
+    }
+    box.appendChild(g);
+    if (c.character_id && c.owner === me.id) box.appendChild(el('div', { class: 'button-row center-row' }, [el('button', { class: 'act', type: 'button', text: 'Refresh Stats', onclick: function () { resync(c); } }), el('a', { class: 'act', href: '../characters/view.html?id=' + encodeURIComponent(c.character_id), target: '_blank', rel: 'noopener', text: 'Open Character Page' })]));
+  }
+  function loCard(title, kids) { return el('section', { class: 'cb-lo-card' }, [el('h3', { class: 'px', text: title })].concat(kids)); }
+  function loRow(a, b) { return el('div', { class: 'cb-lo-row' }, [el('b', { text: a }), b ? el('small', { text: b }) : null]); }
+
+  // ---------- title card (everyone sees it) ----------
+  function boxesCol(c, k, label) {
     var n = (c.boxes || {})[k] || 0, h = (c.health || {})[k] || 0, can = mineC(c);
-    var row = el('span', { class: 'cb-boxes', role: 'group', 'aria-label': label + ' ' + h + ' of ' + n });
+    var col = el('div', { class: 'cb-hcol', role: 'group', 'aria-label': label + ' ' + h + ' of ' + n }, [el('span', { class: 'cb-hhead', text: label })]);
     for (var i = 0; i < n; i++) (function (i) {
-      row.appendChild(el('button', { type: 'button', class: 'cb-box ' + k + (i < h ? ' on' : ''), disabled: !can, 'aria-label': label + ' box ' + (i + 1), onclick: function () {
+      col.appendChild(el('button', { type: 'button', class: 'cb-box ' + k + (i < h ? ' on' : ''), disabled: !can, 'aria-label': label + ' box ' + (i + 1), text: i < h ? '✕' : '', onclick: function () {
         var next = i < h && i === h - 1 ? i : i + 1;
         var hh = Object.assign({}, c.health); hh[k] = next;
         var stats = Object.assign({}, c.stats || {}); if (next > h) stats.hurt = true;
         upd(c, { health: hh, stats: stats });
       } }));
     })(i);
-    return row;
+    return col;
   }
   function stepper(c, key, max, label) {
     var can = mineC(c);
@@ -292,83 +581,48 @@
       inp,
       can ? el('button', { type: 'button', text: '+', 'aria-label': 'Raise ' + label, onclick: function () { var p = {}; p[key] = Math.min(max, c[key] + 1); upd(c, p); } }) : null]);
   }
-  function drawTracker() {
-    var t = $('cb-tracker'); t.textContent = '';
-    var cur = current();
-    var listEl = el('div', { class: 'cb-list' });
-    order().forEach(function (c) {
-      var can = mineC(c), bdt = c.bdt || 1;
-      var head = el('div', { class: 'cb-c-head' }, [
-        el('button', { class: 'cb-c-name', type: 'button', onclick: function () { R.sel = c.id; R.moving = can ? c.id : null; drawAll(); } }, [el('span', { class: 'cb-side ' + c.side }), c.name]),
-        el('span', { class: 'cb-sub' }, ['Init ', R.host ? el('input', { type: 'number', value: String(c.initiative), style: 'width:52px', 'aria-label': 'Initiative for ' + c.name, onchange: function (e) { upd(c, { initiative: +e.target.value || 0 }); } }) : String(c.initiative)])
-      ]);
-      var sub = el('div', { class: 'cb-sub', text: (c.kind === 'pc' ? 'Played by ' + (R.players[c.owner] || '') : c.kind === 'summon' ? 'SumMonz of ' + (R.players[c.owner] || '') : 'NPC') + (c.hidden ? ' (hidden from players)' : '') + '. BDT ' + bdt + ', LDT ' + bdt * 2 + ', ADT ' + bdt * 3 + '.' });
-      var ap = el('span', { class: 'cb-boxes' });
-      for (var i = 0; i < 3; i++) (function (i) {
-        ap.appendChild(el('button', { type: 'button', class: 'cb-box ap' + (i < c.ap ? ' on' : ''), disabled: !can, 'aria-label': 'AP ' + (i + 1), onclick: function () { upd(c, { ap: i < c.ap && i === c.ap - 1 ? i : i + 1 }); } }));
-      })(i);
-      var tracks = el('div', { class: 'cb-tracks' }, [
-        el('div', { class: 'cb-track' }, [el('span', { text: 'Bashing' }), boxesRow(c, 'b', 'Bashing')]),
-        el('div', { class: 'cb-track' }, [el('span', { text: 'Lethal' }), boxesRow(c, 'l', 'Lethal')]),
-        el('div', { class: 'cb-track' }, [el('span', { text: 'Aggravated' }), boxesRow(c, 'a', 'Aggravated'), incap(c) ? el('span', { class: 'cb-incap', text: 'INCAPACITATED' }) : null]),
-        el('div', { class: 'cb-track' }, [el('span', { text: 'AP' }), ap]),
-        el('div', { class: 'cb-track' }, [el('span', { text: 'Mana' }), stepper(c, 'mana', 999, 'Mana'), el('span', { class: 'cb-sub', text: 'of ' + c.mana_max + ', M/T ' + c.mt })]),
-        el('div', { class: 'cb-track' }, [el('span', { text: 'Willpower' }), stepper(c, 'willpower', 10, 'Willpower')])
-      ]);
-      var conds = el('div', { class: 'cb-conds' });
-      (c.conditions || []).forEach(function (cd) {
-        conds.appendChild(el('button', { type: 'button', class: 'cb-cond', disabled: !can, title: can ? 'Remove' : null, text: cd + (can ? ' x' : ''), onclick: function () { upd(c, { conditions: (c.conditions || []).filter(function (x) { return x !== cd; }) }); } }));
-      });
-      if (can) {
-        var add = el('select', { 'aria-label': 'Add a condition to ' + c.name }, [opt('', '+ Condition')]);
-        CONDS.forEach(function (cd) { if ((c.conditions || []).indexOf(cd) < 0) add.appendChild(opt(cd, cd)); });
-        add.addEventListener('change', function () { if (add.value) upd(c, { conditions: (c.conditions || []).concat([add.value]) }); });
-        conds.appendChild(add);
-      }
-      var extra = el('div', { class: 'cb-bar', style: 'margin-top:6px' });
-      if (can) {
-        if (c.x !== null && c.x !== undefined) extra.appendChild(el('button', { class: 'act cb-mini', type: 'button', text: 'Off Map', onclick: function () { upd(c, { x: null, y: null }); } }));
-        if (R.host && c.kind === 'npc') extra.appendChild(el('button', { class: 'act cb-mini', type: 'button', text: c.hidden ? 'Reveal' : 'Hide', onclick: function () { upd(c, { hidden: !c.hidden }); } }));
-        if (c.character_id && c.owner === me.id) extra.appendChild(el('button', { class: 'act cb-mini', type: 'button', text: 'Refresh Stats', onclick: function () { resync(c); } }));
-        extra.appendChild(el('button', { class: 'act cb-mini', type: 'button', text: 'Remove', onclick: async function () { if (confirm('Remove ' + c.name + ' from the fight?')) { delete R.cs[c.id]; drawAll(); await db.from('combatants').delete().eq('id', c.id); } } }));
-      }
-      listEl.appendChild(el('div', { class: 'cb-c' + (cur && cur.id === c.id ? ' turn' : '') + (R.sel === c.id ? ' sel' : '') }, [head, sub, tracks, conds, extra]));
+  function drawCard() {
+    var box = $('cb-card'); box.textContent = '';
+    var c = R.sel ? R.cs[R.sel] : current();
+    if (!c) { box.appendChild(el('p', { class: 'center cv-muted', text: 'Click a name in the banner to see their card.' })); return; }
+    var can = mineC(c), bdt = c.bdt || 1, cur = current();
+    var pic = el('div', { class: 'cb-portrait ' + c.side, text: c.pic_url ? '' : initials(c.name) });
+    if (c.pic_url) pic.style.backgroundImage = 'url("' + c.pic_url.replace(/"/g, '') + '")';
+    box.appendChild(pic);
+    box.appendChild(el('h2', { class: 'px cb-card-name', text: c.name }));
+    box.appendChild(el('p', { class: 'cb-sub center', text: (c.kind === 'pc' ? 'Played by ' + (R.players[c.owner] || '') : c.kind === 'summon' ? 'SumMonz of ' + (R.players[c.owner] || '') : 'NPC') + ' · ' + ({ party: 'Party', enemy: 'Enemy', neutral: 'Neutral' }[c.side]) + ' · Initiative ' + c.initiative + (cur && cur.id === c.id ? ' · Their turn' : '') + (c.hidden ? ' · Hidden from players' : '') }));
+    if (incap(c)) box.appendChild(el('p', { class: 'cb-incap center', text: 'INCAPACITATED' }));
+    box.appendChild(el('div', { class: 'cb-dts' }, [el('span', { text: 'BDT ' + bdt }), el('span', { text: 'LDT ' + bdt * 2 }), el('span', { text: 'ADT ' + bdt * 3 }), el('span', { text: 'Penalty -' + woundPenalty(c) })]));
+    box.appendChild(el('div', { class: 'cb-health' }, [boxesCol(c, 'b', 'Bashing'), boxesCol(c, 'l', 'Lethal'), boxesCol(c, 'a', 'Aggravated')]));
+    var ap = el('span', { class: 'cb-boxes' });
+    for (var i = 0; i < Math.max(3, c.ap || 0); i++) (function (i) {
+      ap.appendChild(el('button', { type: 'button', class: 'cb-box ap' + (i < c.ap ? ' on' : ''), disabled: !can, 'aria-label': 'AP ' + (i + 1), onclick: function () { upd(c, { ap: i < c.ap && i === c.ap - 1 ? i : i + 1 }); } }));
+    })(i);
+    box.appendChild(el('div', { class: 'cb-tracks' }, [
+      el('div', { class: 'cb-track' }, [el('span', { text: 'AP' }), ap]),
+      el('div', { class: 'cb-track' }, [el('span', { text: 'Mana' }), stepper(c, 'mana', 9999, 'Mana'), el('span', { class: 'cb-sub', text: 'of ' + c.mana_max + ', M/T ' + c.mt })]),
+      el('div', { class: 'cb-track' }, [el('span', { text: 'Willpower' }), stepper(c, 'willpower', 10, 'Willpower')]),
+      el('div', { class: 'cb-track' }, [el('span', { text: 'Move' }), el('span', { text: String(moveOf(c)) + ' zone' + (moveOf(c) === 1 ? '' : 's') })])]));
+    var effects = (c.stats || {}).effects || [];
+    if (effects.length) box.appendChild(el('p', { class: 'cb-sub', text: 'Running: ' + effects.map(function (e) { return e.name + ' (upkeep ' + e.upkeep + ')'; }).join(', ') }));
+    var conds = el('div', { class: 'cb-conds' });
+    (c.conditions || []).forEach(function (cd) {
+      conds.appendChild(el('button', { type: 'button', class: 'cb-cond', disabled: !can, title: can ? 'Remove' : null, text: cd + (can ? ' x' : ''), onclick: function () { upd(c, { conditions: (c.conditions || []).filter(function (x) { return x !== cd; }) }); } }));
     });
-    if (!listEl.children.length) listEl.appendChild(el('p', { class: 'cv-muted', text: 'Nobody here yet. Bring a character, or the Storyteller can add NPCs.' }));
-    var players = Object.keys(R.players).map(function (k) { return R.players[k] + (k === R.enc.host ? ' (Storyteller)' : ''); });
-    t.appendChild(el('h2', { class: 'px', style: 'margin-top:0', text: 'Turn Order' }));
-    t.appendChild(listEl);
-    t.appendChild(el('p', { class: 'cb-sub', style: 'margin-top:10px', text: 'At the table: ' + players.join(', ') }));
-  }
-
-  async function setOrder() {
-    var o = list().slice().sort(function (a, b) { return b.initiative - a.initiative || a.name.localeCompare(b.name); }).map(function (c) { return c.id; });
-    var st = Object.assign({}, R.enc.state, { order: o, turn: 0, round: (R.enc.state || {}).round || 1 });
-    R.enc.state = st; drawAll();
-    await must(db.from('encounters').update({ state: st }).eq('id', R.enc.id));
-    var first = R.cs[o[0]];
-    if (first) { await upkeep(first); await note('Turn order set. Round ' + st.round + ': ' + first.name + ' goes first.'); }
-  }
-  // Upkeep: regain 1 AP (2 if hurt since your last turn), recover mana by Mana dots
-  async function upkeep(c) {
-    var s = c.stats || {}, regen = (s.mana && s.mana.regen) || s.regen || 1;
-    var patch = { ap: Math.min(3, (c.ap || 0) + (s.hurt ? 2 : 1)), mana: Math.min(c.mana_max || 0, (c.mana || 0) + regen), stats: Object.assign({}, s, { hurt: false }) };
-    await upd(c, patch);
-    var conds = (c.conditions || []).filter(function (x) { return ['Bleeding', 'Burning', 'Poisoned'].indexOf(x) >= 0; });
-    return conds;
-  }
-  async function nextTurn() {
-    var st = Object.assign({ round: 1, turn: 0, order: [] }, R.enc.state);
-    st.order = (st.order || []).filter(function (id) { return R.cs[id]; });
-    if (!st.order.length) { await setOrder(); return; }
-    st.turn = (st.turn || 0) + 1;
-    if (st.turn >= st.order.length) { st.turn = 0; st.round = (st.round || 1) + 1; }
-    R.enc.state = st; drawAll();
-    await must(db.from('encounters').update({ state: st }).eq('id', R.enc.id));
-    var c = R.cs[st.order[st.turn]];
-    if (!c) return;
-    var conds = await upkeep(c);
-    await note('Round ' + st.round + ': ' + c.name + '’s turn. Upkeep: AP ' + c.ap + ', mana ' + c.mana + '.' + (conds.length ? ' Roll for ' + conds.join(', ') + '.' : '') + (incap(c) ? ' ' + c.name + ' is Incapacitated.' : ''));
+    if (can) {
+      var add = el('select', { 'aria-label': 'Add a condition to ' + c.name }, [opt('', '+ Condition')]);
+      CONDS.forEach(function (cd) { if ((c.conditions || []).indexOf(cd) < 0) add.appendChild(opt(cd, cd)); });
+      add.addEventListener('change', function () { if (add.value) upd(c, { conditions: (c.conditions || []).concat([add.value]) }); });
+      conds.appendChild(add);
+    }
+    box.appendChild(conds);
+    if (can) {
+      var extra = el('div', { class: 'cb-bar', style: 'margin-top:8px;justify-content:center' });
+      if (c.x !== null && c.x !== undefined) extra.appendChild(el('button', { class: 'act cb-mini', type: 'button', text: 'Off Map', onclick: function () { upd(c, { x: null, y: null }); } }));
+      if (R.host && c.kind === 'npc') extra.appendChild(el('button', { class: 'act cb-mini', type: 'button', text: c.hidden ? 'Reveal' : 'Hide', onclick: function () { upd(c, { hidden: !c.hidden }); } }));
+      extra.appendChild(el('button', { class: 'act cb-mini', type: 'button', text: 'Remove', onclick: async function () { if (confirm('Remove ' + c.name + ' from the fight?')) { delete R.cs[c.id]; R.sel = null; drawAll(); await db.from('combatants').delete().eq('id', c.id); } } }));
+      box.appendChild(extra);
+    }
   }
 
   // ---------- bring a character / NPCs ----------
@@ -648,13 +902,17 @@
       if (wp.checked) patch.willpower = c.willpower - 1;
       if (Object.keys(patch).length) await upd(c, patch);
       var tgt = R.cs[target.value];
-      await addRoll({ combatant_id: c.id, label: a.label + (tgt ? ' at ' + tgt.name : ''), pool: n, dice: dice, successes: succ,
+      if (spell && /persistent/i.test(spell.type || '')) { // keep it on the card so Upkeep can ask about paying for it
+        var st2 = Object.assign({}, c.stats || {}); st2.effects = (st2.effects || []).concat([{ name: spell.name, upkeep: Math.max(0, (spell.cost || 0) - 1) }]); await upd(c, { stats: st2 });
+      }
+      var row = await addRoll({ combatant_id: c.id, label: a.label + (tgt ? ' at ' + tgt.name : ''), pool: n, dice: dice, successes: succ,
         detail: { kind: a.kind || 'roll', target: tgt ? tgt.id : null, setAside: +dmgMana.value || 0, mana: spend, ap: +ap.value || 0, wp: wp.checked, real: real.checked, damagePool: a.damagePool || 0, attacker: c.id } });
+      if (a.after) await a.after(row);
     });
     d.open();
   }
 
-  function damageDialog(roll) {
+  function damageDialog(roll, after) {
     var c = R.cs[roll.combatant_id], det = roll.detail || {}, tgt = R.cs[det.target];
     var d = dialog('Roll Damage');
     var defRoll = R.rolls.filter(function (r) { return r.created_at > roll.created_at && (r.detail || {}).kind === 'defense' && r.combatant_id === det.target; }).slice(-1)[0];
@@ -683,7 +941,8 @@
     d.ok('Roll Damage', async function () {
       var ex = Math.max(0, roll.successes - (+def.value || 0));
       if (roll.successes <= (+def.value || 0)) {
-        await addRoll({ combatant_id: roll.combatant_id, label: 'Missed' + (tgt ? ' ' + tgt.name : ''), detail: { kind: 'note' } });
+        await addRoll({ combatant_id: roll.combatant_id, label: 'Missed' + (tgt ? ' ' + tgt.name : ''), detail: { kind: 'damage', of: roll.id, target: null, excess: 0, total: 0, result: null } });
+        if (after) await after();
         return;
       }
       var n = Math.max(0, (+dpool.value || 0) + (det.setAside || 0) + (+bonus.value || 0));
@@ -692,6 +951,7 @@
       if (tgt) { var b = tgt.bdt || 1; res = totalDmg >= b * 3 ? 'a' : totalDmg >= b * 2 ? 'l' : totalDmg >= b ? 'b' : null; }
       await addRoll({ combatant_id: roll.combatant_id, label: 'Damage' + (tgt ? ' to ' + tgt.name : ''), pool: n, dice: dice, successes: s,
         detail: { kind: 'damage', of: roll.id, target: tgt ? tgt.id : null, excess: ex, total: totalDmg, result: res, real: real.checked } });
+      if (after) await after();
     });
     d.open();
   }
@@ -704,117 +964,21 @@
     while (k && (h[k] || 0) >= (box[k] || 0)) k = k === 'b' ? 'l' : k === 'l' ? 'a' : null;
     if (!k) { await note(t.name + ' is Incapacitated: the hit landed in a full column.'); return; }
     h[k] = (h[k] || 0) + 1;
-    await upd(t, { health: h, stats: Object.assign({}, t.stats || {}, { hurt: true }) });
+    if (mineC(t)) await upd(t, { health: h, stats: Object.assign({}, t.stats || {}, { hurt: true }) });
+    else { var rr = await db.rpc('apply_damage', { c: t.id, k: k }); if (rr.error) throw rr.error; t.health = h; drawAll(); }
     var NAMES = { b: 'Bashing', l: 'Lethal', a: 'Aggravated' };
     await addRoll({ label: t.name + ' takes 1 ' + NAMES[k] + '.' + (incap(t) ? ' ' + t.name + ' is Incapacitated: choose Fall Unconscious, Risk It, or Blaze of Glory.' : ''),
       detail: { kind: 'note', applied: roll.id } });
   }
 
-  // ---------- my actions ----------
-  function drawActions() {
-    var box = $('cb-actions'); box.textContent = '';
-    var c = R.sel ? R.cs[R.sel] : null;
-    if (!c || !mineC(c)) {
-      var mineList = list().filter(function (x) { return x.owner === me.id; });
-      box.appendChild(el('h2', { class: 'px', style: 'margin-top:0', text: 'Actions' }));
-      box.appendChild(el('p', { class: 'cv-muted', text: mineList.length ? 'Pick one of your tokens (or its name in Turn Order) to act with it.' : 'Bring a character to act. The Storyteller can act with any NPC.' }));
-      return;
-    }
-    var kit = c.stats || {};
-    box.appendChild(el('h2', { class: 'px', style: 'margin-top:0', text: c.name }));
-    if (kit.npc) {
-      box.appendChild(el('p', { class: 'cb-desc', text: kit.creature ? ['Rank ' + kit.creature.rank, kit.creature.type, kit.creature.size, kit.creature.elements, 'Move ' + (kit.move || 1)].filter(Boolean).join(' · ') + (kit.creature.trait ? '. Trait: ' + kit.creature.trait : '') : (kit.notes || '') }));
-      var acts = el('div', { class: 'cb-acts' });
-      ((kit.creature || {}).abilities || []).forEach(function (ab) {
-        var isAtk = /melee|ranged|damage|casts|breath|bolt|bite|claw|strike|slam/i.test(ab.name + ' ' + ab.text);
-        acts.appendChild(el('button', { class: 'cb-act', type: 'button', onclick: function () { rollDialog(c, { label: c.name + ': ' + ab.name, pool: kit.attack || 0, parts: [['Attack pool', kit.attack || 0]], kind: isAtk ? 'attack' : 'roll', damagePool: kit.damage || 0, targetable: isAtk, desc: ab.text }); } },
-          [el('span', {}, [el('b', { text: ab.name }), el('small', { text: ab.text })]), el('span', { class: 'pool', text: String(kit.attack || 0) })]));
-      });
-      [['Attack', kit.attack, 'attack'], ['Defense', kit.defense, 'defense']].forEach(function (x) {
-        acts.appendChild(el('button', { class: 'cb-act', type: 'button', onclick: function () { rollDialog(c, { label: c.name + ': ' + x[0], pool: x[1] || 0, parts: [[x[0] + ' pool', x[1] || 0]], kind: x[2], damagePool: kit.damage || 0, targetable: x[2] === 'attack' }); } },
-          [el('span', { text: x[0] }), el('span', { class: 'pool', text: String(x[1] || 0) })]));
-      });
-      acts.appendChild(customButton(c));
-      box.appendChild(acts);
-      return;
-    }
-    var tabs = [['spells', 'Spellbook'], ['maneuvers', 'Maneuvers'], ['defense', 'Defense'], ['summons', 'Summons'], ['belt', 'Belt'], ['custom', 'Custom']];
-    var LO = kit.loadout || {};
-    // The Combat Loadout's prepared picks come first; "Show everything" lists all you know
-    function prepared(list, keys) {
-      keys = (keys || []).filter(Boolean);
-      if (!keys.length || R.showAll) return list || [];
-      return keys.map(function (k2) { return (list || []).filter(function (x) { return x.key === k2; })[0]; }).filter(Boolean);
-    }
-    function allToggle(keys) {
-      if (!(keys || []).filter(Boolean).length) return el('p', { class: 'cb-sub', text: 'Showing everything you know. Prepare up to 5 on the Combat Loadout tab of your character page.' });
-      return el('label', { class: 'chk cb-sub', style: 'display:flex;gap:6px;align-items:center;margin-bottom:6px' }, [el('input', { type: 'checkbox', checked: !!R.showAll, onchange: function (e) { R.showAll = e.target.checked; drawActions(); } }), 'Show everything I know, not just my prepared ' + (R.tab === 'spells' ? 'spells' : 'maneuvers')]);
-    }
-    var tb = el('div', { class: 'cb-tabs', role: 'tablist' });
-    tabs.forEach(function (t) { tb.appendChild(el('button', { class: 'cb-tab', type: 'button', role: 'tab', 'aria-selected': String(R.tab === t[0]), text: t[1], onclick: function () { R.tab = t[0]; drawActions(); } })); });
-    box.appendChild(tb);
-    var acts2 = el('div', { class: 'cb-acts' });
-    if (R.tab === 'spells') {
-      acts2.appendChild(allToggle(LO.spells));
-      prepared(kit.spells, LO.spells).forEach(function (sp) {
-        var p = evalPool(sp.pool, kit, sp);
-        var attack = /attack/i.test(sp.type || '');
-        acts2.appendChild(el('button', { class: 'cb-act', type: 'button', onclick: function () {
-          rollDialog(c, { label: sp.name, pool: p.total, parts: p.parts, unknown: p.unknown, spell: sp, kind: attack ? 'attack' : 'roll', desc: [sp.type, sp.range, sp.defense ? 'Defense: ' + sp.defense : ''].filter(Boolean).join('. ') + '. ' + (sp.effect || ''),
-            link: sp.id ? '../rulebook/' + (sp.page || 'ch13') + '.html#' + sp.id : null });
-        } }, [el('span', {}, [el('b', { text: sp.name }), el('small', { text: sp.school + ' Rank ' + sp.rank + '. ' + (sp.costText || sp.cost) + ' mana. ' + (sp.type || '') })]), el('span', { class: 'pool', text: p.total + 'd' })]));
-      });
-      if (!acts2.children.length) acts2.appendChild(el('p', { class: 'cv-muted', text: 'No spells. Pick spells in the Forge (Step 11), then Refresh Stats.' }));
-    } else if (R.tab === 'maneuvers') {
-      acts2.appendChild(allToggle(LO.maneuvers));
-      var armed = {}; (kit.weapons || []).forEach(function (w) { var stn = (LO.weapons || {})[w.key] || ((kit.styles || []).length === 1 ? kit.styles[0].name : ''); if (stn) (armed[stn] = armed[stn] || []).push(w.name); });
-      var mlist = prepared(kit.maneuvers, LO.maneuvers);
-      if ((LO.maneuvers || []).filter(Boolean).length && !R.showAll) mlist = (kit.maneuvers || []).filter(function (m) { return m.rank === 0; }).concat(mlist.filter(function (m) { return m.rank !== 0; }));
-      mlist.forEach(function (mv) {
-        var p = evalPool(mv.pool, kit);
-        if (mv.rank === 0 && armed[mv.style]) mv = Object.assign({}, mv, { name: 'Attack with ' + armed[mv.style].join(' or ') });
-        acts2.appendChild(el('button', { class: 'cb-act', type: 'button', onclick: function () {
-          rollDialog(c, { label: mv.name + (mv.rank ? '' : ' (' + mv.style + ')'), pool: p.total, parts: p.parts, unknown: p.unknown, kind: 'attack', desc: (mv.slot ? mv.slot + ', ' : '') + (mv.use || '') + '. ' + mv.text,
-            link: mv.id ? '../rulebook/ch12.html#' + mv.id : null });
-        } }, [el('span', {}, [el('b', { text: mv.name }), el('small', { text: mv.style + (mv.rank ? ' Rank ' + mv.rank + ', ' + mv.slot : '') })]), el('span', { class: 'pool', text: p.total + 'd' })]));
-      });
-      if (!acts2.children.length) acts2.appendChild(el('p', { class: 'cv-muted', text: 'No Combat Styles yet.' }));
-    } else if (R.tab === 'defense') {
-      (kit.defenses || []).forEach(function (df) {
-        var p = evalPool(df.pool, kit);
-        acts2.appendChild(el('button', { class: 'cb-act', type: 'button', onclick: function () { rollDialog(c, { label: df.name, pool: p.total, parts: p.parts, unknown: p.unknown, kind: 'defense', targetable: false }); } },
-          [el('span', {}, [el('b', { text: df.name }), el('small', { text: df.pool })]), el('span', { class: 'pool', text: p.total + 'd' })]));
-      });
-    } else if (R.tab === 'summons') {
-      (kit.summons || []).forEach(function (sm) {
-        acts2.appendChild(el('button', { class: 'cb-act', type: 'button', onclick: function () { addRoll({ label: c.name + ' calls ' + sm.name + ' (' + sm.kind + ').', combatant_id: c.id, detail: { kind: 'note' } }); } },
-          [el('span', {}, [el('b', { text: sm.name }), el('small', { text: sm.kind + '. ' + (sm.text || '') })]), el('span', { class: 'pool', text: 'Call' })]));
-      });
-      if (!acts2.children.length) acts2.appendChild(el('p', { class: 'cv-muted', text: 'No familiar or SumMonz. Use Bring a Character to put one on the map.' }));
-    } else if (R.tab === 'belt') {
-      R.beltUsed = R.beltUsed || {};
-      var usedNow = R.beltUsed[c.id + ':' + (R.enc.state || {}).round] || 0;
-      (kit.belt || []).forEach(function (bi) {
-        var cost = usedNow === 0 ? 'free' : usedNow === 1 ? '1 AP' : '2 AP';
-        acts2.appendChild(el('button', { class: 'cb-act', type: 'button', onclick: function () {
-          var k2 = c.id + ':' + (R.enc.state || {}).round; R.beltUsed[k2] = (R.beltUsed[k2] || 0) + 1;
-          addRoll({ label: c.name + ' uses ' + bi.name + (bi.detail ? ' (' + bi.detail + ')' : '') + ' from the belt (' + cost + ').', combatant_id: c.id, detail: { kind: 'note' } });
-          drawActions();
-        } }, [el('span', {}, [el('b', { text: bi.slot + '. ' + bi.name }), el('small', { text: (bi.detail ? bi.detail + '. ' : '') + 'Next use this round: ' + cost })]), el('span', { class: 'pool', text: 'Use' })]));
-      });
-      if (!acts2.children.length) acts2.appendChild(el('p', { class: 'cv-muted', text: 'Nothing on your belt. Set it on your character page, Equipment and Notes tab, then Refresh Stats.' }));
-    } else acts2.appendChild(customButton(c));
-    box.appendChild(acts2);
-    box.appendChild(el('p', { class: 'cb-sub', style: 'margin-top:8px', text: 'Initiative ' + (kit.initiative || c.initiative) + '. Move ' + (kit.move || 1) + ' zone' + ((kit.move || 1) === 1 ? '' : 's') + ' per turn. Wound penalty -' + woundPenalty(c) + '.' }));
-  }
-  function customButton(c) {
+  function customButton(c, after) {
     return el('button', { class: 'cb-act', type: 'button', onclick: function () {
       var d = dialog('Custom Roll');
       var lab = el('input', { maxlength: '80', placeholder: 'Strength + Athletics to break free' }), n = num('cu-n', 3, 0, 60);
       var kind = el('select', {}, [opt('roll', 'Any roll', true), opt('attack', 'An attack'), opt('defense', 'A defense')]);
       d.body.appendChild(el('div', { class: 'cb-f' }, [field('What is it?', lab), el('div', { class: 'two' }, [field('Dice', n), field('Kind', kind)])]));
       d.ok('Next', function () {
-        rollDialog(c, { label: lab.value.trim() || 'Roll', pool: +n.value || 0, parts: [['Dice', +n.value || 0]], kind: kind.value, targetable: kind.value === 'attack' });
+        rollDialog(c, { label: lab.value.trim() || 'Roll', pool: +n.value || 0, parts: [['Dice', +n.value || 0]], kind: kind.value, targetable: kind.value === 'attack', after: after });
       });
       d.open();
     } }, [el('span', {}, [el('b', { text: 'Custom roll' }), el('small', { text: 'Type the dice yourself' })]), el('span', { class: 'pool', text: '?' })]);
@@ -846,10 +1010,11 @@
       var btns = el('div', { class: 'cb-bar', style: 'margin-top:4px' });
       if (det.kind === 'attack' && c && mineC(c)) btns.appendChild(el('button', { class: 'act cb-mini', type: 'button', text: 'Roll Damage', onclick: function () { damageDialog(r); } }));
       if (det.kind === 'attack' && det.target && R.cs[det.target] && R.cs[det.target].owner === me.id && R.cs[det.target].owner !== (c && c.owner)) {
-        btns.appendChild(el('button', { class: 'act cb-mini', type: 'button', text: 'Defend', onclick: function () { R.sel = det.target; R.tab = 'defense'; drawAll(); $('cb-actions').scrollIntoView({ behavior: 'smooth', block: 'start' }); } }));
+        btns.appendChild(el('button', { class: 'act cb-mini', type: 'button', text: 'Defend', onclick: function () { R.sel = det.target; drawAll(); $('cb-loadout').scrollIntoView({ behavior: 'smooth', block: 'start' }); } }));
       }
       var tg = R.cs[det.target];
-      if (det.kind === 'damage' && det.result && !applied[r.id] && tg && mineC(tg)) btns.appendChild(el('button', { class: 'act cb-mini primary', type: 'button', text: 'Apply to ' + tg.name, onclick: function (e) { e.target.disabled = true; applyDamage(r); } }));
+      var atkr = R.cs[det.attacker] || c;
+      if (det.kind === 'damage' && det.result && !applied[r.id] && tg && (mineC(tg) || (atkr && mineC(atkr)))) btns.appendChild(el('button', { class: 'act cb-mini primary', type: 'button', text: 'Apply to ' + tg.name, onclick: function (e) { e.target.disabled = true; applyDamage(r); } }));
       if (btns.children.length) li.appendChild(btns);
       ul.appendChild(li);
     });
@@ -865,9 +1030,12 @@
     R.enc = enc; R.host = enc.host === me.id;
     document.title = enc.name + ' | Combat | Jimothy’s D10 Isekai JRPG';
     main.appendChild(el('section', { class: 'panel win cb-top', id: 'cb-top' }));
+    main.appendChild(el('section', { class: 'panel win cb-banner', id: 'cb-banner', 'aria-label': 'Turn order' }));
     main.appendChild(el('div', { class: 'cb-layout' }, [
-      el('div', { class: 'cb-col' }, [el('section', { class: 'panel win cb-mapwrap', id: 'cb-map' }), el('section', { class: 'panel win', id: 'cb-actions' }), el('section', { class: 'panel win', id: 'cb-log' })]),
-      el('div', { class: 'cb-col' }, [el('section', { class: 'panel win', id: 'cb-tracker' })])
+      el('div', { class: 'cb-col' }, [
+        el('section', { class: 'panel win cb-arena' }, [el('div', { class: 'cb-mapwrap', id: 'cb-map' }), el('nav', { class: 'cb-phases', id: 'cb-phases', 'aria-label': 'Combat phases' })]),
+        el('section', { class: 'panel win', id: 'cb-loadout' })]),
+      el('div', { class: 'cb-col' }, [el('section', { class: 'panel win cb-card', id: 'cb-card' }), el('section', { class: 'panel win', id: 'cb-log' })])
     ]));
     await refresh();
     live();
