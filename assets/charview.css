@@ -189,3 +189,6 @@ details.cv-more > summary { cursor: pointer; color: var(--sky); font-weight: 700
 .cv-mt-btns .act.small { min-height: 32px; padding: 0 8px; font-size: 13px; }
 .cv-mt-hint { font-size: 12px; margin: 0; }
 .cv-row > .px { white-space: nowrap; flex-shrink: 0; }
+.cv-adj { display: inline-flex; align-items: center; gap: 6px; flex-shrink: 0; }
+.cv-adj button { width: 24px; height: 24px; padding: 0; border-radius: 4px; border: 1px solid var(--line); background: rgba(0, 0, 0, 0.3); color: var(--text); cursor: pointer; font-weight: 800; line-height: 1; }
+.cv-adj button[disabled] { opacity: 0.35; cursor: default; }
