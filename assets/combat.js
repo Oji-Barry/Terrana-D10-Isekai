@@ -401,7 +401,9 @@
     d.ok('Bring Them', async function () {
       var row = chars.filter(function (c) { return c.id === sel.value; })[0];
       var k = await kitFor(row);
-      await must(db.from('combatants').insert(Object.assign({ encounter_id: R.enc.id, owner: me.id, character_id: row.id, name: row.name, kind: 'pc', side: 'party' }, fromKit(k))));
+      var cp = await db.from('character_pages').select('pic_url').eq('id', row.id).maybeSingle();
+      var pic = (cp && cp.data && /^https:\/\//.test(cp.data.pic_url || '')) ? cp.data.pic_url : '';
+      await must(db.from('combatants').insert(Object.assign({ encounter_id: R.enc.id, owner: me.id, character_id: row.id, name: row.name, kind: 'pc', side: 'party', pic_url: pic }, fromKit(k))));
       if (summon.checked) {
         var b = row.sheet.build, comp = (b.starter_summon && b.starter_summon.name) ? b.starter_summon : b.familiar;
         if (comp) await must(db.from('combatants').insert({ encounter_id: R.enc.id, owner: me.id, name: comp.name || 'SumMonz', kind: 'summon', side: 'party', ap: 3, initiative: k.initiative, bdt: 3,
@@ -417,28 +419,100 @@
     var f = fromKit(k);
     await upd(c, { stats: Object.assign({}, k, { hurt: (c.stats || {}).hurt }), bdt: f.bdt, boxes: f.boxes, mana_max: f.mana_max, mt: f.mt, initiative: f.initiative, name: row.name });
   }
+  // ---------- NPCs: pick from the Chapter 15 Bestiary, adjust, add ----------
+  var BESTIARY = null;
+  var RANKS = ['F', 'E', 'D', 'C', 'B', 'A', 'S', 'SS', 'SSS'];
+  var RANK_STATS = { F: [4, 3, 3, [3, 2, 1], 3, 2], E: [6, 4, 4, [4, 3, 2], 6, 3], D: [8, 5, 5, [5, 4, 3], 9, 4], C: [10, 6, 6, [6, 5, 4], 12, 5], B: [12, 7, 7, [7, 6, 5], 15, 6],
+    A: [14, 8, 8, [8, 7, 6], 18, 7], S: [16, 9, 9, [9, 8, 7], 21, 8], SS: [20, 12, 12, [12, 11, 10], 30, 12], SSS: [25, 15, 15, [15, 14, 13], 45, 15] };
+  async function bestiary() { if (!BESTIARY) BESTIARY = await fetch('bestiary.json?v=c9331b6c').then(function (r) { return r.json(); }); return BESTIARY; }
+  function pickCreature(done) {
+    var d = dialog('Choose from the Bestiary');
+    var q = el('input', { type: 'search', placeholder: 'Search by name, type, or element', 'aria-label': 'Search the Bestiary' });
+    var sec = el('select', { 'aria-label': 'Section' }, [opt('', 'Every section', true)]);
+    var list = el('div', { class: 'cb-best', role: 'listbox', 'aria-label': 'Creatures' });
+    d.body.appendChild(el('div', { class: 'cb-f' }, [el('div', { class: 'two' }, [q, sec]), list]));
+    bestiary().then(function (all) {
+      var seen = {}; all.forEach(function (c) { if (!seen[c.section]) { seen[c.section] = 1; sec.appendChild(opt(c.section, c.section)); } });
+      function draw() {
+        list.textContent = '';
+        var t = q.value.trim().toLowerCase();
+        all.filter(function (c) { return (!sec.value || c.section === sec.value) && (!t || (c.name + ' ' + (c.tags || []).join(' ') + ' ' + c.section).toLowerCase().indexOf(t) >= 0); }).forEach(function (c) {
+          list.appendChild(el('button', { type: 'button', class: 'cb-best-row', role: 'option', onclick: function () { d.close(); d.el.remove(); done(c); } }, [
+            el('span', { class: 'cb-best-rank', text: c.rank || '?' }),
+            el('span', {}, [el('b', { text: c.name }), el('small', { text: [c.type, c.size, c.elements && c.elements !== 'None' ? c.elements : '', c.section].filter(Boolean).join(' · ') })]),
+            el('span', { class: 'cb-best-num', text: 'A' + (c.attack || 0) + ' D' + (c.defense || 0) + ' Dmg' + (c.damage || 0) })]));
+        });
+        if (!list.children.length) list.appendChild(el('p', { class: 'cv-muted', text: 'Nothing matches.' }));
+      }
+      q.addEventListener('input', draw); sec.addEventListener('change', draw); draw(); q.focus();
+    });
+    d.ok('Close', function () {});
+    d.open();
+  }
+  async function uploadNpcPic(file) {
+    if (!file || !/^image\//.test(file.type)) throw new Error('Choose a picture file (JPG, PNG, WebP, or GIF).');
+    var blob = file, type = file.type, ext = (file.type.split('/')[1] || 'png').replace('jpeg', 'jpg');
+    if (file.type !== 'image/gif') {
+      var img = await new Promise(function (ok, bad) { var i = new Image(); i.onload = function () { ok(i); }; i.onerror = function () { bad(new Error('That file is not a picture this browser can open.')); }; i.src = URL.createObjectURL(file); });
+      var k = Math.min(1, 512 / Math.max(img.naturalWidth, img.naturalHeight)), cv = document.createElement('canvas');
+      cv.width = Math.round(img.naturalWidth * k); cv.height = Math.round(img.naturalHeight * k);
+      cv.getContext('2d').drawImage(img, 0, 0, cv.width, cv.height);
+      blob = await new Promise(function (ok) { cv.toBlob(ok, 'image/png'); }); type = 'image/png'; ext = 'png';
+    }
+    if (blob.size > 3 * 1024 * 1024) throw new Error('That picture is over 3 MB. Try a smaller one.');
+    var path = me.id + '/npc-' + Date.now() + '-' + Math.random().toString(36).slice(2, 8) + '.' + ext;
+    var r = await db.storage.from('ourspace').upload(path, blob, { contentType: type, upsert: false });
+    if (r.error) throw r.error;
+    return db.storage.from('ourspace').getPublicUrl(path).data.publicUrl;
+  }
   function npcDialog() {
     var d = dialog('Add NPCs');
+    var picked = null;
     var f = {
       name: el('input', { maxlength: '50', placeholder: 'Goblin' }), count: num('npc-count', 1, 1, 12), side: el('select', {}, [opt('enemy', 'Enemy', true), opt('neutral', 'Neutral'), opt('party', 'Ally')]),
-      init: num('npc-init', 3, 0, 40), bdt: num('npc-bdt', 2, 1, 30), b: num('npc-b', 7, 0, 20), l: num('npc-l', 5, 0, 20), a: num('npc-a', 3, 1, 20),
-      mana: num('npc-mana', 0, 0, 999), mt: num('npc-mt', 2, 0, 50), atk: num('npc-atk', 5, 0, 40), def: num('npc-def', 4, 0, 40), dmg: num('npc-dmg', 3, 0, 40),
-      notes: el('input', { maxlength: '200', placeholder: 'Weapons, spells, tactics' }), hidden: el('input', { type: 'checkbox' })
+      init: num('npc-init', 3, 0, 40), bdt: num('npc-bdt', 3, 1, 60), b: num('npc-b', 3, 0, 40), l: num('npc-l', 2, 0, 40), a: num('npc-a', 1, 1, 40),
+      mana: num('npc-mana', 3, 0, 9999), mt: num('npc-mt', 2, 0, 99), atk: num('npc-atk', 4, 0, 60), def: num('npc-def', 4, 0, 60), dmg: num('npc-dmg', 3, 0, 60), move: num('npc-move', 1, 0, 20),
+      notes: el('textarea', { maxlength: '1500', rows: '3', placeholder: 'Attacks, spells, traits' }), hidden: el('input', { type: 'checkbox' }),
+      elite: el('input', { type: 'checkbox' }), boss: el('input', { type: 'checkbox' }),
+      pic: el('input', { type: 'url', maxlength: '500', placeholder: 'https:// (optional)' }), file: el('input', { type: 'file', accept: 'image/*' })
     };
+    var chosen = el('p', { class: 'cb-desc', text: 'Pick a creature to fill everything in, or type your own. You can change any number before adding.' });
+    function fill() {
+      if (!picked) return;
+      var c = picked, rank = c.rank, base = RANK_STATS[rank] || null;
+      var atk = c.attack, def = c.defense, dmg = c.damage, bdt = c.bdt, h = Object.assign({}, c.health || {}), mana = c.mana, mt = c.mt;
+      if (f.elite.checked && base) { // Elite: +1 rank, keeping the creature's size bonuses
+        var nr = RANKS[Math.min(RANKS.length - 1, RANKS.indexOf(rank) + 1)], nb = RANK_STATS[nr];
+        atk += nb[0] - base[0]; def += nb[0] - base[0]; dmg += nb[1] - base[1]; bdt += nb[2] - base[2];
+        h.b += nb[3][0] - base[3][0]; h.l += nb[3][1] - base[3][1]; h.a += nb[3][2] - base[3][2]; mana += nb[4] - base[4]; mt += nb[5] - base[5]; rank = nr;
+      }
+      if (f.boss.checked && !/Boss/.test(c.section)) { h.b *= 2; h.l *= 2; h.a *= 2; }
+      f.name.value = c.name; f.atk.value = atk; f.def.value = def; f.dmg.value = dmg; f.bdt.value = bdt;
+      f.b.value = h.b || 0; f.l.value = h.l || 0; f.a.value = h.a || 1; f.mana.value = mana || 0; f.mt.value = mt || 0; f.move.value = c.move || 1;
+      f.notes.value = (c.abilities || []).map(function (x) { return x.name + ': ' + x.text; }).concat(c.trait ? ['Trait: ' + c.trait] : []).concat(f.boss.checked && !/Boss/.test(c.section) ? ['Boss: two attacks a turn, immune to one condition.'] : []).join('\n');
+      chosen.textContent = c.name + ', Rank ' + rank + '. ' + [c.type, c.size, c.elements].filter(Boolean).join(', ') + '.' + (c.loot ? ' Loot: ' + c.loot : '');
+    }
+    f.elite.addEventListener('change', fill); f.boss.addEventListener('change', fill);
     d.body.appendChild(el('div', { class: 'cb-f' }, [
+      el('div', {}, [el('button', { class: 'act primary', type: 'button', text: 'Choose from the Bestiary', onclick: function () { pickCreature(function (c) { picked = c; fill(); }); } })]), chosen,
+      el('div', { class: 'two' }, [el('label', { class: 'chk' }, [f.elite, 'Elite (+1 rank)']), el('label', { class: 'chk' }, [f.boss, 'Boss (double health, two attacks)'])]),
       el('div', { class: 'two' }, [field('Name', f.name), field('How many', f.count)]),
-      el('div', { class: 'three' }, [field('Side', f.side), field('Initiative', f.init), field('BDT', f.bdt)]),
-      el('div', { class: 'three' }, [field('Bashing boxes', f.b), field('Lethal boxes', f.l), field('Aggravated boxes', f.a)]),
+      el('div', { class: 'three' }, [field('Side', f.side), field('Initiative', f.init), field('Move', f.move)]),
       el('div', { class: 'three' }, [field('Attack pool', f.atk), field('Defense pool', f.def), field('Damage pool', f.dmg)]),
-      el('div', { class: 'two' }, [field('Mana', f.mana), field('M/T', f.mt)]),
-      field('Notes', f.notes),
-      el('label', { class: 'chk' }, [f.hidden, 'Hidden from players until revealed']),
-      el('p', { class: 'cb-desc', text: 'Rank F creatures: Attack 4, Defense 4, Damage 3, BDT 3, Health 3 / 2 / 1 (Chapter 15 has the Bestiary).' })]));
+      el('div', { class: 'three' }, [field('Bashing boxes', f.b), field('Lethal boxes', f.l), field('Aggravated boxes', f.a)]),
+      el('div', { class: 'three' }, [field('BDT', f.bdt), field('Mana', f.mana), field('M/T', f.mt)]),
+      field('Attacks, spells, and traits', f.notes),
+      el('div', { class: 'two' }, [field('Picture (upload)', f.file), field('Or a picture address', f.pic)]),
+      el('label', { class: 'chk' }, [f.hidden, 'Hidden from players until revealed'])]));
     d.ok('Add', async function () {
       var n = Math.max(1, Math.min(12, +f.count.value || 1)), base = f.name.value.trim() || 'Enemy', rows = [];
+      var pic = /^https:\/\//.test(f.pic.value.trim()) ? f.pic.value.trim() : '';
+      if (f.file.files && f.file.files[0]) pic = await uploadNpcPic(f.file.files[0]);
+      var abil = picked ? (picked.abilities || []) : [];
       for (var i = 0; i < n; i++) rows.push({ encounter_id: R.enc.id, owner: me.id, name: n > 1 ? base + ' ' + (i + 1) : base, kind: 'npc', side: f.side.value, ap: 3, initiative: +f.init.value || 0, bdt: +f.bdt.value || 1,
-        boxes: { b: +f.b.value || 0, l: +f.l.value || 0, a: +f.a.value || 1 }, mana: +f.mana.value || 0, mana_max: +f.mana.value || 0, mt: +f.mt.value || 0, hidden: f.hidden.checked,
-        stats: { npc: true, attack: +f.atk.value || 0, defense: +f.def.value || 0, damage: +f.dmg.value || 0, notes: f.notes.value.trim(), regen: 1 } });
+        boxes: { b: +f.b.value || 0, l: +f.l.value || 0, a: +f.a.value || 1 }, mana: +f.mana.value || 0, mana_max: +f.mana.value || 0, mt: +f.mt.value || 0, hidden: f.hidden.checked, pic_url: pic,
+        stats: { npc: true, attack: +f.atk.value || 0, defense: +f.def.value || 0, damage: +f.dmg.value || 0, move: +f.move.value || 1, notes: f.notes.value.trim(), regen: 1,
+          creature: picked ? { id: picked.id, rank: picked.rank, type: picked.type, size: picked.size, elements: picked.elements, abilities: abil, trait: picked.trait || '' } : null } });
       await must(db.from('combatants').insert(rows));
       await refresh();
     });
@@ -649,8 +723,13 @@
     var kit = c.stats || {};
     box.appendChild(el('h2', { class: 'px', style: 'margin-top:0', text: c.name }));
     if (kit.npc) {
-      box.appendChild(el('p', { class: 'cb-desc', text: kit.notes || '' }));
+      box.appendChild(el('p', { class: 'cb-desc', text: kit.creature ? ['Rank ' + kit.creature.rank, kit.creature.type, kit.creature.size, kit.creature.elements, 'Move ' + (kit.move || 1)].filter(Boolean).join(' · ') + (kit.creature.trait ? '. Trait: ' + kit.creature.trait : '') : (kit.notes || '') }));
       var acts = el('div', { class: 'cb-acts' });
+      ((kit.creature || {}).abilities || []).forEach(function (ab) {
+        var isAtk = /melee|ranged|damage|casts|breath|bolt|bite|claw|strike|slam/i.test(ab.name + ' ' + ab.text);
+        acts.appendChild(el('button', { class: 'cb-act', type: 'button', onclick: function () { rollDialog(c, { label: c.name + ': ' + ab.name, pool: kit.attack || 0, parts: [['Attack pool', kit.attack || 0]], kind: isAtk ? 'attack' : 'roll', damagePool: kit.damage || 0, targetable: isAtk, desc: ab.text }); } },
+          [el('span', {}, [el('b', { text: ab.name }), el('small', { text: ab.text })]), el('span', { class: 'pool', text: String(kit.attack || 0) })]));
+      });
       [['Attack', kit.attack, 'attack'], ['Defense', kit.defense, 'defense']].forEach(function (x) {
         acts.appendChild(el('button', { class: 'cb-act', type: 'button', onclick: function () { rollDialog(c, { label: c.name + ': ' + x[0], pool: x[1] || 0, parts: [[x[0] + ' pool', x[1] || 0]], kind: x[2], damagePool: kit.damage || 0, targetable: x[2] === 'attack' }); } },
           [el('span', { text: x[0] }), el('span', { class: 'pool', text: String(x[1] || 0) })]));
