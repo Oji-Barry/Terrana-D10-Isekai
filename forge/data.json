@@ -2155,7 +2155,7 @@
    "creation_allowed": true,
    "link": "../rulebook/ch8.html#part-2-rare-heritages-storyteller-approval-required-vampire",
    "merit_text": {
-    "Resilience": "A dotted merit with no mana cost. Each dot raises the character's BDT by 1 beyond the normal calculation."
+    "Resilience": "A dotted merit with no mana cost. Each dot adds 1 to the character's Fortitude everywhere Fortitude is used: Fortitude rolls, BDT (and so LDT and ADT), and Max Mana per Turn. They are not bought Attribute dots, so they do not count toward Level or the Attribute cap."
    }
   }
  ],
@@ -2271,7 +2271,7 @@
     "max": 7
    },
    "link": "../rulebook/ch9.html#core-merits-resilience",
-   "text": "Each dot adds 1 to your damage threshold (your BDT, and so your LDT and ADT as well)."
+   "text": "Each dot adds 1 to your Fortitude everywhere Fortitude is used: Fortitude rolls, your BDT (and so your LDT and ADT), and Max Mana per Turn. These are not bought Attribute dots, so they do not count toward Level or the Attribute cap."
   },
   {
    "name": "Survivor's Grit",
