@@ -231,7 +231,7 @@
   var DRAW = {};
   // Action Points held and used this turn
   function apTracker() {
-    var st = (M.tracks || {}).ap || {}, held = st.held || 0, used = st.used || 0;
+    var st = (M.tracks || {}).ap || {}, held = st.held === undefined || st.held === null ? 3 : st.held, used = st.used || 0; // start with 3 held
     function save(h2, u2) { var t2 = tracks(); t2.ap = { held: Math.max(0, h2), used: Math.max(0, u2) }; queue({ tracks: t2 }); drawBody(); }
     function bar(v, max, cls) { var w = el('div', { class: 'cv-bar ' + cls }); w.appendChild(el('span', { style: 'width:' + Math.min(100, v / max * 100) + '%' })); return w; }
     var btn = function (t, f, title, off) { return el('button', { type: 'button', class: 'act small', text: t, title: title || null, disabled: !mine || off, onclick: f }); };
@@ -247,7 +247,8 @@
         btn('Upkeep +2 (hurt)', function () { save(Math.min(3, held + 2), 0); }, 'You took damage since your last turn: regain 2 AP'),
         btn('Ally gives 1', function () { save(held + 1, used); }, 'Shared AP from an ally, at no action cost'),
         btn('Give 1', function () { save(held - 1, used); }, 'Share 1 AP with an ally', held < 1),
-        btn('New Turn', function () { save(Math.min(3, held), 0); }, 'Reset what you used this turn')]) : null,
+        btn('New Turn', function () { save(Math.min(3, held), 0); }, 'Reset what you used this turn'),
+        btn('Refill', function () { save(3, 0); }, 'Back to 3 held, for a new fight')]) : null,
       mine ? el('p', { class: 'cv-muted cv-mt-hint', text: 'Spend 1, 3, or 6 AP for +1, +2, or +3 dice, or 1, 2, or 3 extra zones. Hold up to 3; allies can share, but no one uses more than 6 in a turn.' }) : null
     ]);
   }
