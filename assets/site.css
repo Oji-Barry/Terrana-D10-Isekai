@@ -310,7 +310,7 @@ body.menu-hidden .rail { display: flex; }
 .soon { font-family: var(--pixel); font-size: 12px; letter-spacing: 2px; color: var(--text-muted); }
 
 /* Credits footer */
-.site-footer { padding: 14px 20px; font-size: 13px; line-height: 1.6; color: var(--text-soft); }
+.site-footer { padding: 14px 20px; font-size: 13px; line-height: 1.6; color: var(--text-soft); text-align: center; }
 .site-footer .px { font-size: 14px; }
 
 .visually-hidden {
