@@ -329,31 +329,30 @@
   }
 
   // ---------- arena ----------
+  function zonesOf(c) { var n = +((c.stats || {}).zones) || 1; return Math.max(1, Math.min(6, n)); }
   function drawMap() {
     var m = R.enc.map || {}, cols = m.cols || 6, rows = m.rows || 8;
     var wrap = $('cb-map'); wrap.textContent = '';
     var size = Math.max(36, Math.min(72, Math.floor((wrap.clientWidth - 30) / cols) - 3));
-    var grid = el('div', { class: 'cb-map ' + (m.theme === 'light' ? 'light' : 'dark'), role: 'grid', 'aria-label': 'Battle map, ' + cols + ' by ' + rows + ' zones', style: 'grid-template-columns:repeat(' + cols + ', var(--z));--z:' + size + 'px' });
-    var at = {}; list().forEach(function (c) { if (c.x !== null && c.x !== undefined && c.y !== null) at[c.x + ',' + c.y] = c; });
+    var grid = el('div', { class: 'cb-map ' + (m.theme === 'light' ? 'light' : 'dark'), role: 'grid', 'aria-label': 'Battle map, ' + cols + ' by ' + rows + ' zones', style: 'grid-template-columns:repeat(' + cols + ', var(--z));grid-template-rows:repeat(' + rows + ', var(--z));--z:' + size + 'px' });
+    var at = {}, placed = list().filter(function (c) { return c.x !== null && c.x !== undefined && c.y !== null; });
+    placed.forEach(function (c) { var n = zonesOf(c); for (var i = 0; i < n; i++) for (var j = 0; j < n; j++) at[(c.x + i) + ',' + (c.y + j)] = c; });
     var s = ST(), cur = current(), mover = R.moving ? R.cs[R.moving] : null;
     var counted = !!(mover && s.started && cur && mover.id === cur.id && (s.phase === 2 || s.phase === 5));
-    var left = mover ? (counted ? moveLeft(mover) : 99) : 0;
+    var left = mover ? (counted ? moveLeft(mover) : 99) : 0, mn = mover ? zonesOf(mover) : 1;
+    function fits(x, y) { // a token of the mover's size could stand with its top-left corner here
+      if (x + mn > cols || y + mn > rows) return false;
+      for (var i = 0; i < mn; i++) for (var j = 0; j < mn; j++) { var o = at[(x + i) + ',' + (y + j)]; if (o && o.id !== mover.id) return false; }
+      return true;
+    }
     for (var y = 0; y < rows; y++) for (var x = 0; x < cols; x++) (function (x, y) {
       var c = at[x + ',' + y];
       var label = String.fromCharCode(65 + x) + (y + 1);
       var dist = mover && mover.x !== null && mover.x !== undefined ? Math.max(Math.abs(x - mover.x), Math.abs(y - mover.y)) : 0;
-      var reach = mover && !c && (mover.x === null || mover.x === undefined || dist <= left);
-      var z = el('button', { type: 'button', class: 'cb-zone' + (reach ? ' target' : ''), 'aria-label': 'Zone ' + label + (c ? ': ' + c.name : ', empty') }, [el('span', { class: 'lab', text: label })]);
-      if (c) {
-        var sp = (c.stats || {}).sprite;
-        var tok = el('span', { class: 'cb-token ' + c.side + (sp ? ' spr' : '') + (R.sel === c.id ? ' sel' : '') + (cur && cur.id === c.id ? ' turn' : '') + (incap(c) ? ' down' : '') + (c.hidden ? ' hid' : ''), text: sp || c.pic_url ? '' : initials(c.name) });
-        if (sp) tok.appendChild(spriteNode(sp, Math.max(32, Math.floor(size * 0.78 / 16) * 16)));
-        else if (c.pic_url) tok.style.backgroundImage = 'url("' + c.pic_url.replace(/"/g, '') + '")';
-        z.appendChild(tok);
-      }
+      var reach = mover && fits(x, y) && !(x === mover.x && y === mover.y) && (mover.x === null || mover.x === undefined || dist <= left);
+      var z = el('button', { type: 'button', class: 'cb-zone' + (reach ? ' target' : ''), style: 'grid-column:' + (x + 1) + ';grid-row:' + (y + 1), 'aria-label': 'Zone ' + label + (c ? ': ' + c.name : ', empty') }, [el('span', { class: 'lab', text: label })]);
       z.addEventListener('click', function () {
-        if (c) { R.sel = c.id; R.moving = mayMove(c) ? (R.moving === c.id ? null : c.id) : null; drawAll(); return; }
-        if (!mover || !reach) return;
+        if (!mover || !reach) { if (c) pickToken(c); return; }
         var placing = mover.x === null || mover.x === undefined, fromX = mover.x, fromY = mover.y;
         R.moving = null;
         upd(mover, { x: x, y: y });
@@ -361,15 +360,25 @@
       });
       grid.appendChild(z);
     })(x, y);
+    // Tokens sit on top, spanning as many zones as the creature fills
+    placed.forEach(function (c) {
+      var n = zonesOf(c), sp = (c.stats || {}).sprite;
+      var tok = el('span', { class: 'cb-token ' + c.side + (sp ? ' spr' : '') + (R.sel === c.id ? ' sel' : '') + (cur && cur.id === c.id ? ' turn' : '') + (incap(c) ? ' down' : '') + (c.hidden ? ' hid' : ''), text: sp || c.pic_url ? '' : initials(c.name) });
+      if (sp) tok.appendChild(spriteNode(sp, Math.max(32, Math.floor((size * n + 3 * (n - 1)) * 0.78 / 16) * 16)));
+      else if (c.pic_url) tok.style.backgroundImage = 'url("' + c.pic_url.replace(/"/g, '') + '")';
+      var cell = el('button', { type: 'button', class: 'cb-tokcell' + (mover && mover.id !== c.id ? ' pass' : ''), style: 'grid-column:' + (c.x + 1) + ' / span ' + n + ';grid-row:' + (c.y + 1) + ' / span ' + n, 'aria-label': c.name + (n > 1 ? ' (' + n + 'x' + n + ')' : ''), onclick: function () { pickToken(c); } }, [tok]);
+      grid.appendChild(cell);
+    });
     wrap.appendChild(grid);
     var hint;
-    if (mover) hint = counted ? 'Moving ' + mover.name + ': ' + left + ' zone' + (left === 1 ? '' : 's') + ' left this turn (diagonals count as 1). Pick a lit zone.' : 'Placing ' + mover.name + ': pick any empty zone.';
+    if (mover) hint = counted ? 'Moving ' + mover.name + ': ' + left + ' zone' + (left === 1 ? '' : 's') + ' left this turn (diagonals count as 1). Pick a lit zone' + (mn > 1 ? ' for its top-left corner.' : '.') : 'Placing ' + mover.name + ': pick a lit zone' + (mn > 1 ? ' for its top-left corner (' + mn + 'x' + mn + ').' : '.');
     else if (!s.started) hint = 'Setup: pick your token, then any empty zone, to place it.';
     else if (canControl() && (s.phase === 2 || s.phase === 5)) hint = 'Pick ' + cur.name + ', then a lit zone, to move.';
     else hint = 'Tokens move during the Move or Use Item phases.';
     var unplaced = list().filter(function (c) { return (c.x === null || c.x === undefined) && mineC(c); });
     wrap.appendChild(el('p', { class: 'cb-maphint', text: hint + (unplaced.length ? ' Not on the map yet: ' + unplaced.map(function (c) { return c.name; }).join(', ') + '.' : '') }));
   }
+  function pickToken(c) { R.sel = c.id; R.moving = mayMove(c) ? (R.moving === c.id ? null : c.id) : null; drawAll(); }
   // Who may move a token right now
   function mayMove(c) {
     var s = ST(), cur = current();
@@ -791,7 +800,7 @@
     var picked = null;
     var f = {
       name: el('input', { maxlength: '50', placeholder: 'Goblin' }), count: num('npc-count', 1, 1, 12), side: el('select', {}, [opt('enemy', 'Enemy', true), opt('neutral', 'Neutral'), opt('party', 'Ally')]),
-      init: num('npc-init', 3, 0, 40), bdt: num('npc-bdt', 3, 1, 60), b: num('npc-b', 3, 0, 40), l: num('npc-l', 2, 0, 40), a: num('npc-a', 1, 1, 40),
+      init: num('npc-init', 3, 0, 40), zones: el('select', { id: 'npc-zones' }, [1, 2, 3, 4, 5].map(function (n) { return opt(n, n === 1 ? '1 (one zone)' : n + ' (' + n + 'x' + n + ' zones)', n === 1); })), bdt: num('npc-bdt', 3, 1, 60), b: num('npc-b', 3, 0, 40), l: num('npc-l', 2, 0, 40), a: num('npc-a', 1, 1, 40),
       mana: num('npc-mana', 3, 0, 9999), mt: num('npc-mt', 2, 0, 99), atk: num('npc-atk', 4, 0, 60), def: num('npc-def', 4, 0, 60), dmg: num('npc-dmg', 3, 0, 60), move: num('npc-move', 1, 0, 20),
       notes: el('textarea', { maxlength: '1500', rows: '3', placeholder: 'Attacks, spells, traits' }), hidden: el('input', { type: 'checkbox' }),
       elite: el('input', { type: 'checkbox' }), boss: el('input', { type: 'checkbox' }),
@@ -811,6 +820,7 @@
         h.b += nb[3][0] - base[3][0]; h.l += nb[3][1] - base[3][1]; h.a += nb[3][2] - base[3][2]; mana += nb[4] - base[4]; mt += nb[5] - base[5]; rank = nr;
       }
       if (f.boss.checked && !/Boss/.test(c.section)) { h.b *= 2; h.l *= 2; h.a *= 2; }
+      var zm = String(c.size || '').match(/(\d)x\d/); f.zones.value = zm ? zm[1] : '1';
       f.name.value = c.name; f.atk.value = atk; f.def.value = def; f.dmg.value = dmg; f.bdt.value = bdt;
       f.b.value = h.b || 0; f.l.value = h.l || 0; f.a.value = h.a || 1; f.mana.value = mana || 0; f.mt.value = mt || 0; f.move.value = c.move || 1;
       f.notes.value = (c.abilities || []).map(function (x) { return x.name + ': ' + x.text; }).concat(c.trait ? ['Trait: ' + c.trait] : []).concat(f.boss.checked && !/Boss/.test(c.section) ? ['Boss: two attacks a turn, immune to one condition.'] : []).join('\n');
@@ -823,6 +833,7 @@
       el('div', { class: 'two' }, [el('label', { class: 'chk' }, [f.elite, 'Elite (+1 rank)']), el('label', { class: 'chk' }, [f.boss, 'Boss (double health, two attacks)'])]),
       el('div', { class: 'two' }, [field('Name', f.name), field('How many', f.count)]),
       el('div', { class: 'three' }, [field('Side', f.side), field('Initiative', f.init), field('Move', f.move)]),
+      el('div', { class: 'two' }, [field('Size on the map', f.zones), el('p', { class: 'cb-desc', style: 'align-self:end', text: 'Large 2x2, Huge 3x3, Gargantuan 4x4, Colossal 5x5.' })]),
       el('div', { class: 'three' }, [field('Attack pool', f.atk), field('Defense pool', f.def), field('Damage pool', f.dmg)]),
       el('div', { class: 'three' }, [field('Bashing boxes', f.b), field('Lethal boxes', f.l), field('Aggravated boxes', f.a)]),
       el('div', { class: 'three' }, [field('BDT', f.bdt), field('Mana', f.mana), field('M/T', f.mt)]),
@@ -837,7 +848,7 @@
       var abil = picked ? (picked.abilities || []) : [];
       for (var i = 0; i < n; i++) rows.push({ encounter_id: R.enc.id, owner: me.id, name: n > 1 ? base + ' ' + (i + 1) : base, kind: 'npc', side: f.side.value, ap: 3, initiative: +f.init.value || 0, bdt: +f.bdt.value || 1,
         boxes: { b: +f.b.value || 0, l: +f.l.value || 0, a: +f.a.value || 1 }, mana: +f.mana.value || 0, mana_max: +f.mana.value || 0, mt: +f.mt.value || 0, hidden: f.hidden.checked, pic_url: pic,
-        stats: { npc: true, sprite: npcSprite, attack: +f.atk.value || 0, defense: +f.def.value || 0, damage: +f.dmg.value || 0, move: +f.move.value || 1, notes: f.notes.value.trim(), regen: 1,
+        stats: { npc: true, sprite: npcSprite, zones: +f.zones.value || 1, attack: +f.atk.value || 0, defense: +f.def.value || 0, damage: +f.dmg.value || 0, move: +f.move.value || 1, notes: f.notes.value.trim(), regen: 1,
           creature: picked ? { id: picked.id, rank: picked.rank, type: picked.type, size: picked.size, elements: picked.elements, abilities: abil, trait: picked.trait || '' } : null } });
       await must(db.from('combatants').insert(rows));
       await refresh();
