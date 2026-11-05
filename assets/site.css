@@ -453,3 +453,19 @@ button.act { cursor: pointer; font-family: var(--body); }
 .dl-name { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
 .dl-kind { font-size: 14px; color: var(--text-soft); }
 @media (max-width: 520px) { .dl-row { flex-direction: column; align-items: stretch; } .dl-row .act { text-align: center; } }
+
+/* Credits, styled like an arcade cabinet's credits screen */
+.site-footer.arcade-credits { position: relative; overflow: hidden; background: #05061a; font-family: var(--pixel); font-size: 13px; letter-spacing: 0.08em; color: #e9edf8; padding: 18px 16px 20px; }
+.arcade-credits::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: repeating-linear-gradient(to bottom, rgba(0, 0, 0, 0) 0 2px, rgba(0, 0, 0, 0.28) 2px 3px); }
+.arcade-credits .ac-title { font-size: 20px; color: var(--gold); letter-spacing: 0.3em; margin-bottom: 10px; text-shadow: 0 0 6px rgba(255, 215, 106, 0.7), 2px 2px 0 #7a3b00; }
+.arcade-credits .ac-row { display: flex; align-items: baseline; gap: 8px; max-width: 640px; margin: 4px auto; text-align: left; }
+.arcade-credits .ac-role { color: var(--sky); white-space: nowrap; text-shadow: 0 0 4px rgba(127, 209, 255, 0.6); }
+.arcade-credits .ac-dots { flex: 1; min-width: 16px; border-bottom: 2px dotted rgba(233, 237, 248, 0.35); transform: translateY(-4px); }
+.arcade-credits .ac-name { text-align: right; }
+.arcade-credits a { color: #fff; text-decoration: none; border-bottom: 1px solid rgba(255, 255, 255, 0.4); }
+.arcade-credits a:hover, .arcade-credits a:focus-visible { color: var(--gold); border-color: var(--gold); }
+@media (max-width: 560px) {
+  .arcade-credits .ac-row { flex-direction: column; align-items: center; gap: 0; margin: 8px auto; text-align: center; }
+  .arcade-credits .ac-dots { display: none; }
+  .arcade-credits .ac-name { text-align: center; }
+}
