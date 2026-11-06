@@ -502,7 +502,7 @@
   async function doUpkeep(c) {
     var k = c.stats || {}, effects = (k.effects || []).slice(), paid = 0, kept = [], dropped = [];
     effects.forEach(function (e, i) { var pay = R.pay[c.id + ':' + i] !== false; if (pay) { paid += e.upkeep || 0; kept.push(e); } else dropped.push(e.name); });
-    var mana = Math.max(0, Math.min(c.mana_max || 0, (c.mana || 0) + regenOf(c)) - paid);
+    var mana = Math.max(0, Math.min(c.mana_max || 0, (c.mana || 0) + regenOf(c) + (k.hurt ? 1 : 0)) - paid);
     var patch = { ap: Math.min(3, (c.ap || 0) + (k.hurt ? 2 : 1)), mana: mana, stats: Object.assign({}, k, { hurt: false, effects: kept }) };
     await upd(c, patch);
     R.pay = {};
@@ -523,7 +523,9 @@
     var s = ST(), kit = c.stats || {}, t = s.t;
     if (i === 0) {
       var hurt = kit.hurt ? 2 : 1;
-      box.appendChild(el('p', { class: 'cb-line', text: 'When you click Upkeep: +' + hurt + ' AP' + (kit.hurt ? ' (you were hurt)' : '') + ' up to 3, and +' + regenOf(c) + ' mana.' }));
+      var rg = regenOf(c);
+      box.appendChild(el('p', { class: 'cb-line', text: '+1 AP & +' + rg + ' Mana, +2 AP & +' + (rg + 1) + ' Mana if damage taken last turn.' }));
+      if (kit.hurt) box.appendChild(el('p', { class: 'cb-line', text: c.name + ' took damage, so this Upkeep gives +2 AP & +' + (rg + 1) + ' Mana.' }));
       (kit.effects || []).forEach(function (e, j) {
         var key = c.id + ':' + j, pay = R.pay[key] !== false;
         box.appendChild(el('label', { class: 'chk cb-line' }, [el('input', { type: 'checkbox', checked: pay, onchange: function (ev) { R.pay[key] = ev.target.checked; } }), 'Pay ' + (e.upkeep || 0) + ' mana to keep ' + e.name + ' running']));
