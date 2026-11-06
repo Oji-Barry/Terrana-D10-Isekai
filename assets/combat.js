@@ -187,7 +187,13 @@
   function current() { var s = ST(); if (!s.started) return null; var o = s.order.filter(function (id) { return R.cs[id]; }); return o.length ? R.cs[o[s.turn % o.length]] : null; }
   function canControl() { var c = current(); return !!c && (R.host || c.owner === me.id); }
   function moveOf(c) { var k = c.stats || {}; return k.move || 1; }
-  function moveLeft(c) { var t = ST().t; return Math.max(0, moveOf(c) + (t.extra || 0) - (t.moved || 0)); }
+  // Free Movement left this turn (none once in difficult terrain), plus zones already bought with AP
+  function freeLeft(c) { var t = ST().t; return t.stuck ? 0 : Math.max(0, moveOf(c) - (t.moved || 0)); }
+  function preLeft() { var t = ST().t; return Math.max(0, (t.extra || 0) - (t.extraUsed || 0)); }
+  function moveLeft(c) { return freeLeft(c) + preLeft(); }
+  // Zones bought with AP cost 1, then 2 more, then 3 more (1, 3, 6 in all), at most 3 a turn
+  function canBuyMore(c) { var p = ST().t.paid || 0; return p < 3 && (c.ap || 0) >= p + 1; }
+  function terrainAt(x, y, n) { var ter = (R.enc.map || {}).terrain || {}; for (var i = 0; i < n; i++) for (var j = 0; j < n; j++) { var t = TER[ter[(x + i) + ',' + (y + j)]]; if (t && (t[3] === 'difficult' || t[3] === 'cover')) return true; } return false; }
   async function upd(c, patch) {
     Object.assign(c, patch);
     drawAll();
@@ -340,39 +346,49 @@
     placed.forEach(function (c) { var n = zonesOf(c); for (var i = 0; i < n; i++) for (var j = 0; j < n; j++) at[(c.x + i) + ',' + (c.y + j)] = c; });
     var s = ST(), cur = current(), mover = R.moving ? R.cs[R.moving] : null;
     var counted = !!(mover && s.started && cur && mover.id === cur.id && (s.phase === 2 || s.phase === 5));
-    var left = mover ? (counted ? moveLeft(mover) : 99) : 0, mn = mover ? zonesOf(mover) : 1;
+    var mn = mover ? zonesOf(mover) : 1, left = mover ? (counted ? moveLeft(mover) : 99) : 0;
     function terAt(x, y, eff) { for (var i = 0; i < mn; i++) for (var j = 0; j < mn; j++) { var t = TER[ter[(x + i) + ',' + (y + j)]]; if (t && (eff === 'difficult' ? t[3] === 'difficult' || t[3] === 'cover' : t[3] === eff)) return true; } return false; }
     function fits(x, y) { // a token of the mover's size could stand with its top-left corner here
       if (x + mn > cols || y + mn > rows || terAt(x, y, 'block')) return false;
       for (var i = 0; i < mn; i++) for (var j = 0; j < mn; j++) { var o = at[(x + i) + ',' + (y + j)]; if (o && o.id !== mover.id) return false; }
       return true;
     }
-    // Cheapest path for the mover: fewest zones, then least extra AP for difficult terrain; blocked zones cannot be crossed
+    // Cheapest way to each zone, in AP. Blocked zones cannot be crossed. Entering difficult terrain costs a bought zone
+    // and ends free movement for the turn; once in it, every zone (in or out) is bought: 1, then 2 more, then 3 more AP.
     var path = {};
     if (mover && mover.x !== null && mover.x !== undefined) {
-      var q = [[mover.x, mover.y, 0, 0]]; path[mover.x + ',' + mover.y] = [0, 0];
+      var t0 = s.t, ap0 = counted ? (mover.ap || 0) : 99;
+      var start = { x: mover.x, y: mover.y, free: counted ? freeLeft(mover) : 99, pre: counted ? preLeft() : 0, paid: counted ? (t0.paid || 0) : 0, stuck: counted ? !!t0.stuck : false, ap: 0, steps: 0, freeUsed: 0, preUsed: 0 };
+      var q = [start], seen = {};
       while (q.length) {
-        q.sort(function (a, b) { return a[2] - b[2] || a[3] - b[3]; });
-        var n0 = q.shift();
+        q.sort(function (a, b) { return a.ap - b.ap || a.steps - b.steps; });
+        var n0 = q.shift(), sk = [n0.x, n0.y, n0.free, n0.pre, n0.paid, n0.stuck].join(',');
+        if (seen[sk]) continue; seen[sk] = 1;
+        var key0 = n0.x + ',' + n0.y, best = path[key0];
+        if (n0.steps && (!best || n0.ap < best.ap || (n0.ap === best.ap && n0.free + n0.pre > best.free + best.pre))) path[key0] = n0;
         for (var dx = -1; dx <= 1; dx++) for (var dy = -1; dy <= 1; dy++) {
           if (!dx && !dy) continue;
-          var nx = n0[0] + dx, ny = n0[1] + dy;
+          var nx = n0.x + dx, ny = n0.y + dy;
           if (nx < 0 || ny < 0 || nx + mn > cols || ny + mn > rows || terAt(nx, ny, 'block')) continue;
-          var st = n0[2] + 1, ap = n0[3] + (terAt(nx, ny, 'difficult') ? 1 : 0), key = nx + ',' + ny, old = path[key];
-          if (st > (counted ? left : 40)) continue;
-          if (!old || st < old[0] || (st === old[0] && ap < old[1])) { path[key] = [st, ap]; q.push([nx, ny, st, ap]); }
+          var diff = terAt(nx, ny, 'difficult'), nn = Object.assign({}, n0, { x: nx, y: ny, steps: n0.steps + 1 });
+          if (!counted) { if (nn.steps > 40) continue; q.push(nn); continue; }
+          if (!diff && !n0.stuck && n0.free > 0) { nn.free--; nn.freeUsed++; }
+          else if (n0.pre > 0) { nn.pre--; nn.preUsed++; }
+          else { if (n0.paid >= 3) continue; nn.paid++; nn.ap += nn.paid; if (nn.ap > ap0) continue; }
+          if (diff) { nn.stuck = true; nn.free = 0; }
+          q.push(nn);
         }
       }
     }
     for (var y = 0; y < rows; y++) for (var x = 0; x < cols; x++) (function (x, y) {
       var c = at[x + ',' + y];
       var label = String.fromCharCode(65 + x) + (y + 1);
-      var pth = path[x + ',' + y], dist = pth ? pth[0] : 0, apCost = pth && counted ? pth[1] : 0;
+      var pth = path[x + ',' + y], dist = pth ? pth.steps : 0, apCost = pth && counted ? pth.ap : 0;
       var placing0 = mover && (mover.x === null || mover.x === undefined);
-      var reach = mover && fits(x, y) && !(x === mover.x && y === mover.y) && (placing0 || (pth && dist <= left && apCost <= (mover.ap || 0)));
+      var reach = mover && fits(x, y) && !(x === mover.x && y === mover.y) && (placing0 || !!pth);
       var tk = TER[ter[x + ',' + y]];
       var z = el('button', { type: 'button', class: 'cb-zone' + (reach ? ' target' : '') + (R.editTer ? ' edit' : ''), style: 'grid-column:' + (x + 1) + ';grid-row:' + (y + 1) + (th[2] ? ';' + tileStyle(th[2], size) : ''),
-        title: tk ? tk[1] + '. ' + TER_TEXT[tk[3]] : (reach && apCost ? 'Costs ' + apCost + ' AP for difficult terrain' : null),
+        title: tk ? tk[1] + '. ' + TER_TEXT[tk[3]] : (reach && apCost ? 'Costs ' + apCost + ' AP' : null),
         'aria-label': 'Zone ' + label + (tk ? ', ' + tk[1] : '') + (c ? ': ' + c.name : ', empty') + (reach && apCost ? ', costs ' + apCost + ' AP' : '') }, [el('span', { class: 'lab', text: label })]);
       if (tk) z.appendChild(el('span', { class: 'cb-ter ' + tk[3] }, [/^(Floor|Pit):/.test(tk[2]) ? el('span', { class: 'cb-ter-tile', style: tileStyle(tk[2], size) }) : objNode(tk[2], Math.max(32, Math.floor(size * 0.8 / 16) * 16))]));
       if (reach && apCost) z.appendChild(el('span', { class: 'cb-apcost', text: '+' + apCost + ' AP' }));
@@ -382,9 +398,13 @@
         var placing = mover.x === null || mover.x === undefined, fromX = mover.x, fromY = mover.y;
         R.moving = null;
         upd(mover, apCost ? { x: x, y: y, ap: (mover.ap || 0) - apCost } : { x: x, y: y });
-        if (apCost) note(mover.name + ' spends ' + apCost + ' AP crossing difficult terrain.');
+        if (apCost) note(mover.name + ' spends ' + apCost + ' AP to move' + (pth.stuck ? ' through difficult terrain' : ' farther') + '.');
         if (tk && tk[3] === 'hazard') note(mover.name + ' enters ' + tk[1] + ': roll Fortitude + Endurance or catch Burning.');
-        if (counted && !placing) { var t = Object.assign({}, ST().t); markDone({ moved: (t.moved || 0) + dist, last: { id: mover.id, x: fromX, y: fromY, dist: dist, phase: s.phase, wasDone: !!(t.done || {})[s.phase] } }); }
+        if (counted && !placing) {
+          var t = Object.assign({}, ST().t);
+          markDone({ moved: (t.moved || 0) + pth.freeUsed, extraUsed: (t.extraUsed || 0) + pth.preUsed, paid: pth.paid, stuck: pth.stuck,
+            last: { id: mover.id, x: fromX, y: fromY, dist: dist, ap: apCost, prev: { moved: t.moved || 0, extraUsed: t.extraUsed || 0, paid: t.paid || 0, stuck: !!t.stuck }, phase: s.phase, wasDone: !!(t.done || {})[s.phase] } });
+        }
       });
       grid.appendChild(z);
     })(x, y);
@@ -432,7 +452,7 @@
     if (!mineC(c)) return false;
     if (!s.started || c.x === null || c.x === undefined) return true;   // setup, or placing a newcomer
     if (R.host && (!cur || c.id !== cur.id)) return true;              // the Storyteller can reposition anyone else
-    return !!cur && c.id === cur.id && canControl() && (s.phase === 2 || s.phase === 5) && moveLeft(c) > 0;
+    return !!cur && c.id === cur.id && canControl() && (s.phase === 2 || s.phase === 5) && (moveLeft(c) > 0 || canBuyMore(c));
   }
   function initials(n) { return n.split(/\s+/).map(function (w) { return w.charAt(0); }).join('').slice(0, 3).toUpperCase(); }
 
@@ -460,7 +480,11 @@
   }
   async function finishPhase() {
     var s = ST(), c = current(); if (!c) return;
-    if (s.phase === 0) await doUpkeep(c);
+    if (s.phase === 0) {
+      await doUpkeep(c);
+      var stuck = c.x !== null && c.x !== undefined && terrainAt(c.x, c.y, zonesOf(c));
+      return saveState({ phase: 1, t: Object.assign({}, ST().t, { stuck: stuck }) });
+    }
     if (s.phase === 6) return endTurn();
     await saveState({ phase: s.phase + 1 });
   }
@@ -512,24 +536,29 @@
     }
     if (i === 1) { box.appendChild(el('p', { class: 'cb-line', text: 'Say what you plan to do. Click Planning when everyone is ready.' })); return; }
     if (i === 2 || i === 5) {
-      var left = moveLeft(c);
-      box.appendChild(el('p', { class: 'cb-line' }, ['Movement left: ', el('b', { text: left + ' of ' + (moveOf(c) + (t.extra || 0)) }), ' zone' + (left === 1 ? '' : 's') + '. Pick your token, then a lit zone.']));
-      if (!R.moving && left > 0 && c.x !== null && c.x !== undefined) box.appendChild(actBtn('Move ' + c.name, 'Lights up the zones you can reach', null, function () { R.sel = c.id; R.moving = c.id; drawAll(); }));
+      var free = freeLeft(c), pre = preLeft(), paid = t.paid || 0;
+      box.appendChild(el('p', { class: 'cb-line' }, t.stuck ? ['In difficult terrain: no free movement this turn. Each zone costs AP', paid < 3 ? ' (next one: ' + (paid + 1) + ' AP).' : '; no more this turn.'] :
+        ['Free movement left: ', el('b', { text: free + ' of ' + moveOf(c) }), ' zone' + (moveOf(c) === 1 ? '' : 's') + '.']));
+      if (pre) box.appendChild(el('p', { class: 'cb-line', text: 'Bought with AP and not used yet: ' + pre + ' zone' + (pre === 1 ? '' : 's') + '.' }));
+      box.appendChild(el('p', { class: 'cb-line', text: 'Past that, zones cost AP: 1, then 2 more, then 3 more. Entering difficult terrain costs one of those and ends your free movement. Lit zones show the cost.' }));
+      if (!R.moving && c.x !== null && c.x !== undefined && (free + pre > 0 || canBuyMore(c))) box.appendChild(actBtn('Move ' + c.name, 'Lights up the zones you can reach', null, function () { R.sel = c.id; R.moving = c.id; drawAll(); }));
       var lm = t.last;
-      if (lm && lm.id === c.id && lm.phase === i) box.appendChild(actBtn('Undo last move', 'Back to ' + String.fromCharCode(65 + lm.x) + (lm.y + 1) + ' and get ' + lm.dist + ' zone' + (lm.dist === 1 ? '' : 's') + ' back', null, async function () {
-        await upd(c, { x: lm.x, y: lm.y });
-        var t2 = Object.assign({}, ST().t); t2.moved = Math.max(0, (t2.moved || 0) - lm.dist); t2.last = null; t2.done = Object.assign({}, t2.done); if (!lm.wasDone) delete t2.done[i];
+      if (lm && lm.id === c.id && lm.phase === i) box.appendChild(actBtn('Undo last move', 'Back to ' + String.fromCharCode(65 + lm.x) + (lm.y + 1) + (lm.ap ? ' and get ' + lm.ap + ' AP back' : ''), null, async function () {
+        await upd(c, lm.ap ? { x: lm.x, y: lm.y, ap: (c.ap || 0) + lm.ap } : { x: lm.x, y: lm.y });
+        var t2 = Object.assign({}, ST().t, lm.prev || {}); t2.last = null; t2.done = Object.assign({}, t2.done); if (!lm.wasDone) delete t2.done[i];
         await saveState({ t: t2 });
       }));
-      var apKids = [[1, 1], [3, 2], [6, 3]].map(function (x) {
-        return actBtn('Spend ' + x[0] + ' AP', '+' + x[1] + ' zone' + (x[1] === 1 ? '' : 's') + ' of movement', x[0] + ' AP', async function () {
-          if ((c.ap || 0) < x[0]) { alert(c.name + ' holds ' + (c.ap || 0) + ' AP. Allies can give AP first.'); return; }
-          await upd(c, { ap: c.ap - x[0] });
-          await markDone({ extra: (t.extra || 0) + x[1] });
-          await note(c.name + ' spends ' + x[0] + ' AP for ' + x[1] + ' more zone' + (x[1] === 1 ? '' : 's') + ' of movement.');
-        }, (c.ap || 0) < x[0]);
-      });
-      box.appendChild(group('Spend AP to move farther (' + (c.ap || 0) + ' AP held)', 'apmove', apKids));
+      var apKids = [];
+      for (var k = 1; k <= 3 - paid; k++) (function (k) {
+        var costK = 0; for (var j = 1; j <= k; j++) costK += paid + j;
+        apKids.push(actBtn('Spend ' + costK + ' AP', '+' + k + ' zone' + (k === 1 ? '' : 's') + ' of movement', costK + ' AP', async function () {
+          if ((c.ap || 0) < costK) { alert(c.name + ' holds ' + (c.ap || 0) + ' AP. Allies can give AP first.'); return; }
+          await upd(c, { ap: c.ap - costK });
+          await markDone({ extra: (ST().t.extra || 0) + k, paid: paid + k });
+          await note(c.name + ' spends ' + costK + ' AP for ' + k + ' more zone' + (k === 1 ? '' : 's') + ' of movement.');
+        }, (c.ap || 0) < costK));
+      })(k);
+      if (apKids.length) box.appendChild(group('Spend AP to move farther (' + (c.ap || 0) + ' AP held)', 'apmove', apKids));
       var cost = t.items === 0 ? 0 : t.items === 1 ? 1 : 2;
       var items = (kit.belt || []).map(function (bi) {
         return actBtn(bi.slot + '. ' + bi.name, bi.detail || '', cost ? cost + ' AP' : 'free', async function () {
@@ -919,7 +948,7 @@
     ['drift', 'Deep Snow', 'Floor:16:15', 'difficult'], ['webs', 'Webs', 'Decor:19:0', 'difficult'], ['thorns', 'Thorns', 'Decor:2:4', 'difficult'],
     ['fire', 'Fire', 'Effect:21:1', 'hazard']];
   var TER = {}; TERRAIN.forEach(function (t) { TER[t[0]] = t; });
-  var TER_TEXT = { block: 'Blocks movement and gives full cover.', cover: 'Difficult terrain (1 extra AP to enter) and half cover (-2 dice to shots through it).', difficult: 'Difficult terrain: 1 extra AP to enter.', hazard: 'Anyone entering or starting a turn here rolls Fortitude + Endurance or catches Burning.' };
+  var TER_TEXT = { block: 'Blocks movement and gives full cover.', cover: 'Difficult terrain and half cover (-2 dice to shots through it).', difficult: 'Difficult terrain: entering costs AP and ends free movement for the turn.', hazard: 'Anyone entering or starting a turn here rolls Fortitude + Endurance or catches Burning.' };
   function objNode(spec, px) {
     var p = String(spec).split(':'), sh = OBJ[p[0]];
     var wrap = el('span', { class: 'cb-spr', style: 'width:' + px + 'px;height:' + px + 'px', 'aria-hidden': 'true' });
