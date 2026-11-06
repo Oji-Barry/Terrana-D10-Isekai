@@ -402,10 +402,11 @@
     if (mover) hint = counted ? 'Moving ' + mover.name + ': ' + left + ' zone' + (left === 1 ? '' : 's') + ' left this turn (diagonals count as 1). Pick a lit zone' + (mn > 1 ? ' for its top-left corner.' : '.') : 'Placing ' + mover.name + ': pick a lit zone' + (mn > 1 ? ' for its top-left corner (' + mn + 'x' + mn + ').' : '.');
     else if (!s.started) hint = 'Setup: pick your token, then any empty zone, to place it.';
     else if (canControl() && (s.phase === 2 || s.phase === 5)) hint = 'Pick ' + cur.name + ', then a lit zone, to move.';
-    else hint = 'Tokens move during the Move or Use Item phases.';
+    else hint = '';
     if (R.host) wrap.appendChild(terrainBar());
     var unplaced = list().filter(function (c) { return (c.x === null || c.x === undefined) && mineC(c); });
-    wrap.appendChild(el('p', { class: 'cb-maphint', text: hint + (unplaced.length ? ' Not on the map yet: ' + unplaced.map(function (c) { return c.name; }).join(', ') + '.' : '') }));
+    var hintText = (hint + (unplaced.length ? ' Not on the map yet: ' + unplaced.map(function (c) { return c.name; }).join(', ') + '.' : '')).trim();
+    if (hintText) wrap.appendChild(el('p', { class: 'cb-maphint', text: hintText }));
   }
   function terrainBar() {
     var bar = el('div', { class: 'cb-terbar' });
