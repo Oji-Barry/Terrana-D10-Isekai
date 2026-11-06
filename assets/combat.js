@@ -334,28 +334,56 @@
     var m = R.enc.map || {}, cols = m.cols || 6, rows = m.rows || 8;
     var wrap = $('cb-map'); wrap.textContent = '';
     var size = Math.max(36, Math.min(72, Math.floor((wrap.clientWidth - 30) / cols) - 3));
-    var grid = el('div', { class: 'cb-map ' + (m.theme === 'light' ? 'light' : 'dark'), role: 'grid', 'aria-label': 'Battle map, ' + cols + ' by ' + rows + ' zones', style: 'grid-template-columns:repeat(' + cols + ', var(--z));grid-template-rows:repeat(' + rows + ', var(--z));--z:' + size + 'px' });
+    var th = THEMES.filter(function (t) { return t[0] === m.theme; })[0] || THEMES[0], ter = m.terrain || {};
+    var grid = el('div', { class: 'cb-map ' + (th[2] ? 'tiled ' + th[0] : th[0]), role: 'grid', 'aria-label': 'Battle map, ' + cols + ' by ' + rows + ' zones', style: 'grid-template-columns:repeat(' + cols + ', var(--z));grid-template-rows:repeat(' + rows + ', var(--z));--z:' + size + 'px' });
     var at = {}, placed = list().filter(function (c) { return c.x !== null && c.x !== undefined && c.y !== null; });
     placed.forEach(function (c) { var n = zonesOf(c); for (var i = 0; i < n; i++) for (var j = 0; j < n; j++) at[(c.x + i) + ',' + (c.y + j)] = c; });
     var s = ST(), cur = current(), mover = R.moving ? R.cs[R.moving] : null;
     var counted = !!(mover && s.started && cur && mover.id === cur.id && (s.phase === 2 || s.phase === 5));
     var left = mover ? (counted ? moveLeft(mover) : 99) : 0, mn = mover ? zonesOf(mover) : 1;
+    function terAt(x, y, eff) { for (var i = 0; i < mn; i++) for (var j = 0; j < mn; j++) { var t = TER[ter[(x + i) + ',' + (y + j)]]; if (t && (eff === 'difficult' ? t[3] === 'difficult' || t[3] === 'cover' : t[3] === eff)) return true; } return false; }
     function fits(x, y) { // a token of the mover's size could stand with its top-left corner here
-      if (x + mn > cols || y + mn > rows) return false;
+      if (x + mn > cols || y + mn > rows || terAt(x, y, 'block')) return false;
       for (var i = 0; i < mn; i++) for (var j = 0; j < mn; j++) { var o = at[(x + i) + ',' + (y + j)]; if (o && o.id !== mover.id) return false; }
       return true;
+    }
+    // Cheapest path for the mover: fewest zones, then least extra AP for difficult terrain; blocked zones cannot be crossed
+    var path = {};
+    if (mover && mover.x !== null && mover.x !== undefined) {
+      var q = [[mover.x, mover.y, 0, 0]]; path[mover.x + ',' + mover.y] = [0, 0];
+      while (q.length) {
+        q.sort(function (a, b) { return a[2] - b[2] || a[3] - b[3]; });
+        var n0 = q.shift();
+        for (var dx = -1; dx <= 1; dx++) for (var dy = -1; dy <= 1; dy++) {
+          if (!dx && !dy) continue;
+          var nx = n0[0] + dx, ny = n0[1] + dy;
+          if (nx < 0 || ny < 0 || nx + mn > cols || ny + mn > rows || terAt(nx, ny, 'block')) continue;
+          var st = n0[2] + 1, ap = n0[3] + (terAt(nx, ny, 'difficult') ? 1 : 0), key = nx + ',' + ny, old = path[key];
+          if (st > (counted ? left : 40)) continue;
+          if (!old || st < old[0] || (st === old[0] && ap < old[1])) { path[key] = [st, ap]; q.push([nx, ny, st, ap]); }
+        }
+      }
     }
     for (var y = 0; y < rows; y++) for (var x = 0; x < cols; x++) (function (x, y) {
       var c = at[x + ',' + y];
       var label = String.fromCharCode(65 + x) + (y + 1);
-      var dist = mover && mover.x !== null && mover.x !== undefined ? Math.max(Math.abs(x - mover.x), Math.abs(y - mover.y)) : 0;
-      var reach = mover && fits(x, y) && !(x === mover.x && y === mover.y) && (mover.x === null || mover.x === undefined || dist <= left);
-      var z = el('button', { type: 'button', class: 'cb-zone' + (reach ? ' target' : ''), style: 'grid-column:' + (x + 1) + ';grid-row:' + (y + 1), 'aria-label': 'Zone ' + label + (c ? ': ' + c.name : ', empty') }, [el('span', { class: 'lab', text: label })]);
+      var pth = path[x + ',' + y], dist = pth ? pth[0] : 0, apCost = pth && counted ? pth[1] : 0;
+      var placing0 = mover && (mover.x === null || mover.x === undefined);
+      var reach = mover && fits(x, y) && !(x === mover.x && y === mover.y) && (placing0 || (pth && dist <= left && apCost <= (mover.ap || 0)));
+      var tk = TER[ter[x + ',' + y]];
+      var z = el('button', { type: 'button', class: 'cb-zone' + (reach ? ' target' : '') + (R.editTer ? ' edit' : ''), style: 'grid-column:' + (x + 1) + ';grid-row:' + (y + 1) + (th[2] ? ';' + tileStyle(th[2], size) : ''),
+        title: tk ? tk[1] + '. ' + TER_TEXT[tk[3]] : (reach && apCost ? 'Costs ' + apCost + ' AP for difficult terrain' : null),
+        'aria-label': 'Zone ' + label + (tk ? ', ' + tk[1] : '') + (c ? ': ' + c.name : ', empty') + (reach && apCost ? ', costs ' + apCost + ' AP' : '') }, [el('span', { class: 'lab', text: label })]);
+      if (tk) z.appendChild(el('span', { class: 'cb-ter ' + tk[3] }, [/^(Floor|Pit):/.test(tk[2]) ? el('span', { class: 'cb-ter-tile', style: tileStyle(tk[2], size) }) : objNode(tk[2], Math.max(32, Math.floor(size * 0.8 / 16) * 16))]));
+      if (reach && apCost) z.appendChild(el('span', { class: 'cb-apcost', text: '+' + apCost + ' AP' }));
       z.addEventListener('click', function () {
+        if (R.editTer && R.host) { setTerrain(x, y, R.editTer === 'erase' ? null : R.editTer); return; }
         if (!mover || !reach) { if (c) pickToken(c); return; }
         var placing = mover.x === null || mover.x === undefined, fromX = mover.x, fromY = mover.y;
         R.moving = null;
-        upd(mover, { x: x, y: y });
+        upd(mover, apCost ? { x: x, y: y, ap: (mover.ap || 0) - apCost } : { x: x, y: y });
+        if (apCost) note(mover.name + ' spends ' + apCost + ' AP crossing difficult terrain.');
+        if (tk && tk[3] === 'hazard') note(mover.name + ' enters ' + tk[1] + ': roll Fortitude + Endurance or catch Burning.');
         if (counted && !placing) { var t = Object.assign({}, ST().t); markDone({ moved: (t.moved || 0) + dist, last: { id: mover.id, x: fromX, y: fromY, dist: dist, phase: s.phase, wasDone: !!(t.done || {})[s.phase] } }); }
       });
       grid.appendChild(z);
@@ -375,8 +403,26 @@
     else if (!s.started) hint = 'Setup: pick your token, then any empty zone, to place it.';
     else if (canControl() && (s.phase === 2 || s.phase === 5)) hint = 'Pick ' + cur.name + ', then a lit zone, to move.';
     else hint = 'Tokens move during the Move or Use Item phases.';
+    if (R.host) wrap.appendChild(terrainBar());
     var unplaced = list().filter(function (c) { return (c.x === null || c.x === undefined) && mineC(c); });
     wrap.appendChild(el('p', { class: 'cb-maphint', text: hint + (unplaced.length ? ' Not on the map yet: ' + unplaced.map(function (c) { return c.name; }).join(', ') + '.' : '') }));
+  }
+  function terrainBar() {
+    var bar = el('div', { class: 'cb-terbar' });
+    bar.appendChild(el('button', { type: 'button', class: 'act cb-mini' + (R.editTer ? ' primary' : ''), text: R.editTer ? 'Done Editing Terrain' : 'Edit Terrain', onclick: function () { R.editTer = R.editTer ? null : 'boulder'; R.moving = null; drawMap(); } }));
+    if (!R.editTer) return bar;
+    var pal = el('div', { class: 'cb-pal', role: 'radiogroup', 'aria-label': 'Terrain to place' });
+    [['block', 'Blocks movement'], ['cover', 'Cover'], ['difficult', 'Difficult terrain'], ['hazard', 'Hazards']].forEach(function (g) {
+      pal.appendChild(el('span', { class: 'cb-pal-h', text: g[1] }));
+      TERRAIN.filter(function (t) { return t[3] === g[0]; }).forEach(function (t) {
+        var icon = /^(Floor|Pit):/.test(t[2]) ? el('span', { class: 'cb-pal-tile', style: tileStyle(t[2], 32) }) : objNode(t[2], 32);
+        pal.appendChild(el('button', { type: 'button', role: 'radio', 'aria-checked': String(R.editTer === t[0]), class: 'cb-pal-b' + (R.editTer === t[0] ? ' on' : ''), title: t[1] + '. ' + TER_TEXT[t[3]], onclick: function () { R.editTer = t[0]; drawMap(); } }, [icon, el('span', { text: t[1] })]));
+      });
+    });
+    pal.appendChild(el('button', { type: 'button', role: 'radio', 'aria-checked': String(R.editTer === 'erase'), class: 'cb-pal-b' + (R.editTer === 'erase' ? ' on' : ''), onclick: function () { R.editTer = 'erase'; drawMap(); } }, [el('span', { class: 'cb-erase', text: '✕' }), el('span', { text: 'Erase' })]));
+    bar.appendChild(pal);
+    bar.appendChild(el('p', { class: 'cb-desc', text: 'Pick a piece, then click zones to place it. Click a zone again to clear it. ' + (TER_TEXT[(TER[R.editTer] || [])[3]] || '') }));
+    return bar;
   }
   function pickToken(c) { R.sel = c.id; R.moving = mayMove(c) ? (R.moving === c.id ? null : c.id) : null; drawAll(); }
   // Who may move a token right now
@@ -855,21 +901,65 @@
     });
     d.open();
   }
+  // ---------- map looks and terrain (DawnLike tiles) ----------
+  var OBJ = { Floor: [21, 39, 0], Wall: [20, 51, 0], Tree: [12, 36, 1], Hill: [16, 18, 1], Pit: [8, 32, 1], Decor: [8, 22, 1], Effect: [8, 26, 1], Ore: [9, 7, 1] };
+  var THEMES = [['dark', 'Classic Dark', ''], ['light', 'Classic Light', ''], ['dungeon', 'Dungeon', 'Floor:7:1'], ['castle', 'Castle Hall', 'Floor:10:1'], ['ice', 'Ice Palace', 'Floor:4:1'],
+    ['forest', 'Forest', 'Floor:7:8'], ['meadow', 'Meadow', 'Floor:4:8'], ['swamp', 'Swamp', 'Floor:10:8'], ['desert', 'Desert', 'Floor:19:1'], ['beach', 'Beach', 'Floor:16:1'],
+    ['snow', 'Snowfield', 'Floor:16:15'], ['ship', 'Ship Deck', 'Floor:19:8'], ['tavern', 'Tavern', 'Floor:16:8'], ['road', 'Dirt Road', 'Floor:22:1'], ['cave', 'Cave', 'Floor:25:1'],
+    ['volcano', 'Volcano', 'Floor:10:15'], ['void', 'The Void', 'Floor:13:8']];
+  // effect: block (nothing passes, full cover), difficult (costs 1 extra AP to enter), cover (difficult and half cover), hazard (passable but dangerous)
+  var TERRAIN = [
+    ['boulder', 'Boulder', 'Hill:0:3', 'block'], ['sandstone', 'Sandstone Rock', 'Hill:3:15', 'block'], ['tree', 'Tree', 'Tree:3:3', 'block'], ['pine', 'Pine', 'Tree:15:3', 'block'],
+    ['snowpine', 'Snowy Pine', 'Tree:21:3', 'block'], ['deadtree', 'Dead Tree', 'Tree:3:9', 'block'], ['palm', 'Palm', 'Tree:27:9', 'block'], ['mushroom', 'Giant Mushroom', 'Tree:30:3', 'block'],
+    ['pillar', 'Pillar', 'Wall:4:5', 'block'], ['wall', 'Stone Wall', 'Wall:6:3', 'block'], ['palisade', 'Wooden Wall', 'Wall:3:10', 'block'], ['statue', 'Statue', 'Decor:20:3', 'block'],
+    ['deepwater', 'Deep Water', 'Pit:15:1', 'block'], ['lava', 'Lava', 'Pit:27:1', 'block'], ['pit', 'Pit', 'Pit:3:1', 'block'],
+    ['crates', 'Crates', 'Decor:9:3', 'cover'], ['brush', 'Brush', 'Hill:0:15', 'cover'],
+    ['rubble', 'Rubble', 'Ore:1:0', 'difficult'], ['shallows', 'Shallow Water', 'Pit:9:1', 'difficult'], ['ice', 'Ice', 'Pit:12:1', 'difficult'], ['mud', 'Mud', 'Floor:22:1', 'difficult'],
+    ['drift', 'Deep Snow', 'Floor:16:15', 'difficult'], ['webs', 'Webs', 'Decor:19:0', 'difficult'], ['thorns', 'Thorns', 'Decor:2:4', 'difficult'],
+    ['fire', 'Fire', 'Effect:21:1', 'hazard']];
+  var TER = {}; TERRAIN.forEach(function (t) { TER[t[0]] = t; });
+  var TER_TEXT = { block: 'Blocks movement and gives full cover.', cover: 'Difficult terrain (1 extra AP to enter) and half cover (-2 dice to shots through it).', difficult: 'Difficult terrain: 1 extra AP to enter.', hazard: 'Anyone entering or starting a turn here rolls Fortitude + Endurance or catches Burning.' };
+  function objNode(spec, px) {
+    var p = String(spec).split(':'), sh = OBJ[p[0]];
+    var wrap = el('span', { class: 'cb-spr', style: 'width:' + px + 'px;height:' + px + 'px', 'aria-hidden': 'true' });
+    if (!sh) return wrap;
+    (sh[2] ? [0, 1] : ['']).forEach(function (f, i) {
+      wrap.appendChild(el('span', { class: 'cb-spr-f' + (sh[2] ? ' f' + i : ''), style: 'background-image:url(../assets/sprites/dawnlike/objects/' + p[0] + f + '.png);background-size:' + (sh[0] * px) + 'px ' + (sh[1] * px) + 'px;background-position:-' + (+p[2] * px) + 'px -' + (+p[1] * px) + 'px' }));
+    });
+    return wrap;
+  }
+  function tileStyle(spec, px) { var p = String(spec).split(':'), sh = OBJ[p[0]]; return 'background-image:url(../assets/sprites/dawnlike/objects/' + p[0] + (sh[2] ? '0' : '') + '.png);background-size:' + (sh[0] * px) + 'px ' + (sh[1] * px) + 'px;background-position:-' + (+p[2] * px) + 'px -' + (+p[1] * px) + 'px;image-rendering:pixelated'; }
   function mapDialog() {
     var m = R.enc.map || {};
     var d = dialog('Battle Map');
-    var cols = num('map-cols', m.cols || 6, 3, 20), rows = num('map-rows', m.rows || 8, 3, 20);
-    var theme = el('select', {}, [opt('dark', 'Dark', m.theme !== 'light'), opt('light', 'Light', m.theme === 'light')]);
-    d.body.appendChild(el('div', { class: 'cb-f' }, [el('div', { class: 'three' }, [field('Columns', cols), field('Rows', rows), field('Look', theme)]),
-      el('p', { class: 'cb-desc', text: 'The book’s battle maps are 5 x 7, 6 x 8, and 7 x 9 zones. Tokens outside a smaller map are taken off it.' })]));
+    var cols = num('map-cols', m.cols || 6, 3, 20), rows = num('map-rows', m.rows || 8, 3, 20), picked = m.theme || 'dark';
+    var looks = el('div', { class: 'cb-looks', role: 'radiogroup', 'aria-label': 'Map look' });
+    function drawLooks() {
+      looks.textContent = '';
+      THEMES.forEach(function (t) {
+        var sw = el('span', { class: 'cb-look-sw ' + (t[2] ? '' : t[0]), style: t[2] ? tileStyle(t[2], 40) : '' });
+        looks.appendChild(el('button', { type: 'button', role: 'radio', 'aria-checked': String(picked === t[0]), class: 'cb-look' + (picked === t[0] ? ' on' : ''), onclick: function () { picked = t[0]; drawLooks(); } }, [sw, el('span', { text: t[1] })]));
+      });
+    }
+    drawLooks();
+    d.body.appendChild(el('div', { class: 'cb-f' }, [el('div', { class: 'two' }, [field('Columns', cols), field('Rows', rows)]), el('h3', { class: 'px', text: 'Look' }), looks,
+      el('p', { class: 'cb-desc', text: 'The book’s battle maps are 5 x 7, 6 x 8, and 7 x 9 zones. Tokens and terrain outside a smaller map are taken off it. Add boulders, trees, water, and other terrain with Edit Terrain under the map.' })]));
     d.ok('Save Map', async function () {
       var c = Math.max(3, Math.min(20, +cols.value || 6)), r = Math.max(3, Math.min(20, +rows.value || 8));
-      await must(db.from('encounters').update({ map: { cols: c, rows: r, theme: theme.value } }).eq('id', R.enc.id));
+      var ter = {}; Object.keys(m.terrain || {}).forEach(function (k) { var xy = k.split(','); if (+xy[0] < c && +xy[1] < r) ter[k] = m.terrain[k]; });
+      await must(db.from('encounters').update({ map: Object.assign({}, m, { cols: c, rows: r, theme: picked, terrain: ter }) }).eq('id', R.enc.id));
       var off = list().filter(function (x) { return x.x !== null && (x.x >= c || x.y >= r); });
       for (var i = 0; i < off.length; i++) await db.from('combatants').update({ x: null, y: null }).eq('id', off[i].id);
       await refresh();
     });
     d.open();
+  }
+  async function setTerrain(x, y, kind) {
+    var m = Object.assign({}, R.enc.map || {}), ter = Object.assign({}, m.terrain || {}), k = x + ',' + y;
+    if (!kind || ter[k] === kind) delete ter[k]; else ter[k] = kind;
+    m.terrain = ter; R.enc.map = m; drawMap();
+    var r = await db.from('encounters').update({ map: m }).eq('id', R.enc.id);
+    if (r.error) { alert(oops(r.error)); refresh(); }
   }
 
   // ---------- dialogs ----------
