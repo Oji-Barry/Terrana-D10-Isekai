@@ -353,8 +353,8 @@
       for (var i = 0; i < mn; i++) for (var j = 0; j < mn; j++) { var o = at[(x + i) + ',' + (y + j)]; if (o && o.id !== mover.id) return false; }
       return true;
     }
-    // Cheapest way to each zone, in AP. Blocked zones cannot be crossed. Entering difficult terrain costs a bought zone
-    // and ends free movement for the turn; once in it, every zone (in or out) is bought: 1, then 2 more, then 3 more AP.
+    // Cheapest way to each zone, in AP. Blocked zones cannot be crossed. Free movement can carry you into difficult terrain,
+    // but it ends there; from then on every zone (in or out) is bought: 1, then 2 more, then 3 more AP.
     var path = {};
     if (mover && mover.x !== null && mover.x !== undefined) {
       var t0 = s.t, ap0 = counted ? (mover.ap || 0) : 99;
@@ -372,7 +372,7 @@
           if (nx < 0 || ny < 0 || nx + mn > cols || ny + mn > rows || terAt(nx, ny, 'block')) continue;
           var diff = terAt(nx, ny, 'difficult'), nn = Object.assign({}, n0, { x: nx, y: ny, steps: n0.steps + 1 });
           if (!counted) { if (nn.steps > 40) continue; q.push(nn); continue; }
-          if (!diff && !n0.stuck && n0.free > 0) { nn.free--; nn.freeUsed++; }
+          if (!n0.stuck && n0.free > 0) { nn.free--; nn.freeUsed++; }
           else if (n0.pre > 0) { nn.pre--; nn.preUsed++; }
           else { if (n0.paid >= 3) continue; nn.paid++; nn.ap += nn.paid; if (nn.ap > ap0) continue; }
           if (diff) { nn.stuck = true; nn.free = 0; }
@@ -540,7 +540,7 @@
       box.appendChild(el('p', { class: 'cb-line' }, t.stuck ? ['In difficult terrain: no free movement this turn. Each zone costs AP', paid < 3 ? ' (next one: ' + (paid + 1) + ' AP).' : '; no more this turn.'] :
         ['Free movement left: ', el('b', { text: free + ' of ' + moveOf(c) }), ' zone' + (moveOf(c) === 1 ? '' : 's') + '.']));
       if (pre) box.appendChild(el('p', { class: 'cb-line', text: 'Bought with AP and not used yet: ' + pre + ' zone' + (pre === 1 ? '' : 's') + '.' }));
-      box.appendChild(el('p', { class: 'cb-line', text: 'Past that, zones cost AP: 1, then 2 more, then 3 more. Entering difficult terrain costs one of those and ends your free movement. Lit zones show the cost.' }));
+      box.appendChild(el('p', { class: 'cb-line', text: 'Past that, zones cost AP: 1, then 2 more, then 3 more. You can step into difficult terrain with free movement, but it ends there and getting out costs AP. Lit zones show the cost.' }));
       if (!R.moving && c.x !== null && c.x !== undefined && (free + pre > 0 || canBuyMore(c))) box.appendChild(actBtn('Move ' + c.name, 'Lights up the zones you can reach', null, function () { R.sel = c.id; R.moving = c.id; drawAll(); }));
       var lm = t.last;
       if (lm && lm.id === c.id && lm.phase === i) box.appendChild(actBtn('Undo last move', 'Back to ' + String.fromCharCode(65 + lm.x) + (lm.y + 1) + (lm.ap ? ' and get ' + lm.ap + ' AP back' : ''), null, async function () {
@@ -948,7 +948,7 @@
     ['drift', 'Deep Snow', 'Floor:16:15', 'difficult'], ['webs', 'Webs', 'Decor:19:0', 'difficult'], ['thorns', 'Thorns', 'Decor:2:4', 'difficult'],
     ['fire', 'Fire', 'Effect:21:1', 'hazard']];
   var TER = {}; TERRAIN.forEach(function (t) { TER[t[0]] = t; });
-  var TER_TEXT = { block: 'Blocks movement and gives full cover.', cover: 'Difficult terrain and half cover (-2 dice to shots through it).', difficult: 'Difficult terrain: entering costs AP and ends free movement for the turn.', hazard: 'Anyone entering or starting a turn here rolls Fortitude + Endurance or catches Burning.' };
+  var TER_TEXT = { block: 'Blocks movement and gives full cover.', cover: 'Difficult terrain and half cover (-2 dice to shots through it).', difficult: 'Difficult terrain: you can enter with free movement, but it ends there; leaving costs AP.', hazard: 'Anyone entering or starting a turn here rolls Fortitude + Endurance or catches Burning.' };
   function objNode(spec, px) {
     var p = String(spec).split(':'), sh = OBJ[p[0]];
     var wrap = el('span', { class: 'cb-spr', style: 'width:' + px + 'px;height:' + px + 'px', 'aria-hidden': 'true' });
