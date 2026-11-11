@@ -81,21 +81,63 @@
     classic: { label: 'Classic', bg: '#e5e5e5', text: '#222222', link: '#003399', head: '#6699cc', headText: '#ffffff', box: '#ffffff', box2: '#d5e8fb', accent: '#ff9933', accent2: '#ffcc99' },
     night: { label: 'Midnight', bg: '#0b0b2a', text: '#e8e8ff', link: '#ffcc33', head: '#3333aa', headText: '#ffffff', box: '#16163f', box2: '#22225a', accent: '#cc33ff', accent2: '#3a1a55' },
     goth: { label: 'Gothic', bg: '#000000', text: '#dddddd', link: '#ff3355', head: '#550011', headText: '#ffffff', box: '#111111', box2: '#1e0a0f', accent: '#880022', accent2: '#2a0008' },
+    emo: { label: 'Emo Night', bg: '#0d0d0d', text: '#e6e6e6', link: '#ff1a75', head: '#1a1a1a', headText: '#ff1a75', box: '#141414', box2: '#222222', accent: '#ff1a75', accent2: '#330014' },
+    scene: { label: 'Scene Kid Neon', bg: '#111111', text: '#ffffff', link: '#00ffcc', head: '#ff00cc', headText: '#000000', box: '#1b1b1b', box2: '#2a002a', accent: '#ccff00', accent2: '#003322' },
     bubblegum: { label: 'Bubblegum', bg: '#ffd6ec', text: '#4a1036', link: '#cc0077', head: '#ff66b3', headText: '#ffffff', box: '#fff0f8', box2: '#ffe0f0', accent: '#9966ff', accent2: '#e8dcff' },
+    glitter: { label: 'Glitter Pink', bg: '#ff99cc', text: '#3d0026', link: '#cc0066', head: '#ff3399', headText: '#ffffff', box: '#ffe6f2', box2: '#ffcce6', accent: '#ffcc00', accent2: '#fff2b3' },
+    kawaii: { label: 'Kawaii Pastel', bg: '#fdf1ff', text: '#5a3a6b', link: '#b04fd6', head: '#c8a2ff', headText: '#ffffff', box: '#ffffff', box2: '#f3e8ff', accent: '#7ad1c9', accent2: '#dff7f4' },
+    babyblue: { label: 'Baby Blue', bg: '#cfe9ff', text: '#16324f', link: '#0b62b5', head: '#7ab8f5', headText: '#ffffff', box: '#f4faff', box2: '#e1f0ff', accent: '#ffb347', accent2: '#ffe9c7' },
+    lavender: { label: 'Lavender Dreams', bg: '#e9e1f7', text: '#3b2d55', link: '#6a3fbf', head: '#9a7ad6', headText: '#ffffff', box: '#faf7ff', box2: '#efe7fb', accent: '#e58fb4', accent2: '#fbe3ee' },
+    ocean: { label: 'Ocean', bg: '#0b3a5a', text: '#e6f6ff', link: '#7fe3ff', head: '#11688f', headText: '#ffffff', box: '#0f4b70', box2: '#135a85', accent: '#ffd166', accent2: '#4a3a10' },
+    sunset: { label: 'Sunset Strip', bg: '#ff7e5f', text: '#2b0f0a', link: '#5b1a6b', head: '#d1495b', headText: '#ffffff', box: '#ffe6d9', box2: '#ffd0bd', accent: '#feb47b', accent2: '#ffe3cc' },
+    vapor: { label: 'Vaporwave', bg: '#1a1033', text: '#ffe9ff', link: '#00f0ff', head: '#ff71ce', headText: '#1a1033', box: '#24164a', box2: '#2f1d5e', accent: '#01cdfe', accent2: '#05ffa1' },
+    y2k: { label: 'Y2K Chrome', bg: '#c9d1dc', text: '#1a1f29', link: '#2b59c3', head: '#8e9cb3', headText: '#ffffff', box: '#eef2f7', box2: '#dde3ec', accent: '#ff4fa3', accent2: '#ffd6ea' },
+    matrix: { label: 'Matrix', bg: '#000000', text: '#00ff41', link: '#00ff41', head: '#003b00', headText: '#00ff41', box: '#001a00', box2: '#002900', accent: '#008f11', accent2: '#001400' },
+    terminal: { label: 'CCN Terminal', bg: '#000000', text: '#33ff66', link: '#66ffff', head: '#003300', headText: '#33ff66', box: '#001100', box2: '#002200', accent: '#00aa44', accent2: '#003311' },
+    grunge: { label: 'Grunge', bg: '#2e2a24', text: '#e8e0d0', link: '#d9a441', head: '#4a4136', headText: '#f2e6cc', box: '#38332c', box2: '#443d34', accent: '#8c2f1b', accent2: '#3b241c' },
+    punk: { label: 'Punk Show', bg: '#111111', text: '#f5f5f5', link: '#ff2d2d', head: '#000000', headText: '#ff2d2d', box: '#1c1c1c', box2: '#2a2a2a', accent: '#ffe600', accent2: '#333000' },
+    skater: { label: 'Skate Park', bg: '#5c6770', text: '#f2f2f2', link: '#ffcc00', head: '#2e3338', headText: '#ffffff', box: '#46505a', box2: '#525d68', accent: '#ff6600', accent2: '#4d2b14' },
+    camo: { label: 'Camo', bg: '#4b5320', text: '#f0ead6', link: '#e6d690', head: '#2f3517', headText: '#f0ead6', box: '#5b6430', box2: '#69733a', accent: '#8b5a2b', accent2: '#3e2a14' },
+    leopard: { label: 'Leopard', bg: '#c8963e', text: '#2b1a05', link: '#7a1f00', head: '#5c3a12', headText: '#ffe6b3', box: '#fff3dc', box2: '#f7e0b5', accent: '#000000', accent2: '#c8963e' },
+    zebra: { label: 'Zebra', bg: '#f4f4f4', text: '#111111', link: '#cc0033', head: '#111111', headText: '#ffffff', box: '#ffffff', box2: '#e8e8e8', accent: '#cc0033', accent2: '#ffd6e0' },
+    starry: { label: 'Starry Night', bg: '#0a1033', text: '#f2f4ff', link: '#ffd95e', head: '#1d2a66', headText: '#ffd95e', box: '#111a4d', box2: '#1a2460', accent: '#5e8bff', accent2: '#1d2a66' },
+    candy: { label: 'Candy Shop', bg: '#fff3b0', text: '#4a2c00', link: '#e0004d', head: '#ff7aa2', headText: '#ffffff', box: '#ffffff', box2: '#fff8d6', accent: '#3ec1d3', accent2: '#d6f6fa' },
+    lime: { label: 'Lime Soda', bg: '#d8ff7a', text: '#1f3300', link: '#2a7a00', head: '#7ac943', headText: '#ffffff', box: '#f6ffe0', box2: '#e8ffb8', accent: '#ff7f11', accent2: '#ffe0c2' },
+    fire: { label: 'Inferno', bg: '#1a0500', text: '#ffe6cc', link: '#ffae00', head: '#b32400', headText: '#ffffff', box: '#2b0a00', box2: '#3d1000', accent: '#ff4d00', accent2: '#4d1500' },
+    ice: { label: 'Frost', bg: '#e6f7ff', text: '#0d2b3e', link: '#0077b3', head: '#99d6f2', headText: '#0d2b3e', box: '#ffffff', box2: '#eefaff', accent: '#7fa8c9', accent2: '#dbe9f4' },
+    gold: { label: 'Gold Bling', bg: '#141414', text: '#f5e6b3', link: '#ffd700', head: '#3d3000', headText: '#ffd700', box: '#1f1f1f', box2: '#2b2610', accent: '#d4af37', accent2: '#3d3311' },
+    retro95: { label: 'Retro Desktop', bg: '#008080', text: '#000000', link: '#000080', head: '#000080', headText: '#ffffff', box: '#c0c0c0', box2: '#d4d0c8', accent: '#808080', accent2: '#e0e0e0' },
+    coffee: { label: 'Coffeehouse', bg: '#3e2723', text: '#f3e5d8', link: '#ffcc80', head: '#5d4037', headText: '#ffffff', box: '#4e342e', box2: '#5d4037', accent: '#a1887f', accent2: '#4e342e' },
     forest: { label: 'Elf Forest', bg: '#1f3a1f', text: '#f0f5e6', link: '#ffdd77', head: '#3d6b2e', headText: '#ffffff', box: '#2a4a26', box2: '#335a2e', accent: '#c08a3e', accent2: '#4a3b20' },
     dungeon: { label: 'Dungeon', bg: '#3a3530', text: '#f2e8d5', link: '#ffb347', head: '#5c5248', headText: '#ffffff', box: '#2b2724', box2: '#3a342e', accent: '#a0522d', accent2: '#4d3324' },
-    terminal: { label: 'CCN Terminal', bg: '#000000', text: '#33ff66', link: '#66ffff', head: '#003300', headText: '#33ff66', box: '#001100', box2: '#002200', accent: '#00aa44', accent2: '#003311' }
+    dragon: { label: 'Dragonfolk Red', bg: '#2a0000', text: '#ffe0cc', link: '#ffb000', head: '#8b0000', headText: '#ffd700', box: '#3a0505', box2: '#4d0a0a', accent: '#ff4500', accent2: '#4d1a00' },
+    slime: { label: 'Slime Kingdom', bg: '#b8f5c9', text: '#0b3d1b', link: '#00804a', head: '#3ccf73', headText: '#ffffff', box: '#eafff0', box2: '#d0fadc', accent: '#7a5cff', accent2: '#e3dcff' },
+    mages: { label: 'Mages Guild', bg: '#1b1035', text: '#efe6ff', link: '#c9a7ff', head: '#4b2a8a', headText: '#ffe08a', box: '#241548', box2: '#2f1c5c', accent: '#ffcc4d', accent2: '#4a3a12' },
+    monsera: { label: 'Royal Monsera', bg: '#f6f0e1', text: '#2c1d0e', link: '#7a1e1e', head: '#1f3b6b', headText: '#f6d77a', box: '#fffaf0', box2: '#efe5cc', accent: '#b8862d', accent2: '#f3e2b8' },
+    void: { label: 'The Void', bg: '#000000', text: '#c7c7ff', link: '#9d7bff', head: '#16002e', headText: '#c7c7ff', box: '#07000f', box2: '#10001f', accent: '#5b00b3', accent2: '#1a0033' },
+    sky: { label: 'Sky Islands', bg: '#a7d8ff', text: '#10314d', link: '#0050a0', head: '#4ea3e0', headText: '#ffffff', box: '#f5fbff', box2: '#ddeffd', accent: '#ffd34e', accent2: '#fff0bf' }
   };
   var FONTS = {
     verdana: ['Verdana', 'Verdana, Geneva, Tahoma, sans-serif'],
+    arial: ['Arial', 'Arial, Helvetica, sans-serif'],
+    tahoma: ['Tahoma', 'Tahoma, Verdana, sans-serif'],
+    trebuchet: ['Trebuchet', '"Trebuchet MS", sans-serif'],
     comic: ['Comic Sans', '"Comic Sans MS", "Comic Sans", "Chalkboard SE", cursive'],
     times: ['Times', '"Times New Roman", Times, serif'],
     georgia: ['Georgia', 'Georgia, serif'],
+    palatino: ['Palatino', '"Palatino Linotype", Palatino, "Book Antiqua", serif'],
+    garamond: ['Garamond', 'Garamond, "EB Garamond", serif'],
     courier: ['Courier', '"Courier New", Courier, monospace'],
+    lucida: ['Lucida Console', '"Lucida Console", Monaco, monospace'],
     impact: ['Impact', 'Impact, "Arial Black", sans-serif'],
-    trebuchet: ['Trebuchet', '"Trebuchet MS", sans-serif']
+    arialblack: ['Arial Black', '"Arial Black", Gadget, sans-serif'],
+    papyrus: ['Papyrus', 'Papyrus, fantasy'],
+    brush: ['Brush Script', '"Brush Script MT", "Segoe Script", cursive'],
+    copperplate: ['Copperplate', 'Copperplate, "Copperplate Gothic Light", fantasy'],
+    pixel: ['Pixel', '"DotGothic16", "Courier New", monospace']
   };
-  var PATTERNS = { none: 'None', stars: 'Stars', checker: 'Checkers', hearts: 'Dots' };
+  var PATTERNS = { none: 'None', stars: 'Stars', checker: 'Checkers', hearts: 'Dots', stripes: 'Stripes', diagonal: 'Diagonal Stripes', plaid: 'Plaid', polka: 'Polka Dots', grid: 'Graph Paper', diamonds: 'Diamonds', waves: 'Waves', scanlines: 'Scanlines', sparkle: 'Sparkle (animated)', zigzag: 'Zigzag', bricks: 'Bricks', circuit: 'Circuit' };
+  var BG_MODES = { tile: 'Tile it', cover: 'Stretch to fill', center: 'Center it once', fixed: 'Fill and stay put when scrolling' };
   var COLOR_KEYS = [['bg', 'Background'], ['text', 'Text'], ['link', 'Links'], ['head', 'Box headers'], ['headText', 'Header text'], ['box', 'Boxes'], ['box2', 'Box shading'], ['accent', 'Accent'], ['accent2', 'Accent shading']];
   var CSSVAR = { bg: '--os-bg', text: '--os-text', link: '--os-link', head: '--os-head', headText: '--os-head-text', box: '--os-box', box2: '--os-box2', accent: '--os-accent', accent2: '--os-accent2' };
   function hex(v) { return typeof v === 'string' && /^#[0-9a-f]{6}$/i.test(v) ? v : null; }
@@ -105,6 +147,72 @@
     COLOR_KEYS.forEach(function (k) { out[k[0]] = hex((t.colors || {})[k[0]]) || base[k[0]]; });
     return out;
   }
+
+  // ---------- custom layout code (like the old days): CSS only, never scripts ----------
+  // Every rule is kept inside the page's content area (#os-main), which also boxes in anything "fixed",
+  // so a layout can restyle its own page but can't cover the menus or pretend to be another page.
+  // "body" rules may only change the page background, colors, fonts, and cursor.
+  var CSS_MAX = 20000;
+  var BODY_OK = /^(background(-[a-z]+)?|color|font(-[a-z]+)?|cursor|text-shadow|letter-spacing|line-height)$/;
+  function cleanDecls(txt, bodyRule) {
+    return txt.split(';').map(function (d) {
+      var i = d.indexOf(':'); if (i < 0) return '';
+      var prop = d.slice(0, i).trim().toLowerCase(), val = d.slice(i + 1).trim();
+      if (!/^-?[a-z][a-z0-9-]*$/.test(prop) || !val) return '';
+      if (bodyRule && !BODY_OK.test(prop)) return '';
+      if (/expression|javascript:|vbscript:|behavior|binding|@import|<|\\/.test(val)) return '';
+      var bad = false;
+      val = val.replace(/url\(\s*(['"]?)(.*?)\1\s*\)/gi, function (m, q, u) { if (!/^https:\/\/[^\s'"()]+$/i.test(u)) bad = true; return 'url("' + u + '")'; });
+      if (bad) return '';
+      return prop + ': ' + val;
+    }).filter(Boolean).join('; ');
+  }
+  function scopeSel(sel) {
+    return sel.split(',').map(function (x) {
+      x = x.trim(); if (!x) return null;
+      if (/^(html|body)$/i.test(x)) return 'body.os-custom';
+      if (/^(html|body)\b/i.test(x)) return null;   // nothing outside the content area
+      if (/[{}<]/.test(x)) return null;
+      return '#os-main ' + x;
+    }).filter(Boolean).join(', ');
+  }
+  function cleanCss(src) {
+    src = String(src || '').slice(0, CSS_MAX).replace(/\/\*[\s\S]*?\*\//g, '').replace(/@[a-z-]+[^{};]*;/gi, '');
+    var out = '', i = 0;
+    function block(start) { var depth = 0; for (var j = start; j < src.length; j++) { if (src[j] === '{') depth++; else if (src[j] === '}') { depth--; if (!depth) return j; } } return src.length; }
+    function rules(text) {
+      var res = '', k = 0;
+      while (k < text.length) {
+        var open = text.indexOf('{', k); if (open < 0) break;
+        var close = text.indexOf('}', open); if (close < 0) break;
+        var sel = scopeSel(text.slice(k, open)), body = cleanDecls(text.slice(open + 1, close), /body\.os-custom/.test(sel) && sel.split(',').length === 1);
+        if (sel && body) res += sel + ' { ' + body + ' }\n';
+        k = close + 1;
+      }
+      return res;
+    }
+    while (i < src.length) {
+      var at = src.indexOf('@', i), open = src.indexOf('{', i);
+      if (open < 0) break;
+      if (at >= 0 && at < open) {
+        var head = src.slice(at, open).trim(), end = block(open), inner = src.slice(open + 1, end);
+        out += rules(src.slice(i, at));
+        if (/^@media\s+[^{;]+$/i.test(head) && !/[<>]/.test(head)) out += head + ' {\n' + rules(inner) + '}\n';
+        else if (/^@(-webkit-)?keyframes\s+[a-z0-9_-]+$/i.test(head)) {
+          var kf = '', m2, re = /([^{}]+)\{([^{}]*)\}/g;
+          while ((m2 = re.exec(inner))) { if (/^\s*(from|to|[\d.]+%)(\s*,\s*(from|to|[\d.]+%))*\s*$/i.test(m2[1])) kf += m2[1].trim() + ' { ' + cleanDecls(m2[2]) + ' }\n'; }
+          out += head + ' {\n' + kf + '}\n';
+        }
+        i = end + 1;
+      } else {
+        var close = src.indexOf('}', open); if (close < 0) break;
+        out += rules(src.slice(i, close + 1));
+        i = close + 1;
+      }
+    }
+    return out;
+  }
+  function bgUrl(u) { return typeof u === 'string' && /^https:\/\/[^\s'"()]+$/i.test(u) ? u : ''; }
   function applyTheme(t) {
     t = t || {};
     var c = themeColors(t), r = document.documentElement.style;
@@ -112,6 +220,28 @@
     r.setProperty('--os-font', (FONTS[t.font] || FONTS.verdana)[1]);
     Object.keys(PATTERNS).forEach(function (p) { document.body.classList.remove('pattern-' + p); });
     if (PATTERNS[t.pattern] && t.pattern !== 'none') document.body.classList.add('pattern-' + t.pattern);
+    // Your own background picture: replaces the theme's background and pattern, leaves everything else alone
+    var bg = bgUrl((t.bgImage || {}).url), mode = BG_MODES[(t.bgImage || {}).mode] ? t.bgImage.mode : 'tile', b = document.body.style;
+    document.body.classList.toggle('os-has-bg', !!bg);
+    b.backgroundImage = bg ? 'url("' + bg + '")' : '';
+    b.backgroundRepeat = bg ? (mode === 'tile' ? 'repeat' : 'no-repeat') : '';
+    b.backgroundSize = bg ? (mode === 'cover' || mode === 'fixed' ? 'cover' : 'auto') : '';
+    b.backgroundPosition = bg ? (mode === 'center' ? 'center top' : '0 0') : '';
+    b.backgroundAttachment = bg && mode === 'fixed' ? 'fixed' : '';
+    // Your own layout code
+    var css = cleanCss(t.css), tag = document.getElementById('os-custom-css');
+    if (!tag) { tag = document.createElement('style'); tag.id = 'os-custom-css'; document.head.appendChild(tag); }
+    tag.textContent = css;
+    document.body.classList.toggle('os-custom', !!css);
+  }
+  // Layout codes people can copy and share
+  function themeCode(t) { try { return 'OURSPACE:' + btoa(unescape(encodeURIComponent(JSON.stringify(t)))); } catch (e) { return ''; } }
+  function readThemeCode(code) {
+    try {
+      var s = String(code || '').trim().replace(/^OURSPACE:/, '');
+      var t = JSON.parse(decodeURIComponent(escape(atob(s))));
+      return t && typeof t === 'object' ? t : null;
+    } catch (e) { return null; }
   }
 
   // ---------- shell ----------
@@ -204,7 +334,7 @@
           el('small', { text: owners[cp[e.id].owner] ? 'by ' + owners[cp[e.id].owner].username : '' })]));
       }
     });
-    return box(title, grid.children.length ? [grid] : [el('p', { class: 'os-hint', text: emptyText })]);
+    return box(title, grid.children.length ? [grid] : [el('p', { class: 'os-hint', text: emptyText })], 'os-top8');
   }
 
   async function postsBox(title, author, characterId, mine) {
@@ -262,7 +392,7 @@
       } }));
       inner.push(row);
     });
-    return box(title, inner, 'orange');
+    return box(title, inner, 'orange os-blog');
   }
 
   function postPics(p) {
@@ -377,6 +507,15 @@
     if (typeof sg.url === 'string' && sg.url.indexOf(songBase()) === 0) return { url: sg.url, title: String(sg.title || 'Song').slice(0, 80) };
     return null;
   }
+  // Use This Layout: copies someone's look (not their song) into your Edit page, where you can change it and save
+  function borrowBtn(theme) {
+    if (!theme || !Object.keys(theme).length) return null;
+    return el('button', { class: 'os-btn', type: 'button', text: 'Use This Layout', title: 'Copy this page’s look to your own page', onclick: function () {
+      var t = Object.assign({}, theme); delete t.song;
+      try { localStorage.setItem('os-borrow', themeCode(t)); } catch (e) {}
+      location.href = 'edit.html';
+    } });
+  }
   function songBox(theme, owner) {
     var sg = cleanSong((theme || {}).song), M = window.TerranaMusic;
     if (!sg || !M) return null;
@@ -414,7 +553,8 @@
         pg.updated_at ? el('p', { class: 'os-meta', text: 'Last updated ' + day(pg.updated_at) }) : null
       ])]),
       pg.status ? el('p', {}, [el('strong', { text: 'Status: ' }), pg.status]) : null,
-      mine ? el('a', { class: 'os-btn go', href: 'edit.html', text: 'Edit My Page' }) : friendButtons(prof.id, rel, 'messages.html?to=' + encodeURIComponent(prof.username))
+      mine ? el('a', { class: 'os-btn go', href: 'edit.html', text: 'Edit My Page' }) : friendButtons(prof.id, rel, 'messages.html?to=' + encodeURIComponent(prof.username)),
+      !mine && me ? borrowBtn(pg.theme) : null
     ])]));
     var sbx = songBox(pg.theme, pg.display_name || prof.username); if (sbx) left.appendChild(sbx);
     left.appendChild(box(prof.username + '’s Interests', [infoTable([['General', it.general], ['Music', it.music], ['Heroes', it.heroes], ['Games', it.games], ['Groups', it.groups]])]));
@@ -458,6 +598,7 @@
       cp.status ? el('p', {}, [el('strong', { text: 'Status: ' }), cp.status]) : null,
       canSheet ? el('a', { class: 'os-btn', href: '../characters/view.html?id=' + encodeURIComponent(id), text: 'View Character Sheet' }) : null,
       mine ? el('a', { class: 'os-btn go', href: 'edit.html?c=' + encodeURIComponent(id), text: 'Edit This Page' }) : null,
+      !mine && me ? borrowBtn(cp.theme) : null,
       !mine && rel === 'friends' ? el('a', { class: 'os-btn go', href: 'messages.html?to=' + encodeURIComponent(owner.username) + '&tc=' + encodeURIComponent(id), text: 'Send ' + cp.name + ' a Message' }) : null,
       !mine && me && rel !== 'friends' ? el('p', { class: 'os-hint' }, ['Become friends with ', el('a', { href: uLink(owner.username), text: owner.username }), ' to message their characters.']) : null
     ])]));
@@ -656,8 +797,61 @@
     var colors = el('div', { class: 'colors' });
     var colorVals = themeColors(theme);
     COLOR_KEYS.forEach(function (k) { colors.appendChild(el('label', {}, [el('input', { type: 'color', id: 'th-' + k[0], value: colorVals[k[0]] }), k[1]])); });
+    // Background picture
+    var bgU = el('input', { id: 'bg-url', type: 'url', placeholder: 'https://...', value: bgUrl((theme.bgImage || {}).url) });
+    var bgM = el('select', { id: 'bg-mode' });
+    Object.keys(BG_MODES).forEach(function (k) { bgM.appendChild(el('option', { value: k, text: BG_MODES[k] })); });
+    bgM.value = BG_MODES[(theme.bgImage || {}).mode] ? theme.bgImage.mode : 'tile';
+    var bgF = el('input', { id: 'bg-up', type: 'file', accept: 'image/*' });
+    var bgMsg = el('p', { class: 'os-hint', id: 'bg-msg' });
+    bgF.addEventListener('change', async function () {
+      var fl = bgF.files[0]; if (!fl) return;
+      say('bg-msg', 'Uploading...');
+      try { bgU.value = await uploadPic(fl, 'bg', 1920); say('bg-msg', 'Uploaded. Save Page to keep it.'); applyTheme(readTheme()); }
+      catch (e) { say('bg-msg', oops(e), true); }
+      bgF.value = '';
+    });
+    bgU.addEventListener('change', function () { applyTheme(readTheme()); });
+    bgM.addEventListener('change', function () { applyTheme(readTheme()); });
+    var bgX = el('button', { class: 'os-btn', type: 'button', text: 'Remove Picture', onclick: function () { bgU.value = ''; applyTheme(readTheme()); } });
+
+    // Layout code
+    var css = el('textarea', { id: 'th-css', class: 'os-code', rows: '12', spellcheck: 'false', maxlength: String(CSS_MAX), placeholder: '/* Your own layout code (CSS). Try:\n.os-box > h2 { background: hotpink; }\n.os-name { font-size: 40px; text-shadow: 0 0 8px gold; } */' });
+    css.value = theme.css || '';
+    var cssT = 0; css.addEventListener('input', function () { clearTimeout(cssT); cssT = setTimeout(function () { applyTheme(readTheme()); }, 300); });
+    var SNIPS = [
+      ['Rounded boxes', '.os-box { border-radius: 14px; overflow: hidden; }'],
+      ['Glowing name', '.os-name { text-shadow: 0 0 6px var(--os-accent), 0 0 14px var(--os-accent); }'],
+      ['Rainbow headers', '.os-box > h2 { background: linear-gradient(90deg, red, orange, gold, lime, deepskyblue, violet); color: #fff; text-shadow: 1px 1px 0 #000; }'],
+      ['See-through boxes', '.os-box { background: rgba(0, 0, 0, 0.45); } .os-box .in { background: transparent; }'],
+      ['Dashed borders', '.os-box { border: 3px dashed var(--os-accent); }'],
+      ['Big profile picture', '.os-pic { width: 100%; max-width: 260px; }'],
+      ['Spinning picture', '@keyframes spin { to { transform: rotate(360deg); } } .os-pic { animation: spin 8s linear infinite; }'],
+      ['Blinking status', '@keyframes blink { 50% { opacity: 0.2; } } .os-tag { animation: blink 1.2s steps(2) infinite; }'],
+      ['Sparkle cursor', 'body { cursor: crosshair; }'],
+      ['Hide my blog', '.os-blog { display: none; }']
+    ];
+    var snipRow = el('div', { class: 'os-snips' }, SNIPS.map(function (sn) { return el('button', { class: 'os-btn', type: 'button', text: '+ ' + sn[0], onclick: function () { css.value = (css.value ? css.value.replace(/\s*$/, '\n') : '') + sn[1] + '\n'; applyTheme(readTheme()); } }); }));
+
+    // Share and copy layouts
+    var codeBox = el('textarea', { id: 'th-share', class: 'os-code', rows: '3', spellcheck: 'false', placeholder: 'Paste a layout code here (it starts with OURSPACE:) and press Use Code' });
+    var codeMsg = el('p', { class: 'os-hint', id: 'code-msg' });
+    function loadTheme(t2) {
+      if (!t2) return false;
+      if (THEMES[t2.preset]) pr.value = t2.preset;
+      fo.value = FONTS[t2.font] ? t2.font : 'verdana';
+      pa.value = PATTERNS[t2.pattern] ? t2.pattern : 'none';
+      var cv = themeColors(t2); COLOR_KEYS.forEach(function (k) { form.querySelector('#th-' + k[0]).value = cv[k[0]]; });
+      bgU.value = bgUrl((t2.bgImage || {}).url); bgM.value = BG_MODES[(t2.bgImage || {}).mode] ? t2.bgImage.mode : 'tile';
+      css.value = typeof t2.css === 'string' ? t2.css.slice(0, CSS_MAX) : '';
+      applyTheme(readTheme());
+      return true;
+    }
+
     function readTheme() {
       var t = { preset: pr.value, font: fo.value, pattern: pa.value, colors: {} };
+      var bu = bgUrl(bgU.value.trim()); if (bu) t.bgImage = { url: bu, mode: bgM.value };
+      if (css.value.trim()) t.css = css.value.slice(0, CSS_MAX);
       var sgx = readSong(); if (sgx) t.song = sgx;
       var base = THEMES[pr.value];
       COLOR_KEYS.forEach(function (k) { var v = $('th-' + k[0]).value.toLowerCase(); if (v !== base[k[0]].toLowerCase()) t.colors[k[0]] = v; });
@@ -670,6 +864,24 @@
       el('div', {}, [el('label', { for: 'th-preset', text: 'Theme' }), pr]), el('div', {}, [el('label', { for: 'th-font', text: 'Font' }), fo])]),
       el('div', {}, [el('label', { for: 'th-pattern', text: 'Background pattern' }), pa]),
       el('p', { class: 'os-hint', text: 'Change any color. The page shows it as you go.' }), colors]));
+    form.appendChild(el('fieldset', {}, [el('legend', { text: 'Background Picture' }),
+      el('p', { class: 'os-hint', text: 'Your own picture behind the page. It replaces the theme’s background and pattern and leaves the rest of the theme alone. Animated GIFs work (up to 3 MB).' }),
+      el('div', {}, [el('label', { for: 'bg-up', text: 'Upload a picture' }), bgF]),
+      el('div', {}, [el('label', { for: 'bg-url', text: 'Or a picture address' }), bgU]),
+      el('div', {}, [el('label', { for: 'bg-mode', text: 'How it shows' }), bgM]), el('div', {}, [bgX]), bgMsg]));
+    form.appendChild(el('fieldset', {}, [el('legend', { text: 'Layout Code (CSS)' }),
+      el('p', { class: 'os-hint', text: 'Go all out, like the old days. Write your own CSS to restyle anything on your page: boxes, headers, fonts, pictures, animations. It only affects your own page (scripts are not allowed), and the page updates as you type.' }),
+      snipRow, css,
+      el('p', { class: 'os-hint', text: 'Handy names: .os-box (every box), .os-box > h2 (box headers), .os-name (your name), .os-pic (your picture), .os-tag (your quote), .os-table (info tables), .os-post (blog posts), .os-blog, .os-songbox, .os-top8. Colors: var(--os-bg), var(--os-text), var(--os-link), var(--os-head), var(--os-accent).' })]));
+    form.appendChild(el('fieldset', {}, [el('legend', { text: 'Share a Layout' }),
+      el('p', { class: 'os-hint', text: 'Copy your layout code to give your whole look to a friend, or paste one to use theirs. You can also press Use This Layout on anyone’s page.' }),
+      el('div', {}, [el('button', { class: 'os-btn', type: 'button', text: 'Copy My Layout Code', onclick: function () {
+        var code = themeCode(Object.assign(readTheme(), { song: undefined })); codeBox.value = code;
+        if (navigator.clipboard) navigator.clipboard.writeText(code).then(function () { say('code-msg', 'Copied! Send it to anyone.'); }, function () { say('code-msg', 'Select the code and copy it.'); });
+      } }), el('button', { class: 'os-btn go', type: 'button', text: 'Use Code', onclick: function () {
+        if (loadTheme(readThemeCode(codeBox.value))) say('code-msg', 'Layout loaded. Save Page to keep it.'); else say('code-msg', 'That is not a layout code.', true);
+      } })]), codeBox, codeMsg]));
+    var pend = null; try { pend = localStorage.getItem('os-borrow'); localStorage.removeItem('os-borrow'); } catch (e) {}
 
     form.appendChild(el('div', {}, [el('button', { class: 'os-btn go', type: 'submit', text: 'Save Page' }),
       el('a', { class: 'os-btn', href: isChar ? cLink(cid) : uLink(me.username), text: 'View Page' })]));
@@ -699,6 +911,7 @@
       } catch (e) { say('edit-msg', oops(e), true); window.scrollTo(0, 0); }
     });
     main.appendChild(el('section', { class: 'os-box' }, [el('div', { class: 'in' }, [form])]));
+    if (pend && loadTheme(readThemeCode(pend))) say('edit-msg', 'Layout borrowed! Look it over, change anything, then Save Page.');
     if (!isChar && mineChars.length) {
       var l = el('ul', { class: 'os-list' });
       mineChars.forEach(function (c) { l.appendChild(el('li', {}, [c.name, el('a', { class: 'os-btn', href: 'edit.html?c=' + encodeURIComponent(c.id), text: 'Edit ' + c.name + '’s Page' })])); });

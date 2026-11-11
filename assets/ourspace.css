@@ -145,3 +145,27 @@ img { max-width: 100%; }
 .os-post-pics img { width: 100%; max-height: 360px; object-fit: cover; border: 1px solid #999999; display: block; }
 .os-post-pics a:only-child { grid-column: 1 / -1; }
 .os-post-pics a:only-child img { width: auto; max-width: 100%; object-fit: contain; }
+
+/* More background patterns */
+body.pattern-stripes { background-image: linear-gradient(90deg, rgba(255,255,255,0.08) 50%, transparent 50%); background-size: 40px 40px; }
+body.pattern-diagonal { background-image: repeating-linear-gradient(45deg, rgba(255,255,255,0.09) 0 12px, transparent 12px 24px); }
+body.pattern-plaid { background-image: repeating-linear-gradient(0deg, rgba(0,0,0,0.12) 0 6px, transparent 6px 30px), repeating-linear-gradient(90deg, rgba(255,255,255,0.10) 0 6px, transparent 6px 30px); }
+body.pattern-polka { background-image: radial-gradient(rgba(255,255,255,0.28) 6px, transparent 7px); background-size: 34px 34px; }
+body.pattern-grid { background-image: linear-gradient(rgba(127,127,255,0.18) 1px, transparent 1px), linear-gradient(90deg, rgba(127,127,255,0.18) 1px, transparent 1px); background-size: 20px 20px; }
+body.pattern-diamonds { background-image: linear-gradient(45deg, rgba(255,255,255,0.08) 25%, transparent 25%, transparent 75%, rgba(255,255,255,0.08) 75%), linear-gradient(-45deg, rgba(255,255,255,0.08) 25%, transparent 25%, transparent 75%, rgba(255,255,255,0.08) 75%); background-size: 30px 30px; }
+body.pattern-waves { background-image: radial-gradient(circle at 50% 100%, transparent 14px, rgba(255,255,255,0.10) 15px, rgba(255,255,255,0.10) 18px, transparent 19px); background-size: 40px 20px; }
+body.pattern-scanlines { background-image: repeating-linear-gradient(0deg, rgba(0,0,0,0.22) 0 1px, transparent 1px 3px); }
+body.pattern-zigzag { background-image: linear-gradient(135deg, rgba(255,255,255,0.10) 25%, transparent 25%), linear-gradient(225deg, rgba(255,255,255,0.10) 25%, transparent 25%); background-size: 28px 28px; }
+body.pattern-bricks { background-image: linear-gradient(rgba(0,0,0,0.18) 2px, transparent 2px), linear-gradient(90deg, rgba(0,0,0,0.18) 2px, transparent 2px); background-size: 48px 24px, 48px 48px; }
+body.pattern-circuit { background-image: linear-gradient(90deg, rgba(0,255,140,0.12) 1px, transparent 1px), linear-gradient(rgba(0,255,140,0.12) 1px, transparent 1px), radial-gradient(rgba(0,255,140,0.35) 2px, transparent 3px); background-size: 32px 32px, 32px 32px, 32px 32px; }
+body.pattern-sparkle { background-image: radial-gradient(rgba(255,255,255,0.9) 1px, transparent 2px), radial-gradient(rgba(255,240,180,0.8) 1px, transparent 2px), radial-gradient(rgba(255,200,255,0.7) 1px, transparent 2px); background-size: 47px 47px, 31px 31px, 59px 59px; animation: os-sparkle 2.4s steps(3) infinite; }
+@keyframes os-sparkle { 33% { background-position: 9px 13px, 21px 4px, 5px 30px; } 66% { background-position: 27px 5px, 3px 19px, 40px 11px; } }
+@media (prefers-reduced-motion: reduce) { body.pattern-sparkle { animation: none; } }
+body.os-has-bg { background-color: var(--os-bg); }
+
+/* Custom layout code stays inside the page's content area */
+body.os-custom #os-main { contain: paint; }
+.os-code { width: 100%; font-family: "Courier New", monospace; font-size: 12px; background: #fffff4; color: #111; border: 2px inset #c0c0c0; }
+.os-snips { display: flex; flex-wrap: wrap; gap: 4px; margin: 4px 0 6px; }
+.os-snips .os-btn { font-size: 11px; padding: 2px 6px; }
+body.os-has-bg { animation: none; }
