@@ -150,7 +150,7 @@
   };
   window.TerranaMusic = M;
   if (!document.querySelector('link[href*="assets/music.css"]')) {
-    var css = document.createElement('link'); css.rel = 'stylesheet'; css.href = ROOT + 'assets/music.css?v=661a7dac'; document.head.appendChild(css);
+    var css = document.createElement('link'); css.rel = 'stylesheet'; css.href = ROOT + 'assets/music.css?v=4f974168'; document.head.appendChild(css);
   }
 
   // ---------------- book pages: keep going between pages ----------------
