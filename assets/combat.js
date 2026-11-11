@@ -273,8 +273,27 @@
     if (det.kind === 'damage') { var t = R.cs[det.target]; bits.push('total ' + (det.total || 0) + (det.result ? ': ' + { b: 'Bashing', l: 'Lethal', a: 'Aggravated' }[det.result] + (t ? ' to ' + t.name : '') : t ? ': below ' + t.name + '’s BDT' : '')); }
     return { who: c ? c.name : (R.players[r.roller] || ''), text: r.label, line: bits.join('. '), cls: det.kind === 'defense' ? (det.hit ? 'hit' : 'miss') : det.kind === 'damage' && det.result ? 'hit' : '' };
   }
+  // Sound effects for each new log entry: a miss whooshes, a hit waits for its damage roll
+  function sfx(n) { if (window.SFX) window.SFX.play(n); }
+  function sfxFor(r) {
+    var det = r.detail || {};
+    if (det.kind === 'defense') { if (det.contest) sfx(det.hit ? 'thud' : 'block'); else if (det.social) sfx(det.hit ? 'sting' : 'whoosh'); else if (!det.hit) sfx('whoosh'); return; }
+    if (det.kind === 'damage') { sfx({ a: 'crush', l: 'slash', b: 'punch' }[det.result] || 'tink'); return; }
+    if (det.kind === 'note') { var tx = r.label || ''; if (/Incapacitated|defeated|is down/i.test(tx)) sfx('defeat'); else if (/Total Defense|takes (half|full) cover|takes aim/i.test(tx)) sfx('buff'); else if (/heal/i.test(tx)) sfx('heal'); return; }
+    if (det.kind === 'wpdmg') { sfx('sting'); return; }
+    if (/^(attack|contest|roll)$/.test(det.kind || 'roll')) sfx(det.spell || /cast|spell/i.test(r.label || '') ? 'cast' : 'dice');
+  }
+  function soundCtl() {
+    if (!window.SFX) return null;
+    var btn = el('button', { type: 'button', class: 'act cb-mini cb-sound', 'aria-pressed': String(!SFX.muted()), title: 'Sound effects', text: SFX.muted() ? '🔇 Sound' : '🔊 Sound' });
+    var sl = el('input', { type: 'range', min: '0', max: '100', value: String(Math.round(SFX.volume() * 100)), 'aria-label': 'Sound effects volume', class: 'cb-vol' });
+    btn.addEventListener('click', function () { SFX.muted(!SFX.muted()); btn.textContent = SFX.muted() ? '🔇 Sound' : '🔊 Sound'; btn.setAttribute('aria-pressed', String(!SFX.muted())); if (!SFX.muted()) SFX.play('select'); });
+    sl.addEventListener('change', function () { SFX.volume(+sl.value / 100); SFX.play('cursor'); });
+    return el('span', { class: 'cb-soundwrap' }, [btn, sl]);
+  }
   function toast(r) {
     var box = $('cb-toasts'); if (!box || !r) return;
+    sfxFor(r);
     var sm = rollSummary(r);
     var t = el('div', { class: 'cb-toast ' + sm.cls, role: 'status' });
     function bye() { if (t.parentNode) { t.classList.add('out'); setTimeout(function () { t.remove(); }, 250); } }
@@ -287,7 +306,13 @@
     setTimeout(bye, 10000);
   }
 
-  function drawAll() { syncOrder(); drawTop(); drawBanner(); drawMap(); drawPhases(); drawLoadout(); drawCard(); drawLog(); }
+  function turnSounds() {
+    var s = ST(), k = s.started ? s.round + ':' + s.turn : '', pk = k + ':' + s.phase;
+    if (R.lastTurnKey !== undefined && k && k !== R.lastTurnKey) sfx('turn');
+    else if (R.lastPhaseKey !== undefined && k && pk !== R.lastPhaseKey) sfx('phase');
+    R.lastTurnKey = k; R.lastPhaseKey = pk;
+  }
+  function drawAll() { syncOrder(); turnSounds(); drawTop(); drawBanner(); drawMap(); drawPhases(); drawLoadout(); drawCard(); drawLog(); }
 
   // ---------- top box ----------
   function drawTop() {
@@ -296,7 +321,7 @@
     t.appendChild(el('div', {}, [el('h1', { class: 'px', text: R.enc.name }),
       el('div', { class: 'cb-sub' }, ['Storyteller: ' + (R.players[R.enc.host] || '') + '. ' + (R.enc.public ? 'Public fight' : 'Private fight') + '. Join code ', el('span', { class: 'cb-code', text: R.enc.code })])]));
     var status = s.started ? 'Round ' + s.round + ': ' + (cur ? cur.name + '’s turn, ' + PHASES[s.phase][0] + ' Phase' : 'nobody left in the order') : s.order.length ? 'Turn order is set. Ready to start.' : 'Setting up: bring characters, add NPCs, then set the turn order.';
-    var bar = el('div', { class: 'cb-bar' }, [el('span', { class: 'cb-round', text: status })]);
+    var bar = el('div', { class: 'cb-bar' }, [el('span', { class: 'cb-round', text: status }), soundCtl()]);
     if (R.host) {
       if (!s.started) bar.appendChild(el('button', { class: 'act primary', type: 'button', text: 'Start Combat', disabled: !s.order.length, title: s.order.length ? null : 'Set the turn order first', onclick: startCombat }));
       else bar.appendChild(el('button', { class: 'act', type: 'button', text: 'Stop Combat', title: 'Back to setup; health and positions stay', onclick: function () { saveState({ started: false, phase: 0, t: {} }); } }));
@@ -465,7 +490,8 @@
         el('p', {}, [el('span', { class: 'ff-hand', 'aria-hidden': 'true', text: '▶' }), el('b', { text: tgA.label }), ': pick a target. Range: ' + tgA.range.text + '.' + (okN ? '' : ' Nothing is in range.')]),
         el('div', { class: 'button-row' }, [
           tgA.kind !== 'attack' ? el('button', { class: 'act cb-mini', type: 'button', text: 'No target', onclick: function () { chooseTarget(null, null); } }) : null,
-          el('button', { class: 'act cb-mini', type: 'button', text: 'Back to the menu', onclick: function () { var cc = R.targeting.c; R.targeting = null; drawAll(); actionMenu(cc); } })])]));
+          R.multi && R.multi.left > 0 ? el('button', { class: 'act cb-mini', type: 'button', text: 'Skip the remaining attacks', onclick: function () { skipRest(R.targeting.c); } })
+            : el('button', { class: 'act cb-mini', type: 'button', text: 'Back to the menu', onclick: function () { var cc = R.targeting.c; R.targeting = null; drawAll(); actionMenu(cc); } })])]));
     }
     if (R.targeting) hint = '';
     else if (mover) hint = counted ? 'Moving ' + mover.name + ': ' + left + ' zone' + (left === 1 ? '' : 's') + ' left this turn (diagonals count as 1). Pick a lit zone' + (mn > 1 ? ' for its top-left corner.' : '.') : 'Placing ' + mover.name + ': pick a lit zone' + (mn > 1 ? ' for its top-left corner (' + mn + 'x' + mn + ').' : '.');
@@ -627,7 +653,14 @@
       if (t.done[3]) { box.appendChild(el('p', { class: 'cb-line', text: 'Action taken. Click Action to move on to Damage.' })); return; }
       if (R.targeting) {
         box.appendChild(el('p', { class: 'cb-line', text: 'Pick a target on the map for ' + R.targeting.act.label + '.' }));
-        box.appendChild(actBtn('Back to the menu', 'Choose something else', null, function () { R.targeting = null; drawAll(); actionMenu(c); }));
+        if (R.multi && R.multi.left > 0) box.appendChild(actBtn('Skip the remaining attacks', 'End the Action here', null, function () { skipRest(c); }));
+        else box.appendChild(actBtn('Back to the menu', 'Choose something else', null, function () { R.targeting = null; drawAll(); actionMenu(c); }));
+        return;
+      }
+      if (R.multi && R.multi.c === c.id && R.multi.left > 0) {
+        box.appendChild(el('p', { class: 'cb-line', text: R.multi.left + ' extra attack' + (R.multi.left === 1 ? '' : 's') + ' left this turn.' }));
+        box.appendChild(actBtn('Next attack', 'Same attack, pick a target', null, function () { var b0 = R.multi.act; if (b0) nextAttack(c, b0); }));
+        box.appendChild(actBtn('Skip the remaining attacks', 'End the Action here', null, function () { skipRest(c); }));
         return;
       }
       box.appendChild(el('button', { type: 'button', class: 'ff-open', onclick: function () { actionMenu(c); } }, [el('span', { class: 'ff-hand', 'aria-hidden': 'true', text: '▶' }), 'Open Action Menu']));
@@ -651,10 +684,19 @@
         }));
         return;
       }
-      if (dr) box.appendChild(el('p', { class: 'cb-line', text: (dr.detail.hit ? 'Hit: ' + atk.successes + ' against ' + dr.successes + ', so ' + dr.detail.excess + ' carry to damage.' : 'Missed: ' + atk.successes + ' against ' + dr.successes + '.') }));
-      if (!dmg && dr && !dr.detail.hit) box.appendChild(el('p', { class: 'cb-line', text: 'No damage to roll. Click Damage to move on.' }));
-      else if (!dmg) box.appendChild(actBtn('Roll Damage', atk.label, null, function () { damageDialog(atk, function () { return markDone(); }); }));
-      else box.appendChild(el('p', { class: 'cb-line', text: 'Damage rolled: ' + dmg.label + '. Apply it from the Roll Log, then click Damage.' }));
+      // One attack, or several from extra attacks: each hit rolls its own damage
+      var ids = (t.attacks && t.attacks.length ? t.attacks : [t.attack]);
+      var rows = ids.map(function (id) { return R.rolls.filter(function (r) { return r.id === id; })[0]; }).filter(Boolean);
+      function dmgOf(a) { return R.rolls.filter(function (r) { return (r.detail || {}).kind === 'damage' && (r.detail || {}).of === a.id; })[0]; }
+      function defOf(a) { return R.rolls.filter(function (r) { return (r.detail || {}).vs === a.id; })[0]; }
+      function allDone() { return rows.every(function (a) { var d0 = defOf(a); return dmgOf(a) || (d0 && !d0.detail.hit); }); }
+      rows.forEach(function (a, n) {
+        var d0 = defOf(a), dm0 = dmgOf(a), tg = R.cs[(a.detail || {}).target], pre = rows.length > 1 ? 'Attack ' + (n + 1) + (tg ? ' on ' + tg.name : '') + ': ' : '';
+        if (d0) box.appendChild(el('p', { class: 'cb-line', text: pre + (d0.detail.hit ? 'Hit, ' + a.successes + ' against ' + d0.successes + ', so ' + d0.detail.excess + ' carry to damage.' : 'Missed, ' + a.successes + ' against ' + d0.successes + '.') }));
+        if (!dm0 && (!d0 || d0.detail.hit)) box.appendChild(actBtn('Roll Damage' + (rows.length > 1 ? ' (attack ' + (n + 1) + ')' : ''), a.label, null, function () { damageDialog(a, function () { return allDone() ? markDone() : null; }); }));
+        else if (dm0) box.appendChild(el('p', { class: 'cb-line', text: pre + 'Damage rolled: ' + dm0.label + '.' }));
+      });
+      if (allDone()) box.appendChild(el('p', { class: 'cb-line', text: rows.some(dmgOf) ? 'Apply damage from the Roll Log, then click Damage.' : 'No damage to roll. Click Damage to move on.' }));
       return;
     }
     if (i === 6) {
@@ -1117,6 +1159,12 @@
       });
     }
     function apDice(v) { return { 0: 0, 1: 1, 3: 2, 6: 3 }[v] || 0; }
+    // Extra attacks (Ch. 12): with 3 Style dots spend 1 AP for 1 more, 5 dots 3 AP for 2 more, 7 dots 6 AP for 3 more. Once per round, same attack.
+    var canMulti = (a.multiDots || 0) >= 3 && !a.multiOf && !(ST().t || {}).multiUsed;
+    var multi = el('select', { id: 'r-multi' }, [opt(0, 'No extra attacks')].concat(
+      (a.multiDots >= 3 ? [opt(1, '1 extra attack for 1 AP')] : []), (a.multiDots >= 5 ? [opt(3, '2 extra attacks for 3 AP')] : []), (a.multiDots >= 7 ? [opt(6, '3 extra attacks for 6 AP')] : [])));
+    function multiN() { return canMulti ? apDice(+multi.value) : 0; }
+    function multiAP() { return canMulti ? (+multi.value || 0) : 0; }
     function total() { return Math.max(0, a.pool + (+bonus.value || 0) - (+penalty.value || 0) + (+atkMana.value || 0) + auraAtk() + apDice(+ap.value) + (wp.checked ? 3 : 0)); }
     function drawParts() {
       parts.textContent = '';
@@ -1134,9 +1182,10 @@
         var spend = cost + (+atkMana.value || 0) + (+dmgMana.value || 0);
         if (spend) parts.appendChild(el('li', { class: spend > c.mana ? 'warn' : '' }, [el('span', { text: 'Mana spent (' + (spell ? 'cost ' + cost : 'enhancement') + (+dmgMana.value ? ', ' + dmgMana.value + ' set aside for damage' : '') + ')' }), el('span', { text: spend + ' of ' + c.mana })]));
       }
-      if (+ap.value > c.ap) parts.appendChild(el('li', { class: 'warn' }, [el('span', { text: 'You hold ' + c.ap + ' AP. Allies can give you the rest.' }), el('span', { text: '' })]));
+      if (multiN()) parts.appendChild(el('li', {}, [el('span', { text: 'Extra attacks, each rolled and defended on its own (' + multiAP() + ' AP)' }), el('span', { text: '+' + multiN() })]));
+      if ((+ap.value || 0) + multiAP() > c.ap) parts.appendChild(el('li', { class: 'warn' }, [el('span', { text: 'You hold ' + c.ap + ' AP. Allies can give you the rest.' }), el('span', { text: '' })]));
     }
-    [bonus, penalty, ap, wp, auraSel].forEach(function (x) { x.addEventListener('input', drawParts); x.addEventListener('change', drawParts); });
+    [bonus, penalty, ap, wp, auraSel, multi].forEach(function (x) { x.addEventListener('input', drawParts); x.addEventListener('change', drawParts); });
     atkMana.addEventListener('change', function () { fillMana(); if (aura) fillAura(); drawParts(); });
     dmgMana.addEventListener('change', function () { fillMana(); if (aura) fillAura(); drawParts(); });
     auraSel.addEventListener('change', function () { fillMana(); });
@@ -1158,6 +1207,8 @@
       f.appendChild(el('div', { class: 'two' }, [field('Extra mana on the attack', atkMana), field('Mana set aside for damage', dmgMana)]));
     }
     f.appendChild(el('div', { class: 'two' }, [field('Spend AP for dice', ap), el('label', { class: 'chk', style: 'align-self:end' }, [wp, 'Spend 1 Willpower for +3 dice'])]));
+    if (canMulti) f.appendChild(field('Extra attacks (' + a.multiDots + ' ' + (a.boostStyle || 'Style') + ' dots)', multi));
+    if (a.multiOf) f.appendChild(el('p', { class: 'cb-desc', text: 'Extra attack ' + a.multiOf + '. It gets its own roll and the target defends as normal.' }));
     f.appendChild(el('label', { class: 'chk' }, [real, 'I rolled real dice']));
     f.appendChild(realWrap);
     body.appendChild(f);
@@ -1170,7 +1221,7 @@
       var dice = real.checked ? [] : d10s(n), succ = real.checked ? Math.max(0, +realN.value || 0) : successes(dice);
       var patch = {};
       if (spend) patch.mana = c.mana - spend;
-      if (+ap.value) patch.ap = Math.max(0, c.ap - (+ap.value));
+      if ((+ap.value || 0) + multiAP()) patch.ap = Math.max(0, c.ap - (+ap.value || 0) - multiAP());
       if (wp.checked) patch.willpower = c.willpower - 1;
       if (Object.keys(patch).length) await upd(c, patch);
       var tgt = R.cs[target.value];
@@ -1178,14 +1229,15 @@
         var st2 = Object.assign({}, c.stats || {}); st2.effects = (st2.effects || []).concat([{ name: spell.name, upkeep: Math.max(0, (spell.cost || 0) - 1) }]); await upd(c, { stats: st2 });
       }
       var row = await addRoll({ combatant_id: c.id, label: a.label + (tgt ? ' at ' + tgt.name : '') + (a.override ? ' (Storyteller allowed it out of range)' : ''), pool: n, dice: dice, successes: succ,
-        detail: { kind: a.kind || 'roll', target: tgt ? tgt.id : null, setAside: (+dmgMana.value || 0) + auraDmg(), mana: spend, ap: +ap.value || 0, wp: wp.checked, real: real.checked, damagePool: a.damagePool || 0, damageText: a.damageText || '', attacker: c.id, social: !!a.social } });
+        detail: { kind: a.kind || 'roll', target: tgt ? tgt.id : null, setAside: (+dmgMana.value || 0) + auraDmg(), mana: spend, ap: +ap.value || 0, wp: wp.checked, real: real.checked, damagePool: a.damagePool || 0, damageText: a.damageText || '', attacker: c.id, social: !!a.social, spell: spell ? spell.name : undefined, multi: multiN() || undefined, multiOf: a.multiOf || undefined } });
       var res = null;
       if (((a.kind || 'roll') === 'attack' || a.kind === 'contest') && tgt && row) res = await autoDefend(row, tgt, spell, a.social, a.defense ? a.defense(tgt) : null);
       if ((a.kind === 'attack' || a.kind === 'contest') && c.hidden) { await upd(c, { hidden: false }); await note(c.name + ' attacks and is no longer hidden.'); }
       if (a.aimUsed) await upd(c, { stats: Object.assign({}, c.stats || {}, { aim: null }) });
       if (a.post && row) await a.post(row, tgt, res);
       if (a.after) await a.after(row);
-      if (a.fromMenu && row) resultWindow(c, tgt, row, res, a);
+      if (R.multi && R.multi.c === c.id) R.multi.act = a;
+      if (a.fromMenu && row) resultWindow(c, tgt, row, res, a, function () { nextAttack(c, a); });
     });
     d.open();
   }
@@ -1429,11 +1481,11 @@
         var p = evalPool(m.pool, kit), rg = styleRange(m.style, kit), nm = armed[m.style] ? 'Attack with ' + armed[m.style][0] : 'Attack (' + m.style.replace(/ Style$/, '') + ')';
         var dm = weaponDamage(kit, m.style, armed[m.style] ? armed[m.style][0] : '');
         return { name: nm, sub: m.style + '. Range: ' + rg.text + '. Damage ' + dm.pool, pool: p.total + 'd', desc: 'A standard attack with ' + m.style + '. Range: ' + rg.text + '. Damage pool: ' + dm.text + '.',
-          act: { label: nm, pool: p.total, parts: p.parts, unknown: p.unknown, kind: 'attack', range: rg, targets: 'others', aura: auraFor(m.style), damagePool: dm.pool, damageText: dm.text, boostCap: (kit.dots || {})['Battle Aura'] || 0, boostName: 'Battle Aura' } };
+          act: { label: nm, pool: p.total, parts: p.parts, unknown: p.unknown, kind: 'attack', range: rg, targets: 'others', aura: auraFor(m.style), damagePool: dm.pool, damageText: dm.text, boostCap: (kit.dots || {})['Battle Aura'] || 0, boostName: 'Battle Aura', multiDots: (kit.dots || {})[m.style] || 0, boostStyle: m.style } };
       }).concat(mv.map(function (m) {
         var p = evalPool(m.pool, kit), rg = styleRange(m.style, kit), dm = weaponDamage(kit, m.style, armed[m.style] ? armed[m.style][0] : '');
         return { name: m.name, sub: m.style + ' Rank ' + m.rank, pool: p.total + 'd', desc: m.text + ' Range: ' + rg.text + '. Damage pool: ' + dm.text + '.',
-          act: { label: m.name, pool: p.total, parts: p.parts, unknown: p.unknown, kind: 'attack', desc: m.text, link: m.id ? '../rulebook/ch12.html#' + m.id : null, range: rg, targets: 'others', aura: auraFor(m.style), damagePool: dm.pool, damageText: dm.text, boostCap: (kit.dots || {})['Battle Aura'] || 0, boostName: 'Battle Aura' } };
+          act: { label: m.name, pool: p.total, parts: p.parts, unknown: p.unknown, kind: 'attack', desc: m.text, link: m.id ? '../rulebook/ch12.html#' + m.id : null, range: rg, targets: 'others', aura: auraFor(m.style), damagePool: dm.pool, damageText: dm.text, boostCap: (kit.dots || {})['Battle Aura'] || 0, boostName: 'Battle Aura', multiDots: (kit.dots || {})[m.style] || 0, boostStyle: m.style } };
       }));
       cats.push({ name: 'Attacks', items: atk, empty: (kit.maneuvers || []).length ? 'No maneuvers prepared. Prepare them on the Combat Loadout, then Refresh Stats.' : 'No Combat Styles.' });
       var spells = sp.filter(function (x) { return x.name !== 'Aura Fist' && x.name !== 'Aura Blade'; }).map(function (x) {
@@ -1463,8 +1515,8 @@
   }
 
   function actionMenu(c) {
-    var after = function (r) { return markDone({ attack: r && (r.detail || {}).kind === 'attack' ? r.id : null }); };
-    var cats = menuCats(c, after);
+    var after = attackAfter(c), cats = menuCats(c, after);
+    sfx('open');
     var ci = R.ffCat !== undefined ? Math.min(R.ffCat, cats.length - 1) : cats[0].items.length ? 0 : 1;
     var d = el('dialog', { class: 'ff-menu', 'aria-label': 'Action menu for ' + c.name });
     var catList = el('div', { class: 'ff-cats', role: 'tablist', 'aria-label': 'Categories' });
@@ -1485,8 +1537,8 @@
       if (!cat.items.length) { itemList.appendChild(el('p', { class: 'ff-empty', text: cat.empty || 'Nothing here.' })); help.textContent = ''; return; }
       cat.items.forEach(function (it) {
         var b = el('button', { type: 'button', class: 'ff-item', role: 'listitem',
-          onfocus: function () { help.textContent = it.desc || it.sub || ''; }, onmouseenter: function () { help.textContent = it.desc || it.sub || ''; },
-          onclick: function () { close(); startTarget(c, it.act, after); } },
+          onfocus: function () { help.textContent = it.desc || it.sub || ''; sfx('cursor'); }, onmouseenter: function () { help.textContent = it.desc || it.sub || ''; },
+          onclick: function () { sfx('select'); close(); startTarget(c, it.act, after); } },
           [el('span', { class: 'ff-name' }, [el('b', { text: it.name }), it.sub ? el('small', { text: it.sub }) : null]), it.pool ? el('span', { class: 'ff-pool', text: it.pool }) : null]);
         itemList.appendChild(b);
       });
@@ -1512,9 +1564,35 @@
     var first = itemList.querySelector('.ff-item') || catList.querySelectorAll('.ff-cat')[ci]; if (first) first.focus();
   }
 
+  // Marks the Action done, or, with extra attacks still to make, keeps the phase open and records each attack for the Damage phase
+  function attackAfter(c) {
+    return async function (r) {
+      var det = (r && r.detail) || {}, t = ST().t || {};
+      var ids = (t.attacks || []).concat(det.kind === 'attack' ? [r.id] : []);
+      if (det.multi) R.multi = { c: c.id, left: det.multi, total: det.multi + 1, n: 1, act: null };
+      else if (det.multiOf && R.multi && R.multi.c === c.id) { R.multi.left--; R.multi.n++; }
+      if (R.multi && R.multi.c === c.id && R.multi.left > 0) {
+        await saveState({ t: Object.assign({}, t, { attacks: ids, attack: ids[0] || null, multiUsed: true }) });
+        return;
+      }
+      R.multi = null;
+      return markDone({ attack: ids[0] || null, attacks: ids, multiUsed: t.multiUsed || !!det.multi });
+    };
+  }
+  function nextAttack(c, a) {
+    if (!(R.multi && R.multi.c === c.id && R.multi.left > 0)) return;
+    var base = a.base || a, nm = base.label.replace(/ \(attack \d+ of \d+\)$/, '');
+    startTarget(c, Object.assign({}, base, { label: nm + ' (attack ' + (R.multi.n + 1) + ' of ' + R.multi.total + ')', multiOf: (R.multi.n + 1) + ' of ' + R.multi.total, base: base }), base.after);
+  }
+  async function skipRest(c) {
+    R.multi = null; R.targeting = null;
+    var t = ST().t || {};
+    await markDone({ attack: (t.attacks || [])[0] || null, attacks: t.attacks || [], multiUsed: true });
+  }
   // After a pick: light up the targets in range on the map (or skip it when there is no target)
   function startTarget(c, act, after) {
     act = Object.assign({ after: after, fromMenu: true }, act);
+    if (!act.base) act.base = act;
     if (act.targets === 'none') { if (act.run) act.run(null, null); else rollDialog(c, Object.assign({}, act, { targetId: '', targetable: false })); return; }
     if (act.targets === 'self' || !placedC(c)) {
       if (act.targets === 'self') return finishTarget(c, act, c, { ok: true, note: 'self' });
@@ -1613,7 +1691,7 @@
     d.open();
   }
   // The answer after the roll: hit or miss, and how many successes carry to the Damage phase
-  function resultWindow(c, t, row, res, a) {
+  function resultWindow(c, t, row, res, a, onClose) {
     var d = el('dialog', { class: 'ff-menu ff-result', 'aria-label': 'Result' });
     var hit = res && res.hit, title = !res ? 'ROLLED' : a.kind === 'contest' ? (hit ? 'SUCCESS!' : 'BLOCKED') : hit ? 'HIT!' : 'MISS';
     var lines = [el('p', {}, [el('b', { text: c.name }), ' rolled ' + row.successes + ' success' + (row.successes === 1 ? '' : 'es') + ' on ' + row.pool + (row.pool === 1 ? ' die.' : ' dice.')])];
@@ -1621,7 +1699,8 @@
     if (hit && a.kind === 'contest') lines.push(el('p', { class: 'ff-big' }, [el('b', { text: String(res.excess) }), ' over. ' + (a.winText || 'You win.')]));
     else if (hit) lines.push(el('p', { class: 'ff-big' }, [el('b', { text: String(res.excess) }), ' success' + (res.excess === 1 ? '' : 'es') + ' over. ' + (a.social ? 'That is ' + res.excess + ' Willpower damage in the Damage phase.' : 'They carry to the Damage phase.')]));
     else if (res) lines.push(el('p', { text: a.social ? 'The words do not land.' : a.kind === 'contest' ? 'The defense holds.' : 'The defense holds. No damage to roll.' }));
-    function close() { d.close(); d.remove(); }
+    if (R.multi && R.multi.c === c.id && R.multi.left > 0) lines.push(el('p', { text: R.multi.left + ' extra attack' + (R.multi.left === 1 ? '' : 's') + ' to go. Pick the next target.' }));
+    function close() { if (!d.parentNode) return; if (d.open) d.close(); d.remove(); if (onClose) onClose(); }
     d.appendChild(el('h2', { class: 'px ff-title ' + (hit ? 'hit' : res ? 'miss' : ''), text: title }));
     lines.forEach(function (l) { d.appendChild(l); });
     var ok = el('button', { type: 'button', class: 'ff-close', text: 'OK', onclick: close });

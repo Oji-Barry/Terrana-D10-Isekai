@@ -334,3 +334,5 @@
   .cb-toast { padding: 5px 30px 5px 10px; font-size: 13px; }
   .cb-toast:nth-last-child(n+3) { display: none; }
 }
+.cb-soundwrap { display: inline-flex; align-items: center; gap: 6px; margin-left: auto; }
+.cb-vol { width: 90px; accent-color: var(--gold); }
