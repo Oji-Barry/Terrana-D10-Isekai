@@ -53,3 +53,7 @@
 /* In the book's slide-out menu */
 .menu-music { margin: 0 0 10px; }
 .menu-music .menu-label { margin-bottom: 4px; }
+.menu-music > summary { display: flex; align-items: center; gap: 8px; cursor: pointer; }
+.menu-music-quick { margin-left: auto; min-width: 34px; height: 26px; padding: 0 8px; border-radius: 13px; border: 1px solid #0b1440; cursor: pointer;
+  background: linear-gradient(180deg, #e8eeff 0%, #9fb2ea 48%, #6c83cf 52%, #8ea3e6 100%); color: #0b1440; font-weight: 800; font-size: 11px; }
+.menu-music-quick:hover, .menu-music-quick:focus-visible { box-shadow: 0 0 0 2px #ffd76a; outline: none; }

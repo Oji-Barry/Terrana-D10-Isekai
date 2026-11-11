@@ -337,3 +337,55 @@
 .cb-soundwrap { display: inline-flex; align-items: center; gap: 6px; margin-left: auto; }
 .cb-vol { width: 90px; accent-color: var(--gold); }
 .cb-music > h2 { margin: 0 0 8px; text-align: center; font-size: 18px; color: var(--gold); }
+
+/* Slide-out drawers: Music from the left, My Sheets from the right */
+.cb-drawer { position: fixed; top: 0; bottom: 0; z-index: 800; width: min(380px, 92vw); overflow: auto; padding: 0 12px 16px;
+  background: linear-gradient(180deg, var(--win-top), var(--win-mid) 40%, var(--win-bot)); border: 3px solid var(--win-border); box-shadow: 0 0 40px rgba(0,0,0,0.6);
+  transition: transform 0.25s ease; visibility: hidden; }
+.cb-drawer.left { left: 0; border-left: 0; border-radius: 0 12px 12px 0; transform: translateX(-105%); }
+.cb-drawer.right { right: 0; border-right: 0; border-radius: 12px 0 0 12px; transform: translateX(105%); width: min(560px, 96vw); }
+.cb-drawer.open { transform: none; visibility: visible; }
+.cb-drawer-head { position: sticky; top: 0; z-index: 2; display: flex; align-items: center; justify-content: space-between; margin: 0 -12px 10px; padding: 10px 12px; background: var(--win-top); border-bottom: 2px solid var(--line); }
+.cb-drawer-head h2 { margin: 0; font-size: 18px; color: var(--gold); }
+.cb-drawer-x { width: 34px; height: 34px; border: 2px solid var(--win-border); border-radius: 8px; background: rgba(0,0,0,0.3); color: #fff; font-size: 20px; cursor: pointer; }
+.cb-drawer-x:hover, .cb-drawer-x:focus-visible { color: var(--gold); border-color: var(--gold); outline: none; }
+.cb-drawer-tab { position: fixed; top: 46%; z-index: 790; display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 12px 7px; border: 3px solid var(--win-border);
+  background: linear-gradient(180deg, var(--win-top), var(--win-bot)); color: var(--text); font-family: var(--pixel); font-size: 13px; cursor: pointer; box-shadow: 0 4px 14px rgba(0,0,0,0.5); }
+.cb-drawer-tab .lbl { writing-mode: vertical-rl; letter-spacing: 1px; }
+.cb-drawer-tab.left { left: 0; border-left: 0; border-radius: 0 10px 10px 0; }
+.cb-drawer-tab.right { right: 0; border-right: 0; border-radius: 10px 0 0 10px; }
+.cb-drawer-tab.right .lbl { transform: rotate(180deg); }
+.cb-drawer-tab:hover, .cb-drawer-tab:focus-visible { color: var(--gold); border-color: var(--gold); outline: none; }
+.cb-drawer-tab[aria-expanded="true"] { display: none; }
+@media (prefers-reduced-motion: reduce) { .cb-drawer { transition: none; } }
+.cb-mine-pick { width: 100%; margin-bottom: 10px; }
+.cb-mine-sec { margin-bottom: 12px; border: 2px solid var(--line); border-radius: 10px; padding: 8px 10px; background: rgba(0,0,0,0.18); }
+.cb-mine-sec > summary { cursor: pointer; font-family: var(--pixel); color: var(--gold); font-size: 15px; text-align: center; }
+.cb-sheetframe { display: block; width: 100%; height: 72vh; margin-top: 8px; border: 2px solid var(--line); border-radius: 8px; background: var(--bg); }
+.cb-mine-lo .cb-lo { grid-template-columns: minmax(0, 1fr); }
+.cb-mine-card { margin-top: 8px; }
+
+/* Bestiary on an enemy's card */
+.cb-bestbox { margin-top: 12px; padding: 10px; border: 2px dashed var(--line); border-radius: 10px; }
+.cb-bestbox h3 { margin: 0 0 6px; text-align: center; color: var(--gold); font-size: 15px; }
+.cb-beast p { margin: 4px 0; font-size: 14px; }
+.cb-beast-tags { color: var(--sky); text-align: center; }
+.cb-beast-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin: 8px 0; }
+.cb-beast-stats span { display: flex; flex-direction: column; align-items: center; padding: 4px; border: 1px solid var(--line); border-radius: 6px; background: rgba(0,0,0,0.2); }
+.cb-beast-stats small { color: var(--text-muted); font-size: 11px; }
+.cb-beast-ab { margin: 4px 0; padding-left: 18px; font-size: 14px; }
+
+/* My Bestiary page */
+.cb-bestcount { font-size: 18px; color: var(--gold); }
+.cb-bookgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; }
+.cb-bookcard { position: relative; padding: 12px; border: 2px solid var(--line); border-radius: 12px; background: rgba(0,0,0,0.22); }
+.cb-bookcard h2 { margin: 6px 0; text-align: center; font-size: 18px; }
+.cb-bookcard.unknown h2 { color: var(--text-muted); }
+.cb-booknum { position: absolute; top: 8px; left: 10px; font-size: 11px; color: var(--text-muted); }
+.cb-bookpic { display: flex; justify-content: center; margin-top: 10px; min-height: 64px; }
+.cb-bookpic.unknown .cb-spr { filter: brightness(0) drop-shadow(0 0 2px rgba(127, 209, 255, 0.6)); }
+@media (max-width: 760px) {
+  .cb-drawer-tab { padding: 8px 4px; font-size: 11px; top: auto; bottom: 90px; }
+  .cb-drawer-tab .lbl { display: none; }
+  .cb-drawer-tab span { font-size: 18px; }
+}

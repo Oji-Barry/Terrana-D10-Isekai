@@ -73,7 +73,8 @@
   // ---------- list page ----------
   async function listPage(main) {
     main.appendChild(el('section', { class: 'panel win' }, [el('h1', { text: 'Combat' }),
-      el('p', { class: 'center', text: 'Host a fight as the Storyteller, or tap an active fight to join it. Public fights let anyone in; private ones need the code from their Storyteller. Everyone sees the map, turn order, health, and every roll live.' })]));
+      el('p', { class: 'center', text: 'Host a fight as the Storyteller, or tap an active fight to join it. Public fights let anyone in; private ones need the code from their Storyteller. Everyone sees the map, turn order, health, and every roll live.' }),
+      el('p', { class: 'center' }, [el('a', { class: 'act', href: 'my-bestiary.html', text: 'My Bestiary' })])]));
     // Host
     var hostBox;
     if (me) {
@@ -341,7 +342,6 @@
     var box = $('cb-music');
     if (box && !R.player) {
       var sw = R.host ? el('label', { class: 'mp-switch' }, [el('input', { type: 'checkbox', id: 'mus-open', onchange: function (e) { writeMusic({ open: e.target.checked }); } }), 'Let players pick songs']) : null;
-      box.appendChild(el('h2', { class: 'px', text: 'Music' }));
       R.player = M.mountPlayer(box, { canChange: canPickMusic, onAction: musicAction, lockedNote: 'The Storyteller picks the music. You can still look through the list.', extra: sw });
       M.on(function (what) { if (what === 'play') { R.musicKey = null; setTimeout(syncMusic, 50); } });   // catch up after pressing play
       M.onEnded = function () {   // everyone moves on together; the Storyteller's page writes it down
@@ -367,7 +367,85 @@
     if (!s.playing) M.resume();
   }
 
-  function drawAll() { syncOrder(); turnSounds(); syncMusic(); drawTop(); drawBanner(); drawMap(); drawPhases(); drawLoadout(); drawCard(); drawLog(); }
+  function drawAll() { syncOrder(); turnSounds(); syncMusic(); drawTop(); drawBanner(); drawMap(); drawPhases(); drawLoadout(); drawCard(); drawLog(); drawMine(); }
+
+  // ---------- Personal Bestiary: fight a creature, add it, and from then on see its stats ----------
+  async function loadBestiary() {
+    R.myBest = {};
+    if (!me) return;
+    var r = await db.from('player_bestiary').select('creature');
+    if (r.error) { R.bestOff = true; return; }
+    (r.data || []).forEach(function (x) { R.myBest[x.creature] = true; });
+  }
+  async function bestList() { if (!R.bestJson) R.bestJson = await fetch('bestiary.json?v=40e559a0').then(function (r) { return r.json(); }); return R.bestJson; }
+  function statBlock(b) {
+    return el('div', { class: 'cb-beast' }, [
+      el('p', { class: 'cb-beast-tags', text: 'Rank ' + b.rank + ' · ' + [b.type, b.size, b.elements].filter(Boolean).join(' · ') }),
+      el('div', { class: 'cb-beast-stats' }, [['Attack', b.attack], ['Defense', b.defense], ['Damage', b.damage], ['Move', b.move], ['BDT', b.bdt], ['Mana', b.mana]].map(function (x) { return el('span', {}, [el('small', { text: x[0] }), el('b', { text: String(x[1]) })]); })),
+      el('ul', { class: 'cb-beast-ab' }, (b.abilities || []).map(function (ab) { return el('li', {}, [el('b', { text: ab.name + ': ' }), ab.text]); })),
+      b.trait ? el('p', {}, [el('b', { text: 'Trait: ' }), b.trait]) : null,
+      b.found ? el('p', {}, [el('b', { text: 'Found: ' }), b.found]) : null,
+      b.loot ? el('p', {}, [el('b', { text: 'Loot: ' }), b.loot]) : null]);
+  }
+  function bestiaryBlock(c) {
+    var cr = (c.stats || {}).creature; if (!cr || !cr.id || R.bestOff || !me) return null;
+    var wrap = el('div', { class: 'cb-bestbox' }, [el('h3', { class: 'px', text: 'Bestiary' })]);
+    if (R.myBest[cr.id]) {
+      var hold = el('div'); wrap.appendChild(hold);
+      bestList().then(function (L) { var b = L.filter(function (x) { return x.id === cr.id; })[0]; if (b) hold.appendChild(statBlock(b)); });
+    } else if (ST().started) {
+      wrap.appendChild(el('p', { class: 'cb-desc', text: 'You have fought a ' + c.name.replace(/ \d+$/, '') + '. Add it to your Bestiary to see its stats from now on.' }));
+      wrap.appendChild(el('button', { class: 'act cb-mini primary', type: 'button', text: 'Add to My Bestiary', onclick: async function (e) {
+        e.target.disabled = true;
+        var b0 = (await bestList()).filter(function (x) { return x.id === cr.id; })[0];
+        var r = await db.from('player_bestiary').insert({ creature: cr.id, name: b0 ? b0.name : c.name });
+        if (r.error && !/duplicate/i.test(r.error.message || '')) { e.target.disabled = false; alert(A.friendly(r.error)); return; }
+        R.myBest[cr.id] = true; sfx('buff'); drawAll();
+      } }));
+    } else wrap.appendChild(el('p', { class: 'cb-desc', text: 'Fight one to add it to your Bestiary.' }));
+    wrap.appendChild(el('p', { class: 'cb-desc' }, [el('a', { href: 'my-bestiary.html', target: '_blank', text: 'Open My Bestiary' })]));
+    return wrap;
+  }
+
+  // ---------- Slide-out drawers: music on the left, your sheets on the right ----------
+  function drawer(side, label, icon) {
+    var d = el('aside', { class: 'cb-drawer ' + side, id: 'cb-drawer-' + side, 'aria-label': label, 'aria-hidden': 'true' });
+    var tab = el('button', { type: 'button', class: 'cb-drawer-tab ' + side, 'aria-controls': d.id, 'aria-expanded': 'false', onclick: function () { toggleDrawer(side); } }, [el('span', { 'aria-hidden': 'true', text: icon }), el('span', { class: 'lbl', text: label })]);
+    var close = el('button', { type: 'button', class: 'cb-drawer-x', 'aria-label': 'Close ' + label, text: '×', onclick: function () { toggleDrawer(side, false); } });
+    d.appendChild(el('div', { class: 'cb-drawer-head' }, [el('h2', { class: 'px', text: label }), close]));
+    var body = el('div', { class: 'cb-drawer-body' }); d.appendChild(body);
+    document.body.appendChild(d); document.body.appendChild(tab);
+    return body;
+  }
+  function toggleDrawer(side, open) {
+    var d = $('cb-drawer-' + side), tab = document.querySelector('.cb-drawer-tab.' + side);
+    if (open === undefined) open = !d.classList.contains('open');
+    ['left', 'right'].forEach(function (s2) { if (s2 !== side && open) { var o = $('cb-drawer-' + s2); if (o) { o.classList.remove('open'); o.setAttribute('aria-hidden', 'true'); document.querySelector('.cb-drawer-tab.' + s2).setAttribute('aria-expanded', 'false'); } } });
+    d.classList.toggle('open', open); d.setAttribute('aria-hidden', String(!open)); tab.setAttribute('aria-expanded', String(open));
+    document.body.classList.toggle('cb-drawer-open', !!document.querySelector('.cb-drawer.open'));
+    if (open) { var f = d.querySelector('button, select, input'); if (f) f.focus(); }
+  }
+  // Your sheets: the character sheet, and below it the combat sheet (your card and loadout), kept up to date as you spend mana and AP
+  function drawMine() {
+    var box = $('cb-mine'); if (!box) return;
+    var mine = list().filter(function (c) { return c.owner === me.id && c.kind !== 'npc'; });
+    if (!mine.length) { box.textContent = ''; box.appendChild(el('p', { class: 'cb-desc', text: 'Bring a character into the fight to see your sheets here.' })); R.mineSel = null; return; }
+    if (!mine.some(function (c) { return c.id === R.mineSel; })) R.mineSel = mine[0].id;
+    var c = R.cs[R.mineSel];
+    if (!box.querySelector('.cb-mine-pick') || box.getAttribute('data-n') !== String(mine.length) + c.id) {
+      box.textContent = ''; box.setAttribute('data-n', String(mine.length) + c.id);
+      if (mine.length > 1) {
+        var sel = el('select', { class: 'cb-mine-pick', 'aria-label': 'Whose sheets' }, mine.map(function (m) { return opt(m.id, m.name, m.id === c.id); }));
+        sel.addEventListener('change', function () { R.mineSel = sel.value; drawMine(); });
+        box.appendChild(sel);
+      } else box.appendChild(el('span', { class: 'cb-mine-pick', hidden: true }));
+      if (c.character_id) box.appendChild(el('details', { class: 'cb-mine-sec' }, [el('summary', { text: 'Character Sheet' }),
+        el('iframe', { class: 'cb-sheetframe', title: c.name + '’s character sheet', loading: 'lazy', src: '../characters/view.html?id=' + encodeURIComponent(c.character_id) + '&embed=1' })]));
+      box.appendChild(el('details', { class: 'cb-mine-sec', open: true }, [el('summary', { text: 'Combat Sheet' }), el('div', { class: 'cb-card cb-mine-card' }), el('div', { class: 'cb-mine-lo' })]));
+    }
+    drawCard(box.querySelector('.cb-mine-card'), c);
+    drawLoadout(box.querySelector('.cb-mine-lo'), c);
+  }
 
   // ---------- top box ----------
   function drawTop() {
@@ -764,9 +842,9 @@
   }
 
   // ---------- loadout box (only the player and the Storyteller) ----------
-  function drawLoadout() {
-    var box = $('cb-loadout'); box.textContent = '';
-    var c = R.sel ? R.cs[R.sel] : current();
+  function drawLoadout(box0, c0) {
+    var box = box0 || $('cb-loadout'); box.textContent = '';
+    var c = c0 || (R.sel ? R.cs[R.sel] : current());
     if (!c) { box.appendChild(el('h2', { class: 'px', text: 'Combat Loadout' })); box.appendChild(el('p', { class: 'center cv-muted', text: 'Click a name in the banner to see their loadout.' })); return; }
     box.appendChild(el('h2', { class: 'px', text: c.name + '’s Loadout' }));
     if (!mineC(c)) { box.appendChild(el('p', { class: 'center cv-muted', text: 'Only ' + (c.kind === 'npc' ? 'the Storyteller' : (R.players[c.owner] || 'their player') + ' and the Storyteller') + ' can see this loadout.' })); return; }
@@ -817,9 +895,9 @@
       inp,
       can ? el('button', { type: 'button', text: '+', 'aria-label': 'Raise ' + label, onclick: function () { var p = {}; p[key] = Math.min(max, c[key] + 1); upd(c, p); } }) : null]);
   }
-  function drawCard() {
-    var box = $('cb-card'); box.textContent = '';
-    var c = R.sel ? R.cs[R.sel] : current();
+  function drawCard(box0, c0) {
+    var box = box0 || $('cb-card'); box.textContent = '';
+    var c = c0 || (R.sel ? R.cs[R.sel] : current());
     if (!c) { box.appendChild(el('p', { class: 'center cv-muted', text: 'Click a name in the banner to see their card.' })); return; }
     var can = mineC(c), bdt = c.bdt || 1, cur = current();
     var csp = (c.stats || {}).sprite;
@@ -863,6 +941,7 @@
       conds.appendChild(add);
     }
     box.appendChild(conds);
+    if (c.kind === 'npc' && !mineC(c)) { var bb = bestiaryBlock(c); if (bb) box.appendChild(bb); }
     if (can) {
       var extra = el('div', { class: 'cb-bar', style: 'margin-top:8px;justify-content:center' });
       if (c.x !== null && c.x !== undefined) extra.appendChild(el('button', { class: 'act cb-mini', type: 'button', text: 'Off Map', onclick: function () { upd(c, { x: null, y: null }); } }));
@@ -1808,6 +1887,42 @@
     l.appendChild(ul.children.length ? ul : el('p', { class: 'cv-muted', text: 'No rolls yet. 6 or higher is a success; a 10 counts twice.' }));
   }
 
+  // My Bestiary: every creature as a JRPG monster book. Ones you have added show their full entry; the rest are ??? until you fight them.
+  async function bestiaryPage(main) {
+    main.textContent = '';
+    if (!me) { main.appendChild(el('section', { class: 'panel win' }, [el('h1', { text: 'My Bestiary' }), el('p', { class: 'center' }, ['', el('a', { href: '../account/index.html?next=combat/my-bestiary.html', text: 'Log in' }), ' to see your Bestiary.'])])); return; }
+    await loadBestiary(); await sprites().catch(function () {});
+    var L = await bestList();
+    var got = L.filter(function (b) { return R.myBest[b.id]; }).length;
+    var head = el('section', { class: 'panel win' }, [el('h1', { text: 'My Bestiary' }),
+      el('p', { class: 'center px cb-bestcount', text: 'DISCOVERED ' + got + ' / ' + L.length }),
+      el('p', { class: 'center', text: R.bestOff ? 'Your Bestiary needs one more setup step on the server. Ask the Storyteller.' : 'Fight a creature in the combat room, then tap Add to My Bestiary on its card. Its full entry shows here and in every fight after.' })]);
+    var q = el('input', { type: 'search', placeholder: 'Search your Bestiary', 'aria-label': 'Search your Bestiary' });
+    var only = el('label', { class: 'chk' }, [el('input', { type: 'checkbox', id: 'best-only' }), 'Only show discovered']);
+    head.appendChild(el('div', { class: 'cb-bar', style: 'justify-content:center' }, [q, only]));
+    main.appendChild(head);
+    var grid = el('div', { class: 'cb-bookgrid' });
+    main.appendChild(el('section', { class: 'panel win' }, [grid]));
+    function draw() {
+      grid.textContent = '';
+      var t = q.value.trim().toLowerCase(), on = $('best-only').checked, n = 0;
+      L.forEach(function (b, i) {
+        var known = !!R.myBest[b.id];
+        if (on && !known) return;
+        if (t && !(known && (b.name + ' ' + b.section + ' ' + b.type).toLowerCase().indexOf(t) >= 0)) return;
+        n++;
+        var pic = el('div', { class: 'cb-bookpic' + (known ? '' : ' unknown') }, [b.sprite ? spriteNode(b.sprite, 64) : el('span', { text: '?' })]);
+        grid.appendChild(el('article', { class: 'cb-bookcard' + (known ? '' : ' unknown') }, [
+          el('div', { class: 'cb-booknum px', text: 'No. ' + ('00' + (i + 1)).slice(-3) }), pic,
+          el('h2', { class: 'px', text: known ? b.name : '???' }),
+          known ? statBlock(b) : el('p', { class: 'cb-desc center', text: b.section + ' · Rank ' + b.rank })]));
+      });
+      if (!n) grid.appendChild(el('p', { class: 'center cv-muted', text: 'Nothing here yet.' }));
+    }
+    q.addEventListener('input', draw); $('best-only').addEventListener('change', draw);
+    draw();
+  }
+
   async function roomPage(main) {
     if (!me) { main.appendChild(el('section', { class: 'panel win' }, [el('p', { class: 'center', text: 'Log in to join this fight.' }), el('div', { class: 'button-row center-row' }, [el('a', { class: 'act primary', href: '../account/index.html?next=combat/index.html', text: 'Log In' })])])); return; }
     var id = new URLSearchParams(location.search).get('id');
@@ -1821,8 +1936,12 @@
       el('div', { class: 'cb-col' }, [
         el('section', { class: 'panel win cb-arena' }, [el('div', { class: 'cb-mapwrap', id: 'cb-map' }), el('nav', { class: 'cb-phases', id: 'cb-phases', 'aria-label': 'Combat phases' }), el('div', { class: 'cb-toasts', id: 'cb-toasts', 'aria-live': 'polite' })]),
         el('section', { class: 'panel win', id: 'cb-loadout' })]),
-      el('div', { class: 'cb-col' }, [el('section', { class: 'panel win cb-card', id: 'cb-card' }), el('section', { class: 'panel win cb-music', id: 'cb-music', 'aria-label': 'Music' }), el('section', { class: 'panel win', id: 'cb-log' })])
+      el('div', { class: 'cb-col' }, [el('section', { class: 'panel win cb-card', id: 'cb-card' }), el('section', { class: 'panel win', id: 'cb-log' })])
     ]));
+    drawer('left', 'Music', '♫').appendChild(el('div', { class: 'cb-music', id: 'cb-music' }));
+    drawer('right', 'My Sheets', '📜').appendChild(el('div', { id: 'cb-mine' }));
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && document.querySelector('.cb-drawer.open')) { toggleDrawer('left', false); toggleDrawer('right', false); } });
+    await loadBestiary();
     await sprites().catch(function () {});
     await refresh();
     live();
@@ -1832,7 +1951,7 @@
   A.currentPlayer().then(async function (p) {
     me = p;
     var main = $('cb-main'); main.textContent = '';
-    try { await (page === 'room' ? roomPage : listPage)(main); }
+    try { await (page === 'room' ? roomPage : page === 'bestiary' ? bestiaryPage : listPage)(main); }
     catch (e) { main.appendChild(el('section', { class: 'panel win' }, [el('p', { class: 'center', text: 'Combat could not load. ' + oops(e) }), el('p', { class: 'center cv-muted', text: 'If this keeps happening, combat may not be set up on the server yet.' })])); }
   });
 })();

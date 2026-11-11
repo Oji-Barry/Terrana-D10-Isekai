@@ -221,3 +221,8 @@ details.cv-more > summary { cursor: pointer; color: var(--sky); font-weight: 700
 .cv-lo-row.extra select { border-style: dashed; }
 .cv-lo-row.extra .cv-lo-n { color: var(--text-muted); }
 .cv-lo-row small { font-size: 12px; line-height: 1.4; }
+
+/* Inside the combat room's My Sheets drawer */
+body.embed .addressbar, body.embed .site-header, body.embed .site-footer { display: none; }
+body.embed .page { padding: 8px; max-width: none; }
+body.embed { min-height: 0; }
