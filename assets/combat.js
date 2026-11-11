@@ -516,7 +516,8 @@
     var k = c.stats || {}, effects = (k.effects || []).slice(), paid = 0, kept = [], dropped = [];
     effects.forEach(function (e, i) { var pay = R.pay[c.id + ':' + i] !== false; if (pay) { paid += e.upkeep || 0; kept.push(e); } else dropped.push(e.name); });
     var mana = Math.max(0, Math.min(c.mana_max || 0, (c.mana || 0) + regenOf(c) + (k.hurt ? 1 : 0)) - paid);
-    var patch = { ap: Math.min(3, (c.ap || 0) + (k.hurt ? 2 : 1)), mana: mana, stats: Object.assign({}, k, { hurt: false, effects: kept }) };
+    var aim = k.aim && k.aim.turns > 0 ? Object.assign({}, k.aim, { turns: k.aim.turns - 1 }) : null;
+    var patch = { ap: Math.min(3, (c.ap || 0) + (k.hurt ? 2 : 1)), mana: mana, stats: Object.assign({}, k, { hurt: false, effects: kept, guard: null, aim: aim }) };
     await upd(c, patch);
     R.pay = {};
     await note(c.name + ' Upkeep: AP ' + patch.ap + ', mana ' + mana + (paid ? ' (paid ' + paid + ' upkeep)' : '') + (dropped.length ? '. Ended: ' + dropped.join(', ') : '') + '.');
@@ -1140,7 +1141,10 @@
       var row = await addRoll({ combatant_id: c.id, label: a.label + (tgt ? ' at ' + tgt.name : '') + (a.override ? ' (Storyteller allowed it out of range)' : ''), pool: n, dice: dice, successes: succ,
         detail: { kind: a.kind || 'roll', target: tgt ? tgt.id : null, setAside: (+dmgMana.value || 0) + auraDmg(), mana: spend, ap: +ap.value || 0, wp: wp.checked, real: real.checked, damagePool: a.damagePool || 0, attacker: c.id, social: !!a.social } });
       var res = null;
-      if ((a.kind || 'roll') === 'attack' && tgt && row) res = await autoDefend(row, tgt, spell, a.social);
+      if (((a.kind || 'roll') === 'attack' || a.kind === 'contest') && tgt && row) res = await autoDefend(row, tgt, spell, a.social, a.defense ? a.defense(tgt) : null);
+      if ((a.kind === 'attack' || a.kind === 'contest') && c.hidden) { await upd(c, { hidden: false }); await note(c.name + ' attacks and is no longer hidden.'); }
+      if (a.aimUsed) await upd(c, { stats: Object.assign({}, c.stats || {}, { aim: null }) });
+      if (a.post && row) await a.post(row, tgt, res);
       if (a.after) await a.after(row);
       if (a.fromMenu && row) resultWindow(c, tgt, row, res, a);
     });
@@ -1157,11 +1161,11 @@
     opts = opts.filter(function (d) { return !/notice/i.test(d.name) || /notice|perception/.test(want); });
     return opts.sort(function (a, b) { return b.total - a.total; })[0] || { name: 'Defense', total: 0 };
   }
-  async function autoDefend(atk, t, spell, social) {
-    var d = social ? socialDefense(t) : bestDefense(t, spell), pen = woundPenalty(t), n = Math.max(0, d.total - pen);
+  async function autoDefend(atk, t, spell, social, forced) {
+    var d = forced || (social ? socialDefense(t) : bestDefense(t, spell)), pen = woundPenalty(t), gd = social ? 0 : guardDice(t), n = Math.max(0, d.total - pen + gd);
     var dice = d10s(n), succ = successes(dice), ex = Math.max(0, atk.successes - succ);
-    await addRoll({ combatant_id: t.id, label: d.name + ' against ' + ((R.cs[atk.combatant_id] || {}).name || 'the attack') + (pen ? ' (wounds -' + pen + ')' : ''), pool: n, dice: dice, successes: succ,
-      detail: { kind: 'defense', vs: atk.id, auto: true, hit: atk.successes > succ, excess: ex, social: !!social } });
+    await addRoll({ combatant_id: t.id, label: d.name + ' against ' + ((R.cs[atk.combatant_id] || {}).name || 'the attack') + (pen ? ' (wounds -' + pen + ')' : '') + (gd ? ' (' + guardText(t) + ' +' + gd + ')' : ''), pool: n, dice: dice, successes: succ,
+      detail: { kind: 'defense', vs: atk.id, auto: true, hit: atk.successes > succ, excess: ex, social: !!social, contest: !!forced } });
     if (social && succ - atk.successes >= 5) await note(t.name + ' makes a Critical Comeback: 5 or more over the attacker. The exchange ends in ' + t.name + '’s favor.');
     return { hit: atk.successes > succ, excess: ex, def: succ, name: d.name };
   }
@@ -1323,7 +1327,32 @@
       act: { label: 'Put Out the Flames', targets: 'none', run: async function () { await upd(c, { conditions: (c.conditions || []).filter(function (x) { return x !== 'Burning'; }) }); await note(c.name + ' spends the turn putting out the flames. Burning ends.'); await after(null); } } });
     if (conds.indexOf('Bleeding') >= 0) acts.push({ name: 'Apply Pressure', sub: 'No other actions', pool: '', desc: 'Applying pressure (no other actions) stops the next Bleeding tick.',
       act: { label: 'Apply Pressure', targets: 'none', run: async function () { await note(c.name + ' applies pressure to the wound: the next Bleeding tick is stopped.'); await after(null); } } });
-    cats.push({ name: 'Combat Actions', items: acts, empty: 'Nothing here right now. Break Free, Put Out the Flames, and Apply Pressure show up when a condition calls for them.' });
+    var ADJ = { n: 1, text: 'adjacent zones' };
+    function mine(str) { return kit.npc ? (kit.attack || 0) : evalPool(str, kit).total; }
+    function contest(name, sub, atkStr, defName, defStr, desc, win) {
+      var n = mine(atkStr);
+      return { name: name, sub: sub, pool: n + 'd', desc: desc,
+        act: { label: name, pool: n, parts: [[kit.npc ? 'Attack pool' : atkStr, n]], kind: 'contest', range: ADJ, targets: 'others', winText: win,
+          defense: function (t) { return typeof defStr === 'function' ? defStr(t) : { name: defName, total: poolOf(t, defStr) }; },
+          post: async function (row, t, res) { if (res && res.hit) await contestWin(name, c, t); } } };
+    }
+    var bestAtk = (kit.maneuvers || []).filter(function (m) { return m.rank === 0; }).map(function (m) { return evalPool(m.pool, kit).total; }).sort(function (x, y) { return y - x; })[0];
+    acts.push(contest('Shove', 'Strength + Athletics', 'Strength + Athletics', 'Strength + Athletics', 'Strength + Athletics', 'Shove an adjacent target. They resist with Strength + Athletics. If you win, they are pushed 1 zone into an empty zone.', 'They are pushed 1 zone away.'));
+    acts.push(contest('Trip', 'Dexterity + Athletics', 'Dexterity + Athletics', 'Dexterity + Acrobatics', 'Dexterity + Acrobatics', 'Sweep an adjacent target’s legs. They resist with Dexterity + Acrobatics. If you win, they are knocked Prone.', 'They are knocked Prone.'));
+    acts.push(contest('Grapple', 'Strength + Martial Arts', 'Strength + Martial Arts', '', function (t) { var dd = poolOf(t, 'Dexterity + Dodge'), sa = poolOf(t, 'Strength + Athletics'); return dd >= sa ? { name: 'Dodge', total: dd } : { name: 'Strength + Athletics', total: sa }; }, 'Seize an adjacent target. They resist with Dodge or Strength + Athletics, whichever is better. If you win, they are Grappled.', 'They are Grappled.'));
+    var dis = contest('Disarm', 'Your attack pool', 'Dexterity + Melee', '', function (t) { return bestDefense(t); }, 'Knock the weapon from an adjacent target’s hand. They resist with their best defense. If you win, their weapon lands in an adjacent zone.', 'Their weapon lands in an adjacent zone.');
+    if (!kit.npc && bestAtk !== undefined) { dis.pool = bestAtk + 'd'; dis.act.pool = bestAtk; dis.act.parts = [['Best attack pool', bestAtk]]; }
+    acts.push(dis);
+    var cov = nearCover(c), hideN = mine('Dexterity + Stealth');
+    if (cov) acts.push({ name: 'Hide', sub: 'Dexterity + Stealth', pool: hideN + 'd', desc: 'In or behind cover. Everyone against you rolls Perception + Awareness. Beat them all and you are hidden until you attack or someone finds you.',
+      act: { label: c.name + ' tries to hide', pool: hideN, parts: [[kit.npc ? 'Attack pool' : 'Dexterity + Stealth', hideN]], kind: 'roll', targets: 'none', post: function (row) { return hideCheck(c, row); } } });
+    acts.push({ name: 'Total Defense', sub: 'No attack this turn', pool: '+2', desc: 'Give up your attack. +2 dice to every defense until your next turn.',
+      act: { label: 'Total Defense', targets: 'none', run: async function () { await setGuard(c, 'total'); await note(c.name + ' takes Total Defense: +2 dice to every defense until their next turn.'); await after(null); } } });
+    if (cov) acts.push({ name: 'Take Cover', sub: 'Half cover', pool: '+1', desc: 'Get down behind the cover next to you. +1 die to every defense until your next turn.',
+      act: { label: 'Take Cover', targets: 'none', run: async function () { await setGuard(c, 'cover'); await note(c.name + ' takes cover: +1 die to every defense until their next turn.'); await after(null); } } });
+    acts.push({ name: 'Aim', sub: 'No attack this turn', pool: '+2', desc: 'Give up your attack and line up a shot. +2 dice on your next ranged attack against that target.',
+      act: { label: 'Aim', range: LOS, targets: 'others', run: async function (t) { if (!t) return; await upd(c, { stats: Object.assign({}, c.stats || {}, { aim: { target: t.id, turns: 1 } }) }); await note(c.name + ' takes aim at ' + t.name + ': +2 dice on their next ranged attack against them.'); await after(null); } } });
+    cats.push({ name: 'Combat Actions', items: acts });
 
     if (kit.npc) {
       var na = ((kit.creature || {}).abilities || []).map(function (ab) {
@@ -1356,8 +1385,20 @@
             desc: [x.type, x.range, x.defense ? 'Defense: ' + x.defense : ''].filter(Boolean).join('. ') + '. ' + (x.effect || ''), link: x.id ? '../rulebook/' + (x.page || 'ch13') + '.html#' + x.id : null } };
       });
       cats.push({ name: 'Spells', items: spells, empty: (kit.spells || []).length ? 'No spells prepared. Prepare them on the Combat Loadout, then Refresh Stats.' : 'No spells known.' });
-      cats.push({ name: 'Social', items: [{ name: 'Social Attack', sub: 'Social Attribute + an Ability', pool: '', desc: 'Words as a weapon. You roll a Social Attribute + a relevant Ability; they roll Willpower + Composure. Each success over is 1 Willpower damage. 5 or more over for the defender is a Critical Comeback.',
-        act: { label: 'Social Attack', kind: 'attack', social: true, range: { n: 99, text: 'anyone who can hear you' }, targets: 'others', run: function (t, info) { socialDialog(c, t, info, after); } } }] });
+      var ka = kit.attrs || {}, kb = kit.abilities || {};
+      function soc(name, attr, ab, desc, extra) {
+        var n = (ka[attr] || 0) + (kb[ab] || 0);
+        return { name: name, sub: attr + ' + ' + ab, pool: n + 'd', desc: desc + ' They resist with Willpower + Composure. Each success over is 1 Willpower damage.',
+          act: Object.assign({ label: name, pool: n, parts: [[attr, ka[attr] || 0], [ab, kb[ab] || 0]], kind: 'attack', social: true, range: { n: 99, text: 'anyone who can hear you' }, targets: 'others' }, extra || {}) };
+      }
+      var intim = (ka.Manipulation || 0) > (ka.Charisma || 0) ? 'Manipulation' : 'Charisma';
+      var socItems = [
+        soc('Persuade', 'Charisma', 'Persuasion', 'Win them over with a real argument.'),
+        soc('Intimidate', intim, 'Presence', 'Make them afraid of what happens next.'),
+        soc('Deceive', 'Manipulation', 'Subterfuge', 'Sell them a lie.'),
+        soc('Taunt', 'Manipulation', 'Expression', 'Get under their skin. If you win, they must attack you on their next turn.', { post: async function (row, t, res) { if (t && res && res.hit) await note(t.name + ' is taunted: they must attack ' + c.name + ' on their next turn.'); } })];
+      cats.push({ name: 'Social', items: socItems.concat([{ name: 'Social Attack', sub: 'Social Attribute + an Ability', pool: '', desc: 'Words as a weapon. You roll a Social Attribute + a relevant Ability; they roll Willpower + Composure. Each success over is 1 Willpower damage. 5 or more over for the defender is a Critical Comeback.',
+        act: { label: 'Social Attack', kind: 'attack', social: true, range: { n: 99, text: 'anyone who can hear you' }, targets: 'others', run: function (t, info) { socialDialog(c, t, info, after); } } }]) });
     }
     cats.push({ name: 'Other', items: [{ name: 'Custom roll', sub: 'Type the dice yourself', pool: '?', desc: 'For anything the menu does not cover.', act: { label: 'Custom roll', targets: 'none', run: function () { customRoll(c, after); } } }] });
     return cats;
@@ -1442,8 +1483,58 @@
     var a = Object.assign({}, act, { targetId: t ? t.id : '', rangeNote: info ? info.note || info.why || '' : '' });
     if (info && !info.ok) a.override = true;
     if (info && info.cover) { a.pool = Math.max(0, (a.pool || 0) - 2); a.parts = (a.parts || []).concat([['Half cover', -2]]); }
+    var aim = (c.stats || {}).aim;
+    if (aim && t && aim.target === t.id && a.kind === 'attack' && !a.social && a.range && a.range.sight) { a.pool = (a.pool || 0) + 2; a.parts = (a.parts || []).concat([['Aim', 2]]); a.aimUsed = true; }
     if (a.run) return a.run(t, info);
     rollDialog(c, a);
+  }
+  // Combat Action helpers
+  function poolOf(t, str) { var k = t.stats || {}; return k.npc ? (k.defense || 0) : evalPool(str, k).total; }
+  function guardDice(t) { var g = (t.stats || {}).guard || {}; return (g.total ? 2 : 0) + (g.cover ? 1 : 0); }
+  function guardText(t) { var g = (t.stats || {}).guard || {}; return [g.total ? 'Total Defense' : '', g.cover ? 'taking cover' : ''].filter(Boolean).join(', '); }
+  async function setGuard(c, key) { var k = c.stats || {}, g = Object.assign({}, k.guard || {}); g[key] = true; await upd(c, { stats: Object.assign({}, k, { guard: g }) }); }
+  function nearCover(c) {
+    if (!placedC(c)) return false;
+    var ter = (R.enc.map || {}).terrain || {}, n = zonesOf(c);
+    for (var x = c.x - 1; x <= c.x + n; x++) for (var y = c.y - 1; y <= c.y + n; y++) { var t = TER[ter[x + ',' + y]]; if (t && (t[3] === 'cover' || t[3] === 'block')) return true; }
+    return false;
+  }
+  function freeZone(t, x, y) {
+    var m = R.enc.map || {}, cols = m.cols || 6, rows = m.rows || 8, ter = m.terrain || {}, n = zonesOf(t);
+    if (x < 0 || y < 0 || x + n > cols || y + n > rows) return false;
+    for (var i = 0; i < n; i++) for (var j = 0; j < n; j++) {
+      var tt = TER[ter[(x + i) + ',' + (y + j)]]; if (tt && tt[3] === 'block') return false;
+      if (list().some(function (o) { return o.id !== t.id && placedC(o) && x + i >= o.x && x + i < o.x + zonesOf(o) && y + j >= o.y && y + j < o.y + zonesOf(o); })) return false;
+    }
+    return true;
+  }
+  async function addCond(t, cd) {
+    if ((t.conditions || []).indexOf(cd) >= 0) return;
+    if (mineC(t)) await upd(t, { conditions: (t.conditions || []).concat([cd]) });
+    else await note('Storyteller: mark ' + t.name + ' ' + cd + '.');
+  }
+  async function contestWin(name, c, t) {
+    if (!t) return;
+    if (name === 'Shove') {
+      var nc = zonesOf(c), nt = zonesOf(t);
+      var dx = Math.sign((t.x + nt / 2) - (c.x + nc / 2)), dy = Math.sign((t.y + nt / 2) - (c.y + nc / 2)), nx = t.x + dx, ny = t.y + dy;
+      if (!placedC(t) || !placedC(c) || !freeZone(t, nx, ny)) { await note(t.name + ' has no empty zone behind them, so they stay put.'); return; }
+      var zl = String.fromCharCode(65 + nx) + (ny + 1);
+      if (mineC(t)) { await upd(t, { x: nx, y: ny }); await note(c.name + ' shoves ' + t.name + ' to ' + zl + '.'); }
+      else await note(c.name + ' shoves ' + t.name + '. Storyteller: move them to ' + zl + '.');
+    } else if (name === 'Trip') { await addCond(t, 'Prone'); await note(t.name + ' is knocked Prone.'); }
+    else if (name === 'Grapple') { await addCond(t, 'Grappled'); await note(t.name + ' is Grappled: no belt items or attacks until they break free.'); }
+    else if (name === 'Disarm') await note(t.name + ' is disarmed: their weapon lands in an adjacent zone.');
+  }
+  async function hideCheck(c, row) {
+    var foes = list().filter(function (o) { return o.side !== c.side && o.side !== 'neutral' && placedC(o) && !incap(o); }), spotted = [];
+    for (var i = 0; i < foes.length; i++) {
+      var o = foes[i], n = Math.max(0, poolOf(o, 'Perception + Awareness') - woundPenalty(o)), dice = d10s(n), sc = successes(dice);
+      await addRoll({ combatant_id: o.id, label: 'Perception + Awareness to spot ' + c.name, pool: n, dice: dice, successes: sc, detail: { kind: 'roll' } });
+      if (sc >= row.successes) spotted.push(o.name);
+    }
+    if (!spotted.length) { await upd(c, { hidden: true }); await note(c.name + ' is hidden until they attack or someone finds them.'); }
+    else await note(c.name + ' is spotted by ' + spotted.join(', ') + '.');
   }
   function socialDialog(c, t, info, after) {
     var kit = c.stats || {}, d = dialog('Social Attack' + (t ? ' on ' + t.name : ''));
@@ -1465,11 +1556,12 @@
   // The answer after the roll: hit or miss, and how many successes carry to the Damage phase
   function resultWindow(c, t, row, res, a) {
     var d = el('dialog', { class: 'ff-menu ff-result', 'aria-label': 'Result' });
-    var hit = res && res.hit, title = !res ? 'ROLLED' : hit ? 'HIT!' : 'MISS';
+    var hit = res && res.hit, title = !res ? 'ROLLED' : a.kind === 'contest' ? (hit ? 'SUCCESS!' : 'BLOCKED') : hit ? 'HIT!' : 'MISS';
     var lines = [el('p', {}, [el('b', { text: c.name }), ' rolled ' + row.successes + ' success' + (row.successes === 1 ? '' : 'es') + ' on ' + row.pool + (row.pool === 1 ? ' die.' : ' dice.')])];
     if (res) lines.push(el('p', {}, [el('b', { text: t.name }), '’s ' + res.name + ': ' + res.def + ' success' + (res.def === 1 ? '' : 'es') + '.']));
-    if (hit) lines.push(el('p', { class: 'ff-big' }, [el('b', { text: String(res.excess) }), ' success' + (res.excess === 1 ? '' : 'es') + ' over. ' + (a.social ? 'That is ' + res.excess + ' Willpower damage in the Damage phase.' : 'They carry to the Damage phase.')]));
-    else if (res) lines.push(el('p', { text: a.social ? 'The words do not land.' : 'The defense holds. No damage to roll.' }));
+    if (hit && a.kind === 'contest') lines.push(el('p', { class: 'ff-big' }, [el('b', { text: String(res.excess) }), ' over. ' + (a.winText || 'You win.')]));
+    else if (hit) lines.push(el('p', { class: 'ff-big' }, [el('b', { text: String(res.excess) }), ' success' + (res.excess === 1 ? '' : 'es') + ' over. ' + (a.social ? 'That is ' + res.excess + ' Willpower damage in the Damage phase.' : 'They carry to the Damage phase.')]));
+    else if (res) lines.push(el('p', { text: a.social ? 'The words do not land.' : a.kind === 'contest' ? 'The defense holds.' : 'The defense holds. No damage to roll.' }));
     function close() { d.close(); d.remove(); }
     d.appendChild(el('h2', { class: 'px ff-title ' + (hit ? 'hit' : res ? 'miss' : ''), text: title }));
     lines.forEach(function (l) { d.appendChild(l); });
@@ -1496,7 +1588,8 @@
       if (det.mana) line.push('. ' + det.mana + ' mana spent' + (det.setAside ? ' (' + det.setAside + ' set aside for damage)' : ''));
       if (det.ap) line.push('. ' + det.ap + ' AP');
       if (det.wp) line.push('. 1 Willpower');
-      if (det.kind === 'defense' && det.vs && det.social) line.push(det.hit ? '. The words land: ' + det.excess + ' Willpower damage in the Damage phase.' : '. The defense holds.');
+      if (det.kind === 'defense' && det.vs && det.contest) line.push(det.hit ? '. ' + ((R.cs[(R.rolls.filter(function (x) { return x.id === det.vs; })[0] || {}).combatant_id] || {}).name || 'The attacker') + ' wins.' : '. The defense holds.');
+      else if (det.kind === 'defense' && det.vs && det.social) line.push(det.hit ? '. The words land: ' + det.excess + ' Willpower damage in the Damage phase.' : '. The defense holds.');
       else if (det.kind === 'defense' && det.vs) line.push(det.hit ? '. The attack lands, ' + det.excess + ' success' + (det.excess === 1 ? '' : 'es') + ' over the defense carry to damage.' : '. The defense holds: a miss.');
       if (det.kind === 'damage') {
         var t = R.cs[det.target];

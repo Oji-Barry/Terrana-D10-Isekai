@@ -271,6 +271,7 @@
 @keyframes ff-point { 50% { transform: translateX(3px); } }
 .ff-menu { width: min(720px, calc(100vw - 24px)); max-height: calc(100vh - 24px); overflow: auto; padding: 14px 16px; border: 3px solid #e9ecf7; border-radius: 10px; color: #fff;
   background: linear-gradient(180deg, #3346b8 0%, #1a2685 55%, #0e1659 100%); box-shadow: inset 0 0 0 2px #0a0f3d, 0 10px 40px rgba(0, 0, 0, 0.6); text-shadow: 1px 1px 0 #000; }
+.ff-menu:not(.ff-result) { margin: 6vh auto auto; }
 .ff-menu::backdrop { background: rgba(3, 5, 18, 0.65); }
 .ff-head { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; flex-wrap: wrap; padding-bottom: 8px; margin-bottom: 10px; border-bottom: 2px solid rgba(233, 236, 247, 0.5); }
 .ff-head .px { font-size: 15px; }
@@ -287,7 +288,7 @@
 .ff-name small { display: block; color: #b9c8f5; font-size: 12px; }
 .ff-pool { font-family: var(--pixel); font-size: 12px; color: #ffe27a; flex-shrink: 0; }
 .ff-empty { margin: 6px; color: #b9c8f5; }
-.ff-help { min-height: 3em; margin: 10px 0 0; padding: 8px 10px; border: 2px solid rgba(233, 236, 247, 0.55); border-radius: 6px; background: rgba(5, 10, 50, 0.35); font-size: 14px; line-height: 1.4; }
+.ff-help { height: 5.8em; overflow: auto; margin: 10px 0 0; padding: 8px 10px; border: 2px solid rgba(233, 236, 247, 0.55); border-radius: 6px; background: rgba(5, 10, 50, 0.35); font-size: 14px; line-height: 1.4; }
 .ff-foot { display: flex; justify-content: flex-end; margin-top: 10px; }
 .ff-close { padding: 6px 16px; border: 2px solid #e9ecf7; border-radius: 6px; background: rgba(5, 10, 50, 0.5); color: #fff; font-family: var(--pixel); font-size: 12px; cursor: pointer; }
 .ff-close:hover, .ff-close:focus-visible { background: rgba(255, 255, 255, 0.15); outline: none; }
