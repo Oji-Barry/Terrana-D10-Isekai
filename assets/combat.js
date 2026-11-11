@@ -215,7 +215,7 @@
   // Add a roll or note to the log now, without waiting for the live update
   async function addRoll(row) {
     var r = await must(db.from('rolls').insert(Object.assign({ encounter_id: R.enc.id, roller: me.id }, row)).select().single());
-    if (r && !R.rolls.some(function (x) { return x.id === r.id; })) R.rolls.unshift(r);
+    if (r && !R.rolls.some(function (x) { return x.id === r.id; })) { R.rolls.unshift(r); toast(r); }
     drawLog();
     return r;
   }
@@ -240,7 +240,7 @@
       if (p.eventType === 'DELETE') delete R.cs[(p.old || {}).id]; else R.cs[p.new.id] = p.new;
       drawAll();
     }).on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'rolls', filter: 'encounter_id=eq.' + id }, function (p) {
-      if (!R.rolls.some(function (r) { return r.id === p.new.id; })) R.rolls.unshift(p.new);
+      if (!R.rolls.some(function (r) { return r.id === p.new.id; })) { R.rolls.unshift(p.new); toast(p.new); }
       drawLog();
     }).on('postgres_changes', { event: 'DELETE', schema: 'public', table: 'rolls' }, function () { refresh(); })
       .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'encounters', filter: 'id=eq.' + id }, function (p) { R.enc = p.new; drawAll(); })
@@ -251,7 +251,43 @@
     setInterval(function () { if (!document.hidden && !document.querySelector('dialog[open]')) refresh().catch(function () {}); }, 20000);
   }
 
-  function drawAll() { drawTop(); drawBanner(); drawMap(); drawPhases(); drawLoadout(); drawCard(); drawLog(); }
+  // Anyone added after the turn order was set joins it by Initiative, so every creature on the field gets a turn
+  async function syncOrder() {
+    if (!R.host || R.syncing) return;
+    var s = ST(); if (!s.order.length) return;
+    var known = s.order.filter(function (id) { return R.cs[id]; });
+    var fresh = list().filter(function (c) { return known.indexOf(c.id) < 0; });
+    if (!fresh.length && known.length === s.order.length) return;
+    var cur = current(), o = computeOrder(s.mode, s.first);
+    var patch = { order: o };
+    if (s.started) patch.turn = cur && o.indexOf(cur.id) >= 0 ? o.indexOf(cur.id) : (s.turn % Math.max(1, o.length));
+    R.syncing = true;
+    try { await saveState(patch); if (fresh.length) await note(fresh.map(function (c) { return c.name; }).join(', ') + (fresh.length === 1 ? ' joins' : ' join') + ' the turn order by Initiative.'); }
+    finally { R.syncing = false; }
+  }
+  // A pop-up over the battlefield for each new entry in the Roll Log: 10 seconds, or close it with the X
+  function rollSummary(r) {
+    var c = R.cs[r.combatant_id], det = r.detail || {}, bits = [];
+    if (det.kind !== 'note' && det.kind !== 'wpdmg' && (r.pool || (r.dice && r.dice.length) || det.real)) bits.push(r.successes + ' success' + (r.successes === 1 ? '' : 'es') + (r.pool ? ' on ' + r.pool + (r.pool === 1 ? ' die' : ' dice') : ''));
+    if (det.kind === 'defense' && det.vs) bits.push(det.contest ? (det.hit ? 'the attacker wins' : 'the defense holds') : det.social ? (det.hit ? det.excess + ' Willpower damage coming' : 'the words do not land') : det.hit ? 'HIT, ' + det.excess + ' over carry to damage' : 'MISS, the defense holds');
+    if (det.kind === 'damage') { var t = R.cs[det.target]; bits.push('total ' + (det.total || 0) + (det.result ? ': ' + { b: 'Bashing', l: 'Lethal', a: 'Aggravated' }[det.result] + (t ? ' to ' + t.name : '') : t ? ': below ' + t.name + '’s BDT' : '')); }
+    return { who: c ? c.name : (R.players[r.roller] || ''), text: r.label, line: bits.join('. '), cls: det.kind === 'defense' ? (det.hit ? 'hit' : 'miss') : det.kind === 'damage' && det.result ? 'hit' : '' };
+  }
+  function toast(r) {
+    var box = $('cb-toasts'); if (!box || !r) return;
+    var sm = rollSummary(r);
+    var t = el('div', { class: 'cb-toast ' + sm.cls, role: 'status' });
+    function bye() { if (t.parentNode) { t.classList.add('out'); setTimeout(function () { t.remove(); }, 250); } }
+    t.appendChild(el('button', { type: 'button', class: 'cb-toast-x', 'aria-label': 'Close', text: '×', onclick: bye }));
+    if (sm.who && (r.detail || {}).kind !== 'note') t.appendChild(el('b', { text: sm.who }));
+    t.appendChild(el('p', { text: sm.text }));
+    if (sm.line) t.appendChild(el('p', { class: 'cb-toast-line', text: sm.line }));
+    box.appendChild(t);
+    while (box.children.length > 4) box.firstChild.remove();
+    setTimeout(bye, 10000);
+  }
+
+  function drawAll() { syncOrder(); drawTop(); drawBanner(); drawMap(); drawPhases(); drawLoadout(); drawCard(); drawLog(); }
 
   // ---------- top box ----------
   function drawTop() {
@@ -1050,9 +1086,9 @@
     function auraAtk() { return /^a/.test(auraSel.value) ? +auraSel.value.slice(1) : 0; }
     function auraDmg() { return /^d/.test(auraSel.value) ? +auraSel.value.slice(1) : 0; }
     function auraSpend() { return auraSel.value ? 1 + auraAtk() + auraDmg() : 0; }
-    var hasMana = !!spell;
+    var hasMana = !!spell || a.boostCap !== undefined;
     var cost = spell ? spell.cost || 0 : 0;
-    var dotsCap = 0;
+    var dotsCap = spell ? 0 : (a.boostCap || 0);
     if (spell) {
       if (spell.kind === 'combo') dotsCap = Math.min.apply(null, (spell.schools || []).map(function (s) { return (kit.dots || {})[s] || 0; }));
       else dotsCap = (kit.dots || {})[spell.school] || 0;
@@ -1094,7 +1130,7 @@
       if (auraSel.value) parts.appendChild(el('li', { class: auraSpend() > c.mana ? 'warn' : '' }, [el('span', { text: aura.name + ': mana spent' + (auraDmg() ? ' (' + auraDmg() + ' set aside for damage)' : '') }), el('span', { text: auraSpend() + ' of ' + c.mana })]));
       if (hasMana) {
         var spend = cost + (+atkMana.value || 0) + (+dmgMana.value || 0);
-        parts.appendChild(el('li', { class: spend > c.mana ? 'warn' : '' }, [el('span', { text: 'Mana spent (cost ' + cost + (+dmgMana.value ? ', ' + dmgMana.value + ' set aside for damage' : '') + ')' }), el('span', { text: spend + ' of ' + c.mana })]));
+        if (spend) parts.appendChild(el('li', { class: spend > c.mana ? 'warn' : '' }, [el('span', { text: 'Mana spent (' + (spell ? 'cost ' + cost : 'enhancement') + (+dmgMana.value ? ', ' + dmgMana.value + ' set aside for damage' : '') + ')' }), el('span', { text: spend + ' of ' + c.mana })]));
       }
       if (+ap.value > c.ap) parts.appendChild(el('li', { class: 'warn' }, [el('span', { text: 'You hold ' + c.ap + ' AP. Allies can give you the rest.' }), el('span', { text: '' })]));
     }
@@ -1113,9 +1149,9 @@
       f.appendChild(field(aura.name, auraSel));
     }
     if (hasMana) {
-      f.appendChild(el('h3', { class: 'px cb-ask', text: 'Spend mana to enhance it?' }));
-      var rule = manaTo === 'attack' ? 'This magic can only add mana to the attack.' : manaTo === 'damage' ? 'This magic can only add mana to damage.' : 'This magic can add mana to the attack or to damage.';
-      f.appendChild(el('p', { class: 'cb-desc', text: 'Cost: ' + (spell.costText || cost) + '. Extra mana: up to ' + dotsCap + ' (your dots) or your M/T of ' + (c.mt || 0) + ', whichever comes first. ' + rule }));
+      if (!aura) f.appendChild(el('h3', { class: 'px cb-ask', text: 'Spend mana to enhance it?' }));
+      var rule = manaTo === 'attack' ? 'This magic can only add mana to the attack.' : manaTo === 'damage' ? 'This magic can only add mana to damage.' : 'Put it on the attack, or set it aside for the damage roll.';
+      f.appendChild(el('p', { class: 'cb-desc', text: (spell ? 'Cost: ' + (spell.costText || cost) + '. ' : '') + '1 die per mana, up to ' + dotsCap + ' (your ' + (spell ? 'dots' : (a.boostName || 'Style') + ' dots') + ') or your M/T of ' + (c.mt || 0) + ', whichever comes first. ' + rule }));
       f.appendChild(el('div', { class: 'two' }, [field('Extra mana on the attack', atkMana), field('Mana set aside for damage', dmgMana)]));
     }
     f.appendChild(el('div', { class: 'two' }, [field('Spend AP for dice', ap), el('label', { class: 'chk', style: 'align-self:end' }, [wp, 'Spend 1 Willpower for +3 dice'])]));
@@ -1139,7 +1175,7 @@
         var st2 = Object.assign({}, c.stats || {}); st2.effects = (st2.effects || []).concat([{ name: spell.name, upkeep: Math.max(0, (spell.cost || 0) - 1) }]); await upd(c, { stats: st2 });
       }
       var row = await addRoll({ combatant_id: c.id, label: a.label + (tgt ? ' at ' + tgt.name : '') + (a.override ? ' (Storyteller allowed it out of range)' : ''), pool: n, dice: dice, successes: succ,
-        detail: { kind: a.kind || 'roll', target: tgt ? tgt.id : null, setAside: (+dmgMana.value || 0) + auraDmg(), mana: spend, ap: +ap.value || 0, wp: wp.checked, real: real.checked, damagePool: a.damagePool || 0, attacker: c.id, social: !!a.social } });
+        detail: { kind: a.kind || 'roll', target: tgt ? tgt.id : null, setAside: (+dmgMana.value || 0) + auraDmg(), mana: spend, ap: +ap.value || 0, wp: wp.checked, real: real.checked, damagePool: a.damagePool || 0, damageText: a.damageText || '', attacker: c.id, social: !!a.social } });
       var res = null;
       if (((a.kind || 'roll') === 'attack' || a.kind === 'contest') && tgt && row) res = await autoDefend(row, tgt, spell, a.social, a.defense ? a.defense(tgt) : null);
       if ((a.kind === 'attack' || a.kind === 'contest') && c.hidden) { await upd(c, { hidden: false }); await note(c.name + ' attacks and is no longer hidden.'); }
@@ -1204,7 +1240,8 @@
     d.body.appendChild(el('div', { class: 'cb-f' }, [
       el('p', { class: 'cb-desc', text: (c ? c.name : 'Attacker') + (tgt ? ' against ' + tgt.name + ' (BDT ' + tgt.bdt + ', LDT ' + tgt.bdt * 2 + ', ADT ' + tgt.bdt * 3 + ')' : '') + '. Damage = damage roll successes + excess successes, compared to the target’s thresholds.' }),
       el('div', { class: 'three' }, [field('Defense successes', def), field('Damage pool', dpool), field('Bonus dice', bonus)]),
-      el('p', { class: 'cb-desc', text: 'Damage pool: a weapon’s damage Attribute + its Rating. Spells that deal damage equal to excess successes use 0 here.' }),
+      el('p', { class: 'cb-desc', text: det.damageText ? 'Damage pool: ' + det.damageText + '.' : 'Damage pool: a weapon’s damage Attribute + its Rating. Spells that deal damage equal to excess successes use 0 here.' }),
+      det.setAside ? el('p', { class: 'cb-desc', text: det.setAside + ' mana was set aside for this damage roll when the attack was declared (mana is always declared before the attack roll).' }) : null,
       out, el('label', { class: 'chk' }, [real, 'I rolled real dice']), realWrap]));
     draw();
     d.ok('Roll Damage', async function () {
@@ -1281,6 +1318,22 @@
     if (/\bmelee\b/i.test(s)) return { n: 1, text: 'adjacent zones' };
     if (/ranged|line of sight|cone|breath|bolt|beam|spit|throw/i.test(s)) return LOS;
     return { n: 1, text: 'adjacent zones' };
+  }
+  // Damage pool (Chapter 14): the weapon's damage Attribute + its Rating. The Attribute comes from the weapon tables, by name, then by Style.
+  var DMG_BY_NAME = [[/greatsword|broadsword|axe|hatchet|quarterstaff|spear|trident|halberd|pike|shield|knuckle|glove|cestus|club|baton|chair|table|bottle|ladder|staff|rod|scepter/i, 'Strength'],
+    [/knife|dagger|stiletto|short sword|rapier|saber|longsword|katana|naginata|glaive/i, 'Dexterity'], [/bow|crossbow|pistol|revolver|derringer|rifle|musket|shotgun|gun|cannon|sling/i, 'Perception'], [/whip/i, 'Manipulation']];
+  var DMG_BY_STYLE = [[/Quickcut|Silver Arc/, 'Dexterity'], [/Windreader|Sundown|Iron Rain/, 'Perception'], [/Ten Count|Drifting Leaf/, 'Strength or Dexterity'], [/./, 'Strength']];
+  function weaponDamage(kit, style, wname) {
+    var attr = null;
+    DMG_BY_NAME.forEach(function (x) { if (!attr && wname && x[0].test(wname)) attr = x[1]; });
+    DMG_BY_STYLE.forEach(function (x) { if (!attr && x[0].test(style || '')) attr = x[1]; });
+    var at = kit.attrs || {}, av, an;
+    if (attr === 'Strength or Dexterity') { an = (at.Strength || 0) >= (at.Dexterity || 0) ? 'Strength' : 'Dexterity'; } else an = attr;
+    av = at[an] || 0;
+    var w = (kit.weapons || []).filter(function (x) { return x.name === wname; })[0];
+    var rating = w && w.cat === 'Damage' ? (w.bonus || 0) : 0, extra = ((kit.bonus || {}).damage || 0) - (kit.weapons || []).reduce(function (t, x) { return t + (x.cat === 'Damage' ? (x.bonus || 0) : 0); }, 0);   // other worn gear only: kit.bonus.damage counts every weapon's Damage bonus too
+    var text = an + ' ' + av + (rating ? ' + Rating ' + rating : wname ? ' (no Rating set on the character page)' : '') + (extra ? ' + ' + extra + ' from other gear' : '');
+    return { pool: av + rating + extra, text: text };
   }
   function placedC(c) { return c && c.x !== null && c.x !== undefined && c.y !== null && c.y !== undefined; }
   function gap(a, b) {
@@ -1371,12 +1424,13 @@
       var armed = {}; (kit.weapons || []).forEach(function (w) { var stn = (LO.weapons || {})[w.key] || ((kit.styles || []).length === 1 ? kit.styles[0].name : ''); if (stn) (armed[stn] = armed[stn] || []).push(w.name); });
       var atk = (kit.maneuvers || []).filter(function (m) { return m.rank === 0; }).map(function (m) {
         var p = evalPool(m.pool, kit), rg = styleRange(m.style, kit), nm = armed[m.style] ? 'Attack with ' + armed[m.style][0] : 'Attack (' + m.style.replace(/ Style$/, '') + ')';
-        return { name: nm, sub: m.style + '. Range: ' + rg.text, pool: p.total + 'd', desc: 'A standard attack with ' + m.style + '. Range: ' + rg.text + '.',
-          act: { label: nm, pool: p.total, parts: p.parts, unknown: p.unknown, kind: 'attack', range: rg, targets: 'others', aura: auraFor(m.style) } };
+        var dm = weaponDamage(kit, m.style, armed[m.style] ? armed[m.style][0] : '');
+        return { name: nm, sub: m.style + '. Range: ' + rg.text + '. Damage ' + dm.pool, pool: p.total + 'd', desc: 'A standard attack with ' + m.style + '. Range: ' + rg.text + '. Damage pool: ' + dm.text + '.',
+          act: { label: nm, pool: p.total, parts: p.parts, unknown: p.unknown, kind: 'attack', range: rg, targets: 'others', aura: auraFor(m.style), damagePool: dm.pool, damageText: dm.text, boostCap: (kit.dots || {})[m.style] || 0, boostName: m.style } };
       }).concat(mv.map(function (m) {
-        var p = evalPool(m.pool, kit), rg = styleRange(m.style, kit);
-        return { name: m.name, sub: m.style + ' Rank ' + m.rank, pool: p.total + 'd', desc: m.text + ' Range: ' + rg.text + '.',
-          act: { label: m.name, pool: p.total, parts: p.parts, unknown: p.unknown, kind: 'attack', desc: m.text, link: m.id ? '../rulebook/ch12.html#' + m.id : null, range: rg, targets: 'others', aura: auraFor(m.style) } };
+        var p = evalPool(m.pool, kit), rg = styleRange(m.style, kit), dm = weaponDamage(kit, m.style, armed[m.style] ? armed[m.style][0] : '');
+        return { name: m.name, sub: m.style + ' Rank ' + m.rank, pool: p.total + 'd', desc: m.text + ' Range: ' + rg.text + '. Damage pool: ' + dm.text + '.',
+          act: { label: m.name, pool: p.total, parts: p.parts, unknown: p.unknown, kind: 'attack', desc: m.text, link: m.id ? '../rulebook/ch12.html#' + m.id : null, range: rg, targets: 'others', aura: auraFor(m.style), damagePool: dm.pool, damageText: dm.text, boostCap: (kit.dots || {})[m.style] || 0, boostName: m.style } };
       }));
       cats.push({ name: 'Attacks', items: atk, empty: (kit.maneuvers || []).length ? 'No maneuvers prepared. Prepare them on the Combat Loadout, then Refresh Stats.' : 'No Combat Styles.' });
       var spells = sp.filter(function (x) { return x.name !== 'Aura Fist' && x.name !== 'Aura Blade'; }).map(function (x) {
@@ -1628,7 +1682,7 @@
     main.appendChild(el('section', { class: 'panel win cb-banner', id: 'cb-banner', 'aria-label': 'Turn order' }));
     main.appendChild(el('div', { class: 'cb-layout' }, [
       el('div', { class: 'cb-col' }, [
-        el('section', { class: 'panel win cb-arena' }, [el('div', { class: 'cb-mapwrap', id: 'cb-map' }), el('nav', { class: 'cb-phases', id: 'cb-phases', 'aria-label': 'Combat phases' })]),
+        el('section', { class: 'panel win cb-arena' }, [el('div', { class: 'cb-mapwrap', id: 'cb-map' }), el('nav', { class: 'cb-phases', id: 'cb-phases', 'aria-label': 'Combat phases' }), el('div', { class: 'cb-toasts', id: 'cb-toasts', 'aria-live': 'polite' })]),
         el('section', { class: 'panel win', id: 'cb-loadout' })]),
       el('div', { class: 'cb-col' }, [el('section', { class: 'panel win cb-card', id: 'cb-card' }), el('section', { class: 'panel win', id: 'cb-log' })])
     ]));
