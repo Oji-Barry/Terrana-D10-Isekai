@@ -150,7 +150,7 @@
   };
   window.TerranaMusic = M;
   if (!document.querySelector('link[href*="assets/music.css"]')) {
-    var css = document.createElement('link'); css.rel = 'stylesheet'; css.href = ROOT + 'assets/music.css?v=01dc4f9f'; document.head.appendChild(css);
+    var css = document.createElement('link'); css.rel = 'stylesheet'; css.href = ROOT + 'assets/music.css?v=b047157d'; document.head.appendChild(css);
   }
 
   // ---------------- book pages: keep going between pages ----------------
@@ -308,7 +308,7 @@
   // Classic effects drawn here, plus MilkDrop presets run by Butterchurn (MIT, Jordan Berg) and picked
   // for gentle light changes. Nothing strobes: brightness and speed follow the music smoothly.
   var VIS = (function () {
-    var win = null, cv = null, cv2 = null, fr = null, g = null, raf = 0, collapsed = false, modeBtn = null, winMenu = null;
+    var win = null, cv = null, cv2 = null, fr = null, g = null, raf = 0, collapsed = false, modeBtn = null, winMenu = null, speedBtn = null, speedMenu = null;
     var freq = new Uint8Array(1024), wave = new Uint8Array(2048), peaks = [], t = 0, plasma = null, phase = 0;
     var sm = { bass: 0, mid: 0, all: 0 }, stars = [];
     var md = { viz: null, presets: null, loading: null, failed: false, size: '' };
@@ -378,14 +378,39 @@
         var first = box.querySelector('[aria-checked="true"]') || box.querySelector('button'); if (first) first.focus();
       });
     }
+    // Speed: a steady Slow, Normal or Fast, or Follow the Music, which slows right down in quiet parts and races on loud ones
+    var SPEEDS = [['slow', 'Slow', 0.5], ['normal', 'Normal', 1], ['fast', 'Fast', 1.8], ['music', 'Follow the Music', 0]];
+    var follow = 1;
+    function speedMult() {
+      var sp = pref.vis.speed || 'normal';
+      if (sp !== 'music') { var f = SPEEDS.filter(function (x) { return x[0] === sp; })[0]; return f ? f[2] : 1; }
+      var live = analyser && !audio.paused, want = live ? 0.2 + sm.all * 3.2 + sm.bass * 1.6 : 0.3;
+      follow += (Math.min(3.2, want) - follow) * ease(0.12);
+      return follow;
+    }
+    function speedMenuOpen(box, btn) {
+      var open = box.hidden;
+      closeMenus();
+      if (!open) return;
+      box.textContent = '';
+      box.appendChild(el('small', { text: 'Speed' }));
+      SPEEDS.forEach(function (x) {
+        box.appendChild(el('button', { type: 'button', role: 'menuitemradio', 'aria-checked': String((pref.vis.speed || 'normal') === x[0]), text: x[1],
+          onclick: function (e) { e.stopPropagation(); closeMenus(); pref.vis.speed = x[0]; savePref(); label(); } }));
+      });
+      box.hidden = false; btn.setAttribute('aria-expanded', 'true');
+      (box.querySelector('[aria-checked="true"]') || box.querySelector('button')).focus();
+    }
     function build() {
       win = el('div', { class: 'mp-vis', role: 'region', 'aria-label': 'Music visualizer' });
       winMenu = el('div', { class: 'mp-vismenu', role: 'menu', hidden: true });
+      speedMenu = el('div', { class: 'mp-vismenu', role: 'menu', hidden: true });
+      speedBtn = el('button', { type: 'button', class: 'mp-vis-pick mp-vis-speed', 'aria-haspopup': 'menu', 'aria-expanded': 'false', text: 'Speed ▾', onclick: function (e) { e.stopPropagation(); speedMenuOpen(speedMenu, speedBtn); } });
       modeBtn = el('button', { type: 'button', class: 'mp-vis-pick', 'aria-haspopup': 'menu', 'aria-expanded': 'false', title: 'Choose a visualization', onclick: function (e) { e.stopPropagation(); menu(winMenu, modeBtn); } });
       var bMin = el('button', { type: 'button', title: 'Collapse', 'aria-label': 'Collapse visualizer', text: '▁', onclick: function () { collapsed = !collapsed; win.classList.toggle('collapsed', collapsed); bMin.textContent = collapsed ? '▔' : '▁'; bMin.setAttribute('aria-label', collapsed ? 'Expand visualizer' : 'Collapse visualizer'); loop(); } });
       var bMax = el('button', { type: 'button', title: 'Full screen', 'aria-label': 'Full screen', text: '□', onclick: maxToggle });
       var bX = el('button', { type: 'button', title: 'Close', 'aria-label': 'Close visualizer', text: '×', onclick: hide });
-      var head = el('div', { class: 'mp-vis-head' }, [el('span', { class: 'mp-vis-name', text: 'Visualizer' }), el('span', { class: 'mp-vis-pickwrap' }, [modeBtn, winMenu]), el('span', { class: 'mp-vis-btns' }, [bMin, bMax, bX])]);
+      var head = el('div', { class: 'mp-vis-head' }, [el('span', { class: 'mp-vis-name', text: 'Visualizer' }), el('span', { class: 'mp-vis-pickwrap mp-vis-speedwrap' }, [speedBtn, speedMenu]), el('span', { class: 'mp-vis-pickwrap' }, [modeBtn, winMenu]), el('span', { class: 'mp-vis-btns' }, [bMin, bMax, bX])]);
       head.addEventListener('mouseleave', function () { if (win.classList.contains('max')) peek(); });
       cv = el('canvas', { class: 'mp-vis-cv', ondblclick: maxToggle });
       cv2 = el('canvas', { class: 'mp-vis-cv mp-vis-gl', ondblclick: maxToggle });
@@ -414,6 +439,11 @@
     function label() {
       var m = cur();
       if (modeBtn) modeBtn.textContent = m.name + ' ▾';
+      if (speedBtn) {
+        var spn = SPEEDS.filter(function (x) { return x[0] === (pref.vis.speed || 'normal'); })[0] || SPEEDS[1];
+        speedBtn.disabled = !!m.frame;
+        speedBtn.title = m.frame ? 'This screensaver runs at its own speed' : 'Speed: ' + spn[1];
+      }
       if (!win) return;
       win.classList.toggle('gl', !!m.md); win.classList.toggle('fr', !!m.frame);
       var want = m.frame ? ROOT + m.frame : '';
@@ -443,7 +473,11 @@
       var w = Math.max(10, Math.floor(c0.clientWidth * dpr)), h = Math.max(10, Math.floor(c0.clientHeight * dpr));
       if (m.frame) { raf = requestAnimationFrame(frame); return; }
       if (m.md) {
-        if (md.viz) { var key = w + 'x' + h; if (md.size !== key) { md.size = key; cv2.width = w; cv2.height = h; md.viz.setRendererSize(w, h); } md.viz.render(); }
+        if (md.viz) {
+          var key = w + 'x' + h; if (md.size !== key) { md.size = key; cv2.width = w; cv2.height = h; md.viz.setRendererSize(w, h); }
+          if (analyser && !audio.paused) { analyser.getByteFrequencyData(freq); sm.bass += (energy(1, 12) - sm.bass) * ease(0.08); sm.all += (energy(1, 400) - sm.all) * ease(0.08); }
+          md.viz.render({ elapsedTime: dt * speedMult() });
+        }
       } else {
         if (cv.width !== w || cv.height !== h) { cv.width = w; cv.height = h; plasma = null; }
         U = Math.min(w, h);
@@ -453,6 +487,7 @@
         // smoothed levels, so nothing jumps from frame to frame
         var e = ease(0.08);
         sm.bass += (energy(1, 12) - sm.bass) * e; sm.mid += (energy(12, 120) - sm.mid) * e; sm.all += (energy(1, 400) - sm.all) * e;
+        dt *= speedMult(); K = dt * 60;   // from here on, everything moves at the chosen speed
         t += dt;
         m.fn(w, h, dpr);
       }
