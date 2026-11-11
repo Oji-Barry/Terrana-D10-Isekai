@@ -1075,7 +1075,8 @@
     var aura = a.aura || null, auraDots = aura ? ((kit.dots || {})['Battle Aura'] || 0) : 0;
     var auraSel = el('select', { id: 'r-aura' });
     function fillAura() {
-      var cur = auraSel.value, cap = Math.max(0, Math.min(auraDots, (c.mt || 0) - 1, (c.mana || 0) - 1));
+      var used = spell ? 0 : (+atkMana.value || 0) + (+dmgMana.value || 0);   // plain mana on a weapon or fist attack shares the Battle Aura cap
+      var cur = auraSel.value, cap = Math.max(0, Math.min(auraDots - used, (c.mt || 0) - 1 - used, (c.mana || 0) - 1 - used));
       auraSel.textContent = '';
       auraSel.appendChild(opt('', 'No, just roll'));
       for (var i = 1; i <= cap; i++) auraSel.appendChild(opt('a' + i, '+' + i + ' ' + (i === 1 ? 'die' : 'dice') + ' to the attack (' + (i + 1) + ' mana)'));
@@ -1086,7 +1087,7 @@
     function auraAtk() { return /^a/.test(auraSel.value) ? +auraSel.value.slice(1) : 0; }
     function auraDmg() { return /^d/.test(auraSel.value) ? +auraSel.value.slice(1) : 0; }
     function auraSpend() { return auraSel.value ? 1 + auraAtk() + auraDmg() : 0; }
-    var hasMana = !!spell || a.boostCap !== undefined;
+    var hasMana = !!spell || a.boostCap > 0;
     var cost = spell ? spell.cost || 0 : 0;
     var dotsCap = spell ? 0 : (a.boostCap || 0);
     if (spell) {
@@ -1101,15 +1102,16 @@
     var realWrap = field('Successes you rolled', realN); realWrap.hidden = true;
     real.addEventListener('change', function () { realWrap.hidden = !real.checked; });
     function capLeft() {
-      var mtLeft = Math.max(0, (c.mt || 0) - cost), have = Math.max(0, (c.mana || 0) - cost);
-      return Math.max(0, Math.min(dotsCap, mtLeft, have));
+      var au = spell ? 0 : auraSpend(), ad = spell ? 0 : auraAtk() + auraDmg();
+      var mtLeft = Math.max(0, (c.mt || 0) - cost - au), have = Math.max(0, (c.mana || 0) - cost - au);
+      return Math.max(0, Math.min(dotsCap - ad, mtLeft, have));
     }
     function fillMana() {
       var cap = capLeft(), a1 = +atkMana.value || 0, d1 = +dmgMana.value || 0;
       [[atkMana, a1, d1, manaTo === 'damage'], [dmgMana, d1, a1, manaTo === 'attack']].forEach(function (x) {
         var s = x[0], cur = x[1], other = x[2], off = x[3];
         s.textContent = '';
-        var max = off ? 0 : Math.max(0, cap - other);
+        var max = off || other > 0 ? 0 : Math.max(0, cap);   // the attack or the damage roll, not both (Ch. 11, 13)
         for (var i = 0; i <= max; i++) s.appendChild(opt(i, i === 0 ? 'None' : '+' + i + ' mana (' + i + ' ' + (i === 1 ? 'die' : 'dice') + ')', i === Math.min(cur, max)));
         s.disabled = off || max === 0;
       });
@@ -1135,8 +1137,9 @@
       if (+ap.value > c.ap) parts.appendChild(el('li', { class: 'warn' }, [el('span', { text: 'You hold ' + c.ap + ' AP. Allies can give you the rest.' }), el('span', { text: '' })]));
     }
     [bonus, penalty, ap, wp, auraSel].forEach(function (x) { x.addEventListener('input', drawParts); x.addEventListener('change', drawParts); });
-    atkMana.addEventListener('change', function () { fillMana(); drawParts(); });
-    dmgMana.addEventListener('change', function () { fillMana(); drawParts(); });
+    atkMana.addEventListener('change', function () { fillMana(); if (aura) fillAura(); drawParts(); });
+    dmgMana.addEventListener('change', function () { fillMana(); if (aura) fillAura(); drawParts(); });
+    auraSel.addEventListener('change', function () { fillMana(); });
     var f = el('div', { class: 'cb-f' }, [parts]);
     if (a.targetId !== undefined) {
       var tg0 = R.cs[a.targetId];
@@ -1426,11 +1429,11 @@
         var p = evalPool(m.pool, kit), rg = styleRange(m.style, kit), nm = armed[m.style] ? 'Attack with ' + armed[m.style][0] : 'Attack (' + m.style.replace(/ Style$/, '') + ')';
         var dm = weaponDamage(kit, m.style, armed[m.style] ? armed[m.style][0] : '');
         return { name: nm, sub: m.style + '. Range: ' + rg.text + '. Damage ' + dm.pool, pool: p.total + 'd', desc: 'A standard attack with ' + m.style + '. Range: ' + rg.text + '. Damage pool: ' + dm.text + '.',
-          act: { label: nm, pool: p.total, parts: p.parts, unknown: p.unknown, kind: 'attack', range: rg, targets: 'others', aura: auraFor(m.style), damagePool: dm.pool, damageText: dm.text, boostCap: (kit.dots || {})[m.style] || 0, boostName: m.style } };
+          act: { label: nm, pool: p.total, parts: p.parts, unknown: p.unknown, kind: 'attack', range: rg, targets: 'others', aura: auraFor(m.style), damagePool: dm.pool, damageText: dm.text, boostCap: (kit.dots || {})['Battle Aura'] || 0, boostName: 'Battle Aura' } };
       }).concat(mv.map(function (m) {
         var p = evalPool(m.pool, kit), rg = styleRange(m.style, kit), dm = weaponDamage(kit, m.style, armed[m.style] ? armed[m.style][0] : '');
         return { name: m.name, sub: m.style + ' Rank ' + m.rank, pool: p.total + 'd', desc: m.text + ' Range: ' + rg.text + '. Damage pool: ' + dm.text + '.',
-          act: { label: m.name, pool: p.total, parts: p.parts, unknown: p.unknown, kind: 'attack', desc: m.text, link: m.id ? '../rulebook/ch12.html#' + m.id : null, range: rg, targets: 'others', aura: auraFor(m.style), damagePool: dm.pool, damageText: dm.text, boostCap: (kit.dots || {})[m.style] || 0, boostName: m.style } };
+          act: { label: m.name, pool: p.total, parts: p.parts, unknown: p.unknown, kind: 'attack', desc: m.text, link: m.id ? '../rulebook/ch12.html#' + m.id : null, range: rg, targets: 'others', aura: auraFor(m.style), damagePool: dm.pool, damageText: dm.text, boostCap: (kit.dots || {})['Battle Aura'] || 0, boostName: 'Battle Aura' } };
       }));
       cats.push({ name: 'Attacks', items: atk, empty: (kit.maneuvers || []).length ? 'No maneuvers prepared. Prepare them on the Combat Loadout, then Refresh Stats.' : 'No Combat Styles.' });
       var spells = sp.filter(function (x) { return x.name !== 'Aura Fist' && x.name !== 'Aura Blade'; }).map(function (x) {

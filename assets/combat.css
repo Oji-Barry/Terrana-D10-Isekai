@@ -174,7 +174,7 @@
 .cb-chip.new { border-style: dashed; }
 .cb-chip-n { font-family: var(--pixel); font-size: 12px; color: var(--text-muted); }
 .cb-orderbtn { flex-shrink: 0; }
-.cb-layout { grid-template-columns: minmax(0, 1fr) minmax(280px, 340px); }
+@media (min-width: 981px) { .cb-layout { grid-template-columns: minmax(0, 1fr) minmax(280px, 340px); } }
 .cb-arena { display: grid; grid-template-columns: minmax(0, 1fr) 210px; gap: 12px; padding: 12px; align-items: start; }
 @media (max-width: 760px) { .cb-arena { grid-template-columns: minmax(0, 1fr); } }
 .cb-arena .cb-mapwrap { padding: 0; }
@@ -329,3 +329,8 @@
 .cb-toast-x:hover, .cb-toast-x:focus-visible { color: #ffe27a; outline: none; }
 @keyframes cb-toast-in { from { opacity: 0; transform: translateY(-8px); } }
 @media (prefers-reduced-motion: reduce) { .cb-toast { animation: none; } }
+@media (max-width: 760px) {
+  .cb-toasts { top: 8px; gap: 4px; }
+  .cb-toast { padding: 5px 30px 5px 10px; font-size: 13px; }
+  .cb-toast:nth-last-child(n+3) { display: none; }
+}
