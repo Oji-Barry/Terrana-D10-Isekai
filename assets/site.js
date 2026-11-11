@@ -374,7 +374,7 @@
     music.innerHTML = '<summary class="menu-label px"><span>MUSIC</span><button type="button" class="menu-music-quick" aria-label="Play music" hidden>▶</button></summary><div class="menu-music-box"></div>';
     music.addEventListener('toggle', function () { try { localStorage.setItem(MKEY, music.open ? '1' : '0'); } catch (e) {} });
     side.insertBefore(music, side.querySelector('.search-results'));
-    loadScript(root + 'assets/music.js?v=7c7b0b6e').then(function () {
+    loadScript(root + 'assets/music.js?v=f8483819').then(function () {
       var TM = window.TerranaMusic;
       TM.mountPlayer(music.querySelector('.menu-music-box'), {});
       TM.keepAlive();

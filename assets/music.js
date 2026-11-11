@@ -767,10 +767,10 @@
         var dome = Math.max(0.55, 1 - d1 / 14), t2 = best[2];
         return [(96 + n) * t2 * dome, (88 + n) * t2 * dome, (78 + n) * t2 * dome];
       });
-      // ceiling: big dark slabs
+      // floor tiles: four square stone tiles across each hallway (the cobbles above are the ceiling)
       var ceil = make(function (x, y) {
-        var n = (rnd() - 0.5) * 14, sx = x % 32, sy = y % 32, tone = ((x >> 5) + (y >> 5) * 2) % 3 * 0.08 + 0.8;
-        if (sx < 1.5 || sy < 1.5) return [18, 17, 16];
+        var n = (rnd() - 0.5) * 14, sx = x % 16, sy = y % 16, tone = ((x >> 4) * 3 + (y >> 4) * 5) % 4 * 0.06 + 0.8;
+        if (sx < 1.2 || sy < 1.2) return [18, 17, 16];
         return [(74 + n) * tone, (70 + n) * tone, (66 + n) * tone];
       });
       return { S: S, wall: wall, floor: floor, ceil: ceil };
@@ -867,7 +867,7 @@
             var fl = y >= bot, p = fl ? y - half + 0.5 : half - y - 0.5, rd = half / p;
             var wx = lab.x + rd * dx, wy = lab.y + rd * dy, cx = Math.floor(wx), cy = Math.floor(wy);
             var L2 = light(cx, cy, wx, wy, fl ? 1 : 0);
-            put(i, fl ? T.floor : T.ceil, Math.floor(wx * S), Math.floor(wy * S), L2, Math.min(1, L2));
+            put(i, fl ? T.ceil : T.floor, Math.floor(wx * S), Math.floor(wy * S), L2, Math.min(1, L2));
           }
         }
       }
