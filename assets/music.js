@@ -442,8 +442,8 @@
       if (modeBtn) modeBtn.textContent = m.name + ' ▾';
       if (speedBtn) {
         var spn = SPEEDS.filter(function (x) { return x[0] === (pref.vis.speed || 'normal'); })[0] || SPEEDS[1];
-        speedBtn.disabled = !!m.frame;
-        speedBtn.title = m.frame ? 'This screensaver runs at its own speed' : 'Speed: ' + spn[1];
+        speedBtn.disabled = false;
+        speedBtn.title = 'Speed: ' + spn[1];
       }
       if (!win) return;
       win.classList.toggle('gl', !!m.md); win.classList.toggle('fr', !!m.frame);
@@ -493,7 +493,15 @@
       dt = lastT ? Math.min(0.05, Math.max(0.001, (now - lastT) / 1000)) : 1 / 60; lastT = now; K = dt * 60;
       var m = cur(), dpr = Math.min(2, window.devicePixelRatio || 1), c0 = m.md ? cv2 : cv;
       var w = Math.max(10, Math.floor(c0.clientWidth * dpr)), h = Math.max(10, Math.floor(c0.clientHeight * dpr));
-      if (m.frame) { raf = requestAnimationFrame(frame); return; }
+      if (m.frame) {
+        // the screensavers in their own pages still follow the Speed menu (3D Pipes and the WebGL Aquarium read these)
+        if (m.id === 'fish' || m.id === 'pipes') {
+          if (analyser && !audio.paused) { analyser.getByteFrequencyData(freq); sm.bass += (energy(1, 12) - sm.bass) * ease(0.08); sm.all += (energy(1, 400) - sm.all) * ease(0.08); }
+          var spd = speedMult();
+          try { var fw = fr.contentWindow; if (fw) { fw.pipeSpeed = spd; if (fw.g && fw.g.globals) fw.g.globals.speed = spd; } } catch (e) {}
+        }
+        raf = requestAnimationFrame(frame); return;
+      }
       if (m.md) {
         if (md.viz) {
           var key = w + 'x' + h; if (md.size !== key) { md.size = key; cv2.width = w; cv2.height = h; md.viz.setRendererSize(w, h); }

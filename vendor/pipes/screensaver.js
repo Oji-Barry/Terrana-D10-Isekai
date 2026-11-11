@@ -352,9 +352,16 @@ function animate() {
     texture.repeat.set(2, 2);
     textures[options.texturePath] = texture;
   }
-  // update
-  for (var i = 0; i < pipes.length; i++) {
-    pipes[i].update(scene);
+  // update (Terrana: window.pipeSpeed sets how many pipe steps happen per 1/60 s, set by the site's Speed menu)
+  var nowT = performance.now(), stepDt = Math.min(0.1, (nowT - (window.__pipeT || nowT)) / 1000) || 1 / 60;
+  window.__pipeT = nowT;
+  window.__pipeAcc = (window.__pipeAcc || 0) + stepDt * 60 * (window.pipeSpeed == null ? 1 : window.pipeSpeed);
+  var steps = Math.min(8, Math.floor(window.__pipeAcc));
+  window.__pipeAcc -= steps;
+  for (var s = 0; s < steps; s++) {
+    for (var i = 0; i < pipes.length; i++) {
+      pipes[i].update(scene);
+    }
   }
   if (pipes.length === 0) {
     var jointType = options.joints;
