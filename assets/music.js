@@ -150,7 +150,7 @@
   };
   window.TerranaMusic = M;
   if (!document.querySelector('link[href*="assets/music.css"]')) {
-    var css = document.createElement('link'); css.rel = 'stylesheet'; css.href = ROOT + 'assets/music.css?v=b047157d'; document.head.appendChild(css);
+    var css = document.createElement('link'); css.rel = 'stylesheet'; css.href = ROOT + 'assets/music.css?v=ee1b939d'; document.head.appendChild(css);
   }
 
   // ---------------- book pages: keep going between pages ----------------
@@ -325,6 +325,7 @@
       { id: 'circles', name: 'Dance of the Circles', fn: circleDance, group: 'media' },
       { id: 'pipes', name: '3D Pipes', frame: 'vendor/pipes/index.html#%7B%22hideUI%22%3Atrue%7D', by: 'Isaiah Odhner', group: 'saver' },
       { id: 'maze', name: '3D Maze', fn: maze, group: 'saver' },
+      { id: 'labyrinth', name: 'Labyrinth', fn: labyrinth, group: 'saver' },
       { id: 'stars', name: 'Starfield', fn: starfield, group: 'saver' },
       { id: 'mystic', name: 'Mystic Lines', fn: mystic, group: 'saver' },
       { id: 'bezier', name: 'Bezier Ribbons', fn: bezier, group: 'saver' },
@@ -419,7 +420,7 @@
       document.body.appendChild(win);
       g = cv.getContext('2d');
       try { build.ok = !!document.createElement('canvas').getContext('webgl2'); } catch (e) { build.ok = false; }
-      document.addEventListener('fullscreenchange', function () { win.classList.toggle('max', document.fullscreenElement === win); win.classList.remove('peek'); });
+      document.addEventListener('fullscreenchange', function () { win.classList.toggle('max', document.fullscreenElement === win); win.classList.remove('peek'); fit(); });
       // In full screen the title bar tucks away and comes back when you move the mouse or tap
       var hideT = 0;
       function peek() { win.classList.add('peek'); clearTimeout(hideT); hideT = setTimeout(function () { if (!head.matches(':hover') && !winMenu.offsetParent) win.classList.remove('peek'); }, 1800); }
@@ -451,11 +452,32 @@
     }
     function maxToggle() {
       if (document.fullscreenElement === win) { document.exitFullscreen(); return; }
-      if (win.classList.contains('max')) { win.classList.remove('max'); return; }
-      if (win.requestFullscreen) win.requestFullscreen().catch(function () { win.classList.add('max'); }); else win.classList.add('max');
+      if (win.classList.contains('max')) { win.classList.remove('max'); fit(); return; }
+      win.style.width = ''; [cv, cv2, fr].forEach(function (p) { p.style.height = ''; });
+      if (win.requestFullscreen) win.requestFullscreen().catch(function () { win.classList.add('max'); fit(); }); else { win.classList.add('max'); fit(); }
       if (document.activeElement && win.contains(document.activeElement)) document.activeElement.blur();   // let the title bar tuck away
     }
-    function show() { if (!win) build(); win.hidden = false; label(); loop(); }
+    // On a computer the small window grows to fill the space to the right of the page's main area,
+    // so it sits beside the book without covering it. Phones keep the small size from the stylesheet.
+    function mainArea() {
+      var sel = ['.layout', '.os-main', 'main.content', 'main', '.page'];
+      for (var i = 0; i < sel.length; i++) { var e = document.querySelector(sel[i]); if (e && e.offsetWidth > 300) return e; }
+      return null;
+    }
+    function fit() {
+      if (!win) return;
+      var parts = [cv, cv2, fr];
+      if (win.classList.contains('max') || document.fullscreenElement === win || window.innerWidth <= 560) {
+        win.style.width = ''; parts.forEach(function (p) { p.style.height = ''; }); return;
+      }
+      var area = mainArea(), vw = document.documentElement.clientWidth;
+      var room = area ? vw - area.getBoundingClientRect().right - 28 : 300;
+      var W = Math.round(Math.max(300, room)), H = Math.round(Math.max(170, Math.min(W * 0.62, window.innerHeight * 0.65)));
+      win.style.width = W + 'px'; parts.forEach(function (p) { p.style.height = H + 'px'; });
+    }
+    var fitT = 0;
+    window.addEventListener('resize', function () { clearTimeout(fitT); fitT = setTimeout(fit, 120); });
+    function show() { if (!win) build(); win.hidden = false; label(); fit(); loop(); }
     function hide() { if (document.fullscreenElement === win) document.exitFullscreen(); win.classList.remove('max'); win.hidden = true; cancelAnimationFrame(raf); raf = 0; if (fr) { fr.removeAttribute('data-src'); fr.src = 'about:blank'; } }
     function loop() { if (!raf && win && !win.hidden && !collapsed) raf = requestAnimationFrame(frame); }
     // Every look moves by real time (dt, in seconds) and by the size of the window (U), so it runs at the
@@ -647,17 +669,20 @@
       var first = Math.atan2(steps[1][1] - 1, steps[1][0] - 1);
       return { m: m, W: W, steps: steps, k: 0, f: 0, x: 1.5, y: 1.5, ang: first };
     }
+    // walk a maze's route at a steady pace, easing into each turn; starts a new maze at the end
+    function walkMaze(st, n, pace) {
+      var a = st.steps[st.k], b = st.steps[st.k + 1];
+      if (!b) return makeMaze(n);
+      var want = Math.atan2(b[1] - a[1], b[0] - a[0]), diff = Math.atan2(Math.sin(want - st.ang), Math.cos(want - st.ang));
+      st.ang += Math.sign(diff) * Math.min(Math.abs(diff), (0.8 + Math.abs(diff) * 3.2) * dt);
+      if (Math.abs(diff) < 0.35) { st.f += pace * dt * (1 - Math.abs(diff) / 0.35 * 0.8); if (st.f >= 1) { st.f -= 1; st.k++; if (!st.steps[st.k + 1]) st.f = 0; } }
+      var a2 = st.steps[st.k], b2 = st.steps[st.k + 1] || a2;
+      st.x = a2[0] + 0.5 + (b2[0] - a2[0]) * st.f; st.y = a2[1] + 0.5 + (b2[1] - a2[1]) * st.f;
+      return st;
+    }
     function maze(w, h, dpr) {
       if (!mz) mz = makeMaze(8);
-      var a = mz.steps[mz.k], b = mz.steps[mz.k + 1];
-      if (!b) { mz = makeMaze(8); a = mz.steps[0]; b = mz.steps[1]; }
-      var want = Math.atan2(b[1] - a[1], b[0] - a[0]), diff = Math.atan2(Math.sin(want - mz.ang), Math.cos(want - mz.ang));
-      // turn with an ease in and out; start walking once mostly facing the way
-      var turn = Math.sign(diff) * Math.min(Math.abs(diff), (0.8 + Math.abs(diff) * 3.2) * dt);
-      mz.ang += turn;
-      if (Math.abs(diff) < 0.35) { mz.f += 1.7 * dt * (1 - Math.abs(diff) / 0.35 * 0.8); if (mz.f >= 1) { mz.f -= 1; mz.k++; if (!mz.steps[mz.k + 1]) mz.f = 0; } }
-      var a2 = mz.steps[mz.k], b2 = mz.steps[mz.k + 1] || a2;
-      mz.x = a2[0] + 0.5 + (b2[0] - a2[0]) * mz.f; mz.y = a2[1] + 0.5 + (b2[1] - a2[1]) * mz.f;
+      mz = walkMaze(mz, 8, 1.7);
       // render at up to 640 columns, then scale smoothly to the window
       var lw = Math.max(160, Math.min(640, Math.round(w / Math.max(1, dpr * 0.75)))), lh = Math.max(90, Math.round(lw * h / w));
       if (!mzCv) mzCv = document.createElement('canvas');
@@ -687,6 +712,130 @@
         }
       }
       g.imageSmoothingEnabled = true; g.drawImage(mzCv, 0, 0, w, h);
+    }
+    // Labyrinth: a dark stone corridor lit only by torches on the walls. Cobblestone floor, stone block walls,
+    // stone slab ceiling, all made here as small textures. Each torch flickers and lights the stone around it.
+    var lab = null, labTex = null, labCv = null, labImg = null;
+    function labTextures() {
+      var S = 64, seed = 7;
+      function rnd() { seed = (seed * 16807) % 2147483647; return seed / 2147483647; }
+      function make(fn) { var a = new Float32Array(S * S * 3); for (var y = 0; y < S; y++) for (var x = 0; x < S; x++) { var c = fn(x, y), o = (y * S + x) * 3; a[o] = c[0]; a[o + 1] = c[1]; a[o + 2] = c[2]; } return a; }
+      // walls: rows of rough stone blocks with dark mortar
+      var rows = [], yy = 0;
+      while (yy < S) { var hgt = 13 + Math.floor(rnd() * 6); if (S - yy < 18) hgt = S - yy; var cuts = [], xx = Math.floor(rnd() * 20); while (cuts.length < 8) { cuts.push(xx % S); xx += 16 + Math.floor(rnd() * 14); } rows.push({ y0: yy, y1: yy + hgt, cuts: cuts.sort(function (p, q) { return p - q; }), tone: [] }); yy += hgt; }
+      rows.forEach(function (r) { for (var i = 0; i < 10; i++) r.tone.push(0.75 + rnd() * 0.45); });
+      var wall = make(function (x, y) {
+        var r = rows.filter(function (q) { return y >= q.y0 && y < q.y1; })[0], k = 0;
+        for (var i = 0; i < r.cuts.length; i++) if (x >= r.cuts[i]) k = i + 1;
+        var dx = Math.min.apply(null, r.cuts.map(function (c) { var d = Math.abs(x - c); return Math.min(d, S - d); })), dy = Math.min(y - r.y0, r.y1 - 1 - y);
+        var n = (rnd() - 0.5) * 22, tone = r.tone[k % r.tone.length];
+        if (dx < 1.5 || dy < 1) return [28 + n * 0.3, 25 + n * 0.3, 22 + n * 0.3];
+        var edge = Math.min(1, Math.min(dx, dy) / 4) * 0.35 + 0.65;
+        return [(112 + n) * tone * edge, (104 + n) * tone * edge, (94 + n) * tone * edge];
+      });
+      // floor: rounded cobbles (a wrapped Voronoi pattern) with dark gaps
+      var pts = []; for (var gy = 0; gy < 4; gy++) for (var gx = 0; gx < 4; gx++) pts.push([gx * 16 + 3 + rnd() * 10, gy * 16 + 3 + rnd() * 10, 0.7 + rnd() * 0.5]);
+      var floor = make(function (x, y) {
+        var d1 = 1e9, d2 = 1e9, best = null;
+        pts.forEach(function (p) { var dx = Math.abs(x - p[0]), dy = Math.abs(y - p[1]); dx = Math.min(dx, S - dx); dy = Math.min(dy, S - dy); var d = Math.sqrt(dx * dx + dy * dy); if (d < d1) { d2 = d1; d1 = d; best = p; } else if (d < d2) d2 = d; });
+        var n = (rnd() - 0.5) * 18;
+        if (d2 - d1 < 2.2) return [22 + n * 0.3, 20 + n * 0.3, 18 + n * 0.3];
+        var dome = Math.max(0.55, 1 - d1 / 14), t2 = best[2];
+        return [(96 + n) * t2 * dome, (88 + n) * t2 * dome, (78 + n) * t2 * dome];
+      });
+      // ceiling: big dark slabs
+      var ceil = make(function (x, y) {
+        var n = (rnd() - 0.5) * 14, sx = x % 32, sy = y % 32, tone = ((x >> 5) + (y >> 5) * 2) % 3 * 0.08 + 0.8;
+        if (sx < 1.5 || sy < 1.5) return [18, 17, 16];
+        return [(74 + n) * tone, (70 + n) * tone, (66 + n) * tone];
+      });
+      return { S: S, wall: wall, floor: floor, ceil: ceil };
+    }
+    function makeLab() {
+      var st = makeMaze(10), W = st.W, m = st.m, torches = [], seen = {};
+      // hang a torch on some walls that face an open cell (one per wall face at most)
+      for (var x = 1; x < W - 1; x++) for (var y = 1; y < W - 1; y++) {
+        if (m[x][y]) continue;
+        [[1, 0], [-1, 0], [0, 1], [0, -1]].forEach(function (d) {
+          var wx = x + d[0], wy = y + d[1];
+          if (!m[wx] || !m[wx][wy] || Math.random() > 0.12) return;
+          var key = wx + ',' + wy + ',' + (-d[0]) + ',' + (-d[1]); if (seen[key]) return;
+          seen[key] = { x: wx + 0.5 - d[0] * 0.58, y: wy + 0.5 - d[1] * 0.58, z: 0.3, ph: Math.random() * 10, nx: -d[0], ny: -d[1] };
+          torches.push(seen[key]);
+        });
+      }
+      // which torches can light each open cell (in reach, with nothing solid in between)
+      var lit = {};
+      for (x = 1; x < W - 1; x++) for (y = 1; y < W - 1; y++) {
+        if (m[x][y]) continue;
+        lit[x + ',' + y] = torches.filter(function (t) {
+          var dx = t.x - (x + 0.5), dy = t.y - (y + 0.5), d = Math.sqrt(dx * dx + dy * dy); if (d > 5) return false;
+          for (var s2 = 0.1; s2 < d - 0.1; s2 += 0.1) { var px = Math.floor(x + 0.5 + dx * s2 / d), py = Math.floor(y + 0.5 + dy * s2 / d); if (m[px][py]) return false; }
+          return true;
+        });
+      }
+      st.torches = seen; st.lit = lit; st.list = torches;
+      return st;
+    }
+    function labyrinth(w, h, dpr) {
+      if (!labTex) labTex = labTextures();
+      if (!lab) lab = makeLab();
+      var next = walkMaze(lab, 10, 1.1); if (next !== lab) lab = makeLab();
+      var lw = Math.max(160, Math.min(480, Math.round(w / Math.max(1, dpr)))), lh = Math.max(90, Math.round(lw * h / w));
+      if (!labCv) labCv = document.createElement('canvas');
+      if (labCv.width !== lw || labCv.height !== lh) { labCv.width = lw; labCv.height = lh; labImg = null; }
+      var o = labCv.getContext('2d');
+      if (!labImg) labImg = o.createImageData(lw, lh);
+      var px = labImg.data, T = labTex, S = T.S, M = lab.m, half = lh / 2;
+      // each torch flickers on its own, a little brighter with the bass
+      lab.list.forEach(function (tc) { tc.f = (0.85 + Math.sin(t * 9 + tc.ph) * 0.06 + Math.sin(t * 23 + tc.ph * 2) * 0.04 + Math.sin(t * 3.1 + tc.ph) * 0.05) * (1 + sm.bass * 0.25); });
+      function light(cx, cy, x, y, z) {
+        var L = 0.04, ls = lab.lit[cx + ',' + cy];
+        if (ls) for (var i = 0; i < ls.length; i++) { var tc = ls[i], dx = x - tc.x, dy = y - tc.y, dz = z - tc.z, d2 = dx * dx + dy * dy + dz * dz * 1.5; L += 2.1 * tc.f / (1 + d2 * 5); }
+        return L > 1.6 ? 1.6 : L;
+      }
+      function put(i, tex, tx, ty, L, warm) {
+        var o2 = ((ty & 63) * S + (tx & 63)) * 3;
+        px[i] = tex[o2] * L * (1 + warm * 0.25); px[i + 1] = tex[o2 + 1] * L * (1 + warm * 0.02); px[i + 2] = tex[o2 + 2] * L * (1 - warm * 0.25); px[i + 3] = 255;
+      }
+      var fov = 1.05, plane = Math.tan(fov / 2), cdx = Math.cos(lab.ang), cdy = Math.sin(lab.ang), pdx = -cdy * plane, pdy = cdx * plane;
+      for (var col = 0; col < lw; col++) {
+        var cam = 2 * (col + 0.5) / lw - 1, dx = cdx + pdx * cam, dy = cdy + pdy * cam;
+        var mx = Math.floor(lab.x), my = Math.floor(lab.y), sx = Math.abs(1 / dx), sy = Math.abs(1 / dy), stx = dx < 0 ? -1 : 1, sty = dy < 0 ? -1 : 1;
+        var tx = (dx < 0 ? lab.x - mx : mx + 1 - lab.x) * sx, ty = (dy < 0 ? lab.y - my : my + 1 - lab.y) * sy, side = 0, guard = 0;
+        while (guard++ < 80) { if (tx < ty) { tx += sx; mx += stx; side = 0; } else { ty += sy; my += sty; side = 1; } if (!M[mx] || M[mx][my]) break; }
+        var dist = Math.max(0.05, side ? ty - sy : tx - sx), wh = lh / dist, top = half - wh / 2, bot = half + wh / 2;
+        var hx = lab.x + dist * dx, hy = lab.y + dist * dy, u = side ? hx : hy; u -= Math.floor(u);
+        var nx = side ? 0 : -stx, ny = side ? -sty : 0, fcx = mx + nx, fcy = my + ny;   // the open cell in front of this wall face
+        var torch = lab.torches[mx + ',' + my + ',' + nx + ',' + ny], tu = Math.floor(u * S);
+        var shadeSide = side ? 0.82 : 1;
+        for (var y = 0; y < lh; y++) {
+          var i = (y * lw + col) * 4;
+          if (y >= top && y < bot) {
+            var v = (y - top) / wh;
+            if (torch) {
+              var du = Math.abs(u - 0.5);
+              // the flame: a flickering teardrop that glows on its own
+              var fh = 0.13 + Math.sin(t * 11 + torch.ph) * 0.012, fy = (v - (0.3 - fh)) / fh;
+              if (fy >= 0 && fy <= 1) { var fw = 0.055 * Math.sin(Math.min(1, fy * 1.15) * Math.PI) * (0.6 + fy * 0.5) + Math.sin(t * 17 + torch.ph + fy * 6) * 0.006;
+                if (du < fw) { var core = 1 - du / Math.max(0.001, fw); px[i] = 255; px[i + 1] = 120 + core * 110 + fy * 20; px[i + 2] = 30 + core * core * 140; px[i + 3] = 255; continue; } }
+              // the iron holder and its wooden handle
+              if (v > 0.3 && v < 0.33 && du < 0.045) { px[i] = 70; px[i + 1] = 40; px[i + 2] = 22; px[i + 3] = 255; continue; }
+              if (v >= 0.33 && v < 0.47 && du < 0.018) { var L0 = light(fcx, fcy, hx, hy, v) * 0.6; px[i] = 90 * L0 + 20; px[i + 1] = 55 * L0 + 10; px[i + 2] = 30 * L0 + 6; px[i + 3] = 255; continue; }
+              if (v >= 0.4 && v < 0.43 && du < 0.06) { px[i] = 26; px[i + 1] = 24; px[i + 2] = 24; px[i + 3] = 255; continue; }
+            }
+            var Lw = light(fcx, fcy, hx + nx * 0.01, hy + ny * 0.01, v) * shadeSide;
+            put(i, T.wall, tu, Math.floor(v * S), Lw, Math.min(1, Lw));
+          } else {
+            var fl = y >= bot, p = fl ? y - half + 0.5 : half - y - 0.5, rd = half / p;
+            var wx = lab.x + rd * dx, wy = lab.y + rd * dy, cx = Math.floor(wx), cy = Math.floor(wy);
+            var L2 = light(cx, cy, wx, wy, fl ? 1 : 0);
+            put(i, fl ? T.floor : T.ceil, Math.floor(wx * S), Math.floor(wy * S), L2, Math.min(1, L2));
+          }
+        }
+      }
+      o.putImageData(labImg, 0, 0);
+      g.imageSmoothingEnabled = true; g.drawImage(labCv, 0, 0, w, h);
     }
     // Mystic Lines and Bezier Ribbons: the shapes keep a short echo of where they just were, drawn fresh each frame
     function bouncer(n, s0, s1) { return Array.apply(null, Array(n)).map(function () { var a = Math.random() * Math.PI * 2, s = s0 + Math.random() * (s1 - s0); return { x: Math.random(), y: Math.random(), vx: Math.cos(a) * s, vy: Math.sin(a) * s }; }); }
