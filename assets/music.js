@@ -777,16 +777,34 @@
     }
     function makeLab() {
       var st = makeMaze(10), W = st.W, m = st.m, torches = [], seen = {};
-      // hang a torch on some walls that face an open cell (one per wall face at most)
-      for (var x = 1; x < W - 1; x++) for (var y = 1; y < W - 1; y++) {
-        if (m[x][y]) continue;
-        [[1, 0], [-1, 0], [0, 1], [0, -1]].forEach(function (d) {
-          var wx = x + d[0], wy = y + d[1];
-          if (!m[wx] || !m[wx][wy] || Math.random() > 0.16) return;
-          var key = wx + ',' + wy + ',' + (-d[0]) + ',' + (-d[1]); if (seen[key]) return;
-          seen[key] = { x: wx + 0.5 - d[0] * 0.72, y: wy + 0.5 - d[1] * 0.72, ax: wx + 0.5 - d[0] * 0.5, ay: wy + 0.5 - d[1] * 0.5, z: 0.27, ph: Math.random() * 10, fire: torches.length % 3, nx: -d[0], ny: -d[1] };
-          torches.push(seen[key]);
-        });
+      // Spread the torches evenly: each new torch goes in the spot that is the longest walk from every torch
+      // so far, until nowhere is more than a few steps from one. No clusters, no long dark stretches.
+      var open = [], x, y;
+      for (x = 1; x < W - 1; x++) for (y = 1; y < W - 1; y++) if (!m[x][y]) open.push([x, y]);
+      var far = {};
+      function walkDist() {
+        far = {}; var q = [];
+        torches.forEach(function (t) { var k = t.cx + ',' + t.cy; if (far[k] == null) { far[k] = 0; q.push([t.cx, t.cy]); } });
+        for (var h2 = 0; h2 < q.length; h2++) {
+          var c = q[h2], dd = far[c[0] + ',' + c[1]];
+          [[1, 0], [-1, 0], [0, 1], [0, -1]].forEach(function (d) { var nx2 = c[0] + d[0], ny2 = c[1] + d[1], k2 = nx2 + ',' + ny2; if (!m[nx2][ny2] && far[k2] == null) { far[k2] = dd + 1; q.push([nx2, ny2]); } });
+        }
+      }
+      function hang(cx, cy) {
+        var walls = [[1, 0], [-1, 0], [0, 1], [0, -1]].filter(function (d) { var wx = cx + d[0], wy = cy + d[1]; return m[wx] && m[wx][wy] && !seen[wx + ',' + wy + ',' + (-d[0]) + ',' + (-d[1])]; });
+        if (!walls.length) return false;
+        var d = walls[Math.floor(Math.random() * walls.length)], wx = cx + d[0], wy = cy + d[1];
+        var tc = { x: wx + 0.5 - d[0] * 0.65, y: wy + 0.5 - d[1] * 0.65, ax: wx + 0.5 - d[0] * 0.5, ay: wy + 0.5 - d[1] * 0.5, z: 0.27, ph: Math.random() * 10, fire: torches.length % 3, nx: -d[0], ny: -d[1], cx: cx, cy: cy };
+        seen[wx + ',' + wy + ',' + (-d[0]) + ',' + (-d[1])] = tc; torches.push(tc); return true;
+      }
+      var first = open[Math.floor(Math.random() * open.length)]; hang(first[0], first[1]);
+      for (var guard2 = 0; guard2 < 200; guard2++) {
+        walkDist();
+        var best = null, bd = -1;
+        open.forEach(function (c) { var dd = far[c[0] + ',' + c[1]]; if (dd == null) dd = 99; if (dd > bd || (dd === bd && Math.random() < 0.3)) { bd = dd; best = c; } });
+        if (bd <= 3) break;
+        // a crossroads has no wall of its own, so the torch goes on a wall one step away
+        if (!hang(best[0], best[1])) [[1, 0], [-1, 0], [0, 1], [0, -1]].some(function (d) { var nx2 = best[0] + d[0], ny2 = best[1] + d[1]; return !m[nx2][ny2] && hang(nx2, ny2); });
       }
       // which torches can light each open cell (in reach, with nothing solid in between)
       var lit = {};
@@ -814,7 +832,7 @@
       // each torch flickers on its own, a little brighter with the bass
       lab.list.forEach(function (tc) { tc.f = (0.85 + Math.sin(t * 9 + tc.ph) * 0.06 + Math.sin(t * 23 + tc.ph * 2) * 0.04 + Math.sin(t * 3.1 + tc.ph) * 0.05) * (1 + sm.bass * 0.25); });
       function light(cx, cy, x, y, z) {
-        var L = 0.04, ls = lab.lit[cx + ',' + cy];
+        var L = 0.1, ls = lab.lit[cx + ',' + cy];
         if (ls) for (var i = 0; i < ls.length; i++) { var tc = ls[i], dx = x - tc.x, dy = y - tc.y, dz = z - tc.z, d2 = dx * dx + dy * dy + dz * dz * 1.5; L += 2.1 * tc.f / (1 + d2 * 5); }
         return L > 1.6 ? 1.6 : L;
       }
