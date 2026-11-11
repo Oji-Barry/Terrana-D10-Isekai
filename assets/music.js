@@ -715,7 +715,31 @@
     }
     // Labyrinth: a dark stone corridor lit only by torches on the walls. Cobblestone floor, stone block walls,
     // stone slab ceiling, all made here as small textures. Each torch flickers and lights the stone around it.
-    var lab = null, labTex = null, labCv = null, labImg = null;
+    var lab = null, labTex = null, labCv = null, labImg = null, labZ = null;
+    // Torch fire: the classic falling-embers fire effect (the one from the old PlayStation Doom intro), run in
+    // three small grids so neighbouring torches never burn in step. The bottom row is hottest in the middle,
+    // so each fire rises in licking tongues and burns out at the top.
+    var FW = 16, FH = 34, fires = null, fireAcc = 0, FIREPAL = [];
+    (function () {
+      var stops = [[0, 0, 0, 0], [6, 70, 10, 5], [12, 160, 30, 8], [18, 215, 70, 12], [24, 240, 130, 20], [30, 250, 200, 60], [36, 255, 250, 200]];
+      for (var v = 0; v <= 36; v++) { var k = 0; while (stops[k + 1][0] < v) k++; var a = stops[k], b = stops[k + 1], f = (v - a[0]) / (b[0] - a[0]); FIREPAL.push([a[1] + (b[1] - a[1]) * f, a[2] + (b[2] - a[2]) * f, a[3] + (b[3] - a[3]) * f]); }
+    })();
+    function stepFires() {
+      if (!fires) { fires = [0, 1, 2].map(function () { return new Uint8Array(FW * FH); }); }
+      fireAcc += dt;
+      while (fireAcc > 1 / 28) {
+        fireAcc -= 1 / 28;
+        fires.forEach(function (F) {
+          for (var x = 0; x < FW; x++) { var c = Math.abs(x - (FW - 1) / 2) / (FW / 2); F[(FH - 1) * FW + x] = c < 0.22 ? 36 : c < 0.45 ? 28 + Math.floor(Math.random() * 8) : c < 0.68 ? 8 + Math.floor(Math.random() * 14) : 0; }
+          for (var y = 1; y < FH; y++) for (var x2 = 0; x2 < FW; x2++) {
+            var src = y * FW + x2, pix = F[src];
+            if (!pix) { F[src - FW] = 0; continue; }
+            var r = Math.floor(Math.random() * 3), dst = Math.min(FW * FH - 1, Math.max(FW, src - r + 1));
+            F[dst - FW] = Math.max(0, pix - (Math.random() < 0.72 ? 1 : 0) - (Math.random() < 0.18 ? 1 : 0));
+          }
+        });
+      }
+    }
     function labTextures() {
       var S = 64, seed = 7;
       function rnd() { seed = (seed * 16807) % 2147483647; return seed / 2147483647; }
@@ -758,9 +782,9 @@
         if (m[x][y]) continue;
         [[1, 0], [-1, 0], [0, 1], [0, -1]].forEach(function (d) {
           var wx = x + d[0], wy = y + d[1];
-          if (!m[wx] || !m[wx][wy] || Math.random() > 0.12) return;
+          if (!m[wx] || !m[wx][wy] || Math.random() > 0.16) return;
           var key = wx + ',' + wy + ',' + (-d[0]) + ',' + (-d[1]); if (seen[key]) return;
-          seen[key] = { x: wx + 0.5 - d[0] * 0.58, y: wy + 0.5 - d[1] * 0.58, z: 0.3, ph: Math.random() * 10, nx: -d[0], ny: -d[1] };
+          seen[key] = { x: wx + 0.5 - d[0] * 0.72, y: wy + 0.5 - d[1] * 0.72, ax: wx + 0.5 - d[0] * 0.5, ay: wy + 0.5 - d[1] * 0.5, z: 0.27, ph: Math.random() * 10, fire: torches.length % 3, nx: -d[0], ny: -d[1] };
           torches.push(seen[key]);
         });
       }
@@ -798,6 +822,8 @@
         var o2 = ((ty & 63) * S + (tx & 63)) * 3;
         px[i] = tex[o2] * L * (1 + warm * 0.25); px[i + 1] = tex[o2 + 1] * L * (1 + warm * 0.02); px[i + 2] = tex[o2 + 2] * L * (1 - warm * 0.25); px[i + 3] = 255;
       }
+      if (!labZ || labZ.length !== lw) labZ = new Float32Array(lw);
+      stepFires();
       var fov = 1.05, plane = Math.tan(fov / 2), cdx = Math.cos(lab.ang), cdy = Math.sin(lab.ang), pdx = -cdy * plane, pdy = cdx * plane;
       for (var col = 0; col < lw; col++) {
         var cam = 2 * (col + 0.5) / lw - 1, dx = cdx + pdx * cam, dy = cdy + pdy * cam;
@@ -805,6 +831,7 @@
         var tx = (dx < 0 ? lab.x - mx : mx + 1 - lab.x) * sx, ty = (dy < 0 ? lab.y - my : my + 1 - lab.y) * sy, side = 0, guard = 0;
         while (guard++ < 80) { if (tx < ty) { tx += sx; mx += stx; side = 0; } else { ty += sy; my += sty; side = 1; } if (!M[mx] || M[mx][my]) break; }
         var dist = Math.max(0.05, side ? ty - sy : tx - sx), wh = lh / dist, top = half - wh / 2, bot = half + wh / 2;
+        labZ[col] = dist;
         var hx = lab.x + dist * dx, hy = lab.y + dist * dy, u = side ? hx : hy; u -= Math.floor(u);
         var nx = side ? 0 : -stx, ny = side ? -sty : 0, fcx = mx + nx, fcy = my + ny;   // the open cell in front of this wall face
         var torch = lab.torches[mx + ',' + my + ',' + nx + ',' + ny], tu = Math.floor(u * S);
@@ -813,16 +840,8 @@
           var i = (y * lw + col) * 4;
           if (y >= top && y < bot) {
             var v = (y - top) / wh;
-            if (torch) {
-              var du = Math.abs(u - 0.5);
-              // the flame: a flickering teardrop that glows on its own
-              var fh = 0.13 + Math.sin(t * 11 + torch.ph) * 0.012, fy = (v - (0.3 - fh)) / fh;
-              if (fy >= 0 && fy <= 1) { var fw = 0.055 * Math.sin(Math.min(1, fy * 1.15) * Math.PI) * (0.6 + fy * 0.5) + Math.sin(t * 17 + torch.ph + fy * 6) * 0.006;
-                if (du < fw) { var core = 1 - du / Math.max(0.001, fw); px[i] = 255; px[i + 1] = 120 + core * 110 + fy * 20; px[i + 2] = 30 + core * core * 140; px[i + 3] = 255; continue; } }
-              // the iron holder and its wooden handle
-              if (v > 0.3 && v < 0.33 && du < 0.045) { px[i] = 70; px[i + 1] = 40; px[i + 2] = 22; px[i + 3] = 255; continue; }
-              if (v >= 0.33 && v < 0.47 && du < 0.018) { var L0 = light(fcx, fcy, hx, hy, v) * 0.6; px[i] = 90 * L0 + 20; px[i + 1] = 55 * L0 + 10; px[i + 2] = 30 * L0 + 6; px[i + 3] = 255; continue; }
-              if (v >= 0.4 && v < 0.43 && du < 0.06) { px[i] = 26; px[i + 1] = 24; px[i + 2] = 24; px[i + 3] = 255; continue; }
+            if (torch && Math.abs(u - 0.5) < 0.045 && v > 0.4 && v < 0.49) {   // the iron plate the torch bracket is bolted to
+              var Lp = light(fcx, fcy, hx, hy, v); px[i] = 34 * Lp + 8; px[i + 1] = 32 * Lp + 8; px[i + 2] = 34 * Lp + 9; px[i + 3] = 255; continue;
             }
             var Lw = light(fcx, fcy, hx + nx * 0.01, hy + ny * 0.01, v) * shadeSide;
             put(i, T.wall, tu, Math.floor(v * S), Lw, Math.min(1, Lw));
@@ -834,6 +853,46 @@
           }
         }
       }
+      // ---- torches stick out from the walls: drawn as upright sprites, nearest last, hidden behind nearer walls ----
+      var invDet = 1 / (pdx * cdy - cdx * pdy);
+      function sprite(wx, wy, zTop, zBot, ww, fn) {
+        var rx = wx - lab.x, ry = wy - lab.y, tX = invDet * (cdy * rx - cdx * ry), tY = invDet * (-pdy * rx + pdx * ry);
+        if (tY < 0.3) return;
+        var sc = lh / tY, sxc = lw / 2 * (1 + tX / tY), sw = ww * sc, y0 = half + (zTop - 0.5) * sc, sh = (zBot - zTop) * sc;
+        var c0 = Math.max(0, Math.floor(sxc - sw / 2)), c1 = Math.min(lw - 1, Math.ceil(sxc + sw / 2)), r0 = Math.max(0, Math.floor(y0)), r1 = Math.min(lh - 1, Math.ceil(y0 + sh));
+        for (var cc = c0; cc <= c1; cc++) {
+          if (tY >= labZ[cc]) continue;
+          var uu = (cc + 0.5 - (sxc - sw / 2)) / sw; if (uu < 0 || uu >= 1) continue;
+          for (var rr = r0; rr <= r1; rr++) { var vv = (rr + 0.5 - y0) / sh; if (vv >= 0 && vv < 1) fn(uu, vv, (rr * lw + cc) * 4); }
+        }
+      }
+      function ink(i, r, gg, b) { px[i] = r; px[i + 1] = gg; px[i + 2] = b; px[i + 3] = 255; }
+      var near = lab.list.map(function (tc) { var ddx = tc.x - lab.x, ddy = tc.y - lab.y; return { tc: tc, d: ddx * ddx + ddy * ddy }; })
+        .filter(function (q) { return q.d < 81; }).sort(function (p1, p2) { return p2.d - p1.d; });
+      near.forEach(function (q) {
+        var tc = q.tc, cx2 = Math.floor(tc.x), cy2 = Math.floor(tc.y), Lt = light(cx2, cy2, tc.x, tc.y, 0.45) * 0.8;
+        // the iron arm, from the wall plate out to the holder
+        for (var k = 0; k <= 28; k++) { var f = k / 28; sprite(tc.ax + (tc.x - tc.ax) * f, tc.ay + (tc.y - tc.ay) * f, 0.425 + f * 0.01, 0.455, 0.045, function (uu, vv, i) { ink(i, 30 * Lt + 10, 28 * Lt + 9, 30 * Lt + 10); }); }
+        // the wooden handle, a little thinner at the bottom
+        sprite(tc.x, tc.y, 0.34, 0.56, 0.05, function (uu, vv, i) {
+          var hw = 0.5 - vv * 0.18; if (Math.abs(uu - 0.5) > hw * 0.9) return;
+          var band = (Math.floor(vv * 9) % 2) ? 0.85 : 1, edge = 1 - Math.abs(uu - 0.5) * 1.2;
+          ink(i, (120 * Lt + 18) * band * edge, (72 * Lt + 10) * band * edge, (38 * Lt + 6) * band * edge);
+        });
+        // the fire
+        var F = fires[tc.fire];
+        sprite(tc.x, tc.y, 0.06, 0.37, 0.15, function (uu, vv, i) {
+          var val = F[Math.floor(vv * FH) * FW + Math.floor(uu * FW)];
+          if (val < 4) return;
+          var c = FIREPAL[val], a = val < 10 ? (val - 3) / 7 : 1;
+          px[i] = px[i] * (1 - a) + c[0] * a; px[i + 1] = px[i + 1] * (1 - a) + c[1] * a; px[i + 2] = px[i + 2] * (1 - a) + c[2] * a;
+        });
+        // the iron cup the fire sits in, wider at the rim
+        sprite(tc.x, tc.y, 0.33, 0.38, 0.085, function (uu, vv, i) {
+          if (Math.abs(uu - 0.5) * 2 > 1 - vv * 0.45) return;
+          var rim = vv < 0.25 ? 1.5 : 1; ink(i, (44 * Lt + 14) * rim, (40 * Lt + 12) * rim, (40 * Lt + 12) * rim);
+        });
+      });
       o.putImageData(labImg, 0, 0);
       g.imageSmoothingEnabled = true; g.drawImage(labCv, 0, 0, w, h);
     }
