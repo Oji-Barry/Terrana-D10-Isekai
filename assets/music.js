@@ -967,21 +967,28 @@
         g.fillText('CORNER!', w / 2, h * 0.15);
       }
     }
-    // Flying Dice: d10s drift toward you at an easy pace, sized to the screen so they always read as dice
-    var dice = [], diceImg = null;
+    // Flying Dice: real 3D d10s (assets/d10.js) tumble toward you at an easy pace, each in its own color,
+    // some spinning fast and some barely turning, with their numbers on the faces
+    var dice = [], d10Load = null;
+    var DICE_COLORS = [['#e8b33a', '#3a2205'], ['#c8323c', '#ffffff'], ['#2f6fd6', '#ffffff'], ['#2f9e5a', '#ffffff'], ['#8a4fd0', '#ffffff'], ['#e8e4da', '#222222'], ['#2a2a33', '#f0c050']];
+    function newDie(far) {
+      var c = DICE_COLORS[Math.floor(Math.random() * DICE_COLORS.length)], lazy = Math.random() < 0.35;
+      function spin() { return (Math.random() - 0.5) * (lazy ? 0.5 : 2.6); }
+      return { x: (Math.random() * 2 - 1) * 2.4, y: (Math.random() * 2 - 1) * 1.5, z: far ? 8 : 1 + Math.random() * 7, size: 0.42,
+        rot: [Math.random() * 6.3, Math.random() * 6.3, Math.random() * 6.3], spin: [spin(), spin(), spin()], color: c[0], ink: c[1] };
+    }
     function flyingDice(w, h, dpr) {
       clear();
-      if (!diceImg) { diceImg = new Image(); diceImg.src = ROOT + 'assets/icons/d10.svg'; }
-      while (dice.length < 22) dice.push({ x: Math.random() * 2 - 1, y: Math.random() * 2 - 1, z: Math.random() + 0.1, rot: Math.random() * 6, spin: (Math.random() - 0.5) * 1.6 });
-      var sp = (0.16 + sm.all * 0.35) * dt, sc = Math.max(w, h) * 0.3;
-      dice.sort(function (p, q) { return q.z - p.z; });
-      dice.forEach(function (d) {
-        d.z -= sp; d.rot += d.spin * dt; if (d.z <= 0.12) { d.x = Math.random() * 2 - 1; d.y = Math.random() * 2 - 1; d.z = 1.1; }
-        var px = w / 2 + d.x / d.z * sc, py = h / 2 + d.y / d.z * sc, sz = U * 0.09 / d.z;
-        if (!diceImg.complete || !diceImg.naturalWidth) return;
-        g.save(); g.translate(px, py); g.rotate(d.rot); g.globalAlpha = Math.max(0, Math.min(1, (1.1 - d.z) * 2.5)); g.drawImage(diceImg, -sz / 2, -sz / 2, sz, sz); g.restore();
+      if (!window.D10) { if (!d10Load) d10Load = loadScript(ROOT + 'assets/d10.js?v=395f3425').catch(function () { d10Load = null; }); return; }
+      while (dice.length < 20) dice.push(newDie(false));
+      var sp = (1.1 + sm.all * 2.2) * dt, cam = { cx: w / 2, cy: h / 2, f: Math.max(w, h) * 0.35 };
+      dice.forEach(function (d, i) {
+        d.z -= sp; d.rot[0] += d.spin[0] * dt; d.rot[1] += d.spin[1] * dt; d.rot[2] += d.spin[2] * dt;
+        if (d.z <= 0.9) dice[i] = newDie(true);
       });
-      g.globalAlpha = 1;
+      dice.sort(function (p, q) { return q.z - p.z; });
+      dice.forEach(function (d) { d.alpha = Math.max(0, Math.min(1, (8 - d.z) / 1.8)); window.D10.draw(g, d, cam); });
+      g.globalAlpha = 1; g.setTransform(1, 0, 0, 1, 0, 0);
     }
     return { show: show, hide: hide, menu: menu };
   })();

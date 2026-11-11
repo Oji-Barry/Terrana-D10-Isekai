@@ -35,6 +35,7 @@ sub('assets/site.js', r"(root \+ 'assets/auth\.js)" + V, h('assets/auth.js'))
 sub('assets/music.js', r"(ROOT \+ 'assets/music\.css)" + V, h('assets/music.css'))
 sub('assets/music.js', r"(ROOT \+ 'assets/music/library\.json)" + V, h('assets/music/library.json'))
 sub('assets/music.js', r"(ROOT \+ 'assets/music/milkdrop\.json)" + V, h('assets/music/milkdrop.json'))
+sub('assets/music.js', r"(ROOT \+ 'assets/d10\.js)" + V, h('assets/d10.js'))
 sub('assets/site.js', r"(root \+ 'assets/music\.js)" + V, h('assets/music.js'))
 sub('assets/site.js', r"(root \+ 'assets/sfx\.js)" + V, h('assets/sfx.js'))
 
