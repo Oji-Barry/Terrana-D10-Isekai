@@ -336,3 +336,4 @@
 }
 .cb-soundwrap { display: inline-flex; align-items: center; gap: 6px; margin-left: auto; }
 .cb-vol { width: 90px; accent-color: var(--gold); }
+.cb-music > h2 { margin: 0 0 8px; text-align: center; font-size: 18px; color: var(--gold); }

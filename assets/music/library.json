@@ -1,0 +1,353 @@
+{
+ "credit": "Music by Juhani Junkala (CC0)",
+ "moods": [
+  {
+   "id": "theme",
+   "name": "Title and Theme",
+   "tracks": [
+    "jrpg-theme",
+    "retro-title-screen",
+    "home-town"
+   ]
+  },
+  {
+   "id": "battle",
+   "name": "Battle",
+   "tracks": [
+    "encounter-with-the-witches",
+    "retro-level-1",
+    "retro-level-2",
+    "retro-level-3",
+    "preparing-for-battle"
+   ]
+  },
+  {
+   "id": "boss",
+   "name": "Boss Fight",
+   "tracks": [
+    "apocalypse",
+    "ancient-evil-awakens",
+    "army-approaching"
+   ]
+  },
+  {
+   "id": "tension",
+   "name": "Tension and Build-up",
+   "tracks": [
+    "preparing-for-battle",
+    "army-approaching",
+    "sneaking-around",
+    "military-base"
+   ]
+  },
+  {
+   "id": "villain",
+   "name": "Villains and Evil",
+   "tracks": [
+    "witch-s-lair",
+    "ancient-evil-awakens",
+    "whispers-from-beyond",
+    "apocalypse"
+   ]
+  },
+  {
+   "id": "dungeon",
+   "name": "Dungeons and Caves",
+   "tracks": [
+    "catacombs",
+    "tha-el-mines",
+    "whispers-from-beyond",
+    "witch-s-lair"
+   ]
+  },
+  {
+   "id": "stealth",
+   "name": "Stealth",
+   "tracks": [
+    "sneaking-around",
+    "military-base",
+    "catacombs"
+   ]
+  },
+  {
+   "id": "adventure",
+   "name": "Exploration and Adventure",
+   "tracks": [
+    "grasslands",
+    "military-base",
+    "prairie-nights",
+    "tropical-island",
+    "retro-level-1"
+   ]
+  },
+  {
+   "id": "town",
+   "name": "Towns and Taverns",
+   "tracks": [
+    "home-town",
+    "where-time-stands-still",
+    "sunshine-coast",
+    "bazaar"
+   ]
+  },
+  {
+   "id": "market",
+   "name": "Markets and Festivals",
+   "tracks": [
+    "bazaar",
+    "sunshine-coast",
+    "retro-level-2"
+   ]
+  },
+  {
+   "id": "seaside",
+   "name": "Seaside and Summer",
+   "tracks": [
+    "tropical-island",
+    "sunshine-coast",
+    "summer-memories",
+    "sand-castles"
+   ]
+  },
+  {
+   "id": "night",
+   "name": "Night",
+   "tracks": [
+    "prairie-nights",
+    "whispers-from-beyond",
+    "where-time-stands-still"
+   ]
+  },
+  {
+   "id": "mystery",
+   "name": "Mystery",
+   "tracks": [
+    "where-time-stands-still",
+    "whispers-from-beyond",
+    "catacombs"
+   ]
+  },
+  {
+   "id": "calm",
+   "name": "Calm and Rest",
+   "tracks": [
+    "peaceful-days",
+    "a-place-i-call-home",
+    "sand-castles",
+    "summer-memories",
+    "innocence",
+    "childhood-friends"
+   ]
+  },
+  {
+   "id": "sad",
+   "name": "Sad and Memories",
+   "tracks": [
+    "childhood-friends",
+    "innocence",
+    "a-place-i-call-home",
+    "where-time-stands-still"
+   ]
+  },
+  {
+   "id": "home",
+   "name": "Home and Hearth",
+   "tracks": [
+    "a-place-i-call-home",
+    "home-town",
+    "peaceful-days"
+   ]
+  },
+  {
+   "id": "victory",
+   "name": "Victory and Endings",
+   "tracks": [
+    "retro-ending",
+    "peaceful-days",
+    "jrpg-theme"
+   ]
+  }
+ ],
+ "tracks": [
+  {
+   "id": "a-place-i-call-home",
+   "title": "A Place I Call Home",
+   "file": "a-place-i-call-home.mp3",
+   "dur": 46.5
+  },
+  {
+   "id": "ancient-evil-awakens",
+   "title": "Ancient Evil Awakens",
+   "file": "ancient-evil-awakens.mp3",
+   "dur": 92.9
+  },
+  {
+   "id": "apocalypse",
+   "title": "Apocalypse",
+   "file": "apocalypse.mp3",
+   "dur": 58.6
+  },
+  {
+   "id": "army-approaching",
+   "title": "Army Approaching",
+   "file": "army-approaching.mp3",
+   "dur": 124.3
+  },
+  {
+   "id": "bazaar",
+   "title": "Bazaar",
+   "file": "bazaar.mp3",
+   "dur": 110.4
+  },
+  {
+   "id": "catacombs",
+   "title": "Catacombs",
+   "file": "catacombs.mp3",
+   "dur": 81.0
+  },
+  {
+   "id": "childhood-friends",
+   "title": "Childhood Friends",
+   "file": "childhood-friends.mp3",
+   "dur": 102.9
+  },
+  {
+   "id": "encounter-with-the-witches",
+   "title": "Encounter With The Witches",
+   "file": "encounter-with-the-witches.mp3",
+   "dur": 113.6
+  },
+  {
+   "id": "grasslands",
+   "title": "Grasslands",
+   "file": "grasslands.mp3",
+   "dur": 71.5
+  },
+  {
+   "id": "home-town",
+   "title": "Home Town",
+   "file": "home-town.mp3",
+   "dur": 90.0
+  },
+  {
+   "id": "innocence",
+   "title": "Innocence",
+   "file": "innocence.mp3",
+   "dur": 71.2
+  },
+  {
+   "id": "jrpg-theme",
+   "title": "JRPG Theme",
+   "file": "jrpg-theme.mp3",
+   "dur": 99.5
+  },
+  {
+   "id": "military-base",
+   "title": "Military Base",
+   "file": "military-base.mp3",
+   "dur": 88.7
+  },
+  {
+   "id": "peaceful-days",
+   "title": "Peaceful Days",
+   "file": "peaceful-days.mp3",
+   "dur": 64.0
+  },
+  {
+   "id": "prairie-nights",
+   "title": "Prairie Nights",
+   "file": "prairie-nights.mp3",
+   "dur": 92.9
+  },
+  {
+   "id": "preparing-for-battle",
+   "title": "Preparing For Battle",
+   "file": "preparing-for-battle.mp3",
+   "dur": 54.9
+  },
+  {
+   "id": "retro-ending",
+   "title": "Retro Ending",
+   "file": "retro-ending.mp3",
+   "dur": 44.7
+  },
+  {
+   "id": "retro-level-1",
+   "title": "Retro Level 1",
+   "file": "retro-level-1.mp3",
+   "dur": 74.3
+  },
+  {
+   "id": "retro-level-2",
+   "title": "Retro Level 2",
+   "file": "retro-level-2.mp3",
+   "dur": 72.8
+  },
+  {
+   "id": "retro-level-3",
+   "title": "Retro Level 3",
+   "file": "retro-level-3.mp3",
+   "dur": 81.9
+  },
+  {
+   "id": "retro-title-screen",
+   "title": "Retro Title Screen",
+   "file": "retro-title-screen.mp3",
+   "dur": 11.3
+  },
+  {
+   "id": "sand-castles",
+   "title": "Sand Castles",
+   "file": "sand-castles.mp3",
+   "dur": 71.2
+  },
+  {
+   "id": "sneaking-around",
+   "title": "Sneaking Around",
+   "file": "sneaking-around.mp3",
+   "dur": 92.0
+  },
+  {
+   "id": "summer-memories",
+   "title": "Summer Memories",
+   "file": "summer-memories.mp3",
+   "dur": 65.5
+  },
+  {
+   "id": "sunshine-coast",
+   "title": "Sunshine Coast",
+   "file": "sunshine-coast.mp3",
+   "dur": 112.4
+  },
+  {
+   "id": "tha-el-mines",
+   "title": "Tha'el Mines",
+   "file": "tha-el-mines.mp3",
+   "dur": 60.0
+  },
+  {
+   "id": "tropical-island",
+   "title": "Tropical Island",
+   "file": "tropical-island.mp3",
+   "dur": 53.4
+  },
+  {
+   "id": "where-time-stands-still",
+   "title": "Where Time Stands Still",
+   "file": "where-time-stands-still.mp3",
+   "dur": 75.5
+  },
+  {
+   "id": "whispers-from-beyond",
+   "title": "Whispers From Beyond",
+   "file": "whispers-from-beyond.mp3",
+   "dur": 81.2
+  },
+  {
+   "id": "witch-s-lair",
+   "title": "Witch's Lair",
+   "file": "witch-s-lair.mp3",
+   "dur": 80.0
+  }
+ ]
+}

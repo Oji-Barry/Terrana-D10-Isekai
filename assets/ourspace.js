@@ -368,6 +368,26 @@
   }
 
   // ---------- Player page ----------
+  // ---------- Profile songs: one from the site's music, or one the player uploaded ----------
+  var SONG_BUCKET = 'ourspace-music';
+  function songBase() { return db.storage.from(SONG_BUCKET).getPublicUrl('x').data.publicUrl.replace(/x$/, ''); }
+  function cleanSong(sg) {
+    if (!sg || typeof sg !== 'object') return null;
+    if (sg.lib && typeof sg.lib === 'string') return { lib: sg.lib.slice(0, 60) };
+    if (typeof sg.url === 'string' && sg.url.indexOf(songBase()) === 0) return { url: sg.url, title: String(sg.title || 'Song').slice(0, 80) };
+    return null;
+  }
+  function songBox(theme, owner) {
+    var sg = cleanSong((theme || {}).song), M = window.TerranaMusic;
+    if (!sg || !M) return null;
+    var holder = el('div', {});
+    var b = box('♫ ' + owner + '’s Song', [holder], 'os-songbox');
+    M.setRepeat('one');
+    M.mountPlayer(holder, { songOnly: true });
+    if (sg.lib) M.play(sg.lib); else M.playUrl(sg.url, sg.title);
+    return b;
+  }
+
   async function userPage(main) {
     var name = qs.get('u') || (me && me.username);
     if (!name) { main.appendChild(box('No page picked', [el('p', { text: 'Pick a player from the OurSpace home page.' })])); return; }
@@ -396,6 +416,7 @@
       pg.status ? el('p', {}, [el('strong', { text: 'Status: ' }), pg.status]) : null,
       mine ? el('a', { class: 'os-btn go', href: 'edit.html', text: 'Edit My Page' }) : friendButtons(prof.id, rel, 'messages.html?to=' + encodeURIComponent(prof.username))
     ])]));
+    var sbx = songBox(pg.theme, pg.display_name || prof.username); if (sbx) left.appendChild(sbx);
     left.appendChild(box(prof.username + '’s Interests', [infoTable([['General', it.general], ['Music', it.music], ['Heroes', it.heroes], ['Games', it.games], ['Groups', it.groups]])]));
     var cl = el('ul', { class: 'os-list' });
     chars.forEach(function (c) { cl.appendChild(el('li', {}, [el('a', { href: cLink(c.id), text: c.name }), c.tagline ? el('span', { class: 'os-hint', text: c.tagline }) : null])); });
@@ -440,6 +461,7 @@
       !mine && rel === 'friends' ? el('a', { class: 'os-btn go', href: 'messages.html?to=' + encodeURIComponent(owner.username) + '&tc=' + encodeURIComponent(id), text: 'Send ' + cp.name + ' a Message' }) : null,
       !mine && me && rel !== 'friends' ? el('p', { class: 'os-hint' }, ['Become friends with ', el('a', { href: uLink(owner.username), text: owner.username }), ' to message their characters.']) : null
     ])]));
+    var sbc = songBox(cp.theme, d.display_name || cp.name); if (sbc) left.appendChild(sbc);
     left.appendChild(box('Details', [infoTable([['Heritage', d.heritage], ['Past Life', d.past_life], ['Party', d.party], ['Rank', d.rank], ['Location', d.location],
       ['Age', d.age], ['Birthday', d.birthday], ['Star Sign', d.star_sign], ['Height', d.height], ['Hair', d.hair], ['Eyes', d.eyes], ['Relationship', d.relationship],
       ['Likes', d.likes], ['Dislikes', d.dislikes], ['Favorite Food', d.fav_food], ['Fear', d.fear]])]));
@@ -544,6 +566,72 @@
     }
     form.appendChild(el('fieldset', {}, [el('legend', { text: 'Top 8' }), el('p', { class: 'os-hint', text: isChar ? 'Characters from this one’s story: yours and your friends’.' : 'Your friends and characters. Add friends first to see them here.' }), t8]));
 
+    // Profile song
+    var song = cleanSong(theme.song);
+    var songSel = el('select', { id: 'f-song' });
+    var songMsg = el('p', { class: 'os-hint', id: 'song-msg' });
+    var songUp = el('input', { type: 'file', id: 'f-song-up', accept: 'audio/*' });
+    var myUploads = [];
+    async function fillSongs() {
+      var M = window.TerranaMusic, lib = M ? await M.library() : { moods: [], tracks: [] };
+      var up = await db.storage.from(SONG_BUCKET).list(me.id, { limit: 20, sortBy: { column: 'created_at', order: 'desc' } });
+      myUploads = (up.data || []).filter(function (f) { return f.name && f.name !== '.emptyFolderPlaceholder'; }).map(function (f) {
+        return { url: songBase() + me.id + '/' + f.name, title: f.name.replace(/^\d+-/, '').replace(/\.[a-z0-9]+$/i, '').replace(/[-_]+/g, ' ') };
+      });
+      songSel.textContent = '';
+      songSel.appendChild(el('option', { value: '', text: 'No song' }));
+      if (myUploads.length) {
+        var og = el('optgroup', { label: 'My uploads' });
+        myUploads.forEach(function (u, i) { og.appendChild(el('option', { value: 'u:' + i, text: u.title })); });
+        songSel.appendChild(og);
+      }
+      lib.moods.forEach(function (m) {
+        var og2 = el('optgroup', { label: m.name });
+        m.tracks.forEach(function (id) { var t = lib.byId[id]; og2.appendChild(el('option', { value: 'l:' + id + ':' + m.id, text: t.title })); });
+        songSel.appendChild(og2);
+      });
+      if (song && song.lib) { var o = songSel.querySelector('option[value^="l:' + song.lib + ':"]'); if (o) songSel.value = o.value; }
+      else if (song && song.url) { var k = myUploads.findIndex(function (u) { return u.url === song.url; }); songSel.value = k >= 0 ? 'u:' + k : ''; }
+    }
+    function readSong() {
+      var v = songSel.value;
+      if (v.indexOf('l:') === 0) return { lib: v.split(':')[1] };
+      if (v.indexOf('u:') === 0) { var u = myUploads[+v.slice(2)]; return u ? { url: u.url, title: u.title } : null; }
+      return null;
+    }
+    songUp.addEventListener('change', async function () {
+      var fl = songUp.files[0]; if (!fl) return;
+      if (fl.size > 10 * 1024 * 1024) { say('song-msg', 'That file is over 10 MB. Try a shorter song or a smaller file.', true); return; }
+      if (!/^audio\//.test(fl.type)) { say('song-msg', 'That is not a music file this site can play.', true); return; }
+      say('song-msg', 'Uploading...');
+      var safe = fl.name.replace(/[^A-Za-z0-9._-]+/g, '-').slice(-60);
+      var r = await db.storage.from(SONG_BUCKET).upload(me.id + '/' + Date.now() + '-' + safe, fl, { contentType: fl.type, upsert: false });
+      if (r.error) { say('song-msg', /policy|row-level/i.test(r.error.message || '') ? 'You can keep 5 songs. Delete one first.' : oops(r.error), true); return; }
+      song = { url: songBase() + r.data.path, title: safe.replace(/\.[a-z0-9]+$/i, '').replace(/[-_]+/g, ' ') };
+      await fillSongs();
+      say('song-msg', 'Uploaded. Save Page to make it your song.');
+      songUp.value = '';
+    });
+    var songPrev = el('button', { class: 'os-btn', type: 'button', text: 'Listen', onclick: function () {
+      var M = window.TerranaMusic, sg = readSong(); if (!M || !sg) return;
+      M.unlock(); M.setRepeat('one'); if (sg.lib) M.play(sg.lib); else M.playUrl(sg.url, sg.title);
+    } });
+    var songStop = el('button', { class: 'os-btn', type: 'button', text: 'Stop', onclick: function () { if (window.TerranaMusic) window.TerranaMusic.stop(); } });
+    var songDel = el('button', { class: 'os-btn danger', type: 'button', text: 'Delete Upload', onclick: async function () {
+      var v = songSel.value; if (v.indexOf('u:') !== 0) { say('song-msg', 'Pick one of your uploads first.', true); return; }
+      var u = myUploads[+v.slice(2)]; if (!u || !confirm('Delete "' + u.title + '" for good?')) return;
+      var r = await db.storage.from(SONG_BUCKET).remove([u.url.slice(songBase().length)]);
+      if (r.error) { say('song-msg', oops(r.error), true); return; }
+      if (song && song.url === u.url) song = null;
+      await fillSongs(); say('song-msg', 'Deleted. Save Page if it was your song.');
+    } });
+    fillSongs().catch(function () {});
+    form.appendChild(el('fieldset', {}, [el('legend', { text: 'Profile Song' }),
+      el('p', { class: 'os-hint', text: 'Plays when people visit this page. Pick from the site’s music or upload your own (up to 5 songs, 10 MB each). Only upload music you have the right to share.' }),
+      el('div', {}, [el('label', { for: 'f-song', text: 'Song' }), songSel]),
+      el('div', {}, [songPrev, songStop, songDel]),
+      el('div', {}, [el('label', { for: 'f-song-up', text: 'Upload a song' }), songUp]), songMsg]));
+
     // Colors
     var pr = el('select', { id: 'th-preset' });
     Object.keys(THEMES).forEach(function (k) { pr.appendChild(el('option', { value: k, text: THEMES[k].label })); });
@@ -559,6 +647,7 @@
     COLOR_KEYS.forEach(function (k) { colors.appendChild(el('label', {}, [el('input', { type: 'color', id: 'th-' + k[0], value: colorVals[k[0]] }), k[1]])); });
     function readTheme() {
       var t = { preset: pr.value, font: fo.value, pattern: pa.value, colors: {} };
+      var sgx = readSong(); if (sgx) t.song = sgx;
       var base = THEMES[pr.value];
       COLOR_KEYS.forEach(function (k) { var v = $('th-' + k[0]).value.toLowerCase(); if (v !== base[k[0]].toLowerCase()) t.colors[k[0]] = v; });
       return t;

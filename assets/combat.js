@@ -312,7 +312,62 @@
     else if (R.lastPhaseKey !== undefined && k && pk !== R.lastPhaseKey) sfx('phase');
     R.lastTurnKey = k; R.lastPhaseKey = pk;
   }
-  function drawAll() { syncOrder(); turnSounds(); drawTop(); drawBanner(); drawMap(); drawPhases(); drawLoadout(); drawCard(); drawLog(); }
+  // ---------- Music: the Storyteller picks it and everyone hears it. A switch lets players pick too. ----------
+  function musicState() { return ST().music || {}; }
+  function canPickMusic() { return R.host || !!musicState().open; }
+  async function writeMusic(patch) {
+    var m = Object.assign({}, musicState(), patch);
+    if (R.host) return saveState({ music: m });
+    var r = await db.rpc('set_music', { e: R.enc.id, m: m });
+    if (r.error) { alert(A.friendly ? A.friendly(r.error) : r.error.message); return; }
+    R.enc.state = r.data; drawAll();
+  }
+  function musicAction(action, data) {
+    var M = window.TerranaMusic, m = musicState(), now = Date.now(), s = M.state();
+    var pos = m.playing ? (now - (m.t0 || now)) / 1000 : (m.pos || 0);
+    if (action === 'toggle') {
+      if (m.id && m.playing && !s.playing) { M.resume(); return; }   // the browser held it back: just start it here
+      if (!m.id) { var first = M.nextId(1); if (first) writeMusic({ id: first, mood: s.mood, playing: true, t0: now, pos: 0 }); return; }
+      return writeMusic(m.playing ? { playing: false, pos: s.time || pos } : { playing: true, t0: now - (m.pos || 0) * 1000 });
+    }
+    if (action === 'next' || action === 'prev') { var n = M.nextId(action === 'next' ? 1 : -1); if (n) writeMusic({ id: n, playing: true, t0: now, pos: 0 }); return; }
+    if (action === 'pick') return writeMusic({ id: data, playing: true, t0: now, pos: 0 });
+    if (action === 'mood') { M.setMood(data); return writeMusic({ mood: data }); }
+    if (action === 'repeat') return writeMusic({ repeat: { all: 'one', one: 'off', off: 'all' }[m.repeat || 'all'] });
+    if (action === 'seek') return writeMusic(m.playing ? { t0: now - data * 1000 } : { pos: data });
+  }
+  function syncMusic() {
+    var M = window.TerranaMusic; if (!M) return;
+    var box = $('cb-music');
+    if (box && !R.player) {
+      var sw = R.host ? el('label', { class: 'mp-switch' }, [el('input', { type: 'checkbox', id: 'mus-open', onchange: function (e) { writeMusic({ open: e.target.checked }); } }), 'Let players pick songs']) : null;
+      box.appendChild(el('h2', { class: 'px', text: 'Music' }));
+      R.player = M.mountPlayer(box, { canChange: canPickMusic, onAction: musicAction, lockedNote: 'The Storyteller picks the music. You can still look through the list.', extra: sw });
+      M.on(function (what) { if (what === 'play') { R.musicKey = null; setTimeout(syncMusic, 50); } });   // catch up after pressing play
+      M.onEnded = function () {   // everyone moves on together; the Storyteller's page writes it down
+        var m = musicState(), n = (m.repeat || 'all') === 'off' ? M.nextId(1) : M.nextId(1);
+        if (!n) { if (R.host) writeMusic({ playing: false, pos: 0 }); return; }
+        M.play(n);
+        if (R.host) writeMusic({ id: n, playing: true, t0: Date.now(), pos: 0 });
+      };
+    }
+    var m = musicState(), s = M.state();
+    var sw2 = $('mus-open'); if (sw2) sw2.checked = !!m.open;
+    if (m.mood && m.mood !== s.mood) M.setMood(m.mood);
+    if ((m.repeat || 'all') !== s.repeat) M.setRepeat(m.repeat || 'all');
+    var key = JSON.stringify([m.id, m.playing, m.t0, m.pos]);
+    if (key === R.musicKey) { if (R.player) R.player.redraw(); return; }
+    R.musicKey = key;
+    if (!m.id) { if (s.playing) M.pause(); if (R.player) R.player.redraw(); return; }
+    var dur = (M.track(m.id) || {}).dur || 0, at = m.playing ? (Date.now() - (m.t0 || Date.now())) / 1000 : (m.pos || 0);
+    if (dur && at > dur) at = (m.repeat || 'all') === 'one' ? at % dur : Math.max(0, dur - 0.5);
+    if (m.id !== s.id) { M.play(m.id, { at: at, paused: !m.playing }); return; }
+    if (!m.playing) { if (s.playing) M.pause(); M.seek(at); return; }
+    if (Math.abs(s.time - at) > 2) M.seek(at);
+    if (!s.playing) M.resume();
+  }
+
+  function drawAll() { syncOrder(); turnSounds(); syncMusic(); drawTop(); drawBanner(); drawMap(); drawPhases(); drawLoadout(); drawCard(); drawLog(); }
 
   // ---------- top box ----------
   function drawTop() {
@@ -1766,7 +1821,7 @@
       el('div', { class: 'cb-col' }, [
         el('section', { class: 'panel win cb-arena' }, [el('div', { class: 'cb-mapwrap', id: 'cb-map' }), el('nav', { class: 'cb-phases', id: 'cb-phases', 'aria-label': 'Combat phases' }), el('div', { class: 'cb-toasts', id: 'cb-toasts', 'aria-live': 'polite' })]),
         el('section', { class: 'panel win', id: 'cb-loadout' })]),
-      el('div', { class: 'cb-col' }, [el('section', { class: 'panel win cb-card', id: 'cb-card' }), el('section', { class: 'panel win', id: 'cb-log' })])
+      el('div', { class: 'cb-col' }, [el('section', { class: 'panel win cb-card', id: 'cb-card' }), el('section', { class: 'panel win cb-music', id: 'cb-music', 'aria-label': 'Music' }), el('section', { class: 'panel win', id: 'cb-log' })])
     ]));
     await sprites().catch(function () {});
     await refresh();

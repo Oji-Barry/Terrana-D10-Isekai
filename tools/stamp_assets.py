@@ -32,6 +32,10 @@ for js in ('assets/charview.js', 'assets/combat.js'):
 sub('assets/combat.js', r"(fetch\('bestiary\.json)" + V, h('combat/bestiary.json'))
 sub('assets/combat.js', r"(fetch\('\.\./assets/sprites/sprites\.json)" + V, h('assets/sprites/sprites.json'))
 sub('assets/site.js', r"(root \+ 'assets/auth\.js)" + V, h('assets/auth.js'))
+sub('assets/music.js', r"(ROOT \+ 'assets/music\.css)" + V, h('assets/music.css'))
+sub('assets/music.js', r"(ROOT \+ 'assets/music/library\.json)" + V, h('assets/music/library.json'))
+sub('assets/site.js', r"(root \+ 'assets/music\.js)" + V, h('assets/music.js'))
+sub('assets/site.js', r"(root \+ 'assets/sfx\.js)" + V, h('assets/sfx.js'))
 
 # 2. every page
 vers = {os.path.basename(p): h(p) for p in glob.glob('assets/*.js') + glob.glob('assets/*.css')}

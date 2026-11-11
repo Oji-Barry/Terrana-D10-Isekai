@@ -4,7 +4,8 @@
    section, side menu, and credits so they only live in one place. */
 
 (function () {
-  var root = document.documentElement.getAttribute('data-root') || '';
+  // Full addresses, so the menu's links still work after a book page swaps in without reloading
+  var root = new URL(document.documentElement.getAttribute('data-root') || './', location.href).href;
   var page = document.body.getAttribute('data-page') || '';
   var address = document.body.getAttribute('data-address') || 'www.terrana.ccn';
 
@@ -363,6 +364,79 @@
 
     var curItem = side.querySelector('.chapters-nav .menu-item[data-slug][aria-current="page"]');
     if (curItem) openItem(curItem);
+
+    // ---- Music, at the top of the menu. It keeps playing while you move between book pages. ----
+    var music = document.createElement('details');
+    music.className = 'menu-music';
+    var MKEY = 'terrana-music-open';
+    var mOpen = true; try { mOpen = localStorage.getItem(MKEY) !== '0'; } catch (e) {}
+    music.open = mOpen;
+    music.innerHTML = '<summary class="menu-label px">MUSIC</summary><div class="menu-music-box"></div>';
+    music.addEventListener('toggle', function () { try { localStorage.setItem(MKEY, music.open ? '1' : '0'); } catch (e) {} });
+    side.insertBefore(music, side.querySelector('.search-results'));
+    loadScript(root + 'assets/music.js?v=3a09f2f4').then(function () {
+      window.TerranaMusic.mountPlayer(music.querySelector('.menu-music-box'), {});
+      window.TerranaMusic.keepAlive();
+    }).catch(function () { music.remove(); });
+
+    // ---- Moving between book pages without a reload, so the music never stops ----
+    var rootPath = new URL(root).pathname;
+    function isBook(u) {
+      if (u.origin !== location.origin || u.pathname.indexOf(rootPath) !== 0) return false;
+      var rel = u.pathname.slice(rootPath.length);
+      return rel === '' || rel === 'index.html' || /^rulebook\/([a-z0-9]+\.html)?$/.test(rel);
+    }
+    function landOn(hash) {
+      var t = hash && document.getElementById(decodeURIComponent(hash.slice(1)));
+      if (t) t.scrollIntoView(); else window.scrollTo(0, 0);
+    }
+    function go(url, push) {
+      return fetch(url).then(function (r) { if (!r.ok) throw new Error(); return r.text(); }).then(function (html) {
+        var doc = new DOMParser().parseFromString(html, 'text/html');
+        var fresh = doc.querySelector('main.content'), cur = document.querySelector('main.content');
+        if (!fresh || !cur || !doc.querySelector('.layout')) throw new Error();
+        if (push) history.pushState({ book: 1 }, '', url);
+        shown = new URL(url, location.href).pathname;
+        document.title = doc.title;
+        page = doc.body.getAttribute('data-page') || '';
+        document.body.setAttribute('data-page', page);
+        var addr = doc.body.getAttribute('data-address') || 'www.terrana.ccn';
+        document.body.setAttribute('data-address', addr);
+        var ab = document.querySelector('.addressbar'); if (ab) ab.textContent = 'CCN://' + addr;
+        cur.replaceWith(document.importNode(fresh, true));
+        var chap = chapters.some(function (c) { return c[0] === page; });
+        Array.prototype.forEach.call(document.querySelectorAll('.site-nav a:not(.login)'), function (a, i) {
+          var n = nav[i]; if (!n) return;
+          if (page === n[0] || (n[0] === 'rulebook' && chap)) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
+        });
+        var home = side.querySelector('.home-item'); if (home) { if (page === 'home') home.setAttribute('aria-current', 'page'); else home.removeAttribute('aria-current'); }
+        Array.prototype.forEach.call(side.querySelectorAll('.menu-sub'), function (x) { x.remove(); });
+        var now = null;
+        Array.prototype.forEach.call(items, function (it) {
+          it.classList.remove('picked'); it.setAttribute('aria-expanded', 'false');
+          if (it.getAttribute('data-slug') === page) { it.setAttribute('aria-current', 'page'); now = it; } else it.removeAttribute('aria-current');
+        });
+        if (now) openItem(now);
+        if (isPhone()) setHidden(true, false);
+        landOn(new URL(url, location.href).hash);
+        var h1 = document.querySelector('main.content h1'); if (h1) { h1.setAttribute('tabindex', '-1'); h1.focus({ preventScroll: true }); }
+      }).catch(function () { location.href = url; });
+    }
+    document.addEventListener('click', function (ev) {
+      if (ev.defaultPrevented || ev.button !== 0 || ev.metaKey || ev.ctrlKey || ev.shiftKey || ev.altKey) return;
+      var a = ev.target.closest && ev.target.closest('a[href]');
+      if (!a || (a.target && a.target !== '_self') || a.hasAttribute('download')) return;
+      var u = new URL(a.getAttribute('href'), location.href);
+      if (!isBook(u)) return;
+      if (u.pathname === location.pathname) return;   // a spot on this same page
+      ev.preventDefault();
+      go(u.href, true);
+    });
+    history.replaceState({ book: 1 }, '', location.href);
+    var shown = location.pathname;
+    window.addEventListener('popstate', function () {
+      if (location.pathname !== shown && isBook(new URL(location.href))) go(location.href, false);
+    });
   }
 
   var bottom = document.getElementById('site-bottom');
@@ -373,6 +447,7 @@
         '<div class="ac-coin px">INSERT COIN</div>' +
         '<div class="ac-row"><span class="ac-role">ICONS</span><span class="ac-dots" aria-hidden="true"></span><span class="ac-name">LORC AND SKOLL, <a href="https://game-icons.net">GAME-ICONS.NET</a> (<a href="https://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a>)</span></div>' +
         '<div class="ac-row"><span class="ac-role">SPRITES</span><span class="ac-dots" aria-hidden="true"></span><span class="ac-name"><a href="https://opengameart.org/content/dawnlike-16x16-universal-rogue-like-tileset-v181">DAWNLIKE</a> BY DRAGONDEPLATINO <span class="ac-platino" role="img" aria-label="Platino, the artist\'s sprite" title="Platino"><span style="background-image:url(' + root + 'assets/sprites/dawnlike/Reptile0.png)"></span><span style="background-image:url(' + root + 'assets/sprites/dawnlike/Reptile1.png)"></span></span>, PALETTE BY DAWNBRINGER (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a>)</span></div>' +
+        '<div class="ac-row"><span class="ac-role">MUSIC</span><span class="ac-dots" aria-hidden="true"></span><span class="ac-name"><a href="https://juhanijunkala.com/">JUHANI JUNKALA</a>, JRPG MUSIC PACKS AND RETRO GAME MUSIC PACK (<a href="https://creativecommons.org/publicdomain/zero/1.0/">CC0</a>)</span></div>' +
         '<div class="ac-row"><span class="ac-role">PIXEL FONT</span><span class="ac-dots" aria-hidden="true"></span><span class="ac-name"><a href="https://github.com/fontworks-fonts/DotGothic16">DOTGOTHIC16</a> BY FONTWORKS</span></div>' +
         '<div class="ac-row"><span class="ac-role">TEXT FONT</span><span class="ac-dots" aria-hidden="true"></span><span class="ac-name"><a href="https://fonts.google.com/specimen/Nunito+Sans">NUNITO SANS</a> VIA <a href="https://fontsource.org">FONTSOURCE</a></span></div>' +
         '<div class="ac-row"><span class="ac-role">FONT LICENSE</span><span class="ac-dots" aria-hidden="true"></span><span class="ac-name"><a href="https://openfontlicense.org">SIL OPEN FONT LICENSE</a></span></div>' +
