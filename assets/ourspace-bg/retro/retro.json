@@ -1,0 +1,146 @@
+[
+{
+"id": "boxes",
+"name": "Boxes",
+"tint": false,
+"src": "classic-wallpaper by Peter O. (Unlicense)"
+},
+{
+"id": "brushed",
+"name": "Brushed Steel",
+"tint": false,
+"src": "classic-wallpaper by Peter O. (Unlicense)"
+},
+{
+"id": "check",
+"name": "Desktop Checks",
+"tint": false,
+"src": "classic-wallpaper by Peter O. (Unlicense)"
+},
+{
+"id": "circlec",
+"name": "Halo Squares",
+"tint": false,
+"src": "classic-wallpaper by Peter O. (Unlicense)"
+},
+{
+"id": "circlews",
+"name": "Rust Halos",
+"tint": false,
+"src": "classic-wallpaper by Peter O. (Unlicense)"
+},
+{
+"id": "dzigzagcyan",
+"name": "Cyan Zigzag",
+"tint": false,
+"src": "classic-wallpaper by Peter O. (Unlicense)"
+},
+{
+"id": "truchet3color",
+"name": "Copper Truchet",
+"tint": false,
+"src": "classic-wallpaper by Peter O. (Unlicense)"
+},
+{
+"id": "truchetff5500vga",
+"name": "VGA Grid",
+"tint": false,
+"src": "classic-wallpaper by Peter O. (Unlicense)"
+},
+{
+"id": "truchet2colorthick",
+"name": "Stone Truchet",
+"tint": false,
+"src": "classic-wallpaper by Peter O. (Unlicense)"
+},
+{
+"id": "dstripe",
+"name": "Diagonal Bars",
+"tint": true,
+"src": "classic-wallpaper by Peter O. (Unlicense)"
+},
+{
+"id": "dzigzag",
+"name": "Zigzag",
+"tint": true,
+"src": "classic-wallpaper by Peter O. (Unlicense)"
+},
+{
+"id": "smallslant",
+"name": "Small Slant",
+"tint": true,
+"src": "classic-wallpaper by Peter O. (Unlicense)"
+},
+{
+"id": "truchet2color",
+"name": "Truchet Waves",
+"tint": true,
+"src": "classic-wallpaper by Peter O. (Unlicense)"
+},
+{
+"id": "bg_1",
+"name": "Fine Grid",
+"tint": true,
+"src": "Background-Textures by John Galiszewski (MIT)"
+},
+{
+"id": "bg_10",
+"name": "Parquet",
+"tint": true,
+"src": "Background-Textures by John Galiszewski (MIT)"
+},
+{
+"id": "bg_11",
+"name": "Window Panes",
+"tint": true,
+"src": "Background-Textures by John Galiszewski (MIT)"
+},
+{
+"id": "bg_2",
+"name": "Lattice",
+"tint": true,
+"src": "Background-Textures by John Galiszewski (MIT)"
+},
+{
+"id": "bg_3",
+"name": "Rings",
+"tint": true,
+"src": "Background-Textures by John Galiszewski (MIT)"
+},
+{
+"id": "bg_4",
+"name": "Ripples",
+"tint": true,
+"src": "Background-Textures by John Galiszewski (MIT)"
+},
+{
+"id": "bg_5",
+"name": "Pinstripe",
+"tint": true,
+"src": "Background-Textures by John Galiszewski (MIT)"
+},
+{
+"id": "bg_6",
+"name": "Basketweave",
+"tint": true,
+"src": "Background-Textures by John Galiszewski (MIT)"
+},
+{
+"id": "bg_7",
+"name": "Dashes",
+"tint": true,
+"src": "Background-Textures by John Galiszewski (MIT)"
+},
+{
+"id": "bg_8",
+"name": "Prism",
+"tint": true,
+"src": "Background-Textures by John Galiszewski (MIT)"
+},
+{
+"id": "bg_9",
+"name": "Blinds",
+"tint": true,
+"src": "Background-Textures by John Galiszewski (MIT)"
+}
+]

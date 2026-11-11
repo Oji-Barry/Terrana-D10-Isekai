@@ -136,7 +136,50 @@
     copperplate: ['Copperplate', 'Copperplate, "Copperplate Gothic Light", fantasy'],
     pixel: ['Pixel', '"DotGothic16", "Courier New", monospace']
   };
-  var PATTERNS = { none: 'None', stars: 'Stars', checker: 'Checkers', hearts: 'Dots', stripes: 'Stripes', diagonal: 'Diagonal Stripes', plaid: 'Plaid', polka: 'Polka Dots', grid: 'Graph Paper', diamonds: 'Diamonds', waves: 'Waves', scanlines: 'Scanlines', sparkle: 'Sparkle (animated)', zigzag: 'Zigzag', bricks: 'Bricks', circuit: 'Circuit' };
+  // Background patterns: Hero Patterns by Steve Schoger (CC BY 4.0, tinted to match the theme) and retro desktop tiles
+  // (classic-wallpaper by Peter O., Unlicense; Background-Textures by John Galiszewski, MIT). Files in assets/ourspace-bg/.
+  var PAT_DEFAULT = { classic: 'h:plus', night: 'h:fourPointStars', goth: 'h:skulls', emo: 'h:heavyRain', scene: 'h:pixelDots', bubblegum: 'h:polkaDots', glitter: 'h:slantedStars',
+    kawaii: 'h:bubbles', babyblue: 'h:endlessClouds', lavender: 'h:wiggle', ocean: 'h:anchorsAway', sunset: 'h:topography', vapor: 'h:graphPaper', y2k: 'r:brushed', matrix: 'h:circuitBoard',
+    terminal: 'h:signal', grunge: 'h:texture', punk: 'h:zigZag', skater: 'h:brickWall', camo: 'h:leaf', leopard: 'h:melt', zebra: 'h:wiggle', starry: 'h:fourPointStars', candy: 'h:iLikeFood',
+    lime: 'h:bubbles', fire: 'h:fallingTriangles', ice: 'h:hexagons', gold: 'h:glamorous', retro95: 'r:check', coffee: 'h:moroccan', forest: 'h:leaf', dungeon: 'h:brickWall', dragon: 'h:aztec',
+    slime: 'h:bubbles', mages: 'h:volcanoLamp', monsera: 'h:formalInvitation', void: 'h:jupiter', sky: 'h:endlessClouds' };
+  var OLD_PAT = { stars: 'h:fourPointStars', checker: 'h:tinyCheckers', hearts: 'h:polkaDots', stripes: 'h:stripes', diagonal: 'h:diagonalStripes', plaid: 'h:houndstooth', polka: 'h:polkaDots',
+    grid: 'h:graphPaper', diamonds: 'h:flippedDiamonds', waves: 'h:wiggle', scanlines: 'h:rails', sparkle: 'h:slantedStars', zigzag: 'h:zigZag', bricks: 'h:brickWall', circuit: 'h:circuitBoard' };
+  var PAT_COLORS = { accent: 'Accent', link: 'Links', head: 'Box headers', text: 'Text', box: 'Boxes', headText: 'Header text' };
+  var PAT = { hero: null, retro: null, p: null };
+  function patLib() {
+    if (!PAT.p) PAT.p = Promise.all([fetch('../assets/ourspace-bg/hero.json').then(function (r) { return r.json(); }), fetch('../assets/ourspace-bg/retro/retro.json').then(function (r) { return r.json(); })])
+      .then(function (x) { PAT.hero = x[0]; PAT.retro = x[1]; return PAT; }).catch(function () { PAT.hero = {}; PAT.retro = []; return PAT; });
+    return PAT.p;
+  }
+  function patOf(t) {
+    var p = t.pattern;
+    if (p === undefined || p === null) p = PAT_DEFAULT[t.preset] || 'none';
+    if (OLD_PAT[p]) p = OLD_PAT[p];
+    return typeof p === 'string' && /^(none|h:[A-Za-z]+|r:[a-z0-9_]+)$/.test(p) ? p : 'none';
+  }
+  function heroName(k) { return k.replace(/([A-Z])/g, ' $1').replace(/^./, function (c) { return c.toUpperCase(); }); }
+  function applyPattern(t) {
+    var fx = document.getElementById('os-bgfx');
+    if (!fx) { fx = document.createElement('div'); fx.id = 'os-bgfx'; fx.setAttribute('aria-hidden', 'true'); document.body.insertBefore(fx, document.body.firstChild); }
+    var p = patOf(t), c = themeColors(t)[PAT_COLORS[t.patColor] ? t.patColor : 'accent'], k = Math.max(0.04, Math.min(0.8, +t.patStrength || 0.2)), f = fx.style;
+    f.cssText = '';
+    document.body.classList.toggle('os-fx', p !== 'none');
+    if (p === 'none') return;
+    patLib().then(function () {
+      if (patOf(t) !== p) return;
+      if (p.indexOf('h:') === 0) {
+        var tpl = PAT.hero[p.slice(2)]; if (!tpl) return;
+        f.backgroundImage = tpl.split('{C}').join(c.slice(1)).split('{O}').join(String(Math.round(k * 100) / 100));
+      } else {
+        var r = PAT.retro.filter(function (x) { return x.id === p.slice(2); })[0]; if (!r) return;
+        var u = 'url("../assets/ourspace-bg/retro/' + r.id + '.png")';
+        f.imageRendering = 'pixelated';
+        if (r.tint) { f.backgroundColor = c; f.webkitMaskImage = f.maskImage = u; f.webkitMaskSize = f.maskSize = 'auto'; f.opacity = String(Math.min(1, k * 2.2)); }
+        else { f.backgroundImage = u; f.opacity = String(Math.min(1, 0.25 + k * 1.2)); }
+      }
+    });
+  }
   var BG_MODES = { tile: 'Tile it', cover: 'Stretch to fill', center: 'Center it once', fixed: 'Fill and stay put when scrolling' };
   var COLOR_KEYS = [['bg', 'Background'], ['text', 'Text'], ['link', 'Links'], ['head', 'Box headers'], ['headText', 'Header text'], ['box', 'Boxes'], ['box2', 'Box shading'], ['accent', 'Accent'], ['accent2', 'Accent shading']];
   var CSSVAR = { bg: '--os-bg', text: '--os-text', link: '--os-link', head: '--os-head', headText: '--os-head-text', box: '--os-box', box2: '--os-box2', accent: '--os-accent', accent2: '--os-accent2' };
@@ -218,8 +261,7 @@
     var c = themeColors(t), r = document.documentElement.style;
     Object.keys(CSSVAR).forEach(function (k) { r.setProperty(CSSVAR[k], c[k]); });
     r.setProperty('--os-font', (FONTS[t.font] || FONTS.verdana)[1]);
-    Object.keys(PATTERNS).forEach(function (p) { document.body.classList.remove('pattern-' + p); });
-    if (PATTERNS[t.pattern] && t.pattern !== 'none') document.body.classList.add('pattern-' + t.pattern);
+    applyPattern(t);
     // Your own background picture: replaces the theme's background and pattern, leaves everything else alone
     var bg = bgUrl((t.bgImage || {}).url), mode = BG_MODES[(t.bgImage || {}).mode] ? t.bgImage.mode : 'tile', b = document.body.style;
     document.body.classList.toggle('os-has-bg', !!bg);
@@ -271,7 +313,16 @@
       ])
     ]);
     document.body.insertBefore(top, document.body.firstChild);
-    document.body.appendChild(el('footer', { class: 'os-foot' }, ['OurSpace is part of ', el('a', { href: '../index.html', text: 'Jimothy’s D10 Isekai JRPG' }), '. Be kind. Your Storyteller is watching.']));
+    // The OurSpace Radio on pages without a profile song (profile pages put it in their left column)
+    if (page !== 'user' && page !== 'char' && window.TerranaMusic) {
+      var strip = el('details', { class: 'os-radio' }, [el('summary', { text: '♫ OurSpace Radio' })]);
+      var holder = el('div', {}); strip.appendChild(holder);
+      top.appendChild(strip);
+      window.TerranaMusic.mountPlayer(holder, {});
+    }
+    document.body.appendChild(el('footer', { class: 'os-foot' }, ['OurSpace is part of ', el('a', { href: '../index.html', text: 'Jimothy’s D10 Isekai JRPG' }), '. Be kind. Your Storyteller is watching.', el('br'),
+      'Background patterns: ', el('a', { href: 'https://heropatterns.com', text: 'Hero Patterns' }), ' by Steve Schoger (CC BY 4.0). Retro tiles: ', el('a', { href: 'https://github.com/peteroupc/classic-wallpaper', text: 'classic-wallpaper' }), ' by Peter O. (Unlicense) and ',
+      el('a', { href: 'https://github.com/JohnGWebDev/Background-Textures', text: 'Background-Textures' }), ' by John Galiszewski (MIT). Music by Juhani Junkala (CC0).']));
     var n = await unread();
     if (n) $('mail-link').appendChild(el('span', { class: 'os-badge', text: String(n), 'aria-label': n + ' unread' }));
   }
@@ -516,6 +567,13 @@
       location.href = 'edit.html';
     } });
   }
+  function radioBox() {
+    if (!window.TerranaMusic) return null;
+    var holder = el('div', {});
+    var b = box('♫ OurSpace Radio', [holder], 'os-songbox');
+    window.TerranaMusic.mountPlayer(holder, {});
+    return b;
+  }
   function songBox(theme, owner) {
     var sg = cleanSong((theme || {}).song), M = window.TerranaMusic;
     if (!sg || !M) return null;
@@ -558,7 +616,7 @@
       mine ? el('a', { class: 'os-btn go', href: 'edit.html', text: 'Edit My Page' }) : friendButtons(prof.id, rel, 'messages.html?to=' + encodeURIComponent(prof.username)),
       !mine && me ? borrowBtn(pg.theme) : null
     ])]));
-    var sbx = songBox(pg.theme, pg.display_name || prof.username); if (sbx) left.appendChild(sbx);
+    var sbx = songBox(pg.theme, pg.display_name || prof.username) || radioBox(); if (sbx) left.appendChild(sbx);
     left.appendChild(box(prof.username + '’s Interests', [infoTable([['General', it.general], ['Music', it.music], ['Heroes', it.heroes], ['Games', it.games], ['Groups', it.groups]])]));
     var cl = el('ul', { class: 'os-list' });
     chars.forEach(function (c) { cl.appendChild(el('li', {}, [el('a', { href: cLink(c.id), text: c.name }), c.tagline ? el('span', { class: 'os-hint', text: c.tagline }) : null])); });
@@ -604,7 +662,7 @@
       !mine && rel === 'friends' ? el('a', { class: 'os-btn go', href: 'messages.html?to=' + encodeURIComponent(owner.username) + '&tc=' + encodeURIComponent(id), text: 'Send ' + cp.name + ' a Message' }) : null,
       !mine && me && rel !== 'friends' ? el('p', { class: 'os-hint' }, ['Become friends with ', el('a', { href: uLink(owner.username), text: owner.username }), ' to message their characters.']) : null
     ])]));
-    var sbc = songBox(cp.theme, d.display_name || cp.name); if (sbc) left.appendChild(sbc);
+    var sbc = songBox(cp.theme, d.display_name || cp.name) || radioBox(); if (sbc) left.appendChild(sbc);
     left.appendChild(box('Details', [infoTable([['Heritage', d.heritage], ['Past Life', d.past_life], ['Party', d.party], ['Rank', d.rank], ['Location', d.location],
       ['Age', d.age], ['Birthday', d.birthday], ['Star Sign', d.star_sign], ['Height', d.height], ['Hair', d.hair], ['Eyes', d.eyes], ['Relationship', d.relationship],
       ['Likes', d.likes], ['Dislikes', d.dislikes], ['Favorite Food', d.fav_food], ['Fear', d.fear]])]));
@@ -795,9 +853,20 @@
     var fo = el('select', { id: 'th-font' });
     Object.keys(FONTS).forEach(function (k) { fo.appendChild(el('option', { value: k, text: FONTS[k][0] })); });
     fo.value = FONTS[theme.font] ? theme.font : 'verdana';
-    var pa = el('select', { id: 'th-pattern' });
-    Object.keys(PATTERNS).forEach(function (k) { pa.appendChild(el('option', { value: k, text: PATTERNS[k] })); });
-    pa.value = PATTERNS[theme.pattern] ? theme.pattern : 'none';
+    var pa = el('select', { id: 'th-pattern' }, [el('option', { value: 'none', text: 'None' })]);
+    var pc = el('select', { id: 'th-patcolor' });
+    Object.keys(PAT_COLORS).forEach(function (k) { pc.appendChild(el('option', { value: k, text: PAT_COLORS[k] })); });
+    pc.value = PAT_COLORS[theme.patColor] ? theme.patColor : 'accent';
+    var ps = el('input', { id: 'th-patstrength', type: 'range', min: '4', max: '60', value: String(Math.round((+theme.patStrength || 0.2) * 100)) });
+    var patWant = patOf(theme);
+    patLib().then(function () {
+      var g1 = el('optgroup', { label: 'Patterns (tinted to your theme)' }), g2 = el('optgroup', { label: 'Retro desktop tiles (tinted)' }), g3 = el('optgroup', { label: 'Retro desktop tiles (original colors)' });
+      Object.keys(PAT.hero).sort().forEach(function (k) { g1.appendChild(el('option', { value: 'h:' + k, text: heroName(k) })); });
+      PAT.retro.forEach(function (r) { (r.tint ? g2 : g3).appendChild(el('option', { value: 'r:' + r.id, text: r.name })); });
+      pa.appendChild(g1); pa.appendChild(g2); pa.appendChild(g3);
+      pa.value = patWant;
+    });
+    [pc, ps].forEach(function (x) { x.addEventListener('input', function () { applyTheme(readTheme()); }); });
     var colors = el('div', { class: 'colors' });
     var colorVals = themeColors(theme);
     COLOR_KEYS.forEach(function (k) { colors.appendChild(el('label', {}, [el('input', { type: 'color', id: 'th-' + k[0], value: colorVals[k[0]] }), k[1]])); });
@@ -844,7 +913,7 @@
       if (!t2) return false;
       if (THEMES[t2.preset]) pr.value = t2.preset;
       fo.value = FONTS[t2.font] ? t2.font : 'verdana';
-      pa.value = PATTERNS[t2.pattern] ? t2.pattern : 'none';
+      patWant = patOf(t2); pa.value = patWant; pc.value = PAT_COLORS[t2.patColor] ? t2.patColor : 'accent'; ps.value = String(Math.round((+t2.patStrength || 0.2) * 100));
       var cv = themeColors(t2); COLOR_KEYS.forEach(function (k) { form.querySelector('#th-' + k[0]).value = cv[k[0]]; });
       bgU.value = bgUrl((t2.bgImage || {}).url); bgM.value = BG_MODES[(t2.bgImage || {}).mode] ? t2.bgImage.mode : 'tile';
       css.value = typeof t2.css === 'string' ? t2.css.slice(0, CSS_MAX) : '';
@@ -853,7 +922,7 @@
     }
 
     function readTheme() {
-      var t = { preset: pr.value, font: fo.value, pattern: pa.value, colors: {} };
+      var t = { preset: pr.value, font: fo.value, pattern: pa.value || patWant, colors: {}, patColor: pc.value, patStrength: (+ps.value || 20) / 100 };
       var bu = bgUrl(bgU.value.trim()); if (bu) t.bgImage = { url: bu, mode: bgM.value };
       if (css.value.trim()) t.css = css.value.slice(0, CSS_MAX);
       var sgx = readSong(); if (sgx) t.song = sgx;
@@ -862,12 +931,15 @@
       COLOR_KEYS.forEach(function (k) { var v = $('th-' + k[0]).value.toLowerCase(); if (v !== base[k[0]].toLowerCase()) t.colors[k[0]] = v; });
       return t;
     }
-    pr.addEventListener('change', function () { var b = THEMES[pr.value]; COLOR_KEYS.forEach(function (k) { $('th-' + k[0]).value = b[k[0]]; }); applyTheme(readTheme()); });
+    pr.addEventListener('change', function () { var b = THEMES[pr.value]; COLOR_KEYS.forEach(function (k) { $('th-' + k[0]).value = b[k[0]]; }); patWant = PAT_DEFAULT[pr.value] || 'none'; pa.value = patWant; applyTheme(readTheme()); });
+    pa.addEventListener('change', function () { patWant = pa.value; });
     [fo, pa].forEach(function (x) { x.addEventListener('change', function () { applyTheme(readTheme()); }); });
     colors.addEventListener('input', function () { applyTheme(readTheme()); });
     form.appendChild(el('fieldset', {}, [el('legend', { text: 'Page Look' }), el('div', { class: 'row' }, [
       el('div', {}, [el('label', { for: 'th-preset', text: 'Theme' }), pr]), el('div', {}, [el('label', { for: 'th-font', text: 'Font' }), fo])]),
       el('div', {}, [el('label', { for: 'th-pattern', text: 'Background pattern' }), pa]),
+      el('div', { class: 'row' }, [el('div', {}, [el('label', { for: 'th-patcolor', text: 'Pattern color' }), pc]), el('div', {}, [el('label', { for: 'th-patstrength', text: 'Pattern strength' }), ps])]),
+      el('p', { class: 'os-hint', text: 'Each theme comes with a matching pattern. Patterns: Hero Patterns by Steve Schoger (CC BY 4.0). Retro tiles: classic-wallpaper by Peter O. (Unlicense) and Background-Textures by John Galiszewski (MIT).' }),
       el('p', { class: 'os-hint', text: 'Change any color. The page shows it as you go.' }), colors]));
     form.appendChild(el('fieldset', {}, [el('legend', { text: 'Background Picture' }),
       el('p', { class: 'os-hint', text: 'Your own picture behind the page. It replaces the theme’s background and pattern and leaves the rest of the theme alone. Animated GIFs work (up to 3 MB).' }),

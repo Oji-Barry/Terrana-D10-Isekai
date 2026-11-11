@@ -423,7 +423,7 @@ button.act { cursor: pointer; font-family: var(--body); }
 
 /* Keep the chapter menu (or its Chapters button) in view while scrolling */
 .sidebar, .rail { position: sticky; top: 12px; }
-.sidebar { max-height: calc(100vh - 24px); overflow-y: auto; overscroll-behavior: contain; }
+.sidebar { max-height: calc(100vh - 24px); overflow-y: auto; overscroll-behavior: contain; scrollbar-gutter: stable; }
 @media (max-width: 760px) {
   .rail, body.menu-hidden .rail { position: sticky; top: 0; z-index: 30; margin-top: -4px; }
   .sidebar { position: fixed; top: 0; max-height: none; }

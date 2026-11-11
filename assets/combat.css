@@ -339,7 +339,7 @@
 .cb-music > h2 { margin: 0 0 8px; text-align: center; font-size: 18px; color: var(--gold); }
 
 /* Slide-out drawers: Music from the left, My Sheets from the right */
-.cb-drawer { position: fixed; top: 0; bottom: 0; z-index: 800; width: min(380px, 92vw); overflow: auto; padding: 0 12px 16px;
+.cb-drawer { position: fixed; top: 0; bottom: 0; z-index: 800; width: min(380px, 92vw); overflow: auto; scrollbar-gutter: stable; padding: 0 12px 16px;
   background: linear-gradient(180deg, var(--win-top), var(--win-mid) 40%, var(--win-bot)); border: 3px solid var(--win-border); box-shadow: 0 0 40px rgba(0,0,0,0.6);
   transition: transform 0.25s ease; visibility: hidden; }
 .cb-drawer.left { left: 0; border-left: 0; border-radius: 0 12px 12px 0; transform: translateX(-105%); }

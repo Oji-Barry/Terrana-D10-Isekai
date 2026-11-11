@@ -25,9 +25,6 @@ body {
   font-size: 13px;
   line-height: 1.45;
 }
-body.pattern-stars { background-image: radial-gradient(rgba(255, 255, 255, 0.55) 1px, transparent 1.5px), radial-gradient(rgba(255, 255, 255, 0.3) 1px, transparent 1.5px); background-size: 38px 38px, 23px 23px; background-position: 0 0, 11px 17px; }
-body.pattern-checker { background-image: linear-gradient(45deg, rgba(0, 0, 0, 0.06) 25%, transparent 25%, transparent 75%, rgba(0, 0, 0, 0.06) 75%), linear-gradient(45deg, rgba(0, 0, 0, 0.06) 25%, transparent 25%, transparent 75%, rgba(0, 0, 0, 0.06) 75%); background-size: 24px 24px; background-position: 0 0, 12px 12px; }
-body.pattern-hearts { background-image: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.35) 3px, transparent 4px), radial-gradient(circle at 70% 30%, rgba(255, 255, 255, 0.35) 3px, transparent 4px); background-size: 30px 30px; }
 
 a { color: var(--os-link); }
 a:hover { text-decoration: none; }
@@ -146,21 +143,6 @@ img { max-width: 100%; }
 .os-post-pics a:only-child { grid-column: 1 / -1; }
 .os-post-pics a:only-child img { width: auto; max-width: 100%; object-fit: contain; }
 
-/* More background patterns */
-body.pattern-stripes { background-image: linear-gradient(90deg, rgba(255,255,255,0.08) 50%, transparent 50%); background-size: 40px 40px; }
-body.pattern-diagonal { background-image: repeating-linear-gradient(45deg, rgba(255,255,255,0.09) 0 12px, transparent 12px 24px); }
-body.pattern-plaid { background-image: repeating-linear-gradient(0deg, rgba(0,0,0,0.12) 0 6px, transparent 6px 30px), repeating-linear-gradient(90deg, rgba(255,255,255,0.10) 0 6px, transparent 6px 30px); }
-body.pattern-polka { background-image: radial-gradient(rgba(255,255,255,0.28) 6px, transparent 7px); background-size: 34px 34px; }
-body.pattern-grid { background-image: linear-gradient(rgba(127,127,255,0.18) 1px, transparent 1px), linear-gradient(90deg, rgba(127,127,255,0.18) 1px, transparent 1px); background-size: 20px 20px; }
-body.pattern-diamonds { background-image: linear-gradient(45deg, rgba(255,255,255,0.08) 25%, transparent 25%, transparent 75%, rgba(255,255,255,0.08) 75%), linear-gradient(-45deg, rgba(255,255,255,0.08) 25%, transparent 25%, transparent 75%, rgba(255,255,255,0.08) 75%); background-size: 30px 30px; }
-body.pattern-waves { background-image: radial-gradient(circle at 50% 100%, transparent 14px, rgba(255,255,255,0.10) 15px, rgba(255,255,255,0.10) 18px, transparent 19px); background-size: 40px 20px; }
-body.pattern-scanlines { background-image: repeating-linear-gradient(0deg, rgba(0,0,0,0.22) 0 1px, transparent 1px 3px); }
-body.pattern-zigzag { background-image: linear-gradient(135deg, rgba(255,255,255,0.10) 25%, transparent 25%), linear-gradient(225deg, rgba(255,255,255,0.10) 25%, transparent 25%); background-size: 28px 28px; }
-body.pattern-bricks { background-image: linear-gradient(rgba(0,0,0,0.18) 2px, transparent 2px), linear-gradient(90deg, rgba(0,0,0,0.18) 2px, transparent 2px); background-size: 48px 24px, 48px 48px; }
-body.pattern-circuit { background-image: linear-gradient(90deg, rgba(0,255,140,0.12) 1px, transparent 1px), linear-gradient(rgba(0,255,140,0.12) 1px, transparent 1px), radial-gradient(rgba(0,255,140,0.35) 2px, transparent 3px); background-size: 32px 32px, 32px 32px, 32px 32px; }
-body.pattern-sparkle { background-image: radial-gradient(rgba(255,255,255,0.9) 1px, transparent 2px), radial-gradient(rgba(255,240,180,0.8) 1px, transparent 2px), radial-gradient(rgba(255,200,255,0.7) 1px, transparent 2px); background-size: 47px 47px, 31px 31px, 59px 59px; animation: os-sparkle 2.4s steps(3) infinite; }
-@keyframes os-sparkle { 33% { background-position: 9px 13px, 21px 4px, 5px 30px; } 66% { background-position: 27px 5px, 3px 19px, 40px 11px; } }
-@media (prefers-reduced-motion: reduce) { body.pattern-sparkle { animation: none; } }
 body.os-has-bg { background-color: var(--os-bg); }
 
 /* Custom layout code stays inside the page's content area */
@@ -170,3 +152,33 @@ body.os-custom #os-main { contain: paint; }
 .os-snips .os-btn { font-size: 11px; padding: 2px 6px; }
 body.os-has-bg { animation: none; }
 .os-chk { display: block; margin: 6px 0; font-weight: normal; }
+
+/* Background pattern layer: sits behind everything, above the page color */
+#os-bgfx { position: fixed; inset: 0; z-index: -1; pointer-events: none; background-repeat: repeat; -webkit-mask-repeat: repeat; mask-repeat: repeat; }
+body.os-fx { background-color: transparent; }
+body.os-fx.os-has-bg { background-color: transparent; }
+
+/* The music player takes on the page's theme */
+.os-radio { max-width: 980px; margin: 0 auto; background: var(--os-box); border: 1px solid var(--os-head); border-top: 0; padding: 4px 10px; }
+.os-radio summary { cursor: pointer; font-weight: bold; color: var(--os-link); }
+.os-radio .mp { margin: 6px 0 4px; }
+body[data-os] .mp { background: linear-gradient(180deg, var(--os-head) 0%, var(--os-box2) 100%); border-color: var(--os-accent); color: var(--os-text);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.35), 0 2px 6px rgba(0,0,0,0.3); font-family: var(--os-font); }
+body[data-os] .mp-screen { background: var(--os-box); border-color: var(--os-head); box-shadow: inset 0 2px 6px rgba(0,0,0,0.35); }
+body[data-os] .mp-title { color: var(--os-link); text-shadow: none; font-family: var(--os-font); font-weight: bold; }
+body[data-os] .mp-sub { color: var(--os-text); font-family: var(--os-font); }
+body[data-os] .mp-bar { background: var(--os-box2); }
+body[data-os] .mp-bar span { background: var(--os-accent); }
+body[data-os] .mp-btn { background: var(--os-box); color: var(--os-link); border-color: var(--os-head); box-shadow: none; }
+body[data-os] .mp-vol { accent-color: var(--os-accent); }
+body[data-os] .mp-mood { background: var(--os-box); color: var(--os-text); border-color: var(--os-head); }
+body[data-os] .mp-list summary, body[data-os] .mp-moodrow { color: var(--os-head-text); }
+body[data-os] .mp-tracks { background: var(--os-box); }
+body[data-os] .mp-track { color: var(--os-text); }
+body[data-os] .mp-track small { color: var(--os-link); }
+body[data-os] .mp-track.on { color: var(--os-accent); font-weight: bold; }
+body[data-os] .mp-note { color: var(--os-head-text); }
+body[data-os] .mp-vismenu { background: var(--os-box); border-color: var(--os-head); }
+body[data-os] .mp-vismenu button { color: var(--os-text); font-family: var(--os-font); }
+body[data-os] .mp-vismenu button[aria-checked="true"] { color: var(--os-accent); }
+body[data-os] .mp-vismenu small { color: var(--os-link); }
