@@ -173,8 +173,24 @@
       // A new visit: the JRPG Theme starts on Repeat 1. Pausing it turns this off for your next visits; pressing play turns it back on.
       loadLib().then(function () { st.mood = 'theme'; M.setRepeat('one'); M.play('jrpg-theme', { mood: 'theme' }); M.autoStart(); });
     }
-    M.on(function (w) { if (w === 'play' || w === 'pause') { var on = w === 'play'; if (M._userToggle) { pref.siteAuto = on; savePref(); M._userToggle = false; } } });
+    M.on(function (w) { if (w === 'play' || w === 'pause') { var on = w === 'play'; if (M._userToggle) { pref.siteAuto = on; savePref(); M._userToggle = false; saveAutoToAccount(on); } } });
+    loadAutoFromAccount(0);
   };
+  // Logged-in players: the choice also goes in their account, so it follows them to other devices
+  function saveAutoToAccount(on) {
+    var c = client(); if (!c || !c.auth || !c.auth.updateUser) return;
+    c.auth.getSession().then(function (r) { if (r && r.data && r.data.session) c.auth.updateUser({ data: { site_music_autoplay: on } }); }).catch(function () {});
+  }
+  function loadAutoFromAccount(tries) {
+    var c = client();
+    if (!c || !c.auth || !c.auth.getSession) { if (tries < 40) setTimeout(function () { loadAutoFromAccount(tries + 1); }, 500); return; }
+    c.auth.getSession().then(function (r) {
+      var u = r && r.data && r.data.session && r.data.session.user, v = u && u.user_metadata ? u.user_metadata.site_music_autoplay : undefined;
+      if (typeof v !== 'boolean') return;
+      pref.siteAuto = v; savePref();
+      if (!v) { M._noAuto = true; if (!audio.paused && !M._userStarted) audio.pause(); }
+    }).catch(function () {});
+  }
   // Browsers hold music back until the visitor clicks or presses a key, so start it on the first one
   // (unless that first click is on the player itself, which then does what was clicked).
   M.autoStart = function () {
@@ -182,6 +198,7 @@
     function go(e) {
       ['pointerdown', 'keydown'].forEach(function (ev) { window.removeEventListener(ev, go, true); });
       if (e && e.target && e.target.closest && e.target.closest('.mp, .menu-music-quick, .mp-vis')) return;
+      if (M._noAuto) return;   // their account says they turned it off
       if (audio.paused && audio.src) { graph(); playNow(); }
     }
     setTimeout(function () {
@@ -212,7 +229,7 @@
     function act(action, data) {
       M.unlock();
       if (opts.onAction) return opts.onAction(action, data);
-      if (action === 'toggle') { M._userToggle = true; M.toggle(); } else if (action === 'next') M.next(); else if (action === 'prev') M.prev();
+      if (action === 'toggle') { M._userToggle = true; M._userStarted = true; M._noAuto = false; M.toggle(); } else if (action === 'next') M.next(); else if (action === 'prev') M.prev();
       else if (action === 'repeat') M.cycleRepeat(); else if (action === 'mood') M.setMood(data); else if (action === 'pick') M.play(data);
       else if (action === 'seek') M.seek(data);
     }
