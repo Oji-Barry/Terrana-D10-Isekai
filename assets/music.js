@@ -359,6 +359,15 @@
       return md.loading;
     }
     function loadPreset() { var m = cur(); if (md.viz && m.md && md.presets[m.md]) md.viz.loadPreset(md.presets[m.md], 1.5); }
+    // open a menu on whichever side of its button has more room, and never taller than that room,
+    // so the top of the list can always be seen (a long list scrolls instead)
+    function placeMenu(box, btn) {
+      if (!box.closest('.mp-vis')) return;
+      var r = btn.getBoundingClientRect(), above = r.top - 12, below = window.innerHeight - r.bottom - 12, up = above > below;
+      box.style.top = up ? 'auto' : 'calc(100% + 6px)'; box.style.bottom = up ? 'calc(100% + 6px)' : 'auto';
+      box.style.maxHeight = Math.max(120, Math.floor(up ? above : below)) + 'px';
+      box.scrollTop = 0;
+    }
     function closeMenus() { document.querySelectorAll('.mp-vismenu').forEach(function (x) { x.hidden = true; }); document.querySelectorAll('[aria-haspopup="menu"]').forEach(function (b) { b.setAttribute('aria-expanded', 'false'); }); }
     document.addEventListener('click', function (e) { if (!e.target.closest || !e.target.closest('.mp-vismenu')) closeMenus(); });
     document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeMenus(); });
@@ -375,7 +384,7 @@
         }
         GROUPS.forEach(function (gr) { box.appendChild(el('small', { text: gr[1] })); MODES.filter(function (m) { return m.group === gr[0]; }).forEach(item); });
         if (MD_LIST.length) { box.appendChild(el('small', { text: 'MilkDrop (Butterchurn)' })); MD_LIST.forEach(item); }
-        box.hidden = false; btn.setAttribute('aria-expanded', 'true');
+        box.hidden = false; btn.setAttribute('aria-expanded', 'true'); placeMenu(box, btn);
         var first = box.querySelector('[aria-checked="true"]') || box.querySelector('button'); if (first) first.focus();
       });
     }
@@ -399,7 +408,7 @@
         box.appendChild(el('button', { type: 'button', role: 'menuitemradio', 'aria-checked': String((pref.vis.speed || 'normal') === x[0]), text: x[1],
           onclick: function (e) { e.stopPropagation(); closeMenus(); pref.vis.speed = x[0]; savePref(); label(); } }));
       });
-      box.hidden = false; btn.setAttribute('aria-expanded', 'true');
+      box.hidden = false; btn.setAttribute('aria-expanded', 'true'); placeMenu(box, btn);
       (box.querySelector('[aria-checked="true"]') || box.querySelector('button')).focus();
     }
     function build() {
@@ -620,21 +629,42 @@
         g.fillStyle = gr; g.fillRect(b * bw + bw * 0.3, h - bh, bw * 0.4, bh);
       }
     }
-    var embers = [];
+    // Fire Storm: a wall of pixel fire (the falling-embers fire effect) along the bottom. Each part of the
+    // fire is fed by its own slice of the music, so the bass end flares on the left and the highs on the right.
+    var storm = null, stormCv = null, stormImg = null, stormAcc = 0;
     function fireStorm(w, h, dpr) {
-      clear();
-      var n = 40;
-      for (var i = 0; i < n; i++) {
-        var v = bandVal(i, n);
-        if (Math.random() < v * 0.9 * K) embers.push({ x: (i + Math.random()) / n, y: 1, vy: -(0.35 + v * 1.6), life: 1, r: 0.01 + v * 0.02, ph: Math.random() * 6 });
+      var cols = 128, rows = Math.max(40, Math.round(cols * h / w));
+      if (!storm || storm.cols !== cols || storm.rows !== rows) {
+        storm = { cols: cols, rows: rows, f: new Uint8Array(cols * rows) };
+        if (!stormCv) stormCv = document.createElement('canvas');
+        stormCv.width = cols; stormCv.height = rows; stormImg = stormCv.getContext('2d').createImageData(cols, rows);
       }
-      embers = embers.filter(function (e) { return e.life > 0; }).slice(-900);
-      embers.forEach(function (e) {
-        e.y += e.vy * dt; e.x += Math.sin(e.y * 12 + t + e.ph) * 0.04 * dt; e.life -= 0.9 * dt;
-        if (e.life <= 0) return;
-        g.fillStyle = 'hsla(' + (15 + e.life * 40) + ',100%,' + (35 + e.life * 30) + '%,' + e.life + ')';
-        g.beginPath(); g.arc(e.x * w, e.y * h, e.r * U * e.life + dpr, 0, Math.PI * 2); g.fill();
-      });
+      var F = storm.f, decayAvg = 36 / (rows * 0.8);   // the loudest flames reach about four fifths of the way up
+      stormAcc += dt;
+      while (stormAcc > 1 / 30) {
+        stormAcc -= 1 / 30;
+        // the bass sits in the middle and higher notes spread out to both sides; each band is measured against its
+        // own recent loudest, so the quieter highs still flare instead of the fire leaning to one side
+        if (!storm.peak) storm.peak = new Float32Array(24);
+        var lv = [];
+        for (var bi = 0; bi < 24; bi++) { var bv = bandVal(bi, 24); storm.peak[bi] = Math.max(bv, storm.peak[bi] * 0.995, 0.08); lv.push(bv / storm.peak[bi]); }
+        for (var x = 0; x < cols; x++) {
+          var pos = Math.abs(x / (cols - 1) - 0.5) * 2 * 23, b0 = Math.floor(pos), fb = pos - b0, v = lv[b0] * (1 - fb) + lv[Math.min(23, b0 + 1)] * fb;
+          var tongue = 0.75 + 0.25 * Math.sin(x * 0.35 + t * 2.3) * Math.sin(x * 0.13 - t * 1.1);   // slow waves, so flames rise in tongues
+          F[(rows - 1) * cols + x] = Math.min(36, Math.round(8 + v * 28 * tongue + Math.random() * 3));
+        }
+        for (var y = 1; y < rows; y++) for (var x2 = 0; x2 < cols; x2++) {
+          var src = y * cols + x2, pix = F[src];
+          if (!pix) { F[src - cols] = 0; continue; }
+          var nx3 = Math.min(cols - 1, Math.max(0, x2 + 1 - Math.floor(Math.random() * 3))), dst = y * cols + nx3;   // drift sideways, never wrapping to the other edge
+          var dec = Math.floor(decayAvg) + (Math.random() < decayAvg - Math.floor(decayAvg) ? 1 : 0);
+          F[dst - cols] = Math.max(0, pix - dec);
+        }
+      }
+      var d = stormImg.data;
+      for (var i = 0; i < F.length; i++) { var c = FIREPAL[F[i]], o = i * 4; d[o] = c[0]; d[o + 1] = c[1]; d[o + 2] = c[2]; d[o + 3] = 255; }
+      stormCv.getContext('2d').putImageData(stormImg, 0, 0);
+      g.imageSmoothingEnabled = false; g.drawImage(stormCv, 0, 0, w, h); g.imageSmoothingEnabled = true;
     }
     function spiderWeb(w, h, dpr) {
       clear('#00000a');
