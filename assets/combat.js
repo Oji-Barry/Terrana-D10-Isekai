@@ -1348,8 +1348,9 @@
       act: { label: c.name + ' tries to hide', pool: hideN, parts: [[kit.npc ? 'Attack pool' : 'Dexterity + Stealth', hideN]], kind: 'roll', targets: 'none', post: function (row) { return hideCheck(c, row); } } });
     acts.push({ name: 'Total Defense', sub: 'No attack this turn', pool: '+2', desc: 'Give up your attack. +2 dice to every defense until your next turn.',
       act: { label: 'Total Defense', targets: 'none', run: async function () { await setGuard(c, 'total'); await note(c.name + ' takes Total Defense: +2 dice to every defense until their next turn.'); await after(null); } } });
-    if (cov) acts.push({ name: 'Take Cover', sub: 'Half cover', pool: '+1', desc: 'Get down behind the cover next to you. +1 die to every defense until your next turn.',
-      act: { label: 'Take Cover', targets: 'none', run: async function () { await setGuard(c, 'cover'); await note(c.name + ' takes cover: +1 die to every defense until their next turn.'); await after(null); } } });
+    var cvN = cov === 'full' ? 3 : 1, cvT = cov === 'full' ? 'full cover' : 'half cover';
+    if (cov) acts.push({ name: 'Take Cover', sub: cov === 'full' ? 'Full cover' : 'Half cover', pool: '+' + cvN, desc: 'Get down behind the cover next to you. Half cover (brush, crates) adds 1 die to every defense until your next turn; full cover (walls, boulders) adds 3. You are beside ' + cvT + '.',
+      act: { label: 'Take Cover', targets: 'none', run: async function () { await setGuard(c, 'cover', cvN); await note(c.name + ' takes ' + cvT + ': +' + cvN + ' ' + (cvN === 1 ? 'die' : 'dice') + ' to every defense until their next turn.'); await after(null); } } });
     acts.push({ name: 'Aim', sub: 'No attack this turn', pool: '+2', desc: 'Give up your attack and line up a shot. +2 dice on your next ranged attack against that target.',
       act: { label: 'Aim', range: LOS, targets: 'others', run: async function (t) { if (!t) return; await upd(c, { stats: Object.assign({}, c.stats || {}, { aim: { target: t.id, turns: 1 } }) }); await note(c.name + ' takes aim at ' + t.name + ': +2 dice on their next ranged attack against them.'); await after(null); } } });
     cats.push({ name: 'Combat Actions', items: acts });
@@ -1490,14 +1491,15 @@
   }
   // Combat Action helpers
   function poolOf(t, str) { var k = t.stats || {}; return k.npc ? (k.defense || 0) : evalPool(str, k).total; }
-  function guardDice(t) { var g = (t.stats || {}).guard || {}; return (g.total ? 2 : 0) + (g.cover ? 1 : 0); }
+  function guardDice(t) { var g = (t.stats || {}).guard || {}; return (g.total ? 2 : 0) + (g.cover ? (+g.cover || 1) : 0); }
   function guardText(t) { var g = (t.stats || {}).guard || {}; return [g.total ? 'Total Defense' : '', g.cover ? 'taking cover' : ''].filter(Boolean).join(', '); }
-  async function setGuard(c, key) { var k = c.stats || {}, g = Object.assign({}, k.guard || {}); g[key] = true; await upd(c, { stats: Object.assign({}, k, { guard: g }) }); }
+  async function setGuard(c, key, val) { var k = c.stats || {}, g = Object.assign({}, k.guard || {}); g[key] = val || true; await upd(c, { stats: Object.assign({}, k, { guard: g }) }); }
   function nearCover(c) {
     if (!placedC(c)) return false;
     var ter = (R.enc.map || {}).terrain || {}, n = zonesOf(c);
-    for (var x = c.x - 1; x <= c.x + n; x++) for (var y = c.y - 1; y <= c.y + n; y++) { var t = TER[ter[x + ',' + y]]; if (t && (t[3] === 'cover' || t[3] === 'block')) return true; }
-    return false;
+    var best = false;   // 'full' beside a wall or boulder, 'half' beside brush or crates
+    for (var x = c.x - 1; x <= c.x + n; x++) for (var y = c.y - 1; y <= c.y + n; y++) { var t = TER[ter[x + ',' + y]]; if (t && t[3] === 'block') return 'full'; if (t && t[3] === 'cover') best = 'half'; }
+    return best;
   }
   function freeZone(t, x, y) {
     var m = R.enc.map || {}, cols = m.cols || 6, rows = m.rows || 8, ter = m.terrain || {}, n = zonesOf(t);
