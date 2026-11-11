@@ -150,7 +150,7 @@
   };
   window.TerranaMusic = M;
   if (!document.querySelector('link[href*="assets/music.css"]')) {
-    var css = document.createElement('link'); css.rel = 'stylesheet'; css.href = ROOT + 'assets/music.css?v=4f974168'; document.head.appendChild(css);
+    var css = document.createElement('link'); css.rel = 'stylesheet'; css.href = ROOT + 'assets/music.css?v=102c2143'; document.head.appendChild(css);
   }
 
   // ---------------- book pages: keep going between pages ----------------
@@ -385,7 +385,13 @@
       // In full screen the title bar tucks away and comes back when you move the mouse or tap
       var hideT = 0;
       function peek() { win.classList.add('peek'); clearTimeout(hideT); hideT = setTimeout(function () { if (!head.matches(':hover') && !winMenu.offsetParent) win.classList.remove('peek'); }, 1800); }
-      win.addEventListener('mousemove', function (e) { if (!win.classList.contains('max')) return; var r = win.getBoundingClientRect(); if (e.clientY - r.top < 60) peek(); }, { passive: true });
+      var idleT = 0;   // in full screen the pointer hides after a few still seconds and comes back when it moves
+      win.addEventListener('mousemove', function (e) {
+        win.classList.remove('idle'); clearTimeout(idleT);
+        if (!win.classList.contains('max')) return;
+        idleT = setTimeout(function () { if (win.classList.contains('max')) win.classList.add('idle'); }, 3000);
+        var r = win.getBoundingClientRect(); if (e.clientY - r.top < 60) peek();
+      }, { passive: true });
       win.addEventListener('touchstart', function () { if (win.classList.contains('max')) peek(); }, { passive: true });
       win.addEventListener('keydown', function (e) { if (e.key === 'Tab') peek(); });
       if (typeof pref.vis.mode !== 'string') pref.vis.mode = 'bars';

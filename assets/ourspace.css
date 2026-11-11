@@ -76,7 +76,7 @@ img { max-width: 100%; }
 .os-table th, .os-table td { text-align: left; vertical-align: top; padding: 4px 6px; border-bottom: 1px solid rgba(0, 0, 0, 0.08); }
 .os-table th { width: 38%; color: var(--os-link); background: var(--os-box2); font-weight: bold; }
 
-.os-top8 { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+.os-top8 { display: grid; grid-template-columns: repeat(auto-fill, minmax(86px, 110px)); gap: 10px; }
 @media (max-width: 420px) { .os-top8 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 .os-friend { text-align: center; font-size: 12px; min-width: 0; }
 .os-friend a { display: block; text-decoration: none; }

@@ -385,7 +385,7 @@
           el('small', { text: owners[cp[e.id].owner] ? 'by ' + owners[cp[e.id].owner].username : '' })]));
       }
     });
-    return box(title, grid.children.length ? [grid] : [el('p', { class: 'os-hint', text: emptyText })], 'os-top8');
+    return box(title, grid.children.length ? [grid] : [el('p', { class: 'os-hint', text: emptyText })], 'os-top8box');
   }
 
   async function postsBox(title, author, characterId, mine) {
@@ -949,7 +949,7 @@
     form.appendChild(el('fieldset', {}, [el('legend', { text: 'Layout Code (CSS)' }),
       el('p', { class: 'os-hint', text: 'Go all out, like the old days. Write your own CSS to restyle anything on your page: boxes, headers, fonts, pictures, animations. It only affects your own page (scripts are not allowed), and the page updates as you type.' }),
       snipRow, css,
-      el('p', { class: 'os-hint', text: 'Handy names: .os-box (every box), .os-box > h2 (box headers), .os-name (your name), .os-pic (your picture), .os-tag (your quote), .os-table (info tables), .os-post (blog posts), .os-blog, .os-songbox, .os-top8. Colors: var(--os-bg), var(--os-text), var(--os-link), var(--os-head), var(--os-accent).' })]));
+      el('p', { class: 'os-hint', text: 'Handy names: .os-box (every box), .os-box > h2 (box headers), .os-name (your name), .os-pic (your picture), .os-tag (your quote), .os-table (info tables), .os-post (blog posts), .os-blog, .os-songbox, .os-top8box. Colors: var(--os-bg), var(--os-text), var(--os-link), var(--os-head), var(--os-accent).' })]));
     form.appendChild(el('fieldset', {}, [el('legend', { text: 'Share a Layout' }),
       el('p', { class: 'os-hint', text: 'Copy your layout code to give your whole look to a friend, or paste one to use theirs. You can also press Use This Layout on anyone’s page.' }),
       el('div', {}, [el('button', { class: 'os-btn', type: 'button', text: 'Copy My Layout Code', onclick: function () {
