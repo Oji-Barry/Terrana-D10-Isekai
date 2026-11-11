@@ -40,12 +40,35 @@
   function loadLib() {
     if (lib) return Promise.resolve(lib);
     if (!libP) libP = fetch(ROOT + 'assets/music/library.json?v=ee38227c').then(function (r) { return r.json(); }).then(function (d) {
-      lib = d; lib.byId = {}; d.tracks.forEach(function (t) { lib.byId[t.id] = t; }); return lib;
+      lib = d; lib.byId = {}; d.tracks.forEach(function (t) { lib.byId[t.id] = t; });
+      loadUploads(0);
+      return lib;
     });
     return libP;
   }
+  // Songs players uploaded for their OurSpace pages: anyone can play them, grouped under each player's name
+  function client() { return window.Terrana && window.Terrana.auth && window.Terrana.auth.client; }
+  function songTitle(path) { return path.split('/').pop().replace(/^\d+-/, '').replace(/\.[a-z0-9]+$/i, '').replace(/[-_]+/g, ' ').trim() || 'Song'; }
+  function loadUploads(tries) {
+    var c = client();
+    if (!c || !c.rpc) { if (tries < 40) setTimeout(function () { loadUploads(tries + 1); }, 500); return Promise.resolve(); }
+    return c.rpc('list_songs').then(function (r) {
+      if (r.error || !r.data || !lib) return;
+      lib.moods = lib.moods.filter(function (m) { return !m.user; });
+      lib.tracks = lib.tracks.filter(function (t) { return !t.url; });
+      var groups = {};
+      r.data.forEach(function (row) {
+        var id = 'u:' + row.path;
+        var t = { id: id, title: songTitle(row.path), url: c.storage.from('ourspace-music').getPublicUrl(row.path).data.publicUrl, dur: 0, by: row.username };
+        lib.byId[id] = t; lib.tracks.push(t);
+        (groups[row.username] = groups[row.username] || []).push(id);
+      });
+      Object.keys(groups).sort(function (a, b) { return a.toLowerCase() < b.toLowerCase() ? -1 : 1; }).forEach(function (u) { lib.moods.push({ id: 'user:' + u, name: u, user: true, tracks: groups[u] }); });
+      emit('library');
+    });
+  }
   function track(id) { return lib && lib.byId[id]; }
-  function moodName(m) { if (!lib || m === 'all') return 'All Music'; var x = lib.moods.filter(function (y) { return y.id === m; })[0]; return x ? x.name : ''; }
+  function moodName(m) { if (!lib || m === 'all') return 'All Music'; var x = lib.moods.filter(function (y) { return y.id === m; })[0]; return x ? (x.user ? x.name + '’s uploads' : x.name) : ''; }
   function queue() {
     if (!lib) return [];
     if (st.mood === 'all') return lib.tracks.map(function (t) { return t.id; });
@@ -54,7 +77,7 @@
   }
   function setSrc(id, url, title) {
     st.id = id || null; st.url = url || ''; st.title = title || (id && track(id) ? track(id).title : '');
-    audio.src = id ? ROOT + 'assets/music/' + track(id).file : url;
+    audio.src = id ? (track(id).url || ROOT + 'assets/music/' + track(id).file) : url;
     audio.loop = st.repeat === 'one';
   }
   function playNow(at) {
@@ -121,7 +144,9 @@
     setMood: function (m) { st.mood = m; emit('mood'); },
     volume: function (v) { if (typeof v === 'number') { pref.vol = v; applyVol(); savePref(); emit('vol'); } return pref.vol; },
     muted: function (m) { if (typeof m === 'boolean') { pref.mute = m; applyVol(); savePref(); emit('vol'); } return pref.mute; },
-    unlock: graph
+    unlock: graph,
+    refreshUploads: function () { return loadLib().then(function () { return loadUploads(40); }); },
+    uploads: function () { return lib ? lib.moods.filter(function (m) { return m.user; }) : []; }
   };
   window.TerranaMusic = M;
   if (!document.querySelector('link[href*="assets/music.css"]')) {
@@ -209,7 +234,7 @@
       ids.forEach(function (id) {
         var t = track(id);
         list.appendChild(el('li', {}, [el('button', { type: 'button', class: 'mp-track' + (id === s.id ? ' on' : ''), disabled: !can() ? true : null, title: can() ? 'Play ' + t.title : (opts.lockedNote || ''),
-          onclick: function () { if (can()) { if (m !== s.mood) act('mood', m); act('pick', id); } } }, [el('span', { text: t.title }), el('small', { text: fmt(t.dur) })])]));
+          onclick: function () { if (can()) { if (m !== s.mood) act('mood', m); act('pick', id); } } }, [el('span', { text: t.title }), el('small', { text: t.dur ? fmt(t.dur) : (t.by ? 'by ' + t.by : '') })])]));
       });
     }
     function draw() {
@@ -227,7 +252,9 @@
       if (lib && moodSel.options.length !== lib.moods.length + 1) {
         moodSel.textContent = '';
         moodSel.appendChild(el('option', { value: 'all', text: 'All Music' }));
-        lib.moods.forEach(function (m) { moodSel.appendChild(el('option', { value: m.id, text: m.name })); });
+        var og1 = el('optgroup', { label: 'Moods' }), og2 = el('optgroup', { label: 'Player Uploads' });
+        lib.moods.forEach(function (m) { (m.user ? og2 : og1).appendChild(el('option', { value: m.id, text: m.name })); });
+        moodSel.appendChild(og1); if (og2.children.length) moodSel.appendChild(og2);
       }
       if (document.activeElement !== moodSel) moodSel.value = browseMood || s.mood;
       note.textContent = s.blocked ? 'Your browser held the music back. Press ▶ to start it.' : (!c && opts.lockedNote ? opts.lockedNote : '');

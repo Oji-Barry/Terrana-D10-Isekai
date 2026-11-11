@@ -585,18 +585,29 @@
         myUploads.forEach(function (u, i) { og.appendChild(el('option', { value: 'u:' + i, text: u.title })); });
         songSel.appendChild(og);
       }
-      lib.moods.forEach(function (m) {
+      if (M) { await M.refreshUploads(); M.uploads().forEach(function (g) {
+        if (g.name === me.username) return;
+        var og3 = el('optgroup', { label: g.name + '’s uploads' });
+        g.tracks.forEach(function (id) { var t = M.track(id); if (t) og3.appendChild(el('option', { value: 'o:' + id, text: t.title })); });
+        songSel.appendChild(og3);
+      }); }
+      lib.moods.filter(function (m) { return !m.user; }).forEach(function (m) {
         var og2 = el('optgroup', { label: m.name });
         m.tracks.forEach(function (id) { var t = lib.byId[id]; og2.appendChild(el('option', { value: 'l:' + id + ':' + m.id, text: t.title })); });
         songSel.appendChild(og2);
       });
       if (song && song.lib) { var o = songSel.querySelector('option[value^="l:' + song.lib + ':"]'); if (o) songSel.value = o.value; }
-      else if (song && song.url) { var k = myUploads.findIndex(function (u) { return u.url === song.url; }); songSel.value = k >= 0 ? 'u:' + k : ''; }
+      else if (song && song.url) {
+        var k = myUploads.findIndex(function (u) { return u.url === song.url; });
+        if (k >= 0) songSel.value = 'u:' + k;
+        else { var other = Array.prototype.filter.call(songSel.options, function (o) { var t = o.value.indexOf('o:') === 0 && M.track(o.value.slice(2)); return t && t.url === song.url; })[0]; songSel.value = other ? other.value : ''; }
+      }
     }
     function readSong() {
       var v = songSel.value;
       if (v.indexOf('l:') === 0) return { lib: v.split(':')[1] };
       if (v.indexOf('u:') === 0) { var u = myUploads[+v.slice(2)]; return u ? { url: u.url, title: u.title } : null; }
+      if (v.indexOf('o:') === 0) { var ot = window.TerranaMusic && window.TerranaMusic.track(v.slice(2)); return ot ? { url: ot.url, title: ot.title } : null; }
       return null;
     }
     songUp.addEventListener('change', async function () {
@@ -627,7 +638,7 @@
     } });
     fillSongs().catch(function () {});
     form.appendChild(el('fieldset', {}, [el('legend', { text: 'Profile Song' }),
-      el('p', { class: 'os-hint', text: 'Plays when people visit this page. Pick from the site’s music or upload your own (up to 5 songs, 10 MB each). Only upload music you have the right to share.' }),
+      el('p', { class: 'os-hint', text: 'Plays when people visit this page. Pick from the site’s music, from other players’ uploads, or upload your own (up to 5 songs, 10 MB each). Your uploads show up for everyone under your username, in every music player on the site. Only upload music you have the right to share.' }),
       el('div', {}, [el('label', { for: 'f-song', text: 'Song' }), songSel]),
       el('div', {}, [songPrev, songStop, songDel]),
       el('div', {}, [el('label', { for: 'f-song-up', text: 'Upload a song' }), songUp]), songMsg]));

@@ -70,3 +70,21 @@ create policy "players delete their own songs"
   on storage.objects for delete
   to authenticated
   using (bucket_id = 'ourspace-music' and (storage.foldername(name))[1] = (select auth.uid())::text);
+
+-- Every uploaded song, with the uploader's username, so all the site's players can list them by player
+create or replace function public.list_songs()
+returns table (username text, path text, created_at timestamptz)
+language sql
+stable
+security definer
+set search_path = ''
+as $$
+  select p.username::text, o.name, o.created_at
+  from storage.objects o
+  join public.profiles p on p.id::text = (storage.foldername(o.name))[1]
+  where o.bucket_id = 'ourspace-music' and o.name !~ '\.emptyFolderPlaceholder$'
+  order by p.username, o.created_at
+  limit 500;
+$$;
+revoke all on function public.list_songs() from public;
+grant execute on function public.list_songs() to anon, authenticated;
