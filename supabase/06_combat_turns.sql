@@ -3,14 +3,14 @@
 
 -- The player whose turn it is may move through the phases and pass the turn.
 -- They can only change phase, the turn tracker, and step the turn forward by one.
-create function public.turn_update(e uuid, patch jsonb)
+create or replace function public.turn_update(e uuid, patch jsonb)
 returns jsonb
 language plpgsql
 security definer
 set search_path = ''
 as $$
 declare
-  st jsonb; h uuid; ord jsonb; n int; t int; cur uuid; nt int;
+  st jsonb; h uuid; ord jsonb; n int; t int; cur uuid; nt int; i int;
 begin
   select state, host into st, h from public.encounters where id = e for update;
   if st is null then raise exception 'No such encounter.' using errcode = 'P0001'; end if;
@@ -30,7 +30,17 @@ begin
     end if;
     if patch ? 'turn' then
       nt := (patch->>'turn')::int;
-      if nt <> (t + 1) % n then raise exception 'You can only pass the turn to the next person.' using errcode = 'P0001'; end if;
+      -- pass to the next person, skipping anyone Incapacitated (all Aggravated boxes full)
+      i := 1;
+      loop
+        exit when (t + i) % n = nt or i >= n;
+        if exists (select 1 from public.combatants cc where cc.id = (ord->>((t + i) % n))::uuid
+                   and coalesce((cc.health->>'a')::int, 0) < coalesce((cc.boxes->>'a')::int, 3)) then
+          raise exception 'You can only pass the turn to the next person.' using errcode = 'P0001';
+        end if;
+        i := i + 1;
+      end loop;
+      if (t + i) % n <> nt then raise exception 'You can only pass the turn to the next person.' using errcode = 'P0001'; end if;
     end if;
     st := st || patch;
   end if;

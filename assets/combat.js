@@ -367,7 +367,15 @@
     if (!s.playing) M.resume();
   }
 
-  function drawAll() { syncOrder(); turnSounds(); syncMusic(); drawTop(); drawBanner(); drawMap(); drawPhases(); drawLoadout(); drawCard(); drawLog(); drawMine(); }
+  // If the one whose turn it is goes down (or a turn lands on someone already down), the Storyteller's page moves on
+  function skipDown() {
+    var s = ST(), c = current();
+    if (!R.host || R.skipping || !s.started || !c || !incap(c)) return;
+    if (!list().some(function (x) { return !incap(x); })) return;
+    R.skipping = true;
+    setTimeout(function () { endTurn().finally(function () { R.skipping = false; }); }, 400);
+  }
+  function drawAll() { syncOrder(); turnSounds(); syncMusic(); skipDown(); drawTop(); drawBanner(); drawMap(); drawPhases(); drawLoadout(); drawCard(); drawLog(); drawMine(); }
 
   // ---------- Personal Bestiary: fight a creature, add it, and from then on see its stats ----------
   async function loadBestiary() {
@@ -420,7 +428,9 @@
   function toggleDrawer(side, open) {
     var d = $('cb-drawer-' + side), tab = document.querySelector('.cb-drawer-tab.' + side);
     if (open === undefined) open = !d.classList.contains('open');
-    ['left', 'right'].forEach(function (s2) { if (s2 !== side && open) { var o = $('cb-drawer-' + s2); if (o) { o.classList.remove('open'); o.setAttribute('aria-hidden', 'true'); document.querySelector('.cb-drawer-tab.' + s2).setAttribute('aria-expanded', 'false'); } } });
+    // On phones only one drawer at a time; on bigger screens both can stay open
+    var phone = window.matchMedia('(max-width: 760px)').matches;
+    ['left', 'right'].forEach(function (s2) { if (phone && s2 !== side && open) { var o = $('cb-drawer-' + s2); if (o) { o.classList.remove('open'); o.setAttribute('aria-hidden', 'true'); document.querySelector('.cb-drawer-tab.' + s2).setAttribute('aria-expanded', 'false'); } } });
     d.classList.toggle('open', open); d.setAttribute('aria-hidden', String(!open)); tab.setAttribute('aria-expanded', String(open));
     document.body.classList.toggle('cb-drawer-open', !!document.querySelector('.cb-drawer.open'));
     if (open) { var f = d.querySelector('button, select, input'); if (f) f.focus(); }
@@ -700,11 +710,15 @@
     var s = ST();
     var o = R.host ? s.order.filter(function (id) { return R.cs[id]; }) : s.order;
     if (!o.length) return;
-    var turn = (s.turn + 1) % o.length, round = s.round + (s.turn + 1 >= o.length ? 1 : 0);
+    // Incapacitated combatants are skipped
+    var step = 1;
+    while (step < o.length && R.cs[o[(s.turn + step) % o.length]] && incap(R.cs[o[(s.turn + step) % o.length]])) step++;
+    if (step >= o.length) step = 1;
+    var turn = (s.turn + step) % o.length, round = s.round + ((s.turn % o.length) + step >= o.length ? 1 : 0);
     var patch = { turn: turn, round: round, phase: 0, t: {} }; if (R.host) patch.order = o;
     await saveState(patch);
     var c = current();
-    await note('Round ' + round + ': ' + (c ? c.name : '') + '’s turn.' + (c && incap(c) ? ' ' + c.name + ' is Incapacitated.' : ''));
+    await note('Round ' + round + ': ' + (c ? c.name : '') + '’s turn.' + (step > 1 ? ' (Skipped ' + (step - 1) + ' Incapacitated.)' : ''));
   }
   function regenOf(c) { var k = c.stats || {}; return (k.mana && k.mana.regen) || k.regen || 1; }
   async function doUpkeep(c) {
@@ -901,7 +915,7 @@
     if (!c) { box.appendChild(el('p', { class: 'center cv-muted', text: 'Click a name in the banner to see their card.' })); return; }
     var can = mineC(c), bdt = c.bdt || 1, cur = current();
     var csp = (c.stats || {}).sprite;
-    var pic = el('div', { class: 'cb-portrait ' + c.side, text: c.pic_url || csp ? '' : initials(c.name) });
+    var pic = el('div', { class: 'cb-portrait ' + c.side + (incap(c) ? ' down' : ''), text: c.pic_url || csp ? '' : initials(c.name) });
     if (c.pic_url) pic.style.backgroundImage = 'url("' + c.pic_url.replace(/"/g, '') + '")';
     else if (csp) pic.appendChild(spriteNode(csp, 112));
     box.appendChild(pic);
@@ -1442,10 +1456,12 @@
       }
       var n = Math.max(0, (+dpool.value || 0) + (det.setAside || 0) + (+bonus.value || 0));
       var dice = real.checked ? [] : d10s(n), s = real.checked ? +realN.value || 0 : successes(dice);
-      var totalDmg = s + ex, res = null;
-      if (tgt) { var b = tgt.bdt || 1; res = totalDmg >= b * 3 ? 'a' : totalDmg >= b * 2 ? 'l' : totalDmg >= b ? 'b' : null; }
-      await addRoll({ combatant_id: roll.combatant_id, label: 'Damage' + (tgt ? ' to ' + tgt.name : ''), pool: n, dice: dice, successes: s,
-        detail: { kind: 'damage', of: roll.id, target: tgt ? tgt.id : null, excess: ex, total: totalDmg, result: res, real: real.checked } });
+      var totalDmg = s + ex, res = null, count = 0;
+      // BDT: 1 Bashing, LDT: 1 Lethal, ADT: 1 Aggravated, double the ADT: 2 Aggravated
+      if (tgt) { var b = tgt.bdt || 1; res = totalDmg >= b * 3 ? 'a' : totalDmg >= b * 2 ? 'l' : totalDmg >= b ? 'b' : null; count = res ? (totalDmg >= b * 6 ? 2 : 1) : 0; }
+      var drow = await addRoll({ combatant_id: roll.combatant_id, label: 'Damage' + (tgt ? ' to ' + tgt.name : ''), pool: n, dice: dice, successes: s,
+        detail: { kind: 'damage', of: roll.id, target: tgt ? tgt.id : null, excess: ex, total: totalDmg, result: res, count: count, real: real.checked } });
+      if (drow && res) { try { await applyDamage(drow); } catch (e) { alert(oops(e)); } }   // mark the boxes right away
       if (after) await after();
     });
     d.open();
@@ -1453,16 +1469,21 @@
   async function applyDamage(roll) {
     var det = roll.detail || {}, t = R.cs[det.target];
     if (!t || !det.result) return;
-    var h = Object.assign({ b: 0, l: 0, a: 0 }, t.health), box = t.boxes || {};
-    var k = det.result;
-    // a hit landing in a full column moves up to the next damage type
-    while (k && (h[k] || 0) >= (box[k] || 0)) k = k === 'b' ? 'l' : k === 'l' ? 'a' : null;
-    if (!k) { await note(t.name + ' is Incapacitated: the hit landed in a full column.'); return; }
-    h[k] = (h[k] || 0) + 1;
-    if (mineC(t)) await upd(t, { health: h, stats: Object.assign({}, t.stats || {}, { hurt: true }) });
-    else { var rr = await db.rpc('apply_damage', { c: t.id, k: k }); if (rr.error) throw rr.error; t.health = h; drawAll(); }
-    var NAMES = { b: 'Bashing', l: 'Lethal', a: 'Aggravated' };
-    await addRoll({ label: t.name + ' takes 1 ' + NAMES[k] + '.' + (incap(t) ? ' ' + t.name + ' is Incapacitated: choose Fall Unconscious, Risk It, or Blaze of Glory.' : ''),
+    if (R.rolls.some(function (r) { return (r.detail || {}).applied === roll.id; })) return;   // already marked
+    var h = Object.assign({ b: 0, l: 0, a: 0 }, t.health), box = t.boxes || {}, marks = [], full = false;
+    for (var n = 0; n < (det.count || 1); n++) {
+      var k = det.result;
+      // a hit landing in a full column moves up to the next damage type
+      while (k && (h[k] || 0) >= (box[k] || 0)) k = k === 'b' ? 'l' : k === 'l' ? 'a' : null;
+      if (!k) { full = true; break; }
+      h[k] = (h[k] || 0) + 1; marks.push(k);
+      if (!mineC(t)) { var rr = await db.rpc('apply_damage', { c: t.id, k: k }); if (rr.error) throw rr.error; }
+    }
+    if (mineC(t) && marks.length) await upd(t, { health: h, stats: Object.assign({}, t.stats || {}, { hurt: true }) });
+    else if (marks.length) { t.health = h; drawAll(); }
+    var NAMES = { b: 'Bashing', l: 'Lethal', a: 'Aggravated' }, down = (h.a || 0) >= (box.a || 3) || full;
+    var what = marks.length === 2 && marks[0] === marks[1] ? '2 ' + NAMES[marks[0]] : marks.map(function (x) { return '1 ' + NAMES[x]; }).join(' and ');
+    await addRoll({ label: (marks.length ? t.name + ' takes ' + what + '.' : t.name + '’s boxes are full.') + (down ? ' ' + t.name + ' is Incapacitated' + (t.kind === 'pc' ? ': choose Fall Unconscious, Risk It, or Blaze of Glory.' : '.') : ''),
       detail: { kind: 'note', applied: roll.id } });
   }
 

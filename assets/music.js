@@ -53,7 +53,7 @@
     var c = client();
     if (!c || !c.rpc) { if (tries < 40) setTimeout(function () { loadUploads(tries + 1); }, 500); return Promise.resolve(); }
     return c.rpc('list_songs').then(function (r) {
-      if (r.error || !r.data || !lib) return;
+      if (r.error || !Array.isArray(r.data) || !lib) return;
       lib.moods = lib.moods.filter(function (m) { return !m.user; });
       lib.tracks = lib.tracks.filter(function (t) { return !t.url; });
       var groups = {};

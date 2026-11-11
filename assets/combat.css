@@ -389,3 +389,12 @@
   .cb-drawer-tab .lbl { display: none; }
   .cb-drawer-tab span { font-size: 18px; }
 }
+/* Incapacitated: the sprite stops its idle bounce, holds one frame, and greys out */
+.cb-token.down .cb-spr-f { animation: none !important; }
+.cb-token.down .cb-spr-f.f1 { opacity: 0; }
+.cb-token.down .cb-spr-f.f0 { opacity: 1; }
+.cb-token.down .cb-spr { filter: grayscale(1) brightness(0.6); transform: rotate(90deg); }
+.cb-portrait.down .cb-spr-f { animation: none !important; }
+.cb-portrait.down .cb-spr-f.f1 { opacity: 0; }
+.cb-portrait.down .cb-spr-f.f0 { opacity: 1; }
+.cb-portrait.down .cb-spr { filter: grayscale(1) brightness(0.6); }
