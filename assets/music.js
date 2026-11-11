@@ -794,7 +794,7 @@
         var walls = [[1, 0], [-1, 0], [0, 1], [0, -1]].filter(function (d) { var wx = cx + d[0], wy = cy + d[1]; return m[wx] && m[wx][wy] && !seen[wx + ',' + wy + ',' + (-d[0]) + ',' + (-d[1])]; });
         if (!walls.length) return false;
         var d = walls[Math.floor(Math.random() * walls.length)], wx = cx + d[0], wy = cy + d[1];
-        var tc = { x: wx + 0.5 - d[0] * 0.65, y: wy + 0.5 - d[1] * 0.65, ax: wx + 0.5 - d[0] * 0.5, ay: wy + 0.5 - d[1] * 0.5, z: 0.27, ph: Math.random() * 10, fire: torches.length % 3, nx: -d[0], ny: -d[1], cx: cx, cy: cy };
+        var tc = { x: wx + 0.5 - d[0] * 0.575, y: wy + 0.5 - d[1] * 0.575, ax: wx + 0.5 - d[0] * 0.5, ay: wy + 0.5 - d[1] * 0.5, z: 0.27, ph: Math.random() * 10, fire: torches.length % 3, nx: -d[0], ny: -d[1], cx: cx, cy: cy };
         seen[wx + ',' + wy + ',' + (-d[0]) + ',' + (-d[1])] = tc; torches.push(tc); return true;
       }
       var first = open[Math.floor(Math.random() * open.length)]; hang(first[0], first[1]);
