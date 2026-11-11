@@ -1,6 +1,6 @@
 var gridBounds = new THREE.Box3(
-  new THREE.Vector3(-10, -10, -10),
-  new THREE.Vector3(10, 10, 10)
+  new THREE.Vector3(-9, -6, -6),   // Terrana: a wide, shallow box seen head-on, like the Windows original
+  new THREE.Vector3(9, 6, 6)
 );
 var nodes = {};
 function setAt(position, value) {
@@ -16,8 +16,9 @@ function clearGrid() {
 var textures = {};
 var Pipe = function(scene, options) {
   var self = this;
-  var pipeRadius = 0.2;
-  var ballJointRadius = pipeRadius * 1.5;
+  var pipeRadius = 0.3;   // Terrana: thicker pipes, like the original
+  var ballJointRadius = pipeRadius * 1.6;
+  var bendRadius = 0.42;   // how wide an elbow curves
   var teapotSize = ballJointRadius;
 
   self.currentPosition = randomIntegerVector3WithinBox(gridBounds);
@@ -29,13 +30,14 @@ var Pipe = function(scene, options) {
       map: textures[options.texturePath],
     });
   } else {
-    var color = randomInteger(0, 0xffffff);
-    var emissive = new THREE.Color(color).multiplyScalar(0.3);
+    // Terrana: the original's bold, plain colors
+    var color = chooseFrom([0xd81e1e, 0x1ec41e, 0x2244e8, 0xe8d21e, 0x1ec8d8, 0xd81ed8, 0xe8e8e8, 0xe8841e]);
+    var emissive = new THREE.Color(color).multiplyScalar(0.06);
     self.material = new THREE.MeshPhongMaterial({
-      specular: 0xa9fcff,
+      specular: 0xffffff,
       color: color,
       emissive: emissive,
-      shininess: 100,
+      shininess: 55,
     });
   }
   var makeCylinderBetweenPoints = function(fromPoint, toPoint, material) {
@@ -59,6 +61,16 @@ var Pipe = function(scene, options) {
     mesh.updateMatrix();
 
     self.object3d.add(mesh);
+    return mesh;
+  };
+  // Terrana: a real curved elbow (a quarter of a ring) from the end of one straight run to the start of the next
+  var makeBend = function(corner, inDir, outDir) {
+    var center = corner.clone().addScaledVector(inDir, -bendRadius).addScaledVector(outDir, bendRadius);
+    var xAxis = outDir.clone().negate(), yAxis = inDir.clone(), zAxis = new THREE.Vector3().crossVectors(xAxis, yAxis);
+    var torus = new THREE.Mesh(new THREE.TorusGeometry(bendRadius, pipeRadius, 10, 10, Math.PI / 2), self.material);
+    torus.matrixAutoUpdate = false;
+    torus.matrix.makeBasis(xAxis, yAxis, zAxis).setPosition(center);
+    self.object3d.add(torus);
   };
   var makeBallJoint = function(position) {
     var ball = new THREE.Mesh(
@@ -153,66 +165,50 @@ var Pipe = function(scene, options) {
 
   makeBallJoint(self.currentPosition);
 
+  self.stuck = 0;
+  self.lastDir = null;
+  self.lastSeg = null;      // the straight run still growing, so it can be cut short when the pipe turns
+  self.lastSegStart = self.currentPosition.clone();
   self.update = function() {
-    if (self.positions.length > 1) {
-      var lastPosition = self.positions[self.positions.length - 2];
-      var lastDirectionVector = new THREE.Vector3().subVectors(
-        self.currentPosition,
-        lastPosition
-      );
+    // Terrana: try straight on half the time, otherwise any free direction, so pipes wander until truly boxed in
+    var dirs = [];
+    "xyz".split("").forEach(function(axis) { [1, -1].forEach(function(sign) { var v = new THREE.Vector3(); v[axis] = sign; dirs.push(v); }); });
+    shuffleArrayInPlace(dirs);
+    if (self.lastDir && chance(1 / 2)) dirs.unshift(self.lastDir.clone());
+    var directionVector = null, newPosition = null;
+    for (var i = 0; i < dirs.length; i++) {
+      var np = new THREE.Vector3().addVectors(self.currentPosition, dirs[i]);
+      if (gridBounds.containsPoint(np) && !getAt(np)) { directionVector = dirs[i]; newPosition = np; break; }
     }
-    if (chance(1 / 2) && lastDirectionVector) {
-      var directionVector = lastDirectionVector;
-    } else {
-      var directionVector = new THREE.Vector3();
-      directionVector[chooseFrom("xyz")] += chooseFrom([+1, -1]);
-    }
-    var newPosition = new THREE.Vector3().addVectors(
-      self.currentPosition,
-      directionVector
-    );
-
-    // TODO: try other possibilities
-    // ideally, have a pool of the 6 possible directions and try them in random order, removing them from the bag
-    // (and if there's truly nowhere to go, maybe make a ball joint)
-    if (!gridBounds.containsPoint(newPosition)) {
-      return;
-    }
-    if (getAt(newPosition)) {
-      return;
-    }
+    if (!directionVector) { self.stuck++; return; }
     setAt(newPosition, self);
-
-    // joint
-    // (initial ball joint is handled elsewhere)
-    if (lastDirectionVector && !lastDirectionVector.equals(directionVector)) {
+    var P = self.currentPosition, start = P;
+    if (self.lastDir && !self.lastDir.equals(directionVector)) {
       if (chance(options.teapotChance)) {
-        makeTeapotJoint(self.currentPosition);
+        makeTeapotJoint(P);
       } else if (chance(options.ballJointChance)) {
-        makeBallJoint(self.currentPosition);
+        makeBallJoint(P);
       } else {
-        makeElbowJoint(self.currentPosition, newPosition, lastDirectionVector);
+        // cut the last straight run short and curve round the corner
+        if (self.lastSeg) {
+          self.object3d.remove(self.lastSeg);
+          var end = P.clone().addScaledVector(self.lastDir, -bendRadius);
+          if (end.distanceTo(self.lastSegStart) > 0.01) makeCylinderBetweenPoints(self.lastSegStart, end, self.material);
+        }
+        makeBend(P, self.lastDir, directionVector);
+        start = P.clone().addScaledVector(directionVector, bendRadius);
       }
+      self.lastSegStart = start;
+      self.lastSeg = makeCylinderBetweenPoints(start, newPosition, self.material);
+    } else {
+      // keep the straight run as one piece, so a later turn can trim it
+      if (self.lastSeg) self.object3d.remove(self.lastSeg);
+      else self.lastSegStart = P;
+      self.lastSeg = makeCylinderBetweenPoints(self.lastSegStart, newPosition, self.material);
     }
-
-    // pipe
-    makeCylinderBetweenPoints(self.currentPosition, newPosition, self.material);
-
-    // update
+    self.lastDir = directionVector.clone();
     self.currentPosition = newPosition;
     self.positions.push(newPosition);
-
-    // var extrudePath = new THREE.CatmullRomCurve3(self.positions, false, "catmullrom");
-
-    // var extrusionSegments = 10 * self.positions.length;
-    // var radiusSegments = 10;
-    // var tubeGeometry = new THREE.TubeBufferGeometry( extrudePath, extrusionSegments, pipeRadius, radiusSegments, false );
-
-    // if(self.mesh){
-    // 	self.object3d.remove(self.mesh);
-    // }
-    // self.mesh = new THREE.Mesh(tubeGeometry, self.material);
-    // self.object3d.add(self.mesh);
   };
 };
 
@@ -228,10 +224,10 @@ var jointTypeSelect = document.getElementById("joint-types");
 
 var pipes = [];
 var options = {
-  multiple: true,
+  multiple: false,   // Terrana: one pipe at a time, like the original
   texturePath: null,
   joints: jointTypeSelect.value,
-  interval: [16, 24], // range of seconds between fade-outs... not necessarily anything like how the original works
+  interval: [70, 90], // range of seconds between fade-outs... not necessarily anything like how the original works
 };
 jointTypeSelect.addEventListener("change", function() {
   options.joints = jointTypeSelect.value;
@@ -269,12 +265,15 @@ controls.enabled = false;
 var scene = new THREE.Scene();
 
 // lighting
-var ambientLight = new THREE.AmbientLight(0x111111);
+var ambientLight = new THREE.AmbientLight(0x262626);
 scene.add(ambientLight);
 
 var directionalLightL = new THREE.DirectionalLight(0xffffff, 0.9);
 directionalLightL.position.set(-1.2, 1.5, 0.5);
 scene.add(directionalLightL);
+var directionalLightR = new THREE.DirectionalLight(0xffffff, 0.25);   // Terrana: a soft fill light from the front right
+directionalLightR.position.set(1, -0.3, 1);
+scene.add(directionalLightR);
 
 // dissolve transition effect
 
@@ -352,16 +351,23 @@ function animate() {
     texture.repeat.set(2, 2);
     textures[options.texturePath] = texture;
   }
-  // update (Terrana: window.pipeSpeed sets how many pipe steps happen per 1/60 s, set by the site's Speed menu)
+  // update (Terrana: 18 pipe steps a second, times window.pipeSpeed, set by the site's Speed menu)
   var nowT = performance.now(), stepDt = Math.min(0.1, (nowT - (window.__pipeT || nowT)) / 1000) || 1 / 60;
   window.__pipeT = nowT;
-  window.__pipeAcc = (window.__pipeAcc || 0) + stepDt * 60 * (window.pipeSpeed == null ? 1 : window.pipeSpeed);
+  window.__pipeAcc = (window.__pipeAcc || 0) + stepDt * 18 * (window.pipeSpeed == null ? 1 : window.pipeSpeed);
   var steps = Math.min(8, Math.floor(window.__pipeAcc));
   window.__pipeAcc -= steps;
   for (var s = 0; s < steps; s++) {
     for (var i = 0; i < pipes.length; i++) {
       pipes[i].update(scene);
     }
+  }
+  // Terrana: like the original, a new pipe starts whenever the growing ones are boxed in,
+  // and once enough pipes have filled the space the screen dissolves and starts over
+  var allStuck = pipes.length > 0 && pipes.every(function(pp) { return pp.stuck > 2; });
+  if (allStuck && !clearing) {
+    if (pipes.length >= 9) clear();
+    else pipes.push(new Pipe(scene, pipes[0].pipeOptions));
   }
   if (pipes.length === 0) {
     var jointType = options.joints;
@@ -387,7 +393,7 @@ function animate() {
     }
     // TODO: create new pipes over time?
     for (var i = 0; i < 1 + options.multiple * (1 + chance(1 / 10)); i++) {
-      pipes.push(new Pipe(scene, pipeOptions));
+      var np2 = new Pipe(scene, pipeOptions); np2.pipeOptions = pipeOptions; pipes.push(np2);
     }
   }
 
@@ -452,10 +458,10 @@ function animate() {
 
 function look() {
   // TODO: never don't change the view (except maybe while clearing)
-  if (chance(1 / 2)) {
-    // head-on view
+  if (true) {
+    // head-on view (Terrana: always, like the original)
 
-    camera.position.set(0, 0, 14);
+    camera.position.set(0, 0, 19);
   } else {
     // random view
 
