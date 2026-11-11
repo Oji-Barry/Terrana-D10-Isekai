@@ -29,7 +29,7 @@
     var C = window.AudioContext || window.webkitAudioContext; if (!C) return;
     try {
       ctx = new C();
-      var src = ctx.createMediaElementSource(audio);
+      var src = ctx.createMediaElementSource(audio); M._src = src;
       analyser = ctx.createAnalyser(); analyser.fftSize = 2048; analyser.smoothingTimeConstant = 0.78;
       src.connect(analyser); analyser.connect(ctx.destination);
     } catch (e) { analyser = null; }
@@ -150,7 +150,7 @@
   };
   window.TerranaMusic = M;
   if (!document.querySelector('link[href*="assets/music.css"]')) {
-    var css = document.createElement('link'); css.rel = 'stylesheet'; css.href = ROOT + 'assets/music.css?v=c463a83d'; document.head.appendChild(css);
+    var css = document.createElement('link'); css.rel = 'stylesheet'; css.href = ROOT + 'assets/music.css?v=2305d38a'; document.head.appendChild(css);
   }
 
   // ---------------- book pages: keep going between pages ----------------
@@ -207,14 +207,17 @@
     var bRep = el('button', { type: 'button', class: 'mp-btn mp-rep', onclick: function () { if (can()) act('repeat'); } });
     var bMute = el('button', { type: 'button', class: 'mp-btn', 'aria-label': 'Mute', onclick: function () { M.muted(!M.muted()); } });
     var vol = el('input', { type: 'range', min: '0', max: '100', class: 'mp-vol', 'aria-label': 'Music volume', value: String(Math.round(pref.vol * 100)), oninput: function () { M.volume(+vol.value / 100); if (M.muted() && +vol.value > 0) M.muted(false); } });
-    var bVis = el('button', { type: 'button', class: 'mp-btn', 'aria-label': 'Visualizer', title: 'Visualizer', text: ICON.vis, onclick: function () { M.unlock(); VIS.show(); } });
+    var visMenu = el('div', { class: 'mp-vismenu', role: 'menu', hidden: true });
+    var bVis = el('button', { type: 'button', class: 'mp-btn', 'aria-label': 'Visualizations', title: 'Visualizations', 'aria-haspopup': 'menu', 'aria-expanded': 'false', text: ICON.vis + ' ▾', onclick: function (e) { e.stopPropagation(); M.unlock(); VIS.menu(visMenu, bVis); } });
     var moodSel = el('select', { class: 'mp-mood', 'aria-label': 'Mood', onchange: function () { if (can()) act('mood', moodSel.value); else draw(); } });
     var list = el('ol', { class: 'mp-tracks' });
     var details = el('details', { class: 'mp-list' }, [el('summary', { text: 'Track list' }), list]);
     var note = el('p', { class: 'mp-note' });
     var screen = el('div', { class: 'mp-screen' }, [title, sub, bar]);
     wrap.appendChild(screen);
-    wrap.appendChild(el('div', { class: 'mp-ctrls' }, opts.songOnly ? [bPlay, bRep, bMute, vol, bVis] : [bPrev, bPlay, bNext, bRep, bMute, vol, bVis]));
+    // Two fixed rows, so nothing jumps around: the buttons, then mute + volume + visualizations
+    wrap.appendChild(el('div', { class: 'mp-ctrls' }, opts.songOnly ? [bPlay, bRep] : [bPrev, bPlay, bNext, bRep]));
+    wrap.appendChild(el('div', { class: 'mp-ctrls2' }, [bMute, vol, el('span', { class: 'mp-viswrap' }, [bVis, visMenu])]));
     if (!opts.songOnly) { wrap.appendChild(el('label', { class: 'mp-moodrow' }, [el('span', { text: 'Mood' }), moodSel])); wrap.appendChild(details); }
     if (opts.extra) wrap.appendChild(opts.extra);
     wrap.appendChild(note);
@@ -267,30 +270,96 @@
   };
 
   // ---------------- visualizer window ----------------
+  // Classic effects drawn here, plus MilkDrop presets run by Butterchurn (MIT, Jordan Berg) and picked
+  // for gentle light changes. Nothing strobes: brightness and speed follow the music smoothly.
   var VIS = (function () {
-    var win = null, cv = null, g = null, raf = 0, collapsed = false, modeName = null;
-    var MODES = ['Bars', 'Scope', 'Ambience', 'Alchemy'];
-    var freq = new Uint8Array(1024), wave = new Uint8Array(2048), peaks = [], t = 0, plasma = null;
+    var win = null, cv = null, cv2 = null, g = null, raf = 0, collapsed = false, modeBtn = null, winMenu = null;
+    var freq = new Uint8Array(1024), wave = new Uint8Array(2048), peaks = [], t = 0, plasma = null, phase = 0;
+    var sm = { bass: 0, mid: 0, all: 0 }, stars = [];
+    var md = { viz: null, presets: null, loading: null, failed: false, size: '' };
+    var MODES = [
+      { id: 'bars', name: 'Classic Bars', fn: bars },
+      { id: 'mirror', name: 'Mirror Bars', fn: mirror },
+      { id: 'scope', name: 'Scope', fn: scope },
+      { id: 'ambience', name: 'Ambience', fn: ambience },
+      { id: 'alchemy', name: 'Alchemy', fn: alchemy },
+      { id: 'stars', name: 'Starfield', fn: starfield }
+    ];
+    var MD_LIST = [];   // filled from assets/music/milkdrop.json
+    function allModes() { return MODES.concat(MD_LIST); }
+    function cur() { var id = pref.vis.mode; return allModes().filter(function (m) { return m.id === id; })[0] || MODES[0]; }
+    function setMode(id) { pref.vis.mode = id; savePref(); plasma = null; label(); if (cur().md) startMd(); }
+    function mdInfo() {
+      if (md.presets) return Promise.resolve();
+      return fetch(ROOT + 'assets/music/milkdrop.json?v=eb7c140c').then(function (r) { return r.json(); }).then(function (d) {
+        md.presets = d.presets; MD_LIST = d.list.map(function (x) { return { id: 'md:' + x.key, name: x.name, md: x.key, by: x.by }; });
+      }).catch(function () { md.failed = true; });
+    }
+    function loadScript(src) { return new Promise(function (ok, bad) { var sc = document.createElement('script'); sc.src = src; sc.onload = ok; sc.onerror = bad; document.head.appendChild(sc); }); }
+    function startMd() {
+      if (md.viz) { loadPreset(); return Promise.resolve(); }
+      if (md.loading) return md.loading;
+      graph();
+      md.loading = mdInfo().then(function () { return window.butterchurn ? null : loadScript(ROOT + 'vendor/butterchurn/butterchurn.min.js'); }).then(function () {
+        var B = window.butterchurn && (window.butterchurn.default || window.butterchurn);
+        if (!B || !ctx || !M._src || !build.ok) throw new Error('no webgl');
+        md.viz = B.createVisualizer(ctx, cv2, { width: 300, height: 170, pixelRatio: Math.min(2, window.devicePixelRatio || 1), textureRatio: 1 });
+        md.viz.connectAudio(M._src);
+        loadPreset();
+      }).catch(function () { md.failed = true; pref.vis.mode = 'bars'; label(); });
+      return md.loading;
+    }
+    function loadPreset() { var m = cur(); if (md.viz && m.md && md.presets[m.md]) md.viz.loadPreset(md.presets[m.md], 1.5); }
+    function closeMenus() { document.querySelectorAll('.mp-vismenu').forEach(function (x) { x.hidden = true; }); document.querySelectorAll('[aria-haspopup="menu"]').forEach(function (b) { b.setAttribute('aria-expanded', 'false'); }); }
+    document.addEventListener('click', function (e) { if (!e.target.closest || !e.target.closest('.mp-vismenu')) closeMenus(); });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeMenus(); });
+    // The drop-down of visualizations
+    function menu(box, btn) {
+      var open = box.hidden;
+      closeMenus();
+      if (!open) return;
+      mdInfo().then(function () {
+        box.textContent = '';
+        box.appendChild(el('small', { text: 'Classic' }));
+        function item(m) {
+          box.appendChild(el('button', { type: 'button', role: 'menuitemradio', 'aria-checked': String(cur().id === m.id), text: m.by ? m.name + ', by ' + m.by : m.name, title: m.by ? 'MilkDrop preset by ' + m.by : null,
+            onclick: function (e) { e.stopPropagation(); closeMenus(); show(); setMode(m.id); } }));
+        }
+        MODES.forEach(item);
+        if (MD_LIST.length) { box.appendChild(el('small', { text: 'MilkDrop (Butterchurn)' })); MD_LIST.forEach(item); }
+        box.hidden = false; btn.setAttribute('aria-expanded', 'true');
+        var first = box.querySelector('[aria-checked="true"]') || box.querySelector('button'); if (first) first.focus();
+      });
+    }
     function build() {
       win = el('div', { class: 'mp-vis', role: 'region', 'aria-label': 'Music visualizer' });
-      modeName = el('span', { class: 'mp-vis-mode' });
-      var bMode = el('button', { type: 'button', title: 'Next visualization', 'aria-label': 'Next visualization', text: '◆', onclick: function () { pref.vis.mode = (pref.vis.mode + 1) % MODES.length; savePref(); label(); } });
+      winMenu = el('div', { class: 'mp-vismenu', role: 'menu', hidden: true });
+      modeBtn = el('button', { type: 'button', class: 'mp-vis-pick', 'aria-haspopup': 'menu', 'aria-expanded': 'false', title: 'Choose a visualization', onclick: function (e) { e.stopPropagation(); menu(winMenu, modeBtn); } });
       var bMin = el('button', { type: 'button', title: 'Collapse', 'aria-label': 'Collapse visualizer', text: '▁', onclick: function () { collapsed = !collapsed; win.classList.toggle('collapsed', collapsed); bMin.textContent = collapsed ? '▔' : '▁'; bMin.setAttribute('aria-label', collapsed ? 'Expand visualizer' : 'Collapse visualizer'); loop(); } });
       var bMax = el('button', { type: 'button', title: 'Full screen', 'aria-label': 'Full screen', text: '□', onclick: maxToggle });
       var bX = el('button', { type: 'button', title: 'Close', 'aria-label': 'Close visualizer', text: '×', onclick: hide });
-      var head = el('div', { class: 'mp-vis-head' }, [el('span', { class: 'mp-vis-name', text: 'Visualizer' }), modeName, el('span', { class: 'mp-vis-btns' }, [bMode, bMin, bMax, bX])]);
-      cv = el('canvas', { class: 'mp-vis-cv', title: 'Click for the next visualization', onclick: function () { bMode.click(); }, ondblclick: maxToggle });
-      win.appendChild(head); win.appendChild(cv);
+      var head = el('div', { class: 'mp-vis-head' }, [el('span', { class: 'mp-vis-name', text: 'Visualizer' }), el('span', { class: 'mp-vis-pickwrap' }, [modeBtn, winMenu]), el('span', { class: 'mp-vis-btns' }, [bMin, bMax, bX])]);
+      cv = el('canvas', { class: 'mp-vis-cv', ondblclick: maxToggle });
+      cv2 = el('canvas', { class: 'mp-vis-cv mp-vis-gl', ondblclick: maxToggle });
+      win.appendChild(head); win.appendChild(cv); win.appendChild(cv2);
       document.body.appendChild(win);
       g = cv.getContext('2d');
-      document.addEventListener('fullscreenchange', function () { win.classList.toggle('max', document.fullscreenElement === win); });
+      try { build.ok = !!document.createElement('canvas').getContext('webgl2'); } catch (e) { build.ok = false; }
+      document.addEventListener('fullscreenchange', function () { win.classList.toggle('max', document.fullscreenElement === win); peek(); });
+      // In full screen the title bar tucks away and comes back when you move the mouse or tap
+      var hideT = 0;
+      function peek() { win.classList.add('peek'); clearTimeout(hideT); hideT = setTimeout(function () { win.classList.remove('peek'); }, 2500); }
+      ['mousemove', 'touchstart', 'keydown'].forEach(function (ev) { win.addEventListener(ev, peek, { passive: true }); });
+      if (typeof pref.vis.mode !== 'string') pref.vis.mode = 'bars';
       label();
+      if (cur().md || /^md:/.test(pref.vis.mode)) startMd();
     }
-    function label() { modeName.textContent = MODES[pref.vis.mode]; plasma = null; }
+    function label() { if (modeBtn) modeBtn.textContent = cur().name + ' ▾'; if (win) win.classList.toggle('gl', !!cur().md); }
     function maxToggle() {
       if (document.fullscreenElement === win) { document.exitFullscreen(); return; }
       if (win.classList.contains('max')) { win.classList.remove('max'); return; }
       if (win.requestFullscreen) win.requestFullscreen().catch(function () { win.classList.add('max'); }); else win.classList.add('max');
+      if (document.activeElement && win.contains(document.activeElement)) document.activeElement.blur();   // let the title bar tuck away
     }
     function show() { if (!win) build(); win.hidden = false; loop(); }
     function hide() { if (document.fullscreenElement === win) document.exitFullscreen(); win.classList.remove('max'); win.hidden = true; cancelAnimationFrame(raf); raf = 0; }
@@ -298,33 +367,48 @@
     function frame() {
       raf = 0;
       if (!win || win.hidden || collapsed) return;
-      var dpr = Math.min(2, window.devicePixelRatio || 1), w = Math.max(10, Math.floor(cv.clientWidth * dpr)), h = Math.max(10, Math.floor(cv.clientHeight * dpr));
-      if (cv.width !== w || cv.height !== h) { cv.width = w; cv.height = h; plasma = null; }
-      var live = analyser && !audio.paused;
-      if (live) { analyser.getByteFrequencyData(freq); analyser.getByteTimeDomainData(wave); }
-      else { for (var i = 0; i < freq.length; i++) freq[i] = Math.max(0, freq[i] - 6); for (var j = 0; j < wave.length; j++) wave[j] = 128 + Math.sin(j / 60 + t * 2) * 6; }
-      t += 1 / 60;
-      [bars, scope, ambience, alchemy][pref.vis.mode](w, h, dpr);
+      var m = cur(), dpr = Math.min(2, window.devicePixelRatio || 1), c0 = m.md ? cv2 : cv;
+      var w = Math.max(10, Math.floor(c0.clientWidth * dpr)), h = Math.max(10, Math.floor(c0.clientHeight * dpr));
+      if (m.md) {
+        if (md.viz) { var key = w + 'x' + h; if (md.size !== key) { md.size = key; cv2.width = w; cv2.height = h; md.viz.setRendererSize(w, h); } md.viz.render(); }
+      } else {
+        if (cv.width !== w || cv.height !== h) { cv.width = w; cv.height = h; plasma = null; }
+        var live = analyser && !audio.paused;
+        if (live) { analyser.getByteFrequencyData(freq); analyser.getByteTimeDomainData(wave); }
+        else { for (var i = 0; i < freq.length; i++) freq[i] = Math.max(0, freq[i] - 6); for (var j = 0; j < wave.length; j++) wave[j] = 128 + Math.sin(j / 60 + t * 2) * 6; }
+        // smoothed levels, so nothing jumps from frame to frame
+        sm.bass += (energy(1, 12) - sm.bass) * 0.08; sm.mid += (energy(12, 120) - sm.mid) * 0.08; sm.all += (energy(1, 400) - sm.all) * 0.08;
+        t += 1 / 60;
+        m.fn(w, h, dpr);
+      }
       raf = requestAnimationFrame(frame);
     }
     function energy(a, b) { var s = 0; for (var i = a; i < b; i++) s += freq[i]; return s / ((b - a) * 255); }
+    function bandVal(i, n) { var a = Math.floor(Math.pow(i / n, 1.7) * 700) + 1, b = Math.floor(Math.pow((i + 1) / n, 1.7) * 700) + 2; return energy(a, b); }
     function bars(w, h, dpr) {
       g.fillStyle = '#000'; g.fillRect(0, 0, w, h);
       var n = w < 400 * dpr ? 32 : 64, gap = Math.max(1, Math.floor(w / n * 0.18)), bw = w / n;
       var grad = g.createLinearGradient(0, h, 0, 0); grad.addColorStop(0, '#1ee34a'); grad.addColorStop(0.6, '#f2e93a'); grad.addColorStop(1, '#ff3b3b');
       for (var i = 0; i < n; i++) {
-        var a = Math.floor(Math.pow(i / n, 1.7) * 700) + 1, b = Math.floor(Math.pow((i + 1) / n, 1.7) * 700) + 2;
-        var v = energy(a, b), bh = v * h * 0.95;
+        var bh = bandVal(i, n) * h * 0.95;
         peaks[i] = Math.max((peaks[i] || 0) - h * 0.008, bh);
         g.fillStyle = grad; g.fillRect(i * bw + gap / 2, h - bh, bw - gap, bh);
         g.fillStyle = '#fff'; g.fillRect(i * bw + gap / 2, h - peaks[i] - 3 * dpr, bw - gap, 2 * dpr);
       }
-      // classic LED rows
       g.fillStyle = 'rgba(0,0,0,0.35)'; for (var y = h; y > 0; y -= 4 * dpr) g.fillRect(0, y, w, dpr);
+    }
+    function mirror(w, h) {
+      g.fillStyle = 'rgba(4,0,18,0.35)'; g.fillRect(0, 0, w, h);
+      var n = 48, bw = w / n;
+      for (var i = 0; i < n; i++) {
+        var v = bandVal(i, n), bh = v * h * 0.46;
+        g.fillStyle = 'hsl(' + ((i / n) * 280 + t * 12) % 360 + ',90%,' + (45 + v * 20) + '%)';
+        g.fillRect(i * bw + 1, h / 2 - bh, bw - 2, bh * 2);
+      }
     }
     function scope(w, h, dpr) {
       g.fillStyle = 'rgba(0,0,0,0.28)'; g.fillRect(0, 0, w, h);
-      var hue = (t * 40) % 360;
+      var hue = (t * 25) % 360;
       g.lineWidth = 2.5 * dpr; g.strokeStyle = 'hsl(' + hue + ',100%,60%)'; g.shadowColor = g.strokeStyle; g.shadowBlur = 12 * dpr;
       g.beginPath();
       for (var i = 0; i < w; i += 2) { var v = wave[Math.floor(i / w * wave.length)] / 128 - 1, y = h / 2 + v * h * 0.42; if (i) g.lineTo(i, y); else g.moveTo(i, y); }
@@ -333,31 +417,44 @@
     function ambience(w, h) {
       var pw = 96, ph = Math.max(20, Math.round(96 * h / w));
       if (!plasma || plasma.width !== pw) plasma = g.createImageData(pw, ph);
-      var bass = energy(1, 12), mid = energy(12, 120), d = plasma.data, k = t * (0.6 + bass * 2.5);
+      phase += (0.006 + sm.bass * 0.02);   // speeds up a little with the beat, never jumps
+      var d = plasma.data, k = phase;
       for (var y = 0; y < ph; y++) for (var x = 0; x < pw; x++) {
         var v = Math.sin(x / 9 + k) + Math.sin(y / 7 - k * 1.3) + Math.sin((x + y) / 11 + k * 0.7) + Math.sin(Math.sqrt((x - pw / 2) * (x - pw / 2) + (y - ph / 2) * (y - ph / 2)) / 6 - k * 2);
         var o = (y * pw + x) * 4, c = v * Math.PI / 2;
-        d[o] = 128 + 127 * Math.sin(c + t * 0.5); d[o + 1] = 70 + 70 * Math.sin(c + 2.1 + mid * 3); d[o + 2] = 140 + 115 * Math.sin(c + 4.2); d[o + 3] = 255;
+        d[o] = 110 + 100 * Math.sin(c + t * 0.15); d[o + 1] = 60 + 55 * Math.sin(c + 2.1 + sm.mid); d[o + 2] = 130 + 100 * Math.sin(c + 4.2); d[o + 3] = 255;
       }
       var tmp = VIS._tmp || (VIS._tmp = document.createElement('canvas')); tmp.width = pw; tmp.height = ph; tmp.getContext('2d').putImageData(plasma, 0, 0);
-      g.imageSmoothingEnabled = true; g.globalAlpha = 0.55 + bass * 0.45; g.drawImage(tmp, 0, 0, w, h); g.globalAlpha = 1;
+      g.imageSmoothingEnabled = true; g.drawImage(tmp, 0, 0, w, h);
     }
     function alchemy(w, h, dpr) {
       g.fillStyle = 'rgba(0,0,8,0.16)'; g.fillRect(0, 0, w, h);
-      var cx = w / 2, cy = h / 2, R = Math.min(w, h) * 0.18, n = 96, bass = energy(1, 10);
-      g.save(); g.translate(cx, cy); g.rotate(t * 0.4);
+      var cx = w / 2, cy = h / 2, R = Math.min(w, h) * 0.18, n = 96;
+      g.save(); g.translate(cx, cy); g.rotate(t * 0.3);
       for (var ring = 0; ring < 3; ring++) {
         g.beginPath();
         for (var i = 0; i <= n; i++) {
           var a = i / n * Math.PI * 2, v = freq[(Math.floor(i / n * 300) + ring * 40) % 512] / 255;
-          var r = R * (1 + ring * 0.55) + v * R * (1.1 + bass);
+          var r = R * (1 + ring * 0.55) + v * R * (1 + sm.bass);
           var x = Math.cos(a) * r, y = Math.sin(a) * r; if (i) g.lineTo(x, y); else g.moveTo(x, y);
         }
-        g.strokeStyle = 'hsla(' + ((t * 50 + ring * 110) % 360) + ',100%,62%,0.9)'; g.lineWidth = (2 - ring * 0.4) * dpr; g.stroke();
+        g.strokeStyle = 'hsla(' + ((t * 30 + ring * 110) % 360) + ',100%,62%,0.9)'; g.lineWidth = (2 - ring * 0.4) * dpr; g.stroke();
       }
       g.restore();
     }
-    return { show: show, hide: hide };
+    function starfield(w, h, dpr) {
+      g.fillStyle = 'rgba(0,0,10,0.3)'; g.fillRect(0, 0, w, h);
+      while (stars.length < 220) stars.push({ x: Math.random() * 2 - 1, y: Math.random() * 2 - 1, z: Math.random() });
+      var sp = 0.004 + sm.all * 0.03;
+      stars.forEach(function (s) {
+        s.z -= sp; if (s.z <= 0.02) { s.x = Math.random() * 2 - 1; s.y = Math.random() * 2 - 1; s.z = 1; }
+        var px = w / 2 + s.x / s.z * w * 0.5, py = h / 2 + s.y / s.z * h * 0.5, r = (1 - s.z) * 2.2 * dpr;
+        if (px < 0 || px > w || py < 0 || py > h) { s.z = 0; return; }
+        g.fillStyle = 'hsla(' + (200 + s.x * 60) + ',80%,' + (60 + (1 - s.z) * 30) + '%,' + (1 - s.z) + ')';
+        g.beginPath(); g.arc(px, py, r, 0, Math.PI * 2); g.fill();
+      });
+    }
+    return { show: show, hide: hide, menu: menu };
   })();
   M.visualizer = VIS;
 })();

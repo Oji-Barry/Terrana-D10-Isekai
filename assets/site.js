@@ -374,7 +374,7 @@
     music.innerHTML = '<summary class="menu-label px"><span>MUSIC</span><button type="button" class="menu-music-quick" aria-label="Play music" hidden>▶</button></summary><div class="menu-music-box"></div>';
     music.addEventListener('toggle', function () { try { localStorage.setItem(MKEY, music.open ? '1' : '0'); } catch (e) {} });
     side.insertBefore(music, side.querySelector('.search-results'));
-    loadScript(root + 'assets/music.js?v=cc59780c').then(function () {
+    loadScript(root + 'assets/music.js?v=162632af').then(function () {
       var TM = window.TerranaMusic;
       TM.mountPlayer(music.querySelector('.menu-music-box'), {});
       TM.keepAlive();
@@ -454,6 +454,7 @@
         '<div class="ac-row"><span class="ac-role">ICONS</span><span class="ac-dots" aria-hidden="true"></span><span class="ac-name">LORC AND SKOLL, <a href="https://game-icons.net">GAME-ICONS.NET</a> (<a href="https://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a>)</span></div>' +
         '<div class="ac-row"><span class="ac-role">SPRITES</span><span class="ac-dots" aria-hidden="true"></span><span class="ac-name"><a href="https://opengameart.org/content/dawnlike-16x16-universal-rogue-like-tileset-v181">DAWNLIKE</a> BY DRAGONDEPLATINO <span class="ac-platino" role="img" aria-label="Platino, the artist\'s sprite" title="Platino"><span style="background-image:url(' + root + 'assets/sprites/dawnlike/Reptile0.png)"></span><span style="background-image:url(' + root + 'assets/sprites/dawnlike/Reptile1.png)"></span></span>, PALETTE BY DAWNBRINGER (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a>)</span></div>' +
         '<div class="ac-row"><span class="ac-role">MUSIC</span><span class="ac-dots" aria-hidden="true"></span><span class="ac-name"><a href="https://juhanijunkala.com/">JUHANI JUNKALA</a>, JRPG MUSIC PACKS AND RETRO GAME MUSIC PACK (<a href="https://creativecommons.org/publicdomain/zero/1.0/">CC0</a>)</span></div>' +
+        '<div class="ac-row"><span class="ac-role">VISUALIZER</span><span class="ac-dots" aria-hidden="true"></span><span class="ac-name"><a href="https://github.com/jberg/butterchurn">BUTTERCHURN</a> BY JORDAN BERG (<a href="https://opensource.org/license/mit">MIT</a>), MILKDROP PRESETS FROM <a href="https://github.com/jberg/butterchurn-presets">BUTTERCHURN-PRESETS</a> BY THEIR AUTHORS (LISTED IN THE VISUALIZER MENU)</span></div>' +
         '<div class="ac-row"><span class="ac-role">PIXEL FONT</span><span class="ac-dots" aria-hidden="true"></span><span class="ac-name"><a href="https://github.com/fontworks-fonts/DotGothic16">DOTGOTHIC16</a> BY FONTWORKS</span></div>' +
         '<div class="ac-row"><span class="ac-role">TEXT FONT</span><span class="ac-dots" aria-hidden="true"></span><span class="ac-name"><a href="https://fonts.google.com/specimen/Nunito+Sans">NUNITO SANS</a> VIA <a href="https://fontsource.org">FONTSOURCE</a></span></div>' +
         '<div class="ac-row"><span class="ac-role">FONT LICENSE</span><span class="ac-dots" aria-hidden="true"></span><span class="ac-name"><a href="https://openfontlicense.org">SIL OPEN FONT LICENSE</a></span></div>' +
