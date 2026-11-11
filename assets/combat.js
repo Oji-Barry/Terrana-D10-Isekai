@@ -1111,7 +1111,7 @@
       [[atkMana, a1, d1, manaTo === 'damage'], [dmgMana, d1, a1, manaTo === 'attack']].forEach(function (x) {
         var s = x[0], cur = x[1], other = x[2], off = x[3];
         s.textContent = '';
-        var max = off || other > 0 ? 0 : Math.max(0, cap);   // the attack or the damage roll, not both (Ch. 11, 13)
+        var max = off ? 0 : Math.max(0, cap - other);   // each mana is 1 die, on the attack or the damage roll, split however you like
         for (var i = 0; i <= max; i++) s.appendChild(opt(i, i === 0 ? 'None' : '+' + i + ' mana (' + i + ' ' + (i === 1 ? 'die' : 'dice') + ')', i === Math.min(cur, max)));
         s.disabled = off || max === 0;
       });
