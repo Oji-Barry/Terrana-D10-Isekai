@@ -374,13 +374,13 @@
     music.innerHTML = '<summary class="menu-label px"><span>MUSIC</span><button type="button" class="menu-music-quick" aria-label="Play music" hidden>▶</button></summary><div class="menu-music-box"></div>';
     music.addEventListener('toggle', function () { try { localStorage.setItem(MKEY, music.open ? '1' : '0'); } catch (e) {} });
     side.insertBefore(music, side.querySelector('.search-results'));
-    loadScript(root + 'assets/music.js?v=d8b70e4d').then(function () {
+    loadScript(root + 'assets/music.js?v=d4d45ba5').then(function () {
       var TM = window.TerranaMusic;
       TM.mountPlayer(music.querySelector('.menu-music-box'), {});
       TM.keepAlive();
       // A pause button that stays on the MUSIC heading even with the player folded away
       var quick = music.querySelector('.menu-music-quick');
-      quick.addEventListener('click', function (ev) { ev.preventDefault(); ev.stopPropagation(); TM.unlock(); TM.toggle(); });
+      quick.addEventListener('click', function (ev) { ev.preventDefault(); ev.stopPropagation(); TM.unlock(); TM._userToggle = true; TM.toggle(); });
       function q() { var st = TM.state(); quick.hidden = !st.id && !st.url; quick.textContent = st.playing ? '❚❚' : '▶'; quick.setAttribute('aria-label', st.playing ? 'Pause music' : 'Play music'); }
       TM.on(function (w) { if (w !== 'time') q(); }); q();
     }).catch(function () { music.remove(); });

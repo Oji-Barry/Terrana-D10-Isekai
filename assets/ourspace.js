@@ -523,7 +523,9 @@
     var b = box('♫ ' + owner + '’s Song', [holder], 'os-songbox');
     M.setRepeat('one');
     M.mountPlayer(holder, { songOnly: true });
-    if (sg.lib) M.play(sg.lib); else M.playUrl(sg.url, sg.title);
+    var auto = (theme || {}).songAuto !== false;   // the page owner chooses whether it starts by itself
+    if (sg.lib) M.play(sg.lib, { paused: !auto }); else M.playUrl(sg.url, sg.title, { paused: !auto });
+    if (auto) M.autoStart();
     return b;
   }
 
@@ -768,6 +770,7 @@
       var M = window.TerranaMusic, sg = readSong(); if (!M || !sg) return;
       M.unlock(); M.setRepeat('one'); if (sg.lib) M.play(sg.lib); else M.playUrl(sg.url, sg.title);
     } });
+    var songAuto = el('input', { type: 'checkbox', id: 'f-song-auto' }); songAuto.checked = theme.songAuto !== false;
     var songStop = el('button', { class: 'os-btn', type: 'button', text: 'Stop', onclick: function () { if (window.TerranaMusic) window.TerranaMusic.stop(); } });
     var songDel = el('button', { class: 'os-btn danger', type: 'button', text: 'Delete Upload', onclick: async function () {
       var v = songSel.value; if (v.indexOf('u:') !== 0) { say('song-msg', 'Pick one of your uploads first.', true); return; }
@@ -781,6 +784,7 @@
     form.appendChild(el('fieldset', {}, [el('legend', { text: 'Profile Song' }),
       el('p', { class: 'os-hint', text: 'Plays when people visit this page. Pick from the site’s music, from other players’ uploads, or upload your own (up to 5 songs, 10 MB each). Your uploads show up for everyone under your username, in every music player on the site. Only upload music you have the right to share.' }),
       el('div', {}, [el('label', { for: 'f-song', text: 'Song' }), songSel]),
+      el('label', { class: 'os-chk' }, [songAuto, ' Play it automatically when people visit (visitors can still pause or mute it)']),
       el('div', {}, [songPrev, songStop, songDel]),
       el('div', {}, [el('label', { for: 'f-song-up', text: 'Upload a song' }), songUp]), songMsg]));
 
@@ -853,6 +857,7 @@
       var bu = bgUrl(bgU.value.trim()); if (bu) t.bgImage = { url: bu, mode: bgM.value };
       if (css.value.trim()) t.css = css.value.slice(0, CSS_MAX);
       var sgx = readSong(); if (sgx) t.song = sgx;
+      if (!songAuto.checked) t.songAuto = false;
       var base = THEMES[pr.value];
       COLOR_KEYS.forEach(function (k) { var v = $('th-' + k[0]).value.toLowerCase(); if (v !== base[k[0]].toLowerCase()) t.colors[k[0]] = v; });
       return t;

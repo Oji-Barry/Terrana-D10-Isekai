@@ -167,8 +167,27 @@
       loadLib().then(function () {
         st.mood = saved.mood || 'all'; M.setRepeat(saved.repeat || 'all');
         M.play(saved.id, { at: saved.time || 0, paused: !saved.playing });
+        if (saved.playing) M.autoStart();
       });
+    } else if (pref.siteAuto !== false) {
+      // A new visit: the JRPG Theme starts on Repeat 1. Pausing it turns this off for your next visits; pressing play turns it back on.
+      loadLib().then(function () { st.mood = 'theme'; M.setRepeat('one'); M.play('jrpg-theme', { mood: 'theme' }); M.autoStart(); });
     }
+    M.on(function (w) { if (w === 'play' || w === 'pause') { var on = w === 'play'; if (M._userToggle) { pref.siteAuto = on; savePref(); M._userToggle = false; } } });
+  };
+  // Browsers hold music back until the visitor clicks or presses a key, so start it on the first one
+  // (unless that first click is on the player itself, which then does what was clicked).
+  M.autoStart = function () {
+    if (!audio.paused) return;
+    function go(e) {
+      ['pointerdown', 'keydown'].forEach(function (ev) { window.removeEventListener(ev, go, true); });
+      if (e && e.target && e.target.closest && e.target.closest('.mp, .menu-music-quick, .mp-vis')) return;
+      if (audio.paused && audio.src) { graph(); playNow(); }
+    }
+    setTimeout(function () {
+      if (!audio.paused) return;
+      ['pointerdown', 'keydown'].forEach(function (ev) { window.addEventListener(ev, go, true); });
+    }, 300);
   };
 
   // ---------------- player widget ----------------
@@ -193,7 +212,7 @@
     function act(action, data) {
       M.unlock();
       if (opts.onAction) return opts.onAction(action, data);
-      if (action === 'toggle') M.toggle(); else if (action === 'next') M.next(); else if (action === 'prev') M.prev();
+      if (action === 'toggle') { M._userToggle = true; M.toggle(); } else if (action === 'next') M.next(); else if (action === 'prev') M.prev();
       else if (action === 'repeat') M.cycleRepeat(); else if (action === 'mood') M.setMood(data); else if (action === 'pick') M.play(data);
       else if (action === 'seek') M.seek(data);
     }

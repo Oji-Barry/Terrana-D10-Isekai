@@ -169,3 +169,4 @@ body.os-custom #os-main { contain: paint; }
 .os-snips { display: flex; flex-wrap: wrap; gap: 4px; margin: 4px 0 6px; }
 .os-snips .os-btn { font-size: 11px; padding: 2px 6px; }
 body.os-has-bg { animation: none; }
+.os-chk { display: block; margin: 6px 0; font-weight: normal; }
