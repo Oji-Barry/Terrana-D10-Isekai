@@ -150,7 +150,7 @@
   };
   window.TerranaMusic = M;
   if (!document.querySelector('link[href*="assets/music.css"]')) {
-    var css = document.createElement('link'); css.rel = 'stylesheet'; css.href = ROOT + 'assets/music.css?v=2305d38a'; document.head.appendChild(css);
+    var css = document.createElement('link'); css.rel = 'stylesheet'; css.href = ROOT + 'assets/music.css?v=661a7dac'; document.head.appendChild(css);
   }
 
   // ---------------- book pages: keep going between pages ----------------
@@ -243,8 +243,7 @@
     var bRep = el('button', { type: 'button', class: 'mp-btn mp-rep', onclick: function () { if (can()) act('repeat'); } });
     var bMute = el('button', { type: 'button', class: 'mp-btn', 'aria-label': 'Mute', onclick: function () { M.muted(!M.muted()); } });
     var vol = el('input', { type: 'range', min: '0', max: '100', class: 'mp-vol', 'aria-label': 'Music volume', value: String(Math.round(pref.vol * 100)), oninput: function () { M.volume(+vol.value / 100); if (M.muted() && +vol.value > 0) M.muted(false); } });
-    var visMenu = el('div', { class: 'mp-vismenu', role: 'menu', hidden: true });
-    var bVis = el('button', { type: 'button', class: 'mp-btn', 'aria-label': 'Visualizations', title: 'Visualizations', 'aria-haspopup': 'menu', 'aria-expanded': 'false', text: ICON.vis + ' ▾', onclick: function (e) { e.stopPropagation(); M.unlock(); VIS.menu(visMenu, bVis); } });
+    var bVis = el('button', { type: 'button', class: 'mp-btn', 'aria-label': 'Open the visualizer', title: 'Visualizer', text: ICON.vis, onclick: function () { M.unlock(); VIS.show(); } });
     var moodSel = el('select', { class: 'mp-mood', 'aria-label': 'Mood', onchange: function () { if (can()) act('mood', moodSel.value); else draw(); } });
     var list = el('ol', { class: 'mp-tracks' });
     var details = el('details', { class: 'mp-list' }, [el('summary', { text: 'Track list' }), list]);
@@ -253,7 +252,7 @@
     wrap.appendChild(screen);
     // Two fixed rows, so nothing jumps around: the buttons, then mute + volume + visualizations
     wrap.appendChild(el('div', { class: 'mp-ctrls' }, opts.songOnly ? [bPlay, bRep] : [bPrev, bPlay, bNext, bRep]));
-    wrap.appendChild(el('div', { class: 'mp-ctrls2' }, [bMute, vol, el('span', { class: 'mp-viswrap' }, [bVis, visMenu])]));
+    wrap.appendChild(el('div', { class: 'mp-ctrls2' }, [bMute, vol, el('span', { class: 'mp-viswrap' }, [bVis])]));
     if (!opts.songOnly) { wrap.appendChild(el('label', { class: 'mp-moodrow' }, [el('span', { text: 'Mood' }), moodSel])); wrap.appendChild(details); }
     if (opts.extra) wrap.appendChild(opts.extra);
     wrap.appendChild(note);
@@ -375,17 +374,20 @@
       var bMax = el('button', { type: 'button', title: 'Full screen', 'aria-label': 'Full screen', text: '□', onclick: maxToggle });
       var bX = el('button', { type: 'button', title: 'Close', 'aria-label': 'Close visualizer', text: '×', onclick: hide });
       var head = el('div', { class: 'mp-vis-head' }, [el('span', { class: 'mp-vis-name', text: 'Visualizer' }), el('span', { class: 'mp-vis-pickwrap' }, [modeBtn, winMenu]), el('span', { class: 'mp-vis-btns' }, [bMin, bMax, bX])]);
+      head.addEventListener('mouseleave', function () { if (win.classList.contains('max')) peek(); });
       cv = el('canvas', { class: 'mp-vis-cv', ondblclick: maxToggle });
       cv2 = el('canvas', { class: 'mp-vis-cv mp-vis-gl', ondblclick: maxToggle });
       win.appendChild(head); win.appendChild(cv); win.appendChild(cv2);
       document.body.appendChild(win);
       g = cv.getContext('2d');
       try { build.ok = !!document.createElement('canvas').getContext('webgl2'); } catch (e) { build.ok = false; }
-      document.addEventListener('fullscreenchange', function () { win.classList.toggle('max', document.fullscreenElement === win); peek(); });
+      document.addEventListener('fullscreenchange', function () { win.classList.toggle('max', document.fullscreenElement === win); win.classList.remove('peek'); });
       // In full screen the title bar tucks away and comes back when you move the mouse or tap
       var hideT = 0;
-      function peek() { win.classList.add('peek'); clearTimeout(hideT); hideT = setTimeout(function () { win.classList.remove('peek'); }, 2500); }
-      ['mousemove', 'touchstart', 'keydown'].forEach(function (ev) { win.addEventListener(ev, peek, { passive: true }); });
+      function peek() { win.classList.add('peek'); clearTimeout(hideT); hideT = setTimeout(function () { if (!head.matches(':hover') && !winMenu.offsetParent) win.classList.remove('peek'); }, 1800); }
+      win.addEventListener('mousemove', function (e) { if (!win.classList.contains('max')) return; var r = win.getBoundingClientRect(); if (e.clientY - r.top < 60) peek(); }, { passive: true });
+      win.addEventListener('touchstart', function () { if (win.classList.contains('max')) peek(); }, { passive: true });
+      win.addEventListener('keydown', function (e) { if (e.key === 'Tab') peek(); });
       if (typeof pref.vis.mode !== 'string') pref.vis.mode = 'bars';
       label();
       if (cur().md || /^md:/.test(pref.vis.mode)) startMd();

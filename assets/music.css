@@ -20,7 +20,8 @@
 .mp-vismenu button:hover, .mp-vismenu button:focus-visible { background: rgba(255,255,255,0.15); outline: none; }
 .mp-vismenu button[aria-checked="true"] { color: #6dffb0; font-weight: 800; }
 .mp-vismenu small { display: block; padding: 4px 10px 2px; color: #aab8e8; font-size: 10.5px; }
-.mp-vis .mp-vismenu { top: calc(100% + 4px); bottom: auto; }
+.mp-vis .mp-vismenu { bottom: calc(100% + 8px); top: auto; right: 0; left: auto; max-height: 70vh; overflow: auto; }
+.mp-vis.max .mp-vismenu { top: calc(100% + 4px); bottom: auto; }
 .mp-btn { min-width: 30px; height: 28px; padding: 0 7px; border-radius: 14px; border: 1px solid #0b1440; color: #fff; font-size: 12px; cursor: pointer;
   background: linear-gradient(180deg, #e8eeff 0%, #9fb2ea 48%, #6c83cf 52%, #8ea3e6 100%); color: #0b1440; font-weight: 800; box-shadow: inset 0 1px 0 #fff; }
 .mp-btn:hover:not(:disabled), .mp-btn:focus-visible { filter: brightness(1.12); outline: none; box-shadow: 0 0 0 2px #ffd76a; }
@@ -45,29 +46,32 @@
 .mp-switch { display: flex; align-items: center; gap: 6px; margin-top: 7px; font-size: 12px; }
 
 /* The visualizer window */
-.mp-vis { position: fixed; right: 14px; bottom: 14px; z-index: 900; width: 300px; border-radius: 10px; overflow: hidden; border: 1px solid #c9d6ff;
+.mp-vis { position: fixed; right: 14px; bottom: 14px; z-index: 900; width: 300px; border-radius: 10px; overflow: visible; border: 1px solid #c9d6ff;
   background: #000; box-shadow: 0 8px 28px rgba(0,0,0,0.6); }
-.mp-vis-head { display: flex; align-items: center; gap: 6px; padding: 3px 4px 3px 9px; background: linear-gradient(180deg, #5a74c9, #22357e); color: #fff; font: 12px 'DotGothic16', monospace; cursor: default; }
+.mp-vis-head { border-radius: 9px 9px 0 0; display: flex; align-items: center; gap: 6px; padding: 3px 4px 3px 9px; background: linear-gradient(180deg, #5a74c9, #22357e); color: #fff; font: 12px 'DotGothic16', monospace; cursor: default; }
 .mp-vis-name { font-weight: 700; }
 .mp-vis-btns { display: flex; gap: 3px; }
 .mp-vis-btns button { width: 24px; height: 22px; border-radius: 5px; border: 1px solid #0b1440; background: linear-gradient(180deg, #e8eeff, #8ea3e6); color: #0b1440; font-weight: 800; font-size: 12px; line-height: 1; cursor: pointer; padding: 0; }
 .mp-vis-btns button:hover, .mp-vis-btns button:focus-visible { box-shadow: 0 0 0 2px #ffd76a; outline: none; }
-.mp-vis-cv { display: block; width: 100%; height: 170px; cursor: pointer; }
+.mp-vis-cv { display: block; width: 100%; height: 170px; cursor: pointer; border-radius: 0 0 9px 9px; }
+.mp-vis.max .mp-vis-cv, .mp-vis.max .mp-vis-head { border-radius: 0; }
 .mp-vis.collapsed .mp-vis-cv { display: none; }
 .mp-vis-gl { display: none; }
 .mp-vis.gl .mp-vis-cv:not(.mp-vis-gl) { display: none; }
 .mp-vis.gl .mp-vis-gl { display: block; }
 .mp-vis.collapsed .mp-vis-gl { display: none !important; }
-.mp-vis-pickwrap { position: relative; flex: 1; min-width: 0; }
+.mp-vis-name { flex: 1; min-width: 0; }
+.mp-vis-pickwrap { position: relative; flex: 0 1 auto; min-width: 0; margin-left: auto; }
 .mp-vis-pick { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; padding: 2px 8px; border-radius: 5px; border: 1px solid #0b1440; background: rgba(0,0,0,0.25); color: #9fe8c2; font: 12px 'DotGothic16', monospace; cursor: pointer; }
 .mp-vis-pick:hover, .mp-vis-pick:focus-visible { box-shadow: 0 0 0 2px #ffd76a; outline: none; }
-/* Full screen: the picture fills everything; the title bar floats on top and tucks away */
+/* Full screen: the picture fills everything; the title bar slides up out of sight and comes back near the top */
 .mp-vis.max { inset: 0; width: auto; border: 0; border-radius: 0; }
 .mp-vis:fullscreen { width: 100%; height: 100%; border: 0; border-radius: 0; }
 .mp-vis.max .mp-vis-cv, .mp-vis:fullscreen .mp-vis-cv { height: 100vh; }
-.mp-vis.max .mp-vis-head, .mp-vis:fullscreen .mp-vis-head { position: absolute; top: 0; left: 0; right: 0; z-index: 2; opacity: 0; transition: opacity 0.3s; }
-.mp-vis.max.peek .mp-vis-head, .mp-vis:fullscreen.peek .mp-vis-head, .mp-vis.max .mp-vis-head:focus-within, .mp-vis:fullscreen .mp-vis-head:focus-within { opacity: 1; }
-.mp-vis.max:not(.peek), .mp-vis:fullscreen:not(.peek) { cursor: none; }
+.mp-vis.max .mp-vis-head { position: absolute; top: 0; left: 0; right: 0; z-index: 2; transform: translateY(-100%); transition: transform 0.25s ease; }
+.mp-vis.max.peek .mp-vis-head, .mp-vis.max .mp-vis-head:hover { transform: none; }
+.mp-vis.max:not(.peek) { cursor: none; }
+@media (prefers-reduced-motion: reduce) { .mp-vis.max .mp-vis-head { transition: none; } }
 @media (max-width: 560px) { .mp-vis:not(.max) { width: 220px; right: 8px; bottom: 8px; } .mp-vis-cv { height: 120px; } }
 @media (prefers-reduced-motion: reduce) { .mp-title.scroll span { animation: none; padding-left: 0; } }
 
