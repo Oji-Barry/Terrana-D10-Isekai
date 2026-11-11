@@ -580,9 +580,15 @@
     var holder = el('div', {});
     var b = box('♫ ' + owner + '’s Song', [holder], 'os-songbox');
     M.setRepeat('one');
-    M.mountPlayer(holder, { songOnly: true });
+    M.mountPlayer(holder, {});   // the full player: visitors can switch to any mood or track
     var auto = (theme || {}).songAuto !== false;   // the page owner chooses whether it starts by itself
-    if (sg.lib) M.play(sg.lib, { paused: !auto }); else M.playUrl(sg.url, sg.title, { paused: !auto });
+    if (sg.lib) M.play(sg.lib, { paused: !auto, mood: 'all' });
+    else M.refreshUploads().then(function () {
+      // an uploaded song plays from its uploader's group, so the track list shows their other songs too
+      var g = M.uploads().filter(function (x) { return x.tracks.some(function (id) { var t = M.track(id); return t && t.url === sg.url; }); })[0];
+      var id = g && g.tracks.filter(function (id) { return M.track(id).url === sg.url; })[0];
+      if (id) M.play(id, { paused: !auto, mood: g.id }); else M.playUrl(sg.url, sg.title, { paused: !auto });
+    });
     if (auto) M.autoStart();
     return b;
   }

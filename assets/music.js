@@ -328,7 +328,8 @@
       { id: 'stars', name: 'Starfield', fn: starfield, group: 'saver' },
       { id: 'mystic', name: 'Mystic Lines', fn: mystic, group: 'saver' },
       { id: 'bezier', name: 'Bezier Ribbons', fn: bezier, group: 'saver' },
-      { id: 'fish', name: 'Fish Tank', fn: fishTank, group: 'saver' },
+      { id: 'fish', name: 'Fish Tank', frame: 'vendor/webgl-aquarium/aquarium/aquarium.html?numFish=100&fitWindow=true', by: 'Google (WebGL Aquarium)', group: 'saver' },
+      { id: 'dvd', name: 'DVD Bounce', fn: dvdBounce, group: 'saver' },
       { id: 'dice', name: 'Flying Dice', fn: flyingDice, group: 'saver' }
     ];
     var GROUPS = [['media', 'Classic Media Player'], ['saver', 'Classic Screensavers']];
@@ -642,33 +643,30 @@
         g.beginPath(); g.moveTo(bz[0].x, bz[0].y + k * 10 * dpr); g.bezierCurveTo(bz[1].x, bz[1].y + k * 10 * dpr, bz[2].x, bz[2].y + k * 10 * dpr, bz[3].x, bz[3].y + k * 10 * dpr); g.stroke();
       }
     }
-    var fish = null, bubbles = [];
-    function fishTank(w, h, dpr) {
-      var water = g.createLinearGradient(0, 0, 0, h); water.addColorStop(0, '#0b6fa8'); water.addColorStop(1, '#03264a');
-      g.fillStyle = water; g.fillRect(0, 0, w, h);
-      g.fillStyle = '#c8a86a'; g.beginPath(); g.moveTo(0, h); for (var x = 0; x <= w; x += 20 * dpr) g.lineTo(x, h - 14 * dpr - Math.sin(x / (40 * dpr)) * 5 * dpr); g.lineTo(w, h); g.fill();
-      for (var s2 = 0; s2 < 7; s2++) {   // swaying seaweed
-        var bx = (s2 + 0.5) * w / 7; g.strokeStyle = s2 % 2 ? '#2f8f3f' : '#3fae4f'; g.lineWidth = 5 * dpr; g.beginPath(); g.moveTo(bx, h - 10 * dpr);
-        for (var k = 1; k <= 6; k++) g.lineTo(bx + Math.sin(t * 1.2 + k * 0.6 + s2) * 8 * dpr, h - 10 * dpr - k * h * 0.07); g.stroke();
+    // The bouncing disc logo, with CCN on it. It changes color at every wall and cheers when it hits a corner.
+    var dvd = null;
+    function dvdBounce(w, h, dpr) {
+      g.fillStyle = '#000'; g.fillRect(0, 0, w, h);
+      var lw = Math.max(70, Math.min(w, h) * 0.32), lh = lw * 0.5;
+      if (!dvd) dvd = { x: Math.random() * (w - lw), y: Math.random() * (h - lh), vx: 1.4, vy: 1.1, hue: 200, cheer: 0 };
+      var sp = dpr * (1 + sm.all * 0.6), hitX = false, hitY = false;
+      dvd.x += dvd.vx * sp; dvd.y += dvd.vy * sp;
+      if (dvd.x <= 0) { dvd.x = 0; dvd.vx = Math.abs(dvd.vx); hitX = true; } else if (dvd.x + lw >= w) { dvd.x = w - lw; dvd.vx = -Math.abs(dvd.vx); hitX = true; }
+      if (dvd.y <= 0) { dvd.y = 0; dvd.vy = Math.abs(dvd.vy); hitY = true; } else if (dvd.y + lh >= h) { dvd.y = h - lh; dvd.vy = -Math.abs(dvd.vy); hitY = true; }
+      if (hitX || hitY) dvd.hue = (dvd.hue + 70 + Math.random() * 120) % 360;
+      if (hitX && hitY) dvd.cheer = 120;
+      var col = 'hsl(' + dvd.hue + ',90%,60%)', x = dvd.x, y = dvd.y;
+      g.fillStyle = col;
+      g.font = 'italic 900 ' + Math.round(lh * 0.62) + 'px "Arial Black", Impact, sans-serif'; g.textAlign = 'center'; g.textBaseline = 'alphabetic';
+      g.save(); g.translate(x + lw / 2, y + lh * 0.6); g.transform(1, 0, -0.18, 1, 0, 0); g.fillText('CCN', 0, 0); g.restore();
+      // the flattened disc underneath, with a hole cut out
+      g.beginPath(); g.ellipse(x + lw / 2, y + lh * 0.82, lw * 0.46, lh * 0.15, 0, 0, Math.PI * 2); g.fill();
+      g.fillStyle = '#000'; g.beginPath(); g.ellipse(x + lw / 2, y + lh * 0.82, lw * 0.11, lh * 0.045, 0, 0, Math.PI * 2); g.fill();
+      if (dvd.cheer > 0) {
+        dvd.cheer--;
+        g.fillStyle = 'rgba(255,255,255,' + Math.min(1, dvd.cheer / 40) + ')'; g.font = 'bold ' + Math.round(Math.min(w, h) * 0.08) + 'px "Arial Black", sans-serif';
+        g.fillText('CORNER!', w / 2, h * 0.15);
       }
-      if (!fish) fish = [];
-      while (fish.length < 9) fish.push({ x: Math.random() * w, y: h * (0.15 + Math.random() * 0.6), v: (0.5 + Math.random()) * (Math.random() < 0.5 ? -1 : 1), s: (10 + Math.random() * 14), hue: Math.floor(Math.random() * 360), ph: Math.random() * 6 });
-      fish.forEach(function (f) {
-        f.x += f.v * dpr * (1 + sm.all); f.y += Math.sin(t + f.ph) * 0.3 * dpr;
-        if (f.x < -40 * dpr) { f.v = Math.abs(f.v); } if (f.x > w + 40 * dpr) { f.v = -Math.abs(f.v); }
-        var s3 = f.s * dpr, dir = f.v > 0 ? 1 : -1, wag = Math.sin(t * 8 + f.ph) * s3 * 0.25;
-        g.save(); g.translate(f.x, f.y); g.scale(dir, 1);
-        g.fillStyle = 'hsl(' + f.hue + ',85%,55%)';
-        g.beginPath(); g.ellipse(0, 0, s3, s3 * 0.55, 0, 0, Math.PI * 2); g.fill();
-        g.beginPath(); g.moveTo(-s3 * 0.8, 0); g.lineTo(-s3 * 1.6, -s3 * 0.6 + wag); g.lineTo(-s3 * 1.6, s3 * 0.6 + wag); g.closePath(); g.fill();
-        g.fillStyle = '#fff'; g.beginPath(); g.arc(s3 * 0.5, -s3 * 0.12, s3 * 0.17, 0, Math.PI * 2); g.fill();
-        g.fillStyle = '#000'; g.beginPath(); g.arc(s3 * 0.55, -s3 * 0.12, s3 * 0.08, 0, Math.PI * 2); g.fill();
-        g.restore();
-      });
-      if (Math.random() < 0.08 + sm.bass * 0.4) bubbles.push({ x: Math.random() * w, y: h, r: (2 + Math.random() * 4) * dpr });
-      bubbles = bubbles.filter(function (b) { return b.y > -10; }).slice(-120);
-      g.strokeStyle = 'rgba(220,240,255,0.7)'; g.lineWidth = dpr;
-      bubbles.forEach(function (b) { b.y -= (1 + b.r / dpr * 0.3) * dpr; b.x += Math.sin(b.y / 15) * 0.4 * dpr; g.beginPath(); g.arc(b.x, b.y, b.r, 0, Math.PI * 2); g.stroke(); });
     }
     var dice = [], diceImg = null;
     function flyingDice(w, h, dpr) {
