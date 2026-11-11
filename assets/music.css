@@ -28,6 +28,8 @@
 .mp-btn:disabled { opacity: 0.45; cursor: not-allowed; }
 .mp-play { min-width: 38px; height: 34px; border-radius: 17px; font-size: 13px; }
 .mp-rep { font-size: 10.5px; }
+.mp-shuf { opacity: 0.55; filter: grayscale(1); font-size: 13px; }
+.mp-shuf.on { opacity: 1; filter: none; box-shadow: inset 0 0 0 2px #6dffb0; }
 .mp-vol { flex: 1 1 60px; min-width: 50px; accent-color: #6dffb0; }
 .mp-moodrow { display: flex; align-items: center; gap: 6px; margin-top: 7px; font-size: 12px; }
 .mp-mood { flex: 1; min-width: 0; padding: 3px 4px; border-radius: 6px; border: 1px solid #0b1440; background: #eef2ff; color: #0b1440; font-size: 12px; }

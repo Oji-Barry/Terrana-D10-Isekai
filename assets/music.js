@@ -18,6 +18,10 @@
   var st = { id: null, url: '', title: '', mood: 'all', repeat: 'all', note: '' };
   var pref = { vol: 0.6, mute: false, vis: { mode: 0 } };
   try { Object.assign(pref, JSON.parse(localStorage.getItem('terrana-music-pref') || '{}')); } catch (e) {}
+  // Shuffle: plays every song in the list once in a random order before any repeats, and Previous walks back through what played
+  var shuf = { bag: null, hist: [] };
+  function shuffled(a) { a = a.slice(); for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)), t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
+  st.shuffle = !!pref.shuffle;
   function savePref() { try { localStorage.setItem('terrana-music-pref', JSON.stringify(pref)); } catch (e) {} }
   function applyVol() { audio.volume = pref.mute ? 0 : Math.max(0, Math.min(1, pref.vol)); }
   applyVol();
@@ -102,7 +106,7 @@
     track: track,
     on: function (fn) { listeners.push(fn); return function () { listeners = listeners.filter(function (f) { return f !== fn; }); }; },
     state: function () {
-      return { id: st.id, url: st.url, title: st.title, mood: st.mood, moodName: moodName(st.mood), repeat: st.repeat, playing: !audio.paused && !audio.ended,
+      return { id: st.id, url: st.url, title: st.title, mood: st.mood, moodName: moodName(st.mood), repeat: st.repeat, shuffle: !!st.shuffle, playing: !audio.paused && !audio.ended,
         time: audio.currentTime || 0, dur: audio.duration || (st.id && track(st.id) ? track(st.id).dur : 0), vol: pref.vol, mute: pref.mute, blocked: st.note === 'blocked' };
     },
     play: function (id, opts) {
@@ -112,6 +116,8 @@
         if (id && !track(id)) return;
         if (!id) id = st.id || queue()[0];
         if (!id) return;
+        if (shuf.bag) shuf.bag = shuf.bag.filter(function (x) { return x !== id; });
+        if (shuf.hist[shuf.hist.length - 1] !== id) { shuf.hist.push(id); if (shuf.hist.length > 200) shuf.hist.shift(); }
         if (id !== st.id || !audio.src) setSrc(id);
         if (opts.paused) { if (opts.at !== undefined) { audio.addEventListener('loadedmetadata', function () { try { audio.currentTime = opts.at; } catch (e) {} }, { once: true }); } emit('track'); return; }
         playNow(opts.at); emit('track');
@@ -125,6 +131,18 @@
     seek: function (sec) { try { audio.currentTime = sec; } catch (e) {} emit('time'); },
     nextId: function (dir) {
       var q = queue(); if (!q.length) return null;
+      if (st.shuffle) {
+        if (dir === -1) return shuf.hist.length > 1 ? shuf.hist[shuf.hist.length - 2] : null;
+        // the bag holds the songs still to come this round; a new round reshuffles every song (never starting on the one playing)
+        if (!shuf.bag) shuf.bag = shuffled(q.filter(function (x) { return x !== st.id; }));
+        shuf.bag = shuf.bag.filter(function (x) { return q.indexOf(x) >= 0; });
+        if (!shuf.bag.length || (shuf.bag.length === 1 && shuf.bag[0] === st.id)) {
+          if (st.repeat === 'off') return null;
+          shuf.bag = shuffled(q); if (shuf.bag[0] === st.id && q.length > 1) shuf.bag.push(shuf.bag.shift());
+          if (q.length < 2) return q[0];
+        }
+        return shuf.bag[0] === st.id ? shuf.bag[1] : shuf.bag[0];
+      }
       var i = q.indexOf(st.id);
       if (i < 0) return q[0];
       var j = i + (dir || 1);
@@ -138,10 +156,11 @@
       if (!n) { emit('pause'); return; }
       M.play(n);
     },
-    prev: function () { if (audio.currentTime > 3) return M.seek(0); var p = M.nextId(-1); if (p) M.play(p); },
+    prev: function () { if (audio.currentTime > 3) return M.seek(0); var p = M.nextId(-1); if (p) { if (st.shuffle) shuf.hist.pop(); M.play(p); } },
+    setShuffle: function (on, keepPref) { on = !!on; if (on !== st.shuffle) shuf.bag = null; st.shuffle = on; if (!keepPref) { pref.shuffle = on; savePref(); } emit('shuffle'); },
     setRepeat: function (r) { st.repeat = r; audio.loop = r === 'one'; emit('repeat'); },
     cycleRepeat: function () { M.setRepeat({ all: 'one', one: 'off', off: 'all' }[st.repeat]); },
-    setMood: function (m) { st.mood = m; emit('mood'); },
+    setMood: function (m) { if (m !== st.mood) shuf.bag = null; st.mood = m; emit('mood'); },
     volume: function (v) { if (typeof v === 'number') { pref.vol = v; applyVol(); savePref(); emit('vol'); } return pref.vol; },
     muted: function (m) { if (typeof m === 'boolean') { pref.mute = m; applyVol(); savePref(); emit('vol'); } return pref.mute; },
     unlock: graph,
@@ -150,7 +169,7 @@
   };
   window.TerranaMusic = M;
   if (!document.querySelector('link[href*="assets/music.css"]')) {
-    var css = document.createElement('link'); css.rel = 'stylesheet'; css.href = ROOT + 'assets/music.css?v=ee1b939d'; document.head.appendChild(css);
+    var css = document.createElement('link'); css.rel = 'stylesheet'; css.href = ROOT + 'assets/music.css?v=dfdd9491'; document.head.appendChild(css);
   }
 
   // ---------------- book pages: keep going between pages ----------------
@@ -230,7 +249,7 @@
       M.unlock();
       if (opts.onAction) return opts.onAction(action, data);
       if (action === 'toggle') { M._userToggle = true; M._userStarted = true; M._noAuto = false; M.toggle(); } else if (action === 'next') M.next(); else if (action === 'prev') M.prev();
-      else if (action === 'repeat') M.cycleRepeat(); else if (action === 'mood') M.setMood(data); else if (action === 'pick') M.play(data);
+      else if (action === 'repeat') M.cycleRepeat(); else if (action === 'shuffle') M.setShuffle(!M.state().shuffle); else if (action === 'mood') M.setMood(data); else if (action === 'pick') M.play(data);
       else if (action === 'seek') M.seek(data);
     }
     var wrap = el('div', { class: 'mp' + (opts.songOnly ? ' mp-song' : '') });
@@ -241,6 +260,7 @@
     var bPrev = el('button', { type: 'button', class: 'mp-btn', 'aria-label': 'Previous song', text: ICON.prev, onclick: function () { if (can()) act('prev'); } });
     var bNext = el('button', { type: 'button', class: 'mp-btn', 'aria-label': 'Next song', text: ICON.next, onclick: function () { if (can()) act('next'); } });
     var bRep = el('button', { type: 'button', class: 'mp-btn mp-rep', onclick: function () { if (can()) act('repeat'); } });
+    var bShuf = el('button', { type: 'button', class: 'mp-btn mp-shuf', text: '🔀', title: 'Shuffle the playlist', onclick: function () { if (can()) act('shuffle'); } });
     var bMute = el('button', { type: 'button', class: 'mp-btn', 'aria-label': 'Mute', onclick: function () { M.muted(!M.muted()); } });
     var vol = el('input', { type: 'range', min: '0', max: '100', class: 'mp-vol', 'aria-label': 'Music volume', value: String(Math.round(pref.vol * 100)), oninput: function () { M.volume(+vol.value / 100); if (M.muted() && +vol.value > 0) M.muted(false); } });
     var bVis = el('button', { type: 'button', class: 'mp-btn', 'aria-label': 'Open the visualizer', title: 'Visualizer', text: ICON.vis, onclick: function () { M.unlock(); VIS.show(); } });
@@ -251,7 +271,7 @@
     var screen = el('div', { class: 'mp-screen' }, [title, sub, bar]);
     wrap.appendChild(screen);
     // Two fixed rows, so nothing jumps around: the buttons, then mute + volume + visualizations
-    wrap.appendChild(el('div', { class: 'mp-ctrls' }, opts.songOnly ? [bPlay, bRep] : [bPrev, bPlay, bNext, bRep]));
+    wrap.appendChild(el('div', { class: 'mp-ctrls' }, opts.songOnly ? [bPlay, bRep] : [bPrev, bPlay, bNext, bRep, bShuf]));
     wrap.appendChild(el('div', { class: 'mp-ctrls2' }, [bMute, vol, el('span', { class: 'mp-viswrap' }, [bVis])]));
     if (!opts.songOnly) { wrap.appendChild(el('label', { class: 'mp-moodrow' }, [el('span', { text: 'Mood' }), moodSel])); wrap.appendChild(details); }
     if (opts.extra) wrap.appendChild(opts.extra);
@@ -285,7 +305,8 @@
       bPlay.textContent = s.playing ? ICON.pause : ICON.play; bPlay.setAttribute('aria-label', s.playing ? 'Pause' : 'Play');
       bRep.textContent = REPEAT_TEXT[s.repeat]; bRep.setAttribute('aria-label', REPEAT_TEXT[s.repeat] + '. Click to change.');
       bMute.textContent = s.mute ? '🔇' : '🔊'; bMute.setAttribute('aria-label', s.mute ? 'Unmute' : 'Mute');
-      [bPrev, bNext, bRep].forEach(function (b) { b.disabled = !c; });
+      bShuf.classList.toggle('on', !!s.shuffle); bShuf.setAttribute('aria-pressed', String(!!s.shuffle)); bShuf.setAttribute('aria-label', 'Shuffle ' + (s.shuffle ? 'on' : 'off') + '. Click to turn ' + (s.shuffle ? 'off' : 'on') + '.');
+      [bPrev, bNext, bRep, bShuf].forEach(function (b) { b.disabled = !c; });
       bPlay.disabled = !(c || opts.songOnly || s.blocked || (s.id && !s.playing && opts.listenAlong));
       if (lib && moodSel.options.length !== lib.moods.length + 1) {
         moodSel.textContent = '';

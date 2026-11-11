@@ -335,6 +335,7 @@
     if (action === 'pick') return writeMusic({ id: data, playing: true, t0: now, pos: 0 });
     if (action === 'mood') { M.setMood(data); return writeMusic({ mood: data }); }
     if (action === 'repeat') return writeMusic({ repeat: { all: 'one', one: 'off', off: 'all' }[m.repeat || 'all'] });
+    if (action === 'shuffle') { M.setShuffle(!m.shuffle, true); return writeMusic({ shuffle: !m.shuffle }); }
     if (action === 'seek') return writeMusic(m.playing ? { t0: now - data * 1000 } : { pos: data });
   }
   function syncMusic() {
@@ -345,7 +346,9 @@
       R.player = M.mountPlayer(box, { canChange: canPickMusic, onAction: musicAction, lockedNote: 'The Storyteller picks the music. You can still look through the list.', extra: sw });
       M.on(function (what) { if (what === 'play') { R.musicKey = null; setTimeout(syncMusic, 50); } });   // catch up after pressing play
       M.onEnded = function () {   // everyone moves on together; the Storyteller's page writes it down
-        var m = musicState(), n = (m.repeat || 'all') === 'off' ? M.nextId(1) : M.nextId(1);
+        var m = musicState();
+        if (m.shuffle && !R.host) return;   // on shuffle, wait for the Storyteller's page to pick the next song so everyone hears the same one
+        var n = M.nextId(1);
         if (!n) { if (R.host) writeMusic({ playing: false, pos: 0 }); return; }
         M.play(n);
         if (R.host) writeMusic({ id: n, playing: true, t0: Date.now(), pos: 0 });
@@ -355,6 +358,7 @@
     var sw2 = $('mus-open'); if (sw2) sw2.checked = !!m.open;
     if (m.mood && m.mood !== s.mood) M.setMood(m.mood);
     if ((m.repeat || 'all') !== s.repeat) M.setRepeat(m.repeat || 'all');
+    if (!!m.shuffle !== !!s.shuffle) M.setShuffle(!!m.shuffle, true);
     var key = JSON.stringify([m.id, m.playing, m.t0, m.pos]);
     if (key === R.musicKey) { if (R.player) R.player.redraw(); return; }
     R.musicKey = key;
