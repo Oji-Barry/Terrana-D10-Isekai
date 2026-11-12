@@ -513,10 +513,27 @@
       fids.forEach(function (id) { if (fp[id]) fl.appendChild(el('li', {}, [el('a', { href: uLink(fp[id].username), text: fp[id].username }), el('a', { class: 'os-btn', href: 'messages.html?to=' + encodeURIComponent(fp[id].username), text: 'Message' })])); });
       left.appendChild(box('My Friends (' + fids.length + ')', fl.children.length ? [fl] : [el('p', { class: 'os-hint', text: 'No friends yet. Find the people you play with below and add them.' })]));
     } else {
+      // Member Login, right here on the page, like the old MySpace front page
+      var lf = el('form', { class: 'os-form os-login', novalidate: true }, [
+        el('div', {}, [el('label', { for: 'os-li-user', text: 'Username' }), el('input', { id: 'os-li-user', name: 'username', autocomplete: 'username', autocapitalize: 'none', spellcheck: 'false', required: true })]),
+        el('div', {}, [el('label', { for: 'os-li-pass', text: 'Password' }), el('input', { id: 'os-li-pass', name: 'password', type: 'password', autocomplete: 'current-password', required: true })]),
+        el('label', { class: 'os-check' }, [el('input', { id: 'os-li-remember', type: 'checkbox', checked: true }), ' Keep me signed in for 30 days']),
+        el('p', { class: 'os-msg', id: 'os-li-msg', role: 'alert' }),
+        el('div', {}, [el('button', { class: 'os-btn go', type: 'submit', text: 'Log In' }), ' ', el('a', { class: 'os-btn', href: '../account/index.html?next=ourspace/index.html#signup', text: 'Sign Up' })]),
+        el('p', { class: 'os-hint', text: 'Forgot your password? Ask your Storyteller to set you a temporary one.' })
+      ]);
+      lf.addEventListener('submit', async function (ev) {
+        ev.preventDefault();
+        var u = $('os-li-user').value.trim(), pw = $('os-li-pass').value, btn = lf.querySelector('button[type=submit]');
+        say('os-li-msg', '');
+        if (!u || !pw) { say('os-li-msg', 'Type your username and password.', true); return; }
+        btn.disabled = true; btn.textContent = 'Logging in...';
+        try { await A.logIn(u, pw, $('os-li-remember').checked); location.reload(); }
+        catch (err) { say('os-li-msg', err.message || 'That did not work. Check your username and password.', true); btn.disabled = false; btn.textContent = 'Log In'; }
+      });
+      left.appendChild(box('Member Login', [lf], 'orange'));
       left.appendChild(box('Welcome to OurSpace', [
-        el('p', { text: 'Make a page for yourself and every character you play, add friends, pick your Top 8, and keep a blog.' }),
-        el('a', { class: 'os-btn go', href: '../account/index.html?next=ourspace/index.html', text: 'Log In' }),
-        el('a', { class: 'os-btn', href: '../account/index.html?next=ourspace/index.html#signup', text: 'Sign Up' })
+        el('p', { text: 'Make a page for yourself and every character you play, add friends, pick your Top 8, and keep a blog. New here? Press Sign Up: all it takes is a username and a password.' })
       ]));
     }
     var find = el('form', { class: 'os-form' }, [

@@ -102,10 +102,11 @@ img { max-width: 100%; }
 
 .os-form { display: grid; gap: 8px; }
 .os-form label { font-weight: bold; display: block; margin-bottom: 2px; }
-.os-form input[type=text], .os-form input[type=url], .os-form input:not([type]), .os-form textarea, .os-form select {
+.os-form input[type=text], .os-form input[type=url], .os-form input[type=password], .os-form input:not([type]), .os-form textarea, .os-form select {
   width: 100%; font: inherit; padding: 3px 4px; border: 2px inset #d4d0c8; background: #ffffff; color: #000000;
 }
 .os-form textarea { min-height: 90px; resize: vertical; }
+.os-form label.os-check { font-weight: normal; display: flex; align-items: center; gap: 6px; }
 .os-form .row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
 @media (max-width: 520px) { .os-form .row { grid-template-columns: minmax(0, 1fr); } }
 .os-form .colors { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 6px 10px; }
