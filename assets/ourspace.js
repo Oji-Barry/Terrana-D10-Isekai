@@ -429,21 +429,95 @@
       inner.push(f);
     }
     if (!posts.length) inner.push(el('p', { class: 'os-hint', text: 'No blog entries yet.' }));
-    var VIS = { public: '', friends: ' (friends only)', private: ' (only you)' };
-    posts.forEach(function (p) {
-      var row = el('article', { class: 'os-post' }, [
-        el('h4', { text: p.title }),
-        el('div', { class: 'when', text: when(p.created_at) + (mine ? VIS[p.visibility] || '' : '') }),
-        el('div', { class: 'body', text: p.body }),
-        postPics(p)
-      ]);
-      if (mine) row.appendChild(el('button', { class: 'os-btn danger', type: 'button', text: 'Delete', onclick: async function () {
-        if (!confirm('Delete "' + p.title + '"?')) return;
-        try { await must(db.from('posts').delete().eq('id', p.id)); row.remove(); } catch (e) { alert(oops(e)); }
-      } }));
-      inner.push(row);
-    });
+    posts.forEach(function (p) { inner.push(postArticle(p, { mine: mine })); });
     return box(title, inner, 'orange os-blog');
+  }
+
+  // One blog entry. Long entries can be cut short with Read More (opts.clamp), the author can edit or
+  // delete their own (opts.mine), and an edited entry shows "(edited)", which opens its earlier versions.
+  var POST_VIS = { public: '', friends: ' (friends only)', private: ' (only you)' };
+  var CLAMP = 400;
+  function postArticle(p, opts) {
+    opts = opts || {};
+    var art = el('article', { class: 'os-post' }), open = false, editing = false;
+    function whenLine() {
+      var bits = [];
+      if (opts.by) bits.push('by ', opts.by, ', ');
+      bits.push(when(p.created_at) + (opts.mine ? POST_VIS[p.visibility] || '' : ''));
+      return el('div', { class: 'when' }, bits);
+    }
+    function history() {
+      var hist = Array.isArray(p.history) ? p.history.filter(function (v) { return v && typeof v.body === 'string'; }) : [];
+      var panel = el('div', { class: 'os-post-hist', hidden: true });
+      panel.appendChild(el('p', { class: 'os-hint', text: hist.length > 1 ? 'Earlier versions of this entry, oldest first. The newest version is the one shown above.' : 'This is how the entry looked before it was edited.' }));
+      hist.forEach(function (v, i) {
+        panel.appendChild(el('div', { class: 'os-post-old' }, [
+          el('div', { class: 'when', text: (i === 0 ? 'Original, written ' : 'Edited version from ') + when(v.at) }),
+          el('h5', { text: v.title || '' }),
+          el('div', { class: 'body', text: v.body })
+        ]));
+      });
+      return { panel: panel, count: hist.length };
+    }
+    function render() {
+      art.textContent = '';
+      var h = history(), head = el('div', { class: 'os-post-head' }, [el('h4', { text: p.title })]);
+      if (p.edited_at && h.count) {
+        var eb = el('button', { type: 'button', class: 'os-edited', text: '(edited)', title: 'Edited ' + when(p.edited_at) + '. Click to see what it said before.', 'aria-expanded': 'false', onclick: function () {
+          h.panel.hidden = !h.panel.hidden; eb.setAttribute('aria-expanded', String(!h.panel.hidden));
+        } });
+        head.appendChild(eb);
+      }
+      art.appendChild(head);
+      art.appendChild(whenLine());
+      if (editing) { art.appendChild(editForm()); return; }
+      var long = opts.clamp && p.body.length > CLAMP;
+      var body = el('div', { class: 'body', text: long && !open ? p.body.slice(0, CLAMP).replace(/\s+\S*$/, '') + '...' : p.body });
+      art.appendChild(body);
+      if (long) art.appendChild(el('button', { type: 'button', class: 'os-more', 'aria-expanded': String(open), text: open ? 'Show Less' : 'Read More', onclick: function () {
+        open = !open; render();
+        if (!open) art.scrollIntoView({ block: 'nearest' });
+      } }));
+      var pics = postPics(p); if (pics) art.appendChild(pics);
+      art.appendChild(h.panel);
+      if (opts.mine) art.appendChild(el('div', { class: 'os-post-tools' }, [
+        el('button', { class: 'os-btn', type: 'button', text: 'Edit', onclick: function () { editing = true; render(); var t = art.querySelector('textarea'); if (t) t.focus(); } }),
+        el('button', { class: 'os-btn danger', type: 'button', text: 'Delete', onclick: async function () {
+          if (!confirm('Delete "' + p.title + '"?')) return;
+          try { await must(db.from('posts').delete().eq('id', p.id)); art.remove(); } catch (e) { alert(oops(e)); }
+        } })
+      ]));
+    }
+    function editForm() {
+      var uid = 'pe-' + p.id;
+      var ti = el('input', { id: uid + '-t', maxlength: '120', value: p.title, required: true });
+      var bo = el('textarea', { id: uid + '-b', maxlength: '10000', required: true }); bo.value = p.body;
+      var vi = el('select', { id: uid + '-v' }, [el('option', { value: 'public', text: 'Everyone' }), el('option', { value: 'friends', text: 'Friends only' }), el('option', { value: 'private', text: 'Only me' })]);
+      vi.value = p.visibility;
+      var msg = el('p', { class: 'os-msg', role: 'alert' });
+      var f = el('form', { class: 'os-form' }, [
+        el('div', {}, [el('label', { for: uid + '-t', text: 'Title' }), ti]),
+        el('div', {}, [el('label', { for: uid + '-b', text: 'Entry' }), bo]),
+        el('div', {}, [el('label', { for: uid + '-v', text: 'Who can read it' }), vi]),
+        el('p', { class: 'os-hint', text: 'Changing the title or words marks the entry as edited, and anyone can click "(edited)" to see the earlier version.' }),
+        msg,
+        el('div', {}, [el('button', { class: 'os-btn go', type: 'submit', text: 'Save Changes' }), ' ', el('button', { class: 'os-btn', type: 'button', text: 'Cancel', onclick: function () { editing = false; render(); } })])
+      ]);
+      f.addEventListener('submit', async function (ev) {
+        ev.preventDefault();
+        var t = ti.value.trim(), b = bo.value.trim();
+        if (!t || !b) { msg.textContent = 'Give your entry a title and some words.'; msg.classList.add('err'); return; }
+        var btn = f.querySelector('button[type=submit]'); btn.disabled = true; btn.textContent = 'Saving...';
+        try {
+          var r = await must(db.from('posts').update({ title: t, body: b, visibility: vi.value }).eq('id', p.id).select('*').single());
+          if (r) p = r;
+          editing = false; render();
+        } catch (e) { btn.disabled = false; btn.textContent = 'Save Changes'; msg.textContent = oops(e); msg.classList.add('err'); }
+      });
+      return f;
+    }
+    render();
+    return art;
   }
 
   function postPics(p) {
@@ -487,7 +561,14 @@
   }
 
   // ---------- Home ----------
+  // Each player can give the OurSpace home page their own look. It is only for them (saved on their account),
+  // so everyone else still sees the normal home page.
+  async function homeTheme() {
+    if (!me) return null;
+    try { var u = (await db.auth.getUser()).data.user; var t = u && u.user_metadata && u.user_metadata.os_home; return t && typeof t === 'object' ? t : null; } catch (e) { return null; }
+  }
   async function home(main) {
+    var ht = await homeTheme(); if (ht) applyTheme(ht);
     var left = el('div', { class: 'os-col' }), right = el('div', { class: 'os-col' });
     main.appendChild(el('div', { class: 'os-cols' }, [left, right]));
     if (me) {
@@ -495,7 +576,8 @@
         el('p', {}, ['Welcome to OurSpace, where adventurers, their characters, and their friends hang out.']),
         el('a', { class: 'os-btn go', href: uLink(me.username), text: 'View My Page' }),
         el('a', { class: 'os-btn', href: 'edit.html', text: 'Edit My Page' }),
-        el('a', { class: 'os-btn', href: 'messages.html', text: 'Mail' })
+        el('a', { class: 'os-btn', href: 'messages.html', text: 'Mail' }),
+        el('a', { class: 'os-btn', href: 'edit.html?home=1', text: 'Edit My Home Page' })
       ]));
       var reqs = await must(db.from('friendships').select('requester, addressee, status, created_at').eq('status', 'pending').or('requester.eq.' + me.id + ',addressee.eq.' + me.id));
       var people = await profilesById(reqs.map(function (r) { return r.requester === me.id ? r.addressee : r.requester; }));
@@ -559,8 +641,7 @@
     var pl = [];
     posts.forEach(function (p) {
       var by = p.character_id && cps[p.character_id] ? el('a', { href: cLink(p.character_id), text: cps[p.character_id].name }) : who[p.author] ? el('a', { href: uLink(who[p.author].username), text: who[p.author].username }) : 'someone';
-      pl.push(el('article', { class: 'os-post' }, [el('h4', { text: p.title }), el('div', { class: 'when' }, ['by ', by, ', ' + when(p.created_at)]),
-        el('div', { class: 'body', text: p.body.length > 400 ? p.body.slice(0, 400) + '...' : p.body }), postPics(p)]));
+      pl.push(postArticle(p, { by: by, clamp: true, mine: !!(me && p.author === me.id) }));
     });
     right.appendChild(box('Latest Blog Entries', pl.length ? pl : [el('p', { class: 'os-hint', text: 'No blog entries yet.' })], 'orange'));
   }
@@ -706,9 +787,11 @@
   function val(id) { return ($(id).value || '').trim(); }
   async function editPage(main) {
     if (!me) { main.appendChild(box('Log in first', [el('a', { class: 'os-btn go', href: '../account/index.html?next=ourspace/edit.html', text: 'Log In' })])); return; }
-    var cid = qs.get('c');
-    var row, isChar = !!cid;
-    if (isChar) {
+    var cid = qs.get('c'), isHome = qs.get('home') === '1';
+    var row, isChar = !!cid && !isHome;
+    if (isHome) {
+      row = { id: me.id, theme: (await homeTheme()) || {} };
+    } else if (isChar) {
       row = await must(db.from('character_pages').select('*').eq('id', cid).maybeSingle());
       if (!row || row.owner !== me.id) { main.appendChild(box('Not yours', [el('p', { text: 'You can only edit your own characters’ pages.' })])); return; }
     } else {
@@ -724,7 +807,8 @@
     if (isChar) { var s = await db.from('characters').select('sheet_visibility').eq('id', cid).maybeSingle(); vis = s.data ? s.data.sheet_visibility : 'private'; }
 
     var form = el('form', { class: 'os-form' });
-    form.appendChild(el('h1', { class: 'os-name', text: isChar ? 'Edit ' + row.name + '’s Page' : 'Edit My Page' }));
+    form.appendChild(el('h1', { class: 'os-name', text: isHome ? 'Edit My Home Page' : isChar ? 'Edit ' + row.name + '’s Page' : 'Edit My Page' }));
+    if (isHome) form.appendChild(el('p', { class: 'os-hint', text: 'Pick how the OurSpace home page looks for you. Only you see it this way: everyone else gets the normal home page, and your own profile keeps its own look.' }));
     form.appendChild(el('p', { class: 'os-msg', id: 'edit-msg', role: 'alert' }));
     var basics = [
       el('legend', { text: 'Profile' }),
@@ -981,12 +1065,28 @@
       } }), el('button', { class: 'os-btn go', type: 'button', text: 'Use Code', onclick: function () {
         if (loadTheme(readThemeCode(codeBox.value))) say('code-msg', 'Layout loaded. Save Page to keep it.'); else say('code-msg', 'That is not a layout code.', true);
       } })]), codeBox, codeMsg]));
-    var pend = null; try { pend = localStorage.getItem('os-borrow'); localStorage.removeItem('os-borrow'); } catch (e) {}
+    var pend = null; if (!isHome) try { pend = localStorage.getItem('os-borrow'); localStorage.removeItem('os-borrow'); } catch (e) {}
 
-    form.appendChild(el('div', {}, [el('button', { class: 'os-btn go', type: 'submit', text: 'Save Page' }),
-      el('a', { class: 'os-btn', href: isChar ? cLink(cid) : uLink(me.username), text: 'View Page' })]));
+    form.appendChild(el('div', {}, [el('button', { class: 'os-btn go', type: 'submit', text: isHome ? 'Save Home Page' : 'Save Page' }),
+      isHome ? el('button', { class: 'os-btn', type: 'button', text: 'Back to Normal', onclick: function () { loadTheme({ preset: 'classic' }); say('edit-msg', 'Set back to the normal look. Save Home Page to keep it.'); window.scrollTo(0, 0); } }) : null,
+      el('a', { class: 'os-btn', href: isHome ? 'index.html' : isChar ? cLink(cid) : uLink(me.username), text: isHome ? 'View Home Page' : 'View Page' })]));
+    if (isHome) {
+      // only the look sections apply to the home page
+      var keep = { 'Page Look': 1, 'Background Picture': 1, 'Layout Code (CSS)': 1, 'Share a Layout': 1 };
+      Array.prototype.forEach.call(form.querySelectorAll('fieldset'), function (fs) { var lg = fs.querySelector('legend'); if (!lg || !keep[lg.textContent]) fs.hidden = true; });
+    }
     form.addEventListener('submit', async function (ev) {
       ev.preventDefault();
+      if (isHome) {
+        var ht2 = readTheme(); delete ht2.song; delete ht2.songAuto;
+        try {
+          var res = await db.auth.updateUser({ data: { os_home: ht2 } });
+          if (res.error) throw res.error;
+          say('edit-msg', 'Saved! The home page now looks like this for you.');
+        } catch (e2) { say('edit-msg', oops(e2), true); }
+        window.scrollTo(0, 0);
+        return;
+      }
       var picUrl = val('f-pic');
       if (picUrl && !/^https:\/\//.test(picUrl)) { say('edit-msg', 'The picture address has to start with https://', true); return; }
       var top = [], seen = {};
@@ -1012,7 +1112,7 @@
     });
     main.appendChild(el('section', { class: 'os-box' }, [el('div', { class: 'in' }, [form])]));
     if (pend && loadTheme(readThemeCode(pend))) say('edit-msg', 'Layout borrowed! Look it over, change anything, then Save Page.');
-    if (!isChar && mineChars.length) {
+    if (!isChar && !isHome && mineChars.length) {
       var l = el('ul', { class: 'os-list' });
       mineChars.forEach(function (c) { l.appendChild(el('li', {}, [c.name, el('a', { class: 'os-btn', href: 'edit.html?c=' + encodeURIComponent(c.id), text: 'Edit ' + c.name + '’s Page' })])); });
       main.appendChild(el('div', { style: 'height:12px' }));

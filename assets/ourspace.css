@@ -183,3 +183,18 @@ body[data-os] .mp-vismenu { background: var(--os-box); border-color: var(--os-he
 body[data-os] .mp-vismenu button { color: var(--os-text); font-family: var(--os-font); }
 body[data-os] .mp-vismenu button[aria-checked="true"] { color: var(--os-accent); }
 body[data-os] .mp-vismenu small { color: var(--os-link); }
+
+/* Blog entries: Read More, (edited) and earlier versions, edit tools */
+.os-post-head { display: flex; align-items: baseline; gap: 8px; }
+.os-post-head h4 { flex: 1; min-width: 0; }
+.os-edited { flex: none; background: none; border: 0; padding: 0; font: inherit; font-size: 11px; font-style: italic; color: var(--os-link); text-decoration: underline; cursor: pointer; }
+.os-edited:hover, .os-edited:focus-visible { color: var(--os-accent); }
+.os-more { display: inline-block; margin: 4px 0 2px; background: none; border: 0; padding: 0; font: inherit; font-weight: bold; color: var(--os-link); text-decoration: underline; cursor: pointer; }
+.os-more:hover, .os-more:focus-visible { color: var(--os-accent); }
+.os-post-hist { margin-top: 8px; padding: 8px; border: 1px dashed var(--os-head); background: rgba(127, 127, 127, 0.08); }
+.os-post-hist .os-hint { margin: 0 0 6px; }
+.os-post-old + .os-post-old { margin-top: 8px; padding-top: 8px; border-top: 1px dotted var(--os-head); }
+.os-post-old h5 { margin: 2px 0; font-size: 1em; }
+.os-post-old .body { white-space: pre-wrap; opacity: 0.85; }
+.os-post-tools { display: flex; gap: 6px; margin-top: 6px; }
+.os-post .os-form { margin-top: 6px; }
