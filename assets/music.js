@@ -43,7 +43,7 @@
   function emit(what) { listeners.forEach(function (fn) { try { fn(what, M.state()); } catch (e) {} }); }
   function loadLib() {
     if (lib) return Promise.resolve(lib);
-    if (!libP) libP = fetch(ROOT + 'assets/music/library.json?v=ee38227c').then(function (r) { return r.json(); }).then(function (d) {
+    if (!libP) libP = fetch(ROOT + 'assets/music/library.json?v=4b3c5305').then(function (r) { return r.json(); }).then(function (d) {
       lib = d; lib.byId = {}; d.tracks.forEach(function (t) { lib.byId[t.id] = t; });
       loadUploads(0);
       return lib;

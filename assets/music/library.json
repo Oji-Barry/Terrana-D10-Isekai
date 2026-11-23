@@ -166,6 +166,13 @@
     "peaceful-days",
     "jrpg-theme"
    ]
+  },
+  {
+   "id": "requests",
+   "name": "Requests",
+   "tracks": [
+    "club-confession"
+   ]
   }
  ],
  "tracks": [
@@ -348,6 +355,14 @@
    "title": "Witch's Lair",
    "file": "witch-s-lair.mp3",
    "dur": 80.0
+  },
+  {
+   "id": "club-confession",
+   "title": "Club Confession (Ministry)",
+   "file": "requests/club-confession-ministry.mp3",
+   "dur": 436.0,
+   "by": "Ministry",
+   "requestedBy": "Val"
   }
  ]
 }

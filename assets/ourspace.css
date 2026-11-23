@@ -198,3 +198,13 @@ body[data-os] .mp-vismenu small { color: var(--os-link); }
 .os-post-old .body { white-space: pre-wrap; opacity: 0.85; }
 .os-post-tools { display: flex; gap: 6px; margin-top: 6px; }
 .os-post .os-form { margin-top: 6px; }
+
+/* FAQ */
+.os-faq { max-width: 860px; margin: 0 auto; }
+.os-faq .os-box + .os-box { margin-top: 12px; }
+.os-faq-q { border-bottom: 1px dashed #999; padding: 6px 0; }
+.os-faq-q:last-child { border-bottom: 0; }
+.os-faq-q summary { cursor: pointer; font-weight: bold; color: var(--os-link); }
+.os-faq-q summary:hover { color: var(--os-accent); }
+.os-faq-a { padding: 6px 0 2px 16px; line-height: 1.5; }
+.os-faq-a ul { margin: 4px 0 6px; padding-left: 18px; }

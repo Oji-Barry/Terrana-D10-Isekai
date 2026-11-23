@@ -293,11 +293,11 @@
     return r.error ? 0 : (r.count || 0);
   }
   async function shell() {
-    var addr = { home: '', user: 'profile', char: 'character', edit: 'edit', mail: 'mail' }[page] || '';
+    var addr = { home: '', user: 'profile', char: 'character', edit: 'edit', mail: 'mail', faq: 'faq' }[page] || '';
     var links = [['home', 'Home', 'index.html']];
     if (me) links.push(['user', 'My Page', uLink(me.username)], ['mail', 'Mail', 'messages.html'], ['edit', 'Edit Page', 'edit.html']);
     else links.push(['login', 'Log In', '../account/index.html?next=ourspace/index.html']);
-    links.push(['site', 'Back to Terrana', '../index.html']);
+    links.push(['faq', 'FAQ', 'faq.html'], ['site', 'Back to Terrana', '../index.html']);
     var nav = el('nav', { class: 'os-links', 'aria-label': 'OurSpace' });
     links.forEach(function (l) {
       var mine = l[0] === 'user' && page === 'user' && qs.get('u') && me && qs.get('u').toLowerCase() === me.username.toLowerCase();
@@ -322,7 +322,7 @@
     }
     document.body.appendChild(el('footer', { class: 'os-foot' }, ['OurSpace is part of ', el('a', { href: '../index.html', text: 'Jimothy’s D10 Isekai JRPG' }), '. Be kind. Your Storyteller is watching.', el('br'),
       'Background patterns: ', el('a', { href: 'https://heropatterns.com', text: 'Hero Patterns' }), ' by Steve Schoger (CC BY 4.0). Retro tiles: ', el('a', { href: 'https://github.com/peteroupc/classic-wallpaper', text: 'classic-wallpaper' }), ' by Peter O. (Unlicense) and ',
-      el('a', { href: 'https://github.com/JohnGWebDev/Background-Textures', text: 'Background-Textures' }), ' by John Galiszewski (MIT). Music by Juhani Junkala (CC0).']));
+      el('a', { href: 'https://github.com/JohnGWebDev/Background-Textures', text: 'Background-Textures' }), ' by John Galiszewski (MIT). Music by Juhani Junkala (CC0). Songs in Requests and players’ uploads belong to their artists.']));
     var n = await unread();
     if (n) $('mail-link').appendChild(el('span', { class: 'os-badge', text: String(n), 'aria-label': n + ' unread' }));
   }
@@ -947,7 +947,7 @@
     } });
     fillSongs().catch(function () {});
     form.appendChild(el('fieldset', {}, [el('legend', { text: 'Profile Song' }),
-      el('p', { class: 'os-hint', text: 'Plays when people visit this page. Pick from the site’s music, from other players’ uploads, or upload your own (up to 5 songs, 10 MB each). Your uploads show up for everyone under your username, in every music player on the site. Only upload music you have the right to share.' }),
+      el('p', { class: 'os-hint', text: 'Plays when people visit this page. Pick from the site’s music, from other players’ uploads, or upload your own (up to 5 songs, 10 MB each). Your uploads show up for everyone under your username, in every music player on the site. Only upload music you have the right to share.' }), el('p', { class: 'os-hint' }, ['Trouble uploading? See the ', el('a', { href: 'faq.html', text: 'FAQ' }), ', or ask your Storyteller to add the song to Requests for you.']),
       el('div', {}, [el('label', { for: 'f-song', text: 'Song' }), songSel]),
       el('label', { class: 'os-chk' }, [songAuto, ' Play it automatically when people visit (visitors can still pause or mute it)']),
       el('div', {}, [songPrev, songStop, songDel]),
@@ -1221,7 +1221,54 @@
   }
 
   // ---------- start ----------
-  var PAGES = { home: home, user: userPage, char: charPage, edit: editPage, mail: mailPage };
+  // ---------- FAQ ----------
+  async function faqPage(main) {
+    var ht = await homeTheme(); if (ht) applyTheme(ht);
+    function a(href, text) { return el('a', { href: href, text: text }); }
+    var QA = [
+      ['Getting Started', [
+        ['How do I get an OurSpace page?', ['Make an account with ', a('../account/index.html?next=ourspace/index.html#signup', 'Sign Up'), '. All it takes is a username and a password, no email. Your page is ready right away; press ', el('b', { text: 'Edit Page' }), ' at the top to fill it in.']],
+        ['I forgot my password. What now?', ['Ask your Storyteller. They can set you a temporary password, and you change it on your ', a('../account/index.html', 'account page'), ' once you are back in.']],
+        ['Can my characters have their own pages?', ['Yes. Every character you make on the site gets a page. Go to ', el('b', { text: 'Edit Page' }), ' and scroll to the bottom for ', el('b', { text: 'Your Characters’ Pages' }), '. Character pages have their own blog, Top 8 and look, and you can send mail as that character.']]
+      ]],
+      ['Music', [
+        ['How do I put a song on my page?', ['Go to ', el('b', { text: 'Edit Page' }), ' and find ', el('b', { text: 'Profile Song' }), '. Pick a song from the list (the site’s music, other players’ uploads, or Requests), press ', el('b', { text: 'Listen' }), ' to check it, then press ', el('b', { text: 'Save Page' }), ' at the bottom. Tick the box if you want it to play by itself when people visit.']],
+        ['How do I upload my own song?', ['On ', el('b', { text: 'Edit Page' }), ', under ', el('b', { text: 'Profile Song' }), ', use ', el('b', { text: 'Upload a song' }), ' and pick the file. When it says Uploaded, it is already chosen as your song: press ', el('b', { text: 'Save Page' }), ' to keep it. Your uploads show up for everyone under your username in every music player on the site.']],
+        ['My song will not upload. Why?', [el('ul', {}, [
+          el('li', { text: 'Each song has to be 10 MB or smaller. Long songs often go over. A shorter version, or the same song saved at a lower quality (128 kbps MP3 is plenty), usually fits.' }),
+          el('li', { text: 'You can keep 5 uploads at a time. Pick one of yours in the list and press Delete Upload to make room.' }),
+          el('li', { text: 'It has to be a sound file: MP3, M4A, AAC, OGG, WAV, FLAC or WebM all work.' })
+        ]), 'Still stuck? Ask your Storyteller to add it for you (see below).']],
+        ['Can the Storyteller add a song for me?', ['Yes. Send the song to your Storyteller and ask. Songs added this way go in the ', el('b', { text: 'Requests' }), ' list, which shows up in every music player on the site and in the Profile Song list on ', el('b', { text: 'Edit Page' }), '. Then pick it there and press Save Page.']],
+        ['What music am I allowed to upload?', ['Only music you have the right to share. Your uploads can be heard by everyone on the site.']]
+      ]],
+      ['Making Your Page Yours', [
+        ['How do I change how my page looks?', ['On ', el('b', { text: 'Edit Page' }), ', under ', el('b', { text: 'Page Look' }), ', pick a theme, a font, a background pattern, and your own colors. The page changes as you go; press Save Page to keep it. You can also upload a ', el('b', { text: 'Background Picture' }), ' (animated GIFs work).']],
+        ['Can I write my own layout code, like old MySpace?', ['Yes. ', el('b', { text: 'Layout Code (CSS)' }), ' on Edit Page lets you restyle anything on your page. There are buttons that drop in fun examples to start from. Scripts are not allowed, and your code only changes your own page.']],
+        ['I love someone’s layout. Can I use it?', ['Press ', el('b', { text: 'Use This Layout' }), ' on their page, or ask them for their layout code (it starts with OURSPACE:) and paste it under ', el('b', { text: 'Share a Layout' }), ' on Edit Page.']],
+        ['Can I change how the home page looks?', ['Yes, just for you. On the home page, press ', el('b', { text: 'Edit My Home Page' }), '. Everyone else still sees the normal home page, and your profile keeps its own look.']],
+        ['How do I change my picture?', ['On Edit Page, under ', el('b', { text: 'Profile' }), ', upload a picture or paste a picture address. JPG, PNG, WebP or GIF, up to 3 MB. Big pictures are shrunk to fit.']]
+      ]],
+      ['Friends, Mail and Blogs', [
+        ['How do I add a friend?', ['Go to their page and press ', el('b', { text: 'Add to Friends' }), '. They get a friend request on their home page. Once they accept, you can message each other and add each other to your Top 8.']],
+        ['How do I pick my Top 8?', ['On Edit Page, under ', el('b', { text: 'Top 8' }), ', choose from your friends and your characters, then Save Page.']],
+        ['Who can read my blog entries?', ['You choose for each entry: Everyone, Friends only, or Only me.']],
+        ['Can I fix a blog entry after posting it?', ['Yes. Press ', el('b', { text: 'Edit' }), ' under your entry. If you change the title or words it shows ', el('b', { text: '(edited)' }), ' in the corner, and anyone can click that to see what it said before.']],
+        ['Who can send me mail?', ['Only your friends can send you mail, and only you and the sender can read it. You can send as yourself or as any of your characters.']]
+      ]]
+    ];
+    var col = el('div', { class: 'os-col os-faq' });
+    col.appendChild(el('h1', { class: 'os-name', text: 'OurSpace FAQ' }));
+    col.appendChild(el('p', { text: 'Answers to the questions people ask the most. Can’t find yours? Ask your Storyteller.' }));
+    QA.forEach(function (sec) {
+      col.appendChild(box(sec[0], sec[1].map(function (q) {
+        return el('details', { class: 'os-faq-q' }, [el('summary', { text: q[0] }), el('div', { class: 'os-faq-a' }, q[1])]);
+      }), 'orange'));
+    });
+    main.appendChild(col);
+    if (location.hash) { var open = document.getElementById(location.hash.slice(1)); if (open && open.tagName === 'DETAILS') open.open = true; }
+  }
+  var PAGES = { home: home, user: userPage, char: charPage, edit: editPage, mail: mailPage, faq: faqPage };
   A.currentPlayer().then(async function (p) {
     me = p;
     await shell();
