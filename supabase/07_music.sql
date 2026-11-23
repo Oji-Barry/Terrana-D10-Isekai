@@ -32,9 +32,9 @@ revoke all on function public.set_music(uuid, jsonb) from public, anon;
 grant execute on function public.set_music(uuid, jsonb) to authenticated;
 
 -- PROFILE SONGS -------------------------------------------------------
--- A public bucket for songs players upload for their OurSpace pages: 10 MB each, audio only, 5 per player.
+-- A public bucket for songs players upload for their OurSpace pages: 25 MB each (raised from 10 in 10_bigger_songs.sql), audio only, 5 per player.
 insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
-values ('ourspace-music', 'ourspace-music', true, 10485760,
+values ('ourspace-music', 'ourspace-music', true, 26214400,
         array['audio/mpeg', 'audio/mp3', 'audio/ogg', 'audio/wav', 'audio/x-wav', 'audio/wave', 'audio/mp4', 'audio/x-m4a', 'audio/aac', 'audio/webm', 'audio/flac'])
 on conflict (id) do update
   set public = true,

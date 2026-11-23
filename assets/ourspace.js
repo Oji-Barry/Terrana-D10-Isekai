@@ -920,7 +920,7 @@
     }
     songUp.addEventListener('change', async function () {
       var fl = songUp.files[0]; if (!fl) return;
-      if (fl.size > 10 * 1024 * 1024) { say('song-msg', 'That file is over 10 MB. Try a shorter song or a smaller file.', true); return; }
+      if (fl.size > 25 * 1024 * 1024) { say('song-msg', 'That file is over 25 MB. Try a shorter song or a smaller file.', true); return; }
       if (!/^audio\//.test(fl.type)) { say('song-msg', 'That is not a music file this site can play.', true); return; }
       say('song-msg', 'Uploading...');
       var safe = fl.name.replace(/[^A-Za-z0-9._-]+/g, '-').slice(-60);
@@ -947,7 +947,7 @@
     } });
     fillSongs().catch(function () {});
     form.appendChild(el('fieldset', {}, [el('legend', { text: 'Profile Song' }),
-      el('p', { class: 'os-hint', text: 'Plays when people visit this page. Pick from the site’s music, from other players’ uploads, or upload your own (up to 5 songs, 10 MB each). Your uploads show up for everyone under your username, in every music player on the site. Only upload music you have the right to share.' }), el('p', { class: 'os-hint' }, ['Trouble uploading? See the ', el('a', { href: 'faq.html', text: 'FAQ' }), ', or ask your Storyteller to add the song to Requests for you.']),
+      el('p', { class: 'os-hint', text: 'Plays when people visit this page. Pick from the site’s music, from other players’ uploads, or upload your own (up to 5 songs, 25 MB each). Your uploads show up for everyone under your username, in every music player on the site. Only upload music you have the right to share.' }), el('p', { class: 'os-hint' }, ['Trouble uploading? See the ', el('a', { href: 'faq.html', text: 'FAQ' }), ', or ask your Storyteller to add the song to Requests for you.']),
       el('div', {}, [el('label', { for: 'f-song', text: 'Song' }), songSel]),
       el('label', { class: 'os-chk' }, [songAuto, ' Play it automatically when people visit (visitors can still pause or mute it)']),
       el('div', {}, [songPrev, songStop, songDel]),
@@ -1235,7 +1235,7 @@
         ['How do I put a song on my page?', ['Go to ', el('b', { text: 'Edit Page' }), ' and find ', el('b', { text: 'Profile Song' }), '. Pick a song from the list (the site’s music, other players’ uploads, or Requests), press ', el('b', { text: 'Listen' }), ' to check it, then press ', el('b', { text: 'Save Page' }), ' at the bottom. Tick the box if you want it to play by itself when people visit.']],
         ['How do I upload my own song?', ['On ', el('b', { text: 'Edit Page' }), ', under ', el('b', { text: 'Profile Song' }), ', use ', el('b', { text: 'Upload a song' }), ' and pick the file. When it says Uploaded, it is already chosen as your song: press ', el('b', { text: 'Save Page' }), ' to keep it. Your uploads show up for everyone under your username in every music player on the site.']],
         ['My song will not upload. Why?', [el('ul', {}, [
-          el('li', { text: 'Each song has to be 10 MB or smaller. Long songs often go over. A shorter version, or the same song saved at a lower quality (128 kbps MP3 is plenty), usually fits.' }),
+          el('li', { text: 'Each song has to be 25 MB or smaller. Only very long songs go over. A shorter version, or the same song saved at a lower quality (128 kbps MP3 is plenty), usually fits.' }),
           el('li', { text: 'You can keep 5 uploads at a time. Pick one of yours in the list and press Delete Upload to make room.' }),
           el('li', { text: 'It has to be a sound file: MP3, M4A, AAC, OGG, WAV, FLAC or WebM all work.' })
         ]), 'Still stuck? Ask your Storyteller to add it for you (see below).']],
